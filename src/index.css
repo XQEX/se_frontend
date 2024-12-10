@@ -111,3 +111,6 @@
     font-style: italic;
   }
   
+  .placeholder-kanit::placeholder {
+    font-family: 'Kanit', sans-serif;
+  }
