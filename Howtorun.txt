@@ -1,7 +1,0 @@
-npm i 
-npm run dev
-
-install พวก componet จาก mantine ที่จะเรียกใช้
-npm install @mantine/core @mantine/hooks @mantine/nprogress @mantine/dates dayjs @mantine/form @mantine/notifications @mantine/charts recharts@2 @mantine/code-highlight @mantine/tiptap @tiptap/pm @tiptap/react @tiptap/extension-link @tiptap/starter-kit @mantine/dropzone @mantine/carousel embla-carousel-react@^7.1.0 @mantine/spotlight @mantine/modals
-
-import "@mantine/core/styles.css"; // Mantine styles // จำเป็นมาก  ห้ามลืมในหน้า main หลัก (index)
