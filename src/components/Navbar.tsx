@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { Avatar, Menu, Divider } from "@mantine/core";
 
 export default function Navbar() {
-  const [isSignedIn, setIsSignedIn] = useState(false);
+  const [isSignedIn, setIsSignedIn] = useState(true); 
+  const user = { name: "มนุษย์", profilePicture: "/vite.svg" }; 
 
   return (
     <nav className="flex justify-between items-center px-6 py-1 bg-white shadow-md sticky top-0 z-50 min-h-[60px]">
@@ -13,18 +15,40 @@ export default function Navbar() {
         </Link>
       </div>
       <div className="flex items-center space-x-4">
-        <Link
-          to="/signin"
-          className="text-seagreen kanit-light hover:text-seagreen/50 px-4 py-1 rounded-md transition-colors duration-300"
-        >
-          เข้าสู่ระบบ
-        </Link>
-        <Link
-          to="/signup"
-          className="text-seagreen px-4 py-1 rounded-md border border-seagreen kanit-medium hover:text-seagreen/50 transition-colors duration-300"
-        >
-          สมัครสมาชิก
-        </Link>
+        {!isSignedIn ? (
+          <>
+            <Link
+              to="/signin"
+              className="text-seagreen kanit-light hover:text-seagreen/50 px-4 py-1 rounded-md transition-colors duration-300"
+            >
+              เข้าสู่ระบบ
+            </Link>
+            <Link
+              to="/signup"
+              className="text-seagreen px-4 py-1 rounded-md border border-seagreen kanit-medium hover:text-seagreen/50 transition-colors duration-300"
+            >
+              สมัครสมาชิก
+            </Link>
+          </>
+        ) : (
+          <Menu width={250} position="bottom-end">
+            <Menu.Target>
+              <Avatar src="/vite.svg" alt={user.name} radius="xl" size={30} className="transition-transform transform hover:scale-105"/>
+            </Menu.Target>
+            <Menu.Dropdown className="m-2">
+              <div className="p-3 text-center">
+                <div className="kanit-medium">{user.name}</div>
+              </div>
+              <Divider />
+              <Menu.Item component={Link} to="/settings" className="kanit-light">
+                ตั้งค่า
+              </Menu.Item>
+              <Menu.Item onClick={() => setIsSignedIn(false)} className="kanit-light">
+                ออกจากระบบ
+              </Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
+        )}
       </div>
     </nav>
   );
