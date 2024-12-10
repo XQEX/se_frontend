@@ -1,9 +1,12 @@
-import React from 'react'
+import React from "react";
+import Navbar from "../components/Navbar";
 
 function Find() {
   return (
-    <div>Find</div>
-  )
+    <div>
+      <Navbar />
+    </div>
+  );
 }
 
-export default Find
+export default Find;
