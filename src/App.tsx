@@ -7,6 +7,7 @@ import SignIn from "./pages/SignIn";
 import ContactUs from "./pages/ContactUs";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
+import ApplicationForm from "./pages/Application";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="profile" element={<Profile />} />
         <Route path="settings" element={<Settings />} />
         <Route path="contactus" element={<ContactUs />} />
+        <Route path="application" element={<ApplicationForm />} />
         <Route path="*" element={<NoPage />} />
       </Routes>
     </div>
