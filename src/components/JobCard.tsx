@@ -7,8 +7,11 @@ function JobCard() {
       <div className="text-xl font-semibold text-gray-800 kanit-bold">งาน</div>
       <div className="text-md text-gray-600 kanit-light">บริษัท</div>
 
-      <div className="text-sm text-gray-500 mt-2 kanit-light">
+      <div className="text-sm text-gray-500 mt-1 kanit-light">
         สถานที่ทํางาน
+      </div>
+      <div className="text-sm text-gray-500  kanit-light">
+        เวลา
       </div>
 
       <div className="flex flex-row items-center mt-4">
