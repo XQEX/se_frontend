@@ -48,3 +48,31 @@ export default tseslint.config({
   },
 })
 ```
+
+# GitFlow
+
+- `main` is the production branch
+- `develop` is the development branch
+- `feature/` is the feature branch
+- `hotfix/` is the hotfix branch
+
+- First time branch push `git push -u origin develop`
+
+```
+# สร้าง feature branch
+git checkout develop
+git checkout -b feature/new-feature
+
+# ทำการพัฒนาและ commit
+git add .
+git commit -m "Implement new feature"
+
+# เมื่อพัฒนาเสร็จ merge กลับเข้า develop
+git checkout develop
+git merge feature/new-feature
+git push origin develop
+
+# ลบ feature branch (optional)
+git branch -d feature/new-feature
+```
+
