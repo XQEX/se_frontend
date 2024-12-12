@@ -9,30 +9,23 @@ function Footer() {
         <ul className="flex flex-col justify-center items-center">
           <li className="kanit-medium ">วิธีการใช้งาน</li>
           <li>การสมัคร</li>
-          <li>การสมัคร</li>
-          <li>การสมัคร</li>
-          <li>การสมัคร</li>
-          <li>การสมัคร</li>
+
+
         </ul>
       </div>
       <div>
         <ul className="flex flex-col justify-center items-center">
           <li className="kanit-medium ">ติดต่อเรา</li>
           <li>การสมัคร</li>
-          <li>การสมัคร</li>
-          <li>การสมัคร</li>
-          <li>การสมัคร</li>
-          <li>การสมัคร</li>
+
+
         </ul>
       </div>
       <div>
         <ul className="flex flex-col justify-center items-center">
           <li className="kanit-medium ">เกี่ยวกับ SkillBridge</li>
           <li>การสมัคร</li>
-          <li>การสมัคร</li>
-          <li>การสมัคร</li>
-          <li>การสมัคร</li>
-          <li>การสมัคร</li>
+
         </ul>
       </div>
     </footer>
