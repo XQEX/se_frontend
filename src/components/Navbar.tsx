@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Avatar, Menu, Divider } from "@mantine/core";
+import { FaUserCircle } from "react-icons/fa";
 
 export default function Navbar() {
-  const [isSignedIn, setIsSignedIn] = useState(true); 
-  const user = { name: "มนุษย์", profilePicture: "/vite.svg" }; 
+  const [isSignedIn, setIsSignedIn] = useState(true);
+  const user = { name: "มนุษย์", profilePicture: "/null" }; 
 
   return (
     <nav className="flex justify-between items-center px-6 py-1 bg-white shadow-md sticky top-0 z-50 min-h-[60px]">
@@ -33,7 +34,20 @@ export default function Navbar() {
         ) : (
           <Menu width={250} position="bottom-end">
             <Menu.Target>
-              <Avatar src="/vite.svg" alt={user.name} radius="xl" size={30} className="transition-transform transform hover:scale-105"/>
+              {user.profilePicture ? (
+                <Avatar
+                  src={user.profilePicture}
+                  alt={user.name}
+                  radius="xl"
+                  size={60}
+                  className="transition-transform transform hover:scale-105"
+                />
+              ) : (
+                <FaUserCircle
+                  size={30}
+                  className="text-gray-400 transition-transform transform hover:scale-105"
+                />
+              )}
             </Menu.Target>
             <Menu.Dropdown className="m-2">
               <div className="p-3 text-center">
