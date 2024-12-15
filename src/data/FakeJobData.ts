@@ -9,6 +9,7 @@ export const jobData = [
       company: "B Corp",
       time: "9:00 AM - 6:00 PM",
       location: "Bangkok, Thailand",
+      salary: "11212"
     },
     {
       id: "2",
@@ -16,6 +17,7 @@ export const jobData = [
       company: "B Corp",
       time: "8:00 AM - 5:00 PM",
       location: "Chiang Mai, Thailand",
+       salary: "11212"
     },
     {
       id: "5",
@@ -23,6 +25,7 @@ export const jobData = [
       company: "B Corp",
       time: "10:00 AM - 7:00 PM",
       location: "Chiang Mai, Thailand",
+       salary: "11212"
     },
     {
       id: "4",
@@ -30,5 +33,6 @@ export const jobData = [
       company: "B Corp",
       time: "9:30 AM - 6:30 PM",
       location: "Bangkok, Thailand",
+       salary: "11212"
     },
   ];

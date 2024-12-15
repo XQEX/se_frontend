@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import Searchbar from "../components/Searchbar";
 import Sidebar from "../components/Sidebar";
@@ -11,7 +11,15 @@ import { jobData } from "../data/FakeJobData";
 function Find() {
   const handleSearch = (e: any) => {};
 
- 
+  const [favJobs, setFavJobs] = useState<string[]>([]);
+
+  const handleFavChange = (jobId: string, isFav: boolean) => {
+    if (isFav) {
+      setFavJobs((prev) => [...prev, jobId]); 
+    } else {
+      setFavJobs((prev) => prev.filter((id) => id !== jobId));
+    }
+  };
 
   return (
     <div className="h-screen flex flex-col">
@@ -29,6 +37,7 @@ function Find() {
                 company={job.company}
                 time={job.time}
                 location={job.location}
+                salary={job.salary}
               />
             ))}
           </div>
