@@ -14,6 +14,7 @@ import PostEmployers from "./pages/PostEmployers";
 import RegisterEmployers from "./pages/RegisterEmployers";
 import TrackEmployers from "./pages/TrackEmployers";
 import TrackDetailsEmployers from "./pages/TrackDetailsEmployers";
+import JobDetail from "./pages/JobDetail";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
         <Route path="settings" element={<Settings />} />
         <Route path="contactus" element={<ContactUs />} />
         <Route path="application" element={<ApplicationForm />} />
+        <Route path="/job/:id" element={<JobDetail />} />
 
         {/* Routes สำหรับ Employers */}
         <Route path="employers/home" element={<HomepageEmployers />} />
