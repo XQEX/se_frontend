@@ -15,7 +15,7 @@ export const provinces = [
 ] as const;
 
 
-export const citiesByProvince: Record<string, string[]> = {
+export const DistrictByProvince: Record<string, string[]> = {
   'กรุงเทพมหานคร': ['พระนคร', 'ดุสิต', 'หนองจอก', 'บางรัก', 'บางเขน', 'บางกะปิ', 'ปทุมวัน'],
   'เชียงใหม่': ['เมืองเชียงใหม่', 'จอมทอง', 'แม่แตง', 'แม่ริม', 'เชียงดาว', 'ดอยสะเก็ด'],
   'นนทบุรี': ['เมืองนนทบุรี', 'บางกรวย', 'บางใหญ่', 'บางบัวทอง', 'ไทรน้อย', 'ปากเกร็ด'],
@@ -27,3 +27,7 @@ export const citiesByProvince: Record<string, string[]> = {
   'เชียงราย': ['เมืองเชียงราย', 'เวียงชัย', 'เชียงของ', 'เทิง', 'พาน', 'ป่าแดด'],
   'ขอนแก่น': ['เมืองขอนแก่น', 'บ้านฝาง', 'พระยืน', 'หนองเรือ', 'ชุมแพ', 'สีชมพู']
 };
+
+export const SubdistrictByDistrict: Record<string, string[]> = {
+  
+}

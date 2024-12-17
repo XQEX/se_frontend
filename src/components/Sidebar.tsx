@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { Select } from "@mantine/core";
-import { provinces, citiesByProvince } from "../data/provinces";
+import { provinces, DistrictByProvince, SubdistrictByDistrict } from "../data/provinces";
 
 function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -25,7 +25,7 @@ function Sidebar() {
   };
 
   return (
-    <div className="bg-white shadow-md rounded-lg p-4  w-1/4">
+    <div className="bg-white shadow-md rounded-lg p-4  w-1/4 hidden md:block">
       <div className="space-y-4">
         <div>
           <label
@@ -64,7 +64,7 @@ function Sidebar() {
             </label>
             <Select
               placeholder="เลือกอำเภอ/เขต"
-              data={citiesByProvince[selectedProvince] || []}
+              data={DistrictByProvince[selectedProvince] || []}
               value={selectedCity}
               onChange={setSelectedCity}
               searchable
