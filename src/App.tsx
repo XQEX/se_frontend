@@ -15,6 +15,7 @@ import TrackDetailsEmployers from "./pages/Employers/TrackDetailsEmployers";
 import FindEmployers from "./pages/Employers/FindEmployers";
 import ViewPostEmployers from "./pages/Employers/ViewPostEmployers";
 import ProfileEmployers from "./pages/Employers/ProfileEmployers";
+import JobPositionForm from "./pages/JobPositionForm";
 function App() {
   return (
     <div>
@@ -28,6 +29,7 @@ function App() {
         <Route path="settings" element={<Settings />} />
         <Route path="contactus" element={<ContactUs />} />
         <Route path="application" element={<ApplicationForm />} />
+        <Route path="application/JobPosition" element={<JobPositionForm />} />
 
         {/* Routes สำหรับ Employers */}
         <Route path="homeemp" element={<HomepageEmployers />} />
