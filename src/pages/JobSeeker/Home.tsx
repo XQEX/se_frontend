@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
-import Navbar from "../components/Navbar"; // Navbar component
+import Navbar from "../../components/Navbar"; // Navbar component
 import Lottie from "lottie-react"; // Lottie animation
-import Animation from "../Animation/Job.json"; // Lottie animation
+import Animation from "../../Animation/Job.json"; // Lottie animation
 import { gsap } from "gsap"; // for animaitons texts
 import { Link } from "react-router-dom"; // for link to other page
 
@@ -84,7 +84,7 @@ function Home() {
               <u>Explore for your job here</u>
             </div>
           </Link>
-          <Link to="/find">
+          <Link to="/findemp">
             <div className="px-8 flex flex-row">
               <svg
                 xmlns="http://www.w3.org/2000/svg"

@@ -1,7 +1,7 @@
 import React from "react";
 import Navbar from "../../components/Navbar";
 
-import Searchbar from "../components/Searchbar";
+import Searchbar from "../../components/Searchbar";
 import Sidebar from "../../components/Sidebar";
 import JobCard from "../../components/JobCard";
 import Footer from "../../components/Footer";

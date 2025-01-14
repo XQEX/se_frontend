@@ -12,7 +12,7 @@ import {
   Modal,
 } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
-import Navbar from "../components/Navbar";
+import Navbar from "../../components/Navbar";
 
 const ApplicationForm = () => {
   const navigate = useNavigate();
