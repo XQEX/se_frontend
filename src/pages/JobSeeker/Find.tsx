@@ -1,35 +1,61 @@
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "../../components/Navbar";
-
 import Searchbar from "../../components/Searchbar";
 import Sidebar from "../../components/Sidebar";
 import JobCard from "../../components/JobCard";
 import Footer from "../../components/Footer";
-import { Pagination } from "@mantine/core";
+import { Pagination, PaginationProps } from "@mantine/core";
+import { jobData } from "../../data/FakeJobData";
 import { ScrollArea } from "@mantine/core";
 
 function Find() {
-  const handleSearch = (e: any) => {};
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(9);
+
+  const [favJobs, setFavJobs] = useState<string[]>([]);
+
+  const handleFavChange = (jobId: string, isFav: boolean) => {
+    if (isFav) {
+      setFavJobs((prev) => [...prev, jobId]);
+    } else {
+      setFavJobs((prev) => prev.filter((id) => id !== jobId));
+    }
+  };
+
+  const indexOfLastJob = currentPage * itemsPerPage;
+  const indexOfFirstJob = indexOfLastJob - itemsPerPage;
+  const currentJobs = jobData.slice(indexOfFirstJob, indexOfLastJob);
+
+  const handlePageChange: PaginationProps["onChange"] = (page) =>
+    setCurrentPage(page);
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col">
       <Navbar />
-      <div className="flex flex-row">
+      <div className="flex flex-row flex-grow">
         <Sidebar />
-        <div className="w-3/4">
+        <div className="w-3/4 w-full">
           <div className="kanit-medium m-6 text-2xl">ค้นหางาน</div>
           <div className="grid lg:grid-cols-3 sm:grid-cols-1 gap-3 m-1">
-            <JobCard />
-            <JobCard />
-            <JobCard />
-            <JobCard />
-            <JobCard />
-            <JobCard />
-            <JobCard />
-            <JobCard />
+            {currentJobs.map((job, index) => (
+              <JobCard
+                id={job.id}
+                key={index}
+                title={job.title}
+                company={job.company}
+                time={job.time}
+                location={job.location}
+                salary={job.salary}
+              />
+            ))}
           </div>
           <div className="flex items-center justify-center m-4">
-            <Pagination total={10000000} color="teal" className="" />;
+            <Pagination
+              total={Math.ceil(jobData.length / itemsPerPage)}
+              value={currentPage}
+              onChange={handlePageChange}
+              color="gray"
+            />
           </div>
         </div>
       </div>

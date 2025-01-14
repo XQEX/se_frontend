@@ -6,7 +6,18 @@ export default {
       colors: {
         seagreen: "#2e8b57",
       },
+      animation: {
+        marquee: 'marquee 10s linear infinite', 
+      },
+      keyframes: {
+        marquee: {
+          '0%': { transform: 'translateX(100%)' },
+          '100%': { transform: 'translateX(-100%)' },
+        },
+      },
     },
   },
   plugins: [],
 };
+
+
