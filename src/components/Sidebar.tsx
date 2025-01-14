@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ChevronDown, ChevronUp } from "lucide-react";
+// import { ChevronDown, ChevronUp } from "lucide-react";
 import { Select } from "@mantine/core";
 import { provinces, DistrictByProvince, SubdistrictByDistrict } from "../data/provinces";
 
@@ -119,11 +119,11 @@ function Sidebar() {
               onClick={toggleSortOrder}
               className="p-2 bg-gray-100 rounded-md hover:bg-gray-200"
             >
-              {sortOrder === "ascending" ? (
-                <ChevronUp size={20} />
+              {/* {sortOrder === "ascending" ? (
+                
               ) : (
-                <ChevronDown size={20} />
-              )}
+             
+              )} */}
             </button>
           </div>
         </div>

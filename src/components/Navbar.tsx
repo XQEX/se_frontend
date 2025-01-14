@@ -5,7 +5,7 @@ import { FaUserCircle, FaSearch } from "react-icons/fa";
 import { useDisclosure } from "@mantine/hooks";
 
 export default function Navbar() {
-  const [isSignedIn, setIsSignedIn] = useState(false);
+  const [isSignedIn, setIsSignedIn] = useState(true);
   const user = { name: "มนุษย์", profilePicture: "/null" };
   const [
     mobileMenuOpened,
