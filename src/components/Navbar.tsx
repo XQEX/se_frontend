@@ -8,11 +8,11 @@ export default function Navbar() {
   const user = { name: "มนุษย์", profilePicture: "/null" };
 
   return (
-    <nav className="flex justify-between items-center px-6 py-1 bg-white shadow-md sticky top-0 z-50 min-h-[60px]">
+    <nav className="flex justify-between items-center px-6 py-1 bg-seagreen shadow-lg sticky top-0 z-50 min-h-[60px]">
       <div className="logo">
         <Link to="/" className="flex items-center space-x-2">
-          <img src="/logo.png" alt="logo" className="w-12 h-auto" />
-          <span className="font-bold text-seagreen text-lg">SkillBridge</span>
+          <img src="/white_logo.png" alt="logo" className="w-12 h-auto" />
+          <span className="font-bold text-white text-lg">SkillBridge</span>
         </Link>
       </div>
       <div className="flex items-center space-x-4">
@@ -39,8 +39,8 @@ export default function Navbar() {
                   src={user.profilePicture}
                   alt={user.name}
                   radius="xl"
-                  size={60}
-                  className="transition-transform transform hover:scale-105"
+                  size={45}
+                  className="text-white"
                 />
               ) : (
                 <FaUserCircle
@@ -63,7 +63,7 @@ export default function Navbar() {
               </Menu.Item>
               <Menu.Item
                 onClick={() => setIsSignedIn(false)}
-                className="kanit-light"
+                className="kanit-light "
               >
                 ออกจากระบบ
               </Menu.Item>
