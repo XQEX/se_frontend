@@ -14,6 +14,7 @@ import PostEmployers from "./pages/PostEmployers";
 import RegisterEmployers from "./pages/RegisterEmployers";
 import TrackEmployers from "./pages/TrackEmployers";
 import TrackDetailsEmployers from "./pages/TrackDetailsEmployers";
+import JobPositionForm from "./pages/JobPositionForm";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
         <Route path="settings" element={<Settings />} />
         <Route path="contactus" element={<ContactUs />} />
         <Route path="application" element={<ApplicationForm />} />
+        <Route path="application/JobPosition" element={<JobPositionForm />} />
 
         {/* Routes สำหรับ Employers */}
         <Route path="employers/home" element={<HomepageEmployers />} />
@@ -35,7 +37,10 @@ function App() {
         <Route path="employers/post" element={<PostEmployers />} />
         <Route path="employers/register" element={<RegisterEmployers />} />
         <Route path="employers/track" element={<TrackEmployers />} />
-        <Route path="employers/trackdetails" element={<TrackDetailsEmployers />} />
+        <Route
+          path="employers/trackdetails"
+          element={<TrackDetailsEmployers />}
+        />
 
         {/* หน้าสำหรับ Route ที่ไม่พบ */}
         <Route path="*" element={<NoPage />} />

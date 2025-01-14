@@ -1,25 +1,18 @@
 import { useEffect, useRef } from "react";
-import Navbar from "../components/Navbar";
-import Lottie from "lottie-react";
-import Animation from "../Animation/Job.json";
-import Footer from "../components/Footer";
-import { gsap } from "gsap";
-import { Link } from "react-router-dom";
-import CategoriesGrid from "../components/CategoriesGrid";
-import JobCard from "../components/JobCard";
-import Sidebar from "../components/Sidebar";
-import SearchForm from "../components/SearchForm";
+import Navbar from "../components/Navbar"; // Navbar component
+import Lottie from "lottie-react"; // Lottie animation
+import Animation from "../Animation/Job.json"; // Lottie animation
+import { gsap } from "gsap"; // for animaitons texts
+import { Link } from "react-router-dom"; // for link to other page
 
 function Home() {
   const style = {
     height: "auto", // Let the height adjust based on container
   };
-
   // Refs for animations
   const headingRef = useRef(null);
   const subTextRef = useRef(null);
   const lottieRef = useRef(null); // Ref for the Lottie animation
-
   useEffect(() => {
     // Slide-left animation for the subtext
     gsap.fromTo(
@@ -40,7 +33,7 @@ function Home() {
       {
         opacity: 1,
         y: 0,
-        duration: 4.5,
+        duration: 2.5,
         ease: "power2.out",
       }
     );
@@ -51,12 +44,11 @@ function Home() {
       { opacity: 0 }, // Start with opacity 0
       {
         opacity: 1, // Fade in to full opacity
-        duration: 5,
+        duration: 2.5,
         ease: "power2.out",
       }
     );
   }, []);
-
   return (
     <div>
       <Navbar />
@@ -66,9 +58,9 @@ function Home() {
           {/* Animated Heading */}
           <div
             ref={headingRef}
-            className="text-3xl md:text-6xl font-bold mb-4 md:mb-6"
+            className="text-4xl md:text-6xl font-bold mb-4 md:mb-6"
           >
-            Welcome To Skill bridge
+            Welcome To SkillBridge
           </div>
           {/* Animated Subtext */}
           <div
@@ -78,22 +70,40 @@ function Home() {
             แหล่งรวมงานสำหรับการหางานของบุคคลกลุ่มเฉพาะทาง
             ที่ช่วยเสริมสร้างความเท่าเทียมกันในสังคม
           </div>
+          <Link to="/find">
+            <div className="px-8 flex flex-row">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                width="24"
+                height="24"
+                fill="currentColor"
+              >
+                <path d="M8 4l8 8-8 8V4z" />
+              </svg>
+              <u>Explore for your job here</u>
+            </div>
+          </Link>
+          <Link to="/find">
+            <div className="px-8 flex flex-row">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                width="24"
+                height="24"
+                fill="currentColor"
+              >
+                <path d="M8 4l8 8-8 8V4z" />
+              </svg>
+              <u>Find your Employee</u>
+            </div>
+          </Link>
         </div>
         {/* Animation Section */}
-        <div ref={lottieRef} className="w-full max-w-xs md:max-w-lg">
+        <div ref={lottieRef} className="w-full max-w-xs md:max-w-xl">
           <Lottie animationData={Animation} style={style} />
         </div>
       </div>
-      <CategoriesGrid />
-      <div className="bg-gray-100 p-4 md:p-8">
-        <div className="max-w-screen-lg mx-auto">
-          <div className="text-xl md:text-xl mb-6 text-gray-700 kanit-light font-bold text-center md:text-left">
-            เริ่มค้นหางานที่ใช่สำหรับคุณ . . .
-          </div>
-          <SearchForm />
-        </div>
-      </div>
-      <Footer />
     </div>
   );
 }
