@@ -1,0 +1,73 @@
+/* Container styles */
+.view-post-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  /* Page title styles */
+  .page-title {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #000; /* Black color */
+    margin-bottom: 20px;
+  }
+  
+  /* Job details container */
+  .job-post-details {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    margin-bottom: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .job-post-details:hover {
+    transform: scale(1.03); /* Slightly enlarge the card */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Job title styles */
+  .job-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #3cb371;
+    margin-bottom: 10px;
+  }
+  
+  /* Job description and details */
+  .job-post-details p {
+    font-size: 1rem;
+    color: #333;
+    margin: 8px 0;
+  }
+  
+  /* Back button */
+  .back-button {
+    background-color: #3cb371;
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 8px;
+    width: 100%; /* Full width */
+    cursor: pointer;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  
+  .back-button:hover {
+    background-color: #2e8b57;
+    transform: scale(1.05); /* Slightly enlarge the button */
+  }
+  
+  /* Job not found message */
+  .job-not-found {
+    font-size: 2rem;
+    color: #d9534f;
+    font-weight: bold;
+  }
+  

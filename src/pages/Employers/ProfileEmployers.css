@@ -1,0 +1,95 @@
+.profile-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    font-family: "Kanit", sans-serif;
+    text-align: center;
+  }
+  
+  .profile-title {
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    color: #2e8b57;
+    font-weight: bold;
+  }
+  
+  .image-row {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    margin-bottom: 40px;
+  }
+  
+  .image-row.no-gap {
+    gap: 0; /* ไม่มีช่องว่างระหว่างรูป */
+  }
+  
+  .image-upload {
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  
+  .image-upload.small {
+    width: 150px;
+    height: 150px;
+  }
+  
+  .image-upload.large {
+    width: 300px;
+    height: 150px; /* ความสูงเท่ากันทุกภาพ */
+  }
+  
+  .upload-placeholder {
+    font-size: 2rem;
+    color: #ccc;
+  }
+  
+  .uploaded-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .form-section {
+    margin-bottom: 30px;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+    text-align: left;
+  }
+  
+  .form-group label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  .form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+  }
+  
+  .submit-button {
+    padding: 15px 20px;
+    background-color: #2e8b57;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+  }
+  
+  .submit-button:hover {
+    background-color: #276749;
+  }
+  
