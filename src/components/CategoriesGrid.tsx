@@ -5,7 +5,6 @@ import {
   FaCode,
   FaKeyboard,
   FaCamera,
-  FaBriefcase,
 } from "react-icons/fa";
 
 function CategoriesGrid() {
@@ -39,11 +38,14 @@ function CategoriesGrid() {
 
   return (
     <div className="p-6 bg-gray-100 ">
-      <div className="text-4xl font-bold mb-10 text-seagreen text-center m-10 kanit-light">
+      <div className="text-3xl font-bold mb-10 text-seagreen text-center m-10 kanit-light">
         คุณกำลังหางาน หรือ หาคนช่วยทำงานอยู่ใช่ไหม ?
       </div>
 
       {/* Main Container - Flex for row layout */}
+      <div className="text-black kanit-light text-xl px-10">
+        หมวดหมู่งานยอดนิยม
+      </div>
       <div className="flex flex-wrap justify-center gap-6 m-8 rounded-2xl bg-gray-200 p-8">
         {categories.map((category, index) => (
           <Link

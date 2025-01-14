@@ -58,7 +58,7 @@ const SearchForm: React.FC = () => {
           onFocus={handleFocus}
           onBlur={handleBlur}
           className="block w-full p-4 ps-10 text-sm text-black border border-[#2e8b57] rounded-lg bg-white focus:ring-[#2e8b57] focus:border-[#2e8b57]"
-          placeholder="Search Mockups, Logos..."
+          placeholder="Search for job or employee . . ."
           required
         />
         {/* The search button */}

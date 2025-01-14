@@ -5,7 +5,7 @@ import { FaUserCircle } from "react-icons/fa";
 
 export default function Navbar() {
   const [isSignedIn, setIsSignedIn] = useState(true);
-  const user = { name: "มนุษย์", profilePicture: "/null" }; 
+  const user = { name: "มนุษย์", profilePicture: "/null" };
 
   return (
     <nav className="flex justify-between items-center px-6 py-1 bg-white shadow-md sticky top-0 z-50 min-h-[60px]">
@@ -54,10 +54,17 @@ export default function Navbar() {
                 <div className="kanit-medium">{user.name}</div>
               </div>
               <Divider />
-              <Menu.Item component={Link} to="/settings" className="kanit-light">
+              <Menu.Item
+                component={Link}
+                to="/settings"
+                className="kanit-light"
+              >
                 ตั้งค่า
               </Menu.Item>
-              <Menu.Item onClick={() => setIsSignedIn(false)} className="kanit-light">
+              <Menu.Item
+                onClick={() => setIsSignedIn(false)}
+                className="kanit-light"
+              >
                 ออกจากระบบ
               </Menu.Item>
             </Menu.Dropdown>
