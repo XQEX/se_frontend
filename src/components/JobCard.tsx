@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { FaArrowRight, FaStar } from "react-icons/fa";
+import { FaStar, FaArrowRight, FaMapPin, FaClock, FaDollarSign, FaBuilding } from "react-icons/fa";
 import { Link } from "react-router-dom";
-
+import { TbCurrencyBaht } from "react-icons/tb";
 type JobCardProps = {
   id: string;
   title: string;
@@ -20,30 +20,52 @@ function JobCard({ id, title, company, time, location, salary }: JobCardProps) {
   };
 
   return (
-    <div className="p-6 rounded-xl shadow-lg hover:shadow-2xl hover:scale-102 transition-all duration-300 border border-gray-200 w-full">
-      <div className="flex justify-between items-center">
-        <div className="text-xl font-semibold text-gray-800 kanit-bold">
-          {title}
-        </div>
+    <div className="kanit-regular group relative bg-white p-6 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 border border-gray-100 w-full">
+   
+      <button
+        onClick={handleFav}
+        className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-50 transition-colors"
+        aria-label={isFav ? "Remove from favorites" : "Add to favorites"}
+      >
         <FaStar
-          size={18}
-          className={
-            isFav
-              ? "text-yellow-500 cursor-pointer"
-              : "text-gray-400 cursor-pointer"
-          }
-          onClick={handleFav}
+          size={20}
+          className={`transition-colors ${
+            isFav ? "fill-yellow-400 text-yellow-400" : "text-gray-300 group-hover:text-gray-400"
+          }`}
         />
-      </div>
+      </button>
 
-      <Link to={`/job/${id}`} className="w-full h-full">
-        <div className="text-md text-gray-600 kanit-light">{company}</div>
-        <div className="text-sm text-gray-500 kanit-light">฿{salary}</div>
-        <div className="text-sm text-gray-500 mt-2 kanit-light">{location}</div>
-        <div className="text-sm text-gray-500 kanit-light">{time}</div>
-        <div className="flex items-center mt-4">
-          <div className="text-sm text-seagreen kanit-light">รายละเอียด</div>
-          <FaArrowRight className="ml-2 text-seagreen" />
+      <Link to={`/job/${id}`} className="block space-y-4">
+        
+        <div className="pr-8">
+          <h2 className="text-xl font-bold text-gray-900 mb-1 line-clamp-2">{title}</h2>
+          <div className="flex items-center text-gray-600">
+            <FaBuilding size={16} className="mr-1.5 text-seagreen" />
+            <span className="font-medium">{company}</span>
+          </div>
+        </div>
+
+     
+        <div className="flex flex-col space-y-1 text-gray-600">
+          <div className="flex items-center">
+            <TbCurrencyBaht size={16} className="mr-1.5 text-seagreen" />
+            <span>฿{salary}</span>
+          </div>
+          <div className="flex items-center">
+            <FaMapPin size={16} className="mr-1.5 text-seagreen" />
+            <span>{location}</span>
+          </div>
+          <div className="flex items-center">
+            <FaClock size={16} className="mr-1.5 text-seagreen" />
+            <span>{time}</span>
+          </div>
+        </div>
+
+        <div className="pt-2">
+          <div className="flex items-center text-emerald-600 font-medium group-hover:text-emerald-700 transition-colors">
+            <span>รายละเอียด</span>
+            <FaArrowRight size={16} className="ml-1.5 transition-transform group-hover:translate-x-1" />
+          </div>
         </div>
       </Link>
     </div>

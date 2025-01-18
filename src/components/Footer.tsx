@@ -1,115 +1,64 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router-dom"
 
-function Footer() {
+export default function Footer() {
   return (
-    <footer
-      style={{
-        backgroundColor: "#3cb371",
-        color: "white",
-        padding: "20px 40px",
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-        gap: "20px",
-        textAlign: "center",
-      }}
-    >
-      {/* How to Use */}
-      <div>
-        <h4 style={{ fontWeight: "bold", marginBottom: "10px" }}>How to Use</h4>
-        <ul style={{ listStyle: "none", padding: 0 }}>
-          <li>
-            <Link
-              to="/postemp"
-              style={{
-                color: "white",
-                textDecoration: "none",
-                fontSize: "0.9rem",
-              }}
-            >
-              Posting a Job
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/trackemp"
-              style={{
-                color: "white",
-                textDecoration: "none",
-                fontSize: "0.9rem",
-              }}
-            >
-              Tracking Applications
-            </Link>
-          </li>
-        </ul>
-      </div>
+    <footer className="bg-seagreen text-white py-12 px-4 md:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center kanit-regular">
+          <div className="flex flex-col items-center space-y-4">
+            <h4 className="text-lg font-semibold ">วิธีใช้</h4>
+            <ul className="space-y-2">
+              <li>
+                <Link to="/postemp" className="hover:underline">
+                  การโพสต์งาน
+                </Link>
+              </li>
+              <li>
+                <Link to="/trackemp" className="hover:underline">
+                 การติดตามผลของผู้สมัคร
+                </Link>
+              </li>
+            </ul>
+          </div>
 
-      {/* Contact Us */}
-      <div>
-        <h4 style={{ fontWeight: "bold", marginBottom: "10px" }}>Contact Us</h4>
-        <ul style={{ listStyle: "none", padding: 0 }}>
-          <li>
-            <Link
-              to="/support"
-              style={{
-                color: "white",
-                textDecoration: "none",
-                fontSize: "0.9rem",
-              }}
-            >
-              Support
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/faq"
-              style={{
-                color: "white",
-                textDecoration: "none",
-                fontSize: "0.9rem",
-              }}
-            >
-              FAQ
-            </Link>
-          </li>
-        </ul>
-      </div>
+          <div className="flex flex-col items-center space-y-4">
+            <h4 className="text-lg font-semibold ">ติดต่อเรา</h4>
+            <ul className="space-y-2">
+              <li>
+                <Link to="/support" className="hover:underline">
+                  การสนับสนุน
+                </Link>
+              </li>
+              <li>
+                <Link to="/faq" className="hover:underline">
+                  คำถามที่พบบ่อย
+                </Link>
+              </li>
+            </ul>
+          </div>
 
-      {/* About SkillBridge */}
-      <div>
-        <h4 style={{ fontWeight: "bold", marginBottom: "10px" }}>
-          About SkillBridge
-        </h4>
-        <ul style={{ listStyle: "none", padding: 0 }}>
-          <li>
-            <Link
-              to="/mission"
-              style={{
-                color: "white",
-                textDecoration: "none",
-                fontSize: "0.9rem",
-              }}
-            >
-              Our Mission
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/team"
-              style={{
-                color: "white",
-                textDecoration: "none",
-                fontSize: "0.9rem",
-              }}
-            >
-              Meet the Team
-            </Link>
-          </li>
-        </ul>
+          <div className="flex flex-col items-center space-y-4">
+            <h4 className="text-lg font-semibold">เกี่ยวกับ SkillBridge</h4>
+            <ul className="space-y-2">
+              <li>
+                <Link to="/mission" className="hover:underline">
+                  พันธกิจของเรา
+                </Link>
+              </li>
+              <li>
+                <Link to="/team" className="hover:underline">
+                  ทีมของเรา
+                </Link>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="mt-8 pt-8 border-t border-emerald-400 text-center">
+          <p className="text-sm">© {new Date().getFullYear()} SkillBridge. All rights reserved.</p>
+        </div>
       </div>
     </footer>
-  );
+  )
 }
 
-export default Footer;
