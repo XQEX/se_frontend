@@ -10,6 +10,7 @@ interface Job {
   location: string;
   description: string;
   requirements: string;
+  postedAt: string;
 }
 
 const HomepageEmployers: React.FC = () => {
@@ -18,11 +19,13 @@ const HomepageEmployers: React.FC = () => {
 
   useEffect(() => {
     const storedJobs = localStorage.getItem("jobs");
-    setJobs(storedJobs ? JSON.parse(storedJobs) : []);
+    if (storedJobs) {
+      setJobs(JSON.parse(storedJobs));
+    }
   }, []);
 
-  const handleViewDetails = (id: number) => {
-    navigate(`/viewpost/${id}`);
+  const handleViewDetails = (job: Job) => {
+    navigate(`/viewpost/${job.id}`, { state: { job } });
   };
 
   const handlePostJob = () => {
@@ -49,64 +52,52 @@ const HomepageEmployers: React.FC = () => {
     <div>
       <NavbarEmp />
       <div className="container">
-        {/* Overview Section */}
+        {/* ส่วนแสดงภาพรวม (Overview Section) */}
         <div className="overview-cards">
           <div className="card">
-            <h3>Jobs Posted</h3>
+            <h3>งานที่โพสต์</h3>
             <p>{jobs.length}</p>
           </div>
           <div className="card">
-            <h3>Applicants</h3>
+            <h3>ผู้สมัคร</h3>
             <p>1,209,321</p>
           </div>
           <div className="card">
-            <h3>New Notifications</h3>
+            <h3>การแจ้งเตือนใหม่</h3>
             <p>999+</p>
           </div>
         </div>
 
-        {/* Quick Actions Section */}
+        {/* ส่วนปุ่มลัด (Quick Actions Section) */}
         <div className="quick-actions">
-          <h1 className="section-title">Quick Actions</h1>
+          <h1 className="section-title">ตัวเลือกด่วน</h1>
           <div className="quick-buttons">
             <button className="action-button" onClick={handlePostJob}>
-              Post a New Job
+              โพสต์งานใหม่
             </button>
             <button className="action-button" onClick={handleSearchCandidates}>
-              Search Candidates
+              ค้นหาผู้สมัครงาน
             </button>
             <button className="action-button" onClick={handleTrackApplications}>
-              Track Applications
+              ติดตามสถานะใบสมัคร
             </button>
           </div>
         </div>
 
-        {/* NullPage or Recent Jobs Section */}
-        {jobs.length === 0 ? (
-          <div className="null-page">
-            <div className="null-content">
-              <h1>No Jobs Posted Yet</h1>
-              <p>Start by posting a job to attract candidates!</p>
-              <button
-                className="action-button"
-                onClick={handlePostJob}
-                style={{
-                  backgroundColor: "#3cb371",
-                  color: "white",
-                  padding: "10px 20px",
-                  borderRadius: "8px",
-                  border: "none",
-                  fontSize: "1rem",
-                }}
-              >
-                Post a New Job
+        {/* แสดงรายการงานที่โพสต์ (Recent Jobs Section) */}
+        <div className="recent-jobs">
+          <h1 className="section-title">งานที่โพสต์ล่าสุด</h1>
+
+          {jobs.length === 0 ? (
+            <div className="empty-job-card">
+              <h3>ยังไม่มีงานที่โพสต์</h3>
+              <p>เริ่มต้นโดยการโพสต์งานเพื่อดึงดูดผู้สมัคร!</p>
+              <button className="action-button highlight" onClick={handlePostJob}>
+                   โพสต์งานใหม่
               </button>
             </div>
-          </div>
-        ) : (
-          <div className="recent-jobs">
-            <h1 className="section-title">Your Recent Jobs</h1>
-            {jobs.map((job) => (
+          ) : (
+            jobs.map((job) => (
               <div key={job.id} className="job-card">
                 <button
                   className="delete-button"
@@ -115,21 +106,23 @@ const HomepageEmployers: React.FC = () => {
                   &times;
                 </button>
                 <h3>{job.title}</h3>
-                <p>Location: {job.location}</p>
-                <p>Applicants: 10</p>
+                <p>สถานที่: {job.location}</p>
+                <p style={{ fontSize: "0.9rem", color: "gray" }}>
+                  โพสต์เมื่อ: {job.postedAt || "ไม่ระบุวันที่"}
+                </p>
                 <div className="job-actions">
                   <button
                     className="action-button"
-                    onClick={() => handleViewDetails(job.id)}
+                    onClick={() => handleViewDetails(job)}
                   >
-                    View Details
+                    ดูรายละเอียด
                   </button>
-                  <button className="action-button">Edit</button>
+                  <button className="action-button">แก้ไข</button>
                 </div>
               </div>
-            ))}
-          </div>
-        )}
+            ))
+          )}
+        </div>
       </div>
       <Footer />
     </div>
