@@ -53,12 +53,22 @@ function Sidebar() {
 
           {/* ตัวกรองสถานที่ทำงาน */}
           <div className="flex flex-col">
-            <label className="text-black text-sm mb-1">สถานที่ทำงาน</label>
+            <label className="text-black text-sm mb-1">จังหวัด</label>
             <input
               type="text"
               value={location}
               onChange={handleLocationChange}
-              placeholder="กรอกสถานที่ทำงาน"
+              placeholder="กรอกจังหวัดของคุณ"
+              className="text-black rounded-lg border border-gray-300 w-full p-2"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label className="text-black text-sm mb-1">ชั่วโมงทำงาน</label>
+            <input
+              type="text"
+              value={location}
+              onChange={handleLocationChange}
+              placeholder="..."
               className="text-black rounded-lg border border-gray-300 w-full p-2"
             />
           </div>

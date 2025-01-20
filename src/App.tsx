@@ -9,7 +9,7 @@ import Home from "./pages/JobSeeker/Home";
 import Find from "./pages/JobSeeker/Find";
 import ApplicationForm from "./pages/JobSeeker/Application";
 import HomepageEmployers from "./pages/Employers/HomepageEmployers";
-import PostEmployers from "./pages/Employers/PostEmployers";
+import PostJobEmp from "./pages/Employers/PostEmployers";
 import TrackEmployers from "./pages/Employers/TrackEmployers";
 import TrackDetailsEmployers from "./pages/Employers/TrackDetailsEmployers";
 import FindEmployers from "./pages/Employers/FindEmployers";
@@ -19,6 +19,7 @@ import JobPositionForm from "./pages/JobPositionForm";
 import JobDetail from "./pages/JobDetail";
 import TrackJobSeeker from "./pages/JobSeeker/TrackJobSeeker";
 import TrackDetailsJobSeeker from "./pages/JobSeeker/TrackDetailsJobSeeker";
+import PostJob from "./pages/JobSeeker/Post";
 
 function App() {
   return (
@@ -37,10 +38,11 @@ function App() {
         <Route path="/job/:id" element={<JobDetail />} />
         <Route path="/trackjobseeker" element={<TrackJobSeeker />} />
         <Route path="/trackJobseeker/:id" element={<TrackDetailsJobSeeker />} />
+        <Route path="/postjob" element={<PostJob />} />
 
         {/* Routes สำหรับ Employers */}
         <Route path="homeemp" element={<HomepageEmployers />} />
-        <Route path="postemp" element={<PostEmployers />} />
+        <Route path="postjobemp" element={<PostJobEmp />} />
         <Route path="trackemp" element={<TrackEmployers />} />
         <Route path="track/:id" element={<TrackDetailsEmployers />} />
         <Route path="findemp" element={<FindEmployers />} />

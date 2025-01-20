@@ -2,11 +2,10 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NavbarEmp from "../../components/NavbarEmp";
 import Footer from "../../components/Footer";
-import "./PostEmployers.css";
 
-const PostJobEmp: React.FC = () => {
+const PostJob: React.FC = () => {
   const navigate = useNavigate();
-
+  
   const [jobTitle, setJobTitle] = useState("");
   const [location, setLocation] = useState("");
   const [jobDescription, setJobDescription] = useState("");
@@ -24,23 +23,20 @@ const PostJobEmp: React.FC = () => {
         postedAt: new Date().toLocaleString("th-TH", {
           dateStyle: "full",
           timeStyle: "short",
-        }), // เพิ่มวันและเวลา
+        }),
       };
 
-      // บันทึกลง Local Storage
       const existingJobs = JSON.parse(localStorage.getItem("jobs") || "[]");
       const updatedJobs = [newJob, ...existingJobs];
       localStorage.setItem("jobs", JSON.stringify(updatedJobs));
 
-      // แสดงข้อความแจ้งเตือน
-      setSuccessMessage("🎉 ประกาศงานสำเร็จแล้ว!");
+      setSuccessMessage("🎉 การโพสต์หางานสำเร็จแล้ว!");
 
-      // นำทางไปยังหน้าแรกของนายจ้าง พร้อมส่งข้อมูลไปด้วย
       setTimeout(() => {
         navigate("/homeemp", { state: { newJob } });
-      }, 1000); // รอ 1 วินาทีให้ผู้ใช้เห็นข้อความสำเร็จ
+      }, 1000);
     } else {
-      alert("⚠️ กรุณากรอกข้อมูลให้ครบทุกช่องก่อนโพสต์งาน!");
+      alert("⚠️ กรุณากรอกข้อมูลให้ครบทุกช่องก่อนโพสต์!");
     }
   };
 
@@ -48,47 +44,57 @@ const PostJobEmp: React.FC = () => {
     <div>
       <NavbarEmp />
       <div className="post-job-container">
-        <h1>โพสต์งาน</h1>
-        {successMessage && <p className="success-message">{successMessage}</p>}
+        <h1>โพสต์หางาน</h1>
+        {successMessage && (
+          <p className="success-message">{successMessage}</p>
+        )}
         <form className="post-job-form">
           <div className="form-group">
-            <label>ชื่อตำแหน่งงาน</label>
+            <label>ตำแหน่งงานที่ต้องการ</label>
             <input
               type="text"
+              className="input-field"
               value={jobTitle}
               onChange={(e) => setJobTitle(e.target.value)}
-              placeholder="กรอกชื่อตำแหน่งงาน"
+              placeholder="กรอกตำแหน่งงานที่ต้องการ"
             />
           </div>
           <div className="form-group">
-            <label>สถานที่ทำงาน</label>
+            <label>สถานที่ทำงานที่ต้องการ</label>
             <input
               type="text"
+              className="input-field"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
-              placeholder="กรอกสถานที่ทำงาน"
+              placeholder="กรอกสถานที่ทำงานที่ต้องการ"
             />
           </div>
           <div className="form-group">
-            <label>รายละเอียดงาน</label>
+            <label>รายละเอียดเกี่ยวกับคุณ</label>
             <textarea
+              className="input-field"
               value={jobDescription}
               onChange={(e) => setJobDescription(e.target.value)}
-              placeholder="กรอกรายละเอียดงาน"
+              placeholder="กรอกรายละเอียดเกี่ยวกับคุณ"
               rows={4}
             />
           </div>
           <div className="form-group">
-            <label>คุณสมบัติที่ต้องการ</label>
+            <label>เงินเดือนที่คาดหวัง</label>
             <textarea
+              className="input-field"
               value={requirements}
               onChange={(e) => setRequirements(e.target.value)}
-              placeholder="กรอกคุณสมบัติที่ต้องการ"
+              placeholder="กรอกเงินเดือนที่คาดหวัง"
               rows={4}
             />
           </div>
-          <button type="button" onClick={handlePostJob} className="submit-button">
-            โพสต์งาน
+          <button
+            type="button"
+            className="submit-button"
+            onClick={handlePostJob}
+          >
+            ยืนยันการโพสต์หางาน
           </button>
         </form>
       </div>
@@ -97,4 +103,4 @@ const PostJobEmp: React.FC = () => {
   );
 };
 
-export default PostJobEmp;
+export default PostJob;
