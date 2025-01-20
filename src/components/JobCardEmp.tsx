@@ -19,19 +19,19 @@ const JobCardEmp: React.FC<JobCardEmpProps> = ({
     <div className="job-card-emp bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition">
       <h3 className="text-lg font-bold mb-2">{jobTitle}</h3>
       <p className="text-sm text-gray-600">
-        <strong>Name:</strong> {Name}
+        <strong>ชื่อ:</strong> {Name}
       </p>
       <p className="text-sm text-gray-600">
-        <strong>Position:</strong> {expectedPosition}
+        <strong>ตำแหน่งที่คาดหวัง:</strong> {expectedPosition}
       </p>
       <p className="text-sm text-gray-600">
-        <strong>Expected Salary:</strong> {expectedSalary}
+        <strong>เงินเดือนที่คาดหวัง:</strong> {expectedSalary}
       </p>
       <div className="job-actions flex justify-end gap-2 mt-4">
         <button
           className="font-medium rounded-lg py-2 px-4 transition"
           style={{
-            backgroundColor: "#2E8B57", // สี Sea Green
+            backgroundColor: "#2E8B57", // สีเขียวทะเล
             color: "white",
             border: "none",
           }}
@@ -43,7 +43,7 @@ const JobCardEmp: React.FC<JobCardEmpProps> = ({
           }
           onClick={onViewDetails}
         >
-          View Details
+          ดูรายละเอียด
         </button>
       </div>
     </div>

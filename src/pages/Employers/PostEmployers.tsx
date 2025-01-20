@@ -21,18 +21,26 @@ const PostJob: React.FC = () => {
         location,
         description: jobDescription,
         requirements,
+        postedAt: new Date().toLocaleString("th-TH", {
+          dateStyle: "full",
+          timeStyle: "short",
+        }), // เพิ่มวันและเวลา
       };
 
-      // Store the new job in Local Storage
+      // บันทึกลง Local Storage
       const existingJobs = JSON.parse(localStorage.getItem("jobs") || "[]");
       const updatedJobs = [newJob, ...existingJobs];
       localStorage.setItem("jobs", JSON.stringify(updatedJobs));
 
-      // Navigate to employer homepage
-      navigate("/homeemp");
-      setSuccessMessage("Job posted successfully!");
+      // แสดงข้อความแจ้งเตือน
+      setSuccessMessage("🎉 ประกาศงานสำเร็จแล้ว!");
+
+      // นำทางไปยังหน้าแรกของนายจ้าง พร้อมส่งข้อมูลไปด้วย
+      setTimeout(() => {
+        navigate("/homeemp", { state: { newJob } });
+      }, 1000); // รอ 1 วินาทีให้ผู้ใช้เห็นข้อความสำเร็จ
     } else {
-      alert("Please fill in all fields before posting.");
+      alert("⚠️ กรุณากรอกข้อมูลให้ครบทุกช่องก่อนโพสต์งาน!");
     }
   };
 
@@ -40,47 +48,47 @@ const PostJob: React.FC = () => {
     <div>
       <NavbarEmp />
       <div className="post-job-container">
-        <h1>Post a Job</h1>
+        <h1>โพสต์งาน</h1>
         {successMessage && <p className="success-message">{successMessage}</p>}
         <form className="post-job-form">
           <div className="form-group">
-            <label>Job Title</label>
+            <label>ชื่อตำแหน่งงาน</label>
             <input
               type="text"
               value={jobTitle}
               onChange={(e) => setJobTitle(e.target.value)}
-              placeholder="Enter job title"
+              placeholder="กรอกชื่อตำแหน่งงาน"
             />
           </div>
           <div className="form-group">
-            <label>Location</label>
+            <label>สถานที่ทำงาน</label>
             <input
               type="text"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
-              placeholder="Enter job location"
+              placeholder="กรอกสถานที่ทำงาน"
             />
           </div>
           <div className="form-group">
-            <label>Job Description</label>
+            <label>รายละเอียดงาน</label>
             <textarea
               value={jobDescription}
               onChange={(e) => setJobDescription(e.target.value)}
-              placeholder="Enter job description"
+              placeholder="กรอกรายละเอียดงาน"
               rows={4}
             />
           </div>
           <div className="form-group">
-            <label>Requirements</label>
+            <label>คุณสมบัติที่ต้องการ</label>
             <textarea
               value={requirements}
               onChange={(e) => setRequirements(e.target.value)}
-              placeholder="Enter job requirements"
+              placeholder="กรอกคุณสมบัติที่ต้องการ"
               rows={4}
             />
           </div>
           <button type="button" onClick={handlePostJob} className="submit-button">
-            Post Job
+            โพสต์งาน
           </button>
         </form>
       </div>

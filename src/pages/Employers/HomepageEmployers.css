@@ -1,9 +1,79 @@
 .container {
-  max-width: 1200px;
+  max-width: 1200px;  /* เพิ่มความกว้างของคอนเทนต์ */
   margin: 0 auto;
   padding: 20px;
-  font-family: Arial, sans-serif;
 }
+
+.recent-jobs {
+  width: 100%;
+  text-align: center;
+}
+
+.empty-job-card {
+  width: 85%;
+  max-width: 600px;
+  margin: 25px 50px;
+  background-color: #fff;
+  padding: 40px 40px;
+  border-radius: 12px;
+  text-align: left;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  border: 2px solid #eee;
+}
+
+/* หัวข้อ */
+.empty-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+/* คำอธิบาย */
+.empty-description {
+  font-size: 1.2rem;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.action-button.highlight {
+  font-size: 1 rem;
+  font-weight: bold;
+  padding: 15px 35px;
+  border-radius: 8px;
+  background-color: #3cb371; 
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.3s, background-color 0.3s;
+}
+
+.action-button.highlight:hover {
+  background-color: #218838; 
+  transform: translateY(-2px);
+}
+
+
+
+.empty-job-card h3 {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.empty-job-card p {
+  font-size: 1.2rem;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.action-button {
+  padding: 12px 25px;
+  font-size: 1.2rem;
+  border-radius: 8px;
+}
+
 
 /* Overview Section */
 .overview-cards {

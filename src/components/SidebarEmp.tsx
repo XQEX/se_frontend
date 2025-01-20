@@ -36,43 +36,43 @@ function Sidebar() {
   return (
     <div className="flex flex-col h-screen w-1/4 bg-gray-100 text-black">
       <div className="flex flex-col justify-start items-start space-y-4 p-4">
-        <div className="text-black font-bold text-lg">Filter Candidates</div>
+        <div className="text-black font-bold text-lg">ตัวกรองค้นหาผู้สมัคร</div>
 
         <div className="flex flex-col w-full gap-4">
-          {/* Job Title Filter */}
+          {/* ตัวกรองตำแหน่งงาน */}
           <div className="flex flex-col">
-            <label className="text-black text-sm mb-1">Job Title</label>
+            <label className="text-black text-sm mb-1">ตำแหน่งงาน</label>
             <input
               type="text"
               value={jobTitle}
               onChange={handleJobTitleChange}
-              placeholder="Enter job title"
+              placeholder="กรอกตำแหน่งงาน"
               className="text-black rounded-lg border border-gray-300 w-full p-2"
             />
           </div>
 
-          {/* Location Filter */}
+          {/* ตัวกรองสถานที่ทำงาน */}
           <div className="flex flex-col">
-            <label className="text-black text-sm mb-1">Location</label>
+            <label className="text-black text-sm mb-1">สถานที่ทำงาน</label>
             <input
               type="text"
               value={location}
               onChange={handleLocationChange}
-              placeholder="Enter job location"
+              placeholder="กรอกสถานที่ทำงาน"
               className="text-black rounded-lg border border-gray-300 w-full p-2"
             />
           </div>
 
-          {/* Salary Range Filter */}
+          {/* ตัวกรองช่วงเงินเดือน */}
           <div className="flex flex-col">
-            <label className="text-black text-sm mb-1">Salary Range (Baht)</label>
+            <label className="text-black text-sm mb-1">ช่วงเงินเดือน (บาท)</label>
             <div className="flex flex-row gap-2 items-center">
               <input
                 type="number"
                 value={minSalary}
                 min={0}
                 onChange={handleMinSalaryChange}
-                placeholder="Minimum"
+                placeholder="ขั้นต่ำ"
                 className="text-black rounded-lg border border-gray-300 w-full p-2"
               />
               <span className="text-black">-</span>
@@ -81,7 +81,7 @@ function Sidebar() {
                 value={maxSalary}
                 min={minSalary}
                 onChange={handleMaxSalaryChange}
-                placeholder="Maximum"
+                placeholder="ขั้นสูง"
                 className="text-black rounded-lg border border-gray-300 w-full p-2"
               />
             </div>
@@ -89,12 +89,12 @@ function Sidebar() {
         </div>
       </div>
 
-      {/* Search Button */}
+      {/* ปุ่มค้นหา */}
       <button
         onClick={handleSearch}
         className="font-medium rounded-lg p-2 m-4 transition"
         style={{
-          backgroundColor: "#2E8B57)", // สีเขียวใหม่
+          backgroundColor: "#2E8B57", // สีเขียวใหม่
           color: "white",
           border: "none",
         }}
@@ -105,7 +105,7 @@ function Sidebar() {
           ((e.target as HTMLButtonElement).style.backgroundColor = "#2E8B57") // กลับเป็นสีเดิม
         }
       >
-        Search
+        ค้นหา
       </button>
     </div>
   );
