@@ -161,7 +161,7 @@ function TrackJobSeeker() {
                     </td>
                     <td className="p-2 border border-gray-300">{app.date}</td>
                     <td className="p-2 border border-gray-300">
-                      <Link to={`/track/${app.id}`}>
+                      <Link to={`/trackJobseeker/${app.id}`}>
                         <button className="text-blue-600 hover:underline">
                           ดูรายละเอียด
                         </button>
