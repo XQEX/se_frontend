@@ -17,6 +17,8 @@ import ViewPostEmployers from "./pages/Employers/ViewPostEmployers";
 import ProfileEmployers from "./pages/Employers/ProfileEmployers";
 import JobPositionForm from "./pages/JobPositionForm";
 import JobDetail from "./pages/JobDetail";
+import TrackJobSeeker from "./pages/JobSeeker/TrackJobSeeker";
+import TrackDetailsJobSeeker from "./pages/JobSeeker/TrackDetailsJobSeeker";
 
 function App() {
   return (
@@ -33,6 +35,8 @@ function App() {
         <Route path="application" element={<ApplicationForm />} />
         <Route path="application/JobPosition" element={<JobPositionForm />} />
         <Route path="/job/:id" element={<JobDetail />} />
+        <Route path="/trackjobseeker" element={<TrackJobSeeker />} />
+        <Route path="/trackJobseeker/:id" element={<TrackDetailsJobSeeker />} />
 
         {/* Routes สำหรับ Employers */}
         <Route path="homeemp" element={<HomepageEmployers />} />
@@ -42,8 +46,6 @@ function App() {
         <Route path="findemp" element={<FindEmployers />} />
         <Route path="viewpost/:id" element={<ViewPostEmployers />} />
         <Route path="profileemp" element={<ProfileEmployers />} />
-
-
 
         {/* หน้าสำหรับ Route ที่ไม่พบ */}
         <Route path="*" element={<NoPage />} />
