@@ -29,7 +29,7 @@ const HomepageEmployers: React.FC = () => {
   };
 
   const handlePostJob = () => {
-    navigate("/postemp");
+    navigate("/postjobemp");
   };
 
   const handleTrackApplications = () => {

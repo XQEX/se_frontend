@@ -39,9 +39,7 @@ const ViewPostEmployers: React.FC = () => {
 
   return (
     <div>
-      {/* Navbar */}
       <NavbarEmp />
-
       <div className="view-post-container">
         <h1 className="page-title">รายละเอียดงาน</h1>
         <div className="job-post-details">
@@ -55,8 +53,6 @@ const ViewPostEmployers: React.FC = () => {
           กลับไปหน้าหลัก
         </button>
       </div>
-
-      {/* Footer */}
       <Footer />
     </div>
   );

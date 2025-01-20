@@ -208,30 +208,36 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 20px;
+  border-radius: 10px;
+  padding: 24px;
   margin-bottom: 20px;
   background-color: #fff;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  max-width: 1000px; /* กำหนดความกว้างของกล่อง */
+  margin-left: 50px; /* เพิ่มระยะห่างจากขอบซ้าย */
+  text-align: left; /* ชิดซ้าย */
 }
 
 .job-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 10px 16px rgba(0, 0, 0, 0.2);
 }
 
 .job-card h3 {
-  font-size: 1.5rem;
-  margin-bottom: 10px;
-  color: #333;
+  font-size: 1.6rem;
+  font-weight: bold;
+  margin-bottom: 12px;
+  color: #222;
 }
 
 .job-card p {
-  margin: 5px 0;
-  color: #666;
+  margin: 6px 0;
+  font-size: 1rem;
+  color: #444;
+  line-height: 1.5;
 }
 
 .job-actions {

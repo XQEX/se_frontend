@@ -64,7 +64,7 @@ export default function Navbar() {
   const navLinks = (
     <>
       <Link
-        to="/find"
+        to="/findemp"
         className="text-gray-200 kanit-regular hover:text-white px-4 py-1 rounded-md transition-colors duration-300 flex items-center"
       >
         <FaFind className="mr-2" />
@@ -142,11 +142,11 @@ export default function Navbar() {
             {!isSignedIn ? (
               <>
                 <Link
-                  to="/find"
+                  to="/findemp"
                   className="text-gray-200 kanit-regular hover:text-white px-4 py-1 rounded-md transition-colors duration-300 flex items-center"
                 >
                   <FaFind className="mr-2" />
-                  ค้นหาคน
+                  ค้นหางาน
                 </Link>
                 <Link
                   to="/signin"
