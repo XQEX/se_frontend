@@ -1,49 +1,35 @@
 import React from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import NavbarEmp from "../../components/NavbarEmp";
 import Footer from "../../components/Footer";
 import "./ViewPostEmployers.css";
 
-const jobPosts = [
-  {
-    id: 1,
-    title: "Frontend Developer",
-    location: "Chiang Mai",
-    description: "Responsible for developing user-facing features using React.js.",
-    requirements: "Knowledge in React, JavaScript, and CSS.",
-    postedBy: "John Doe",
-  },
-  {
-    id: 2,
-    title: "Backend Developer",
-    location: "Bangkok",
-    description: "Responsible for server-side application logic and integration.",
-    requirements: "Knowledge in Node.js, Express.js, and MongoDB.",
-    postedBy: "Jane Smith",
-  },
-  {
-    id: 3,
-    title: "UI/UX Designer",
-    location: "Phuket",
-    description: "Design user interfaces and ensure user-friendly experience.",
-    requirements: "Knowledge in Figma, Adobe XD, and prototyping tools.",
-    postedBy: "Alice Johnson",
-  },
-];
+interface Job {
+  id: number;
+  title: string;
+  location: string;
+  description: string;
+  requirements: string;
+  postedAt: string;
+}
 
 const ViewPostEmployers: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const job = jobPosts.find((job) => job.id === Number(id));
+  const location = useLocation();
+
+  // ดึงข้อมูลจาก Local Storage หรือจาก state ที่ถูกส่งมาผ่าน navigate()
+  const job: Job | undefined =
+    location.state?.job || JSON.parse(localStorage.getItem("jobs") || "[]").find((job: Job) => job.id.toString() === id);
 
   if (!job) {
     return (
       <div>
         <NavbarEmp />
         <div className="view-post-container text-center">
-          <h1 className="job-not-found">Job Not Found</h1>
-          <button className="back-button" onClick={() => navigate(-1)}>
-            Go Back
+          <h1 className="job-not-found">ไม่พบข้อมูลงาน</h1>
+          <button className="back-button" onClick={() => navigate("/homeemp")}>
+            กลับไปหน้าหลัก
           </button>
         </div>
         <Footer />
@@ -57,24 +43,16 @@ const ViewPostEmployers: React.FC = () => {
       <NavbarEmp />
 
       <div className="view-post-container">
-        <h1 className="page-title">View Job Post</h1>
+        <h1 className="page-title">รายละเอียดงาน</h1>
         <div className="job-post-details">
           <h2 className="job-title">{job.title}</h2>
-          <p>
-            <strong>Location:</strong> {job.location}
-          </p>
-          <p>
-            <strong>Description:</strong> {job.description}
-          </p>
-          <p>
-            <strong>Requirements:</strong> {job.requirements}
-          </p>
-          <p>
-            <strong>Posted By:</strong> {job.postedBy}
-          </p>
+          <p><strong>สถานที่:</strong> {job.location}</p>
+          <p><strong>รายละเอียด:</strong> {job.description}</p>
+          <p><strong>คุณสมบัติที่ต้องการ:</strong> {job.requirements}</p>
+          <p><strong>โพสต์เมื่อ:</strong> {job.postedAt || "ไม่ระบุวันที่"}</p>
         </div>
-        <button className="back-button" onClick={() => navigate(-1)}>
-          Go Back
+        <button className="back-button" onClick={() => navigate("/homeemp")}>
+          กลับไปหน้าหลัก
         </button>
       </div>
 
