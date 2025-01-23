@@ -1,9 +1,58 @@
 import React, { useState } from "react";
-import Navbar from "../../components/Navbar";
+import Navbar from "../components/Navbar";
 import { Link } from "react-router-dom";
 
 function SignUp() {
   const [userType, setUserType] = useState("jobSeeker"); // "jobSeeker" หรือ "employer"
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [Confirmpassword, setConfirmpassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [isChecked, setIsChecked] = useState(false);
+
+  async function RegisterUser(e: any) {
+    e.preventDefault();
+
+    // Email validation regex
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    // Check if the email is in the correct format
+    if (!emailRegex.test(email)) {
+      console.log("Please enter a valid email address!");
+      return;
+    }
+
+    if (password !== Confirmpassword) {
+      console.log("Passwords not match!");
+      return;
+    }
+
+    try {
+      console.log(username);
+      console.log(password);
+      console.log(email);
+      const user = { username: username, email: email, password: password };
+      const response = await fetch(
+        "http://localhost:4000/api/job-seekers/register",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(user),
+        }
+      );
+
+      const { msg, data } = await response.json();
+      console.log(data);
+
+      //notify msg
+
+      //goto login page
+    } catch (error) {
+      throw error;
+    }
+  }
 
   return (
     <div className="h-screen flex flex-col">
@@ -64,6 +113,7 @@ function SignUp() {
             <label className="text-black text-sm mb-2 kanit-light">อีเมล</label>
             <input
               type="email"
+              value={email}
               placeholder="กรอกอีเมล"
               className="text-black placeholder-kanit rounded-lg border border-gray-300 p-3"
             />
@@ -76,6 +126,7 @@ function SignUp() {
             </label>
             <input
               type="password"
+              value={password}
               placeholder="รหัสผ่าน"
               className="text-black placeholder-kanit rounded-lg border border-gray-300 p-3"
             />
@@ -86,6 +137,7 @@ function SignUp() {
             </label>
             <input
               type="password"
+              value={Confirmpassword}
               placeholder="ยืนรหัสผ่าน"
               className="text-black placeholder-kanit rounded-lg border border-gray-300 p-3"
             />
@@ -107,7 +159,12 @@ function SignUp() {
 
           {/* Sign Up Button */}
           <div className="flex justify-center">
-            <button className="bg-seagreen text-white kanit-semibold w-full py-3 rounded-lg">
+            <button
+              onClick={RegisterUser}
+              className="bg-seagreen text-white kanit-semibold w-full py-3 rounded-lg"
+              type="submit"
+              disabled={!isChecked}
+            >
               {userType === "jobSeeker"
                 ? "สมัครสมาชิก (คนหางาน)"
                 : "สมัครสมาชิก (บริษัท)"}
