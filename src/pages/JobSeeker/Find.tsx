@@ -67,7 +67,7 @@ function Find() {
               <FaMagnifyingGlass />
             </button>
           </div>
-          <div className="grid lg:grid-cols-3 sm:grid-cols-1 gap-3 m-1">
+          <div className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-3 m-1">
             {currentJobs.map((job, index) => (
               <motion.div
                 key={index}
@@ -185,8 +185,8 @@ function Find() {
           className="w-full p-1 border border-gray-300 rounded-s-md"
               >
           <option value="all">ทั้งหมด</option>
-          <option value="highToLow">สูงสุด-ตํ่าสุด</option>
-          <option value="lowToHigh">ต่ำสุด-สูงสุด</option>
+          <option value="highToLow">สูง-ตํ่า</option>
+          <option value="lowToHigh">ต่ำ-สูง</option>
               </select>
             </div>
           </div>
