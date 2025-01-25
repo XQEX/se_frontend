@@ -73,16 +73,16 @@ function JobDetail() {
               >
                 สมัครงาน
               </Link>
-              <div
+                <div
                 className="flex flex-row items-center space-x-2 mt-2 cursor-pointer"
                 onClick={toggleStar}
-              >
+                >
                 <FaStar
                   size={20}
-                  className={isStarred ? "fill-yellow-500 text-yellow-500" : "text-gray-300 group-hover:text-gray-400"}
+                  className={`transition-colors duration-300 ${isStarred ? "fill-yellow-500 text-yellow-500" : "text-gray-300 group-hover:text-gray-400"}`}
                 />
                 <span className="kanit-regular">สนใจงานนี้</span>
-              </div>
+                </div>
             </div>
           </div>
         </div>
@@ -94,7 +94,7 @@ function JobDetail() {
         
 
         <div className="ml-12 map mb-8">
-          <div className="kanit-regular text-lg">แผนที่</div>
+          <div className="kanit-regular text-lg"></div>
         </div>
       </div>
 
