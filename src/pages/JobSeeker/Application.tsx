@@ -73,57 +73,67 @@ const ApplicationForm = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100 ">
       <Navbar />
       <Container size="sm" className="mt-8">
-        <Paper shadow="md" radius="md" p="xl" className="bg-white">
-          <Title order={2} className="text-gray-800 mb-6 text-center">
+        <Paper shadow="md" radius="md" p="xl" className="bg-white kanit-light">
+          <Title order={2} className="text-gray-800 mb-6 text-center pb-8">
             กรอกประวัติ
           </Title>
-
           <form onSubmit={form.onSubmit(handleSubmit)}>
             <Stack gap="md">
-              <TextInput
-                label="ชื่อ-นามสกุล"
-                placeholder="ชื่อ-นามสกุล"
-                required
-                {...form.getInputProps("fullName")}
-              />
-              <TextInput
-                label="หมายเลขโทรศัพท์"
-                placeholder="หมายเลขโทรศัพท์"
-                maxLength={10}
-                required
-                {...form.getInputProps("phoneNumber")}
-              />
+              <div className="flex flex-row justify-between gap-4">
+                <TextInput
+                  label="ชื่อ-นามสกุล"
+                  placeholder="ex: สมชาย ใจดี"
+                  required
+                  className="flex-1"
+                  {...form.getInputProps("fullName")}
+                />
+                <TextInput
+                  label="หมายเลขโทรศัพท์"
+                  placeholder="ex: 0812345678"
+                  maxLength={10}
+                  required
+                  className="flex-1"
+                  {...form.getInputProps("phoneNumber")}
+                />
+              </div>
+
               <TextInput
                 label="ที่อยู่"
-                placeholder="ระบุที่อยู่ของคุณ"
+                placeholder="ex: 123 หมู่ 4 ต.บ้านใหม่ อ.เมือง"
                 required
                 {...form.getInputProps("address")}
               />
-              <TextInput
-                label="จังหวัด"
-                placeholder="กรอกจังหวัดที่คุณอาศัยอยู่"
-                required
-                {...form.getInputProps("province")}
-              />
-              <TextInput
-                label="รหัสไปรษณีย์"
-                placeholder="รหัสไปรษณีย์"
-                maxLength={5}
-                required
-                {...form.getInputProps("postalCode")}
-              />
-              <Group align="center" mt="lg">
-                <Button
-                  type="submit"
-                  size="md"
-                  className="bg-green-500 hover:bg-green-600 transition"
-                >
-                  ถัดไป
-                </Button>
-              </Group>
+              <div className="flex flex-row justify-between gap-4">
+                <TextInput
+                  label="จังหวัด"
+                  placeholder="ex: กรุงเทพมหานคร"
+                  required
+                  className="flex-1"
+                  {...form.getInputProps("province")}
+                />
+                <TextInput
+                  label="รหัสไปรษณีย์"
+                  placeholder="ex: 10000"
+                  maxLength={5}
+                  required
+                  className="flex-1"
+                  {...form.getInputProps("postalCode")}
+                />
+              </div>
+              <div className="flex justify-center">
+                <Group align="center" mt="lg">
+                  <Button
+                    type="submit"
+                    size="md"
+                    className="bg-green-500 hover:bg-green-600 transition flex"
+                  >
+                    ถัดไป
+                  </Button>
+                </Group>
+              </div>
             </Stack>
           </form>
         </Paper>
