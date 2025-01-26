@@ -14,7 +14,7 @@ import {
 import { useDisclosure } from "@mantine/hooks";
 
 export default function Navbar() {
-  const [isSignedIn, setIsSignedIn] = useState(false);
+  const [isSignedIn, setIsSignedIn] = useState(true);
   const user = { name: "ชื่อ นามสกุล", profilePicture: "/vite.svg" };
   const [scrollDirection, setScrollDirection] = useState("up");
 
@@ -38,8 +38,8 @@ export default function Navbar() {
     <>
       {isSignedIn ? (
         <>
-          <Menu.Item component={Link} to="/settings" className="kanit-regular">
-            ตั้งค่า
+          <Menu.Item component={Link} to="/profile" className="kanit-regular">
+            โปรไฟร์
           </Menu.Item>
           <Menu.Item
             onClick={() => setIsSignedIn(false)}
@@ -105,37 +105,38 @@ export default function Navbar() {
           </Link>
         </div>
         <div className="hidden lg:flex items-center space-x-4">
-        
           {isSignedIn && (
             <>
               {navLinks}
-            <Menu width={250} position="bottom-end" shadow="md">
-              <Menu.Target>
-                <button className="text-gray-200 kanit-regular hover:text-white transition-colors duration-300 relative">
-                  <FaBell size={20} />
-                  {FakeNotifications.length > 0 && (
-                    <span className="absolute top-0 right-0 inline-block w-2 h-2 bg-red-500 rounded-full"></span>
-                  )}
-                </button>
-              </Menu.Target>
-              <Menu.Dropdown>
-                <div className="p-2">
-                  <div className="kanit-regular text-center">การแจ้งเตือน</div>
-                </div>
-                <Divider />
-                {FakeNotifications.map((message, index) => (
-                  <Menu.Item key={index} className="kanit-light">
-                    {message}
+              <Menu width={250} position="bottom-end" shadow="md">
+                <Menu.Target>
+                  <button className="text-gray-200 kanit-regular hover:text-white transition-colors duration-300 relative">
+                    <FaBell size={20} />
+                    {FakeNotifications.length > 0 && (
+                      <span className="absolute top-0 right-0 inline-block w-2 h-2 bg-red-500 rounded-full"></span>
+                    )}
+                  </button>
+                </Menu.Target>
+                <Menu.Dropdown>
+                  <div className="p-2">
+                    <div className="kanit-regular text-center">
+                      การแจ้งเตือน
+                    </div>
+                  </div>
+                  <Divider />
+                  {FakeNotifications.map((message, index) => (
+                    <Menu.Item key={index} className="kanit-light">
+                      {message}
+                    </Menu.Item>
+                  ))}
+                  <Divider />
+                  <Menu.Item className="kanit-regular text-center bg-gray-200">
+                    <a href="/notifications" className="text-seagreen">
+                      ดูทั้งหมด
+                    </a>
                   </Menu.Item>
-                ))}
-                <Divider />
-                <Menu.Item className="kanit-regular text-center bg-gray-200">
-                  <a href="/notifications" className="text-seagreen">
-                    ดูทั้งหมด
-                  </a>
-                </Menu.Item>
-              </Menu.Dropdown>
-            </Menu>
+                </Menu.Dropdown>
+              </Menu>
             </>
           )}
           <div className="hidden lg:flex items-center space-x-4">
