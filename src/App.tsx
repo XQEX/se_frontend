@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import NoPage from "./pages/JobSeeker/NoPage";
-import SignUp from "./pages/JobSeeker/SignUp";
+import SignUpJobSeek from "./pages/JobSeeker/SignUpJobSeek";
+import SignUpEmp from "./pages/Employers/SignUpEmp";
 import SignIn from "./pages/JobSeeker/SignIn";
 import ContactUs from "./pages/JobSeeker/ContactUs";
 import Profile from "./pages/JobSeeker/Profile";
@@ -20,6 +21,7 @@ import JobDetail from "./pages/JobDetail";
 import TrackJobSeeker from "./pages/JobSeeker/TrackJobSeeker";
 import TrackDetailsJobSeeker from "./pages/JobSeeker/TrackDetailsJobSeeker";
 import PostJob from "./pages/JobSeeker/Post";
+import UserTypeWizard from "./pages/UserTypeWizard";
 
 function App() {
   return (
@@ -28,7 +30,7 @@ function App() {
         {/* หน้าหลัก */}
         <Route path="/" element={<Home />} />
         <Route path="find" element={<Find />} />
-        <Route path="signup" element={<SignUp />} />
+        <Route path="signUp/job-seeker" element={<SignUpJobSeek />} />
         <Route path="signin" element={<SignIn />} />
         <Route path="profile" element={<Profile />} />
         <Route path="settings" element={<Settings />} />
@@ -41,6 +43,7 @@ function App() {
         <Route path="/postjob" element={<PostJob />} />
 
         {/* Routes สำหรับ Employers */}
+        <Route path="signUp/Employer" element={<SignUpEmp />} />
         <Route path="homeemp" element={<HomepageEmployers />} />
         <Route path="postjobemp" element={<PostJobEmp />} />
         <Route path="trackemp" element={<TrackEmployers />} />
@@ -50,6 +53,7 @@ function App() {
         <Route path="profileemp" element={<ProfileEmployers />} />
 
         {/* หน้าสำหรับ Route ที่ไม่พบ */}
+        <Route path="/select-user-type" element={<UserTypeWizard />} />
         <Route path="*" element={<NoPage />} />
       </Routes>
     </div>
