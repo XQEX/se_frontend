@@ -4,13 +4,12 @@ import { provinces, DistrictByProvince, SubdistrictByDistrict } from "../data/pr
 import { useNavigate } from "react-router-dom";
 
 function Sidebar() {
-  const [salaryRange, setSalaryRange] = useState(100000);
+  const [salaryRange, setSalaryRange] = useState(10000);
   const [sortBy, setSortBy] = useState("relevance");
   const [sortOrder, setSortOrder] = useState("descending");
   const [selectedProvince, setSelectedProvince] = useState<string>("ทั้งหมด"); // ตั้งค่าเริ่มต้นเป็น "ทั้งหมด"
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
   const [selectedProvinces, setSelectedProvinces] = useState(["ทั้งหมด"]);
-  const [salaryRange, setSalaryRange] = useState(200000); 
   const [selectedJobTypes, setSelectedJobTypes] = useState(["ทั้งหมด"]); 
   
 
