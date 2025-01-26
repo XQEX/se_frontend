@@ -155,7 +155,7 @@ export default function Navbar() {
                   เข้าสู่ระบบ
                 </Link>
                 <Link
-                  to="/signup"
+                  to="/select-user-type"
                   className="text-gray-200 px-4 py-1 rounded-md border border-seagreen kanit-regular hover:text-white transition-colors duration-300"
                 >
                   สมัครสมาชิก
