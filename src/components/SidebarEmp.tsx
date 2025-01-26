@@ -16,13 +16,19 @@ function SidebarEmp() {
     setSalaryRange(parseInt(e.target.value));
   };
 
-  const toggleSortOrder = () => {
-    setSortOrder(sortOrder === "ascending" ? "descending" : "ascending");
+  const handleMaxSalaryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setMaxSalary(Number(e.target.value));
   };
 
-  const handleProvinceChange = (value: string | null) => {
-    setSelectedProvince(value || "ทั้งหมด");
-    setSelectedCity(null);
+  const handleSearch = () => {
+    console.log({
+      jobTitle,
+      location,
+      salaryRange: {
+        min: minSalary,
+        max: maxSalary,
+      },
+    });
   };
 
   return (
@@ -40,32 +46,27 @@ function SidebarEmp() {
           />
         </div>
 
-        {/* ตัวเลือกจังหวัด */}
-        <div className="space-y-2">
-          <label className="font-medium text-gray-700">จังหวัด</label>
-          <Select
-            placeholder="เลือกจังหวัด"
-            data={["ทั้งหมด", ...provinces]} 
-            value={selectedProvince}
-            onChange={handleProvinceChange}
-            searchable
-            clearable
-            className="w-full"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="address" className="font-medium text-gray-700 mb-1">
-            ที่อยู่
-          </label>
-          <input
-            type="text"
-            id="address"
-            placeholder="ทั้งหมด"
-            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-seagreen focus:border-transparent"
-            value={undefined} 
-          />
-        </div>
+          {/* ตัวกรองสถานที่ทำงาน */}
+          <div className="flex flex-col">
+            <label className="text-black text-sm mb-1">จังหวัด</label>
+            <input
+              type="text"
+              value={location}
+              onChange={handleLocationChange}
+              placeholder="กรอกจังหวัดของคุณ"
+              className="text-black rounded-lg border border-gray-300 w-full p-2"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label className="text-black text-sm mb-1">ชั่วโมงทำงาน</label>
+            <input
+              type="text"
+              value={location}
+              onChange={handleLocationChange}
+              placeholder="..."
+              className="text-black rounded-lg border border-gray-300 w-full p-2"
+            />
+          </div>
 
         {/* ตัวกรองเงินเดือน */}
         <div>
