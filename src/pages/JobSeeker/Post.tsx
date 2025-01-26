@@ -31,12 +31,6 @@ const PostJob: React.FC = () => {
       localStorage.setItem("jobs", JSON.stringify(updatedJobs));
 
       setSuccessMessage("🎉 การโพสต์หางานสำเร็จแล้ว!");
-
-      setTimeout(() => {
-        navigate("/homeemp", { state: { newJob } });
-      }, 1000);
-    } else {
-      alert("⚠️ กรุณากรอกข้อมูลให้ครบทุกช่องก่อนโพสต์!");
     }
   };
 

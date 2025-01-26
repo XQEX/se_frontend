@@ -1,5 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@200;400;600&display=swap');
+
+body {
+  font-family: 'Kanit', sans-serif;
+}
+
 .container {
-  max-width: 1200px;  /* เพิ่มความกว้างของคอนเทนต์ */
+  max-width: 1200px;  
   margin: 0 auto;
   padding: 20px;
 }
@@ -21,7 +27,6 @@
   border: 2px solid #eee;
 }
 
-/* หัวข้อ */
 .empty-title {
   font-size: 1.8rem;
   font-weight: bold;
@@ -29,7 +34,6 @@
   margin-bottom: 10px;
 }
 
-/* คำอธิบาย */
 .empty-description {
   font-size: 1.2rem;
   color: #666;
@@ -37,7 +41,7 @@
 }
 
 .action-button.highlight {
-  font-size: 1 rem;
+  font-size: 1rem;
   font-weight: bold;
   padding: 15px 35px;
   border-radius: 8px;
@@ -52,8 +56,6 @@
   background-color: #218838; 
   transform: translateY(-2px);
 }
-
-
 
 .empty-job-card h3 {
   font-size: 1.8rem;
@@ -74,8 +76,6 @@
   border-radius: 8px;
 }
 
-
-/* Overview Section */
 .overview-cards {
   display: flex;
   justify-content: space-between;
@@ -104,7 +104,6 @@
   color: #3cb371;
 }
 
-/* Quick Actions Section */
 .quick-actions {
   margin-top: 30px;
   padding: 20px;
@@ -144,7 +143,6 @@
   transform: translateY(-3px);
 }
 
-/* NullPage Section */
 .null-page {
   display: flex;
   align-items: center;
@@ -186,7 +184,6 @@
   transform: translateY(-3px);
 }
 
-/* Recent Jobs Section */
 .recent-jobs {
   margin-top: 40px;
   padding: 20px;
@@ -216,9 +213,9 @@
   background-color: #fff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  max-width: 1000px; /* กำหนดความกว้างของกล่อง */
-  margin-left: 50px; /* เพิ่มระยะห่างจากขอบซ้าย */
-  text-align: left; /* ชิดซ้าย */
+  max-width: 1000px; 
+  margin-left: 50px; 
+  text-align: left;
 }
 
 .job-card:hover {

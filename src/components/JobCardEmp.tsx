@@ -1,53 +1,81 @@
-import React from "react";
+import React, { useState } from "react";
+import { FaStar, FaArrowRight, FaMapPin, FaClock, FaBuilding } from "react-icons/fa";
+import { TbCurrencyBaht } from "react-icons/tb";
+import { Link } from "react-router-dom";
+import { jobData } from "../data/FakeJobData"; // ✅ ดึงข้อมูลมาใช้
 
-interface JobCardEmpProps {
-  jobTitle: string;
-  Name: string;
-  expectedPosition: string;
-  expectedSalary: string;
-  onViewDetails: () => void;
-}
-
-const JobCardEmp: React.FC<JobCardEmpProps> = ({
-  jobTitle,
-  Name,
-  expectedPosition,
-  expectedSalary,
-  onViewDetails,
-}) => {
-  return (
-    <div className="job-card-emp bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition">
-      <h3 className="text-lg font-bold mb-2">{jobTitle}</h3>
-      <p className="text-sm text-gray-600">
-        <strong>ชื่อ:</strong> {Name}
-      </p>
-      <p className="text-sm text-gray-600">
-        <strong>ตำแหน่งที่คาดหวัง:</strong> {expectedPosition}
-      </p>
-      <p className="text-sm text-gray-600">
-        <strong>เงินเดือนที่คาดหวัง:</strong> {expectedSalary}
-      </p>
-      <div className="job-actions flex justify-end gap-2 mt-4">
-        <button
-          className="font-medium rounded-lg py-2 px-4 transition"
-          style={{
-            backgroundColor: "#2E8B57", // สีเขียวทะเล
-            color: "white",
-            border: "none",
-          }}
-          onMouseEnter={(e) =>
-            ((e.target as HTMLButtonElement).style.backgroundColor = "#1C6F44")
-          }
-          onMouseLeave={(e) =>
-            ((e.target as HTMLButtonElement).style.backgroundColor = "#2E8B57")
-          }
-          onClick={onViewDetails}
-        >
-          ดูรายละเอียด
-        </button>
-      </div>
-    </div>
-  );
+type JobCardProps = {
+  id: string;
+  title: string;
+  company: string;
+  time: string;
+  location: string;
+  salary: string;
 };
 
-export default JobCardEmp;
+function JobCardEmp({ id, title, company, time, location, salary }: JobCardProps) {
+  const [isFav, setIsFav] = useState(false);
+
+  return (
+    <div className="font-[Kanit] group relative bg-white p-6 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 border border-gray-100 w-full">
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsFav(!isFav);
+        }}
+        className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-50 transition-colors"
+        aria-label={isFav ? "Remove from favorites" : "Add to favorites"}
+      >
+        <FaStar
+          size={20}
+          className={`transition-colors ${isFav ? "fill-yellow-400 text-yellow-400" : "text-gray-300 group-hover:text-gray-400"}`}
+        />
+      </button>
+
+      <Link to={`/job/${id}`} className="block space-y-4">
+        <div className="pr-8">
+          <h2 className="text-xl font-bold text-gray-900 mb-1 line-clamp-2">{title}</h2>
+          <div className="flex items-center text-gray-600">
+            <FaBuilding size={16} className="mr-1.5 text-seagreen" />
+            <span className="font-medium">{company}</span>
+          </div>
+        </div>
+
+        <div className="flex flex-col space-y-1 text-gray-600">
+          <div className="flex items-center">
+            <TbCurrencyBaht size={16} className="mr-1.5 text-seagreen" />
+            <span>฿{salary.toLocaleString()}</span>
+          </div>
+          <div className="flex items-center">
+            <FaMapPin size={16} className="mr-1.5 text-seagreen" />
+            <span>{location}</span>
+          </div>
+          <div className="flex items-center">
+            <FaClock size={16} className="mr-1.5 text-seagreen" />
+            <span>{time}</span>
+          </div>
+        </div>
+
+        <div className="pt-2">
+          <div className="flex items-center text-emerald-600 font-medium group-hover:text-emerald-700 transition-colors">
+            <span>รายละเอียด</span>
+            <FaArrowRight size={16} className="ml-1.5 transition-transform group-hover:translate-x-1" />
+          </div>
+        </div>
+      </Link>
+    </div>
+  );
+}
+
+// ✅ แสดงผล Job Card ทั้งหมดโดยใช้ jobData
+function JobListEmp() {
+  return (
+    <div className="font-[Kanit] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-6">
+      {jobData.map((job) => (
+        <JobCardEmp key={job.id} {...job} />
+      ))}
+    </div>
+  );
+}
+
+export default JobListEmp;

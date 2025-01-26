@@ -11,18 +11,29 @@ interface Application {
   status: string;
 }
 
+// ✅ ฟังก์ชันแปลงสถานะเป็นภาษาไทย
+const translateStatus = (status: string) => {
+  const statusMap: Record<string, string> = {
+    "Under Review": "กำลังตรวจสอบ",
+    "Shortlisted": "ผ่านการคัดเลือก",
+    "Rejected": "ไม่ผ่านการคัดเลือก",
+    "Hired": "ได้รับการจ้างงาน",
+  };
+  return statusMap[status] || status;
+};
+
 const TrackEmployers: React.FC = () => {
   const [applications, setApplications] = useState<Application[]>([
-    { id: 1, applicantName: "John Doe", jobTitle: "Frontend Developer", status: "Under Review" },
-    { id: 2, applicantName: "Jane Smith", jobTitle: "Backend Developer", status: "Shortlisted" },
-    { id: 3, applicantName: "Alice Johnson", jobTitle: "UI/UX Designer", status: "Rejected" },
-    { id: 4, applicantName: "Bob Brown", jobTitle: "Data Scientist", status: "Hired" },
-    { id: 5, applicantName: "Charlie Green", jobTitle: "Mobile Developer", status: "Under Review" },
-    { id: 6, applicantName: "Diana White", jobTitle: "DevOps Engineer", status: "Shortlisted" },
-    { id: 7, applicantName: "Edward Black", jobTitle: "Product Manager", status: "Rejected" },
-    { id: 8, applicantName: "Fiona Blue", jobTitle: "Cloud Engineer", status: "Under Review" },
-    { id: 9, applicantName: "George Yellow", jobTitle: "Machine Learning Engineer", status: "Shortlisted" },
-    { id: 10, applicantName: "Hannah Gray", jobTitle: "Cybersecurity Specialist", status: "Hired" },
+    { id: 1, applicantName: "John Doe", jobTitle: "นักพัฒนา Frontend", status: "Under Review" },
+    { id: 2, applicantName: "Jane Smith", jobTitle: "นักพัฒนา Backend", status: "Shortlisted" },
+    { id: 3, applicantName: "Alice Johnson", jobTitle: "นักออกแบบ UI/UX", status: "Rejected" },
+    { id: 4, applicantName: "Bob Brown", jobTitle: "นักวิทยาศาสตร์ข้อมูล", status: "Hired" },
+    { id: 5, applicantName: "Charlie Green", jobTitle: "นักพัฒนา Mobile", status: "Under Review" },
+    { id: 6, applicantName: "Diana White", jobTitle: "วิศวกร DevOps", status: "Shortlisted" },
+    { id: 7, applicantName: "Edward Black", jobTitle: "ผู้จัดการผลิตภัณฑ์", status: "Rejected" },
+    { id: 8, applicantName: "Fiona Blue", jobTitle: "วิศวกรคลาวด์", status: "Under Review" },
+    { id: 9, applicantName: "George Yellow", jobTitle: "วิศวกร Machine Learning", status: "Shortlisted" },
+    { id: 10, applicantName: "Hannah Gray", jobTitle: "ผู้เชี่ยวชาญด้านความปลอดภัยไซเบอร์", status: "Hired" },
   ]);
 
   const navigate = useNavigate();
@@ -33,18 +44,18 @@ const TrackEmployers: React.FC = () => {
 
   return (
     <div>
-      {/* NavbarEmp */}
+      {/* ✅ NavbarEmp */}
       <NavbarEmp />
 
       <div className="track-container">
-        <h1>Track Applications</h1>
+        <h1>ติดตามใบสมัคร</h1>
         <table className="applications-table">
           <thead>
             <tr>
               <th>#</th>
-              <th>Applicant Name</th>
-              <th>Job Title</th>
-              <th>Status</th>
+              <th>ชื่อผู้สมัคร</th>
+              <th>ตำแหน่งงาน</th>
+              <th>สถานะ</th>
             </tr>
           </thead>
           <tbody>
@@ -57,10 +68,8 @@ const TrackEmployers: React.FC = () => {
                 <td>{index + 1}</td>
                 <td>{application.applicantName}</td>
                 <td>{application.jobTitle}</td>
-                <td
-                  className={`status ${application.status.toLowerCase().replace(" ", "-")}`}
-                >
-                  {application.status}
+                <td className={`status ${application.status.toLowerCase().replace(" ", "-")}`}>
+                  {translateStatus(application.status)} {/* ✅ แสดงสถานะเป็นภาษาไทย */}
                 </td>
               </tr>
             ))}
@@ -68,7 +77,7 @@ const TrackEmployers: React.FC = () => {
         </table>
       </div>
 
-      {/* Footer */}
+      {/* ✅ Footer */}
       <Footer />
     </div>
   );

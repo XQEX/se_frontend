@@ -2,7 +2,7 @@
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
-  font-family: Arial, sans-serif;
+  font-family: 'Kanit', sans-serif;
 }
 
 h1 {
@@ -41,6 +41,7 @@ textarea {
   border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 1rem;
+  font-family: 'Kanit', sans-serif;
 }
 
 .submit-button {
@@ -53,6 +54,7 @@ textarea {
   font-size: 1rem;
   font-weight: bold;
   text-align: center;
+  font-family: 'Kanit', sans-serif;
 }
 
 .submit-button:hover {
@@ -72,6 +74,7 @@ textarea {
   border-radius: 8px;
   padding: 20px;
   margin-bottom: 40px;
+  font-family: 'Kanit', sans-serif;
 }
 
 .null-page h1 {
@@ -95,6 +98,7 @@ textarea {
   font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  font-family: 'Kanit', sans-serif;
 }
 
 .null-page .action-button:hover {

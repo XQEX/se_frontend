@@ -1,58 +1,73 @@
-import React from "react";
+import React, { useState } from "react";
 import NavbarEmp from "../../components/NavbarEmp";
-import SidebarEmp from "../../components/SidebarEmp";
-import JobCardEmp from "../../components/JobCardEmp";
+import Searchbar from "../../components/Searchbar";
+import JobCard from "../../components/JobCard";
 import Footer from "../../components/Footer";
-import { Pagination, ScrollArea } from "@mantine/core";
+import SidebarEmp from "../../components/SidebarEmp";
+import { Pagination, PaginationProps } from "@mantine/core";
+import { jobData } from "../../data/FakeJobData";
+import { ScrollArea } from "@mantine/core";
+import { motion } from "framer-motion";
 
-const FindEmployers: React.FC = () => {
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("ค่าที่ค้นหา:", e.target.value);
+function FindEmp() {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(9);
+  const [favJobs, setFavJobs] = useState<string[]>([]);
+
+  const handleFavChange = (jobId: string, isFav: boolean) => {
+    setFavJobs((prev) => 
+      isFav ? [...prev, jobId] : prev.filter((id) => id !== jobId)
+    );
   };
 
+  const indexOfLastJob = currentPage * itemsPerPage;
+  const indexOfFirstJob = indexOfLastJob - itemsPerPage;
+  const currentJobs = jobData.slice(indexOfFirstJob, indexOfLastJob);
+
+  const handlePageChange: PaginationProps["onChange"] = (page) =>
+    setCurrentPage(page);
+
   return (
-    <div className="h-screen flex flex-col">
-      {/* แถบเมนูนำทาง (Navbar) */}
+    <div className="min-h-screen flex flex-col font-kanit">
       <NavbarEmp />
-
-      {/* เนื้อหาหลัก (Main Content) */}
-      <div className="flex flex-row">
-        {/* แถบเมนูด้านข้าง (Sidebar) */}
+      <div className="flex flex-row flex-grow">
         <SidebarEmp />
-
-        {/* ส่วนแสดงผลหลัก (Main Section) */}
-        <div className="w-3/4 p-4">
-          <div className="kanit-medium mb-4 text-2xl">ค้นหาผู้สมัครงาน</div>
-
-          {/* รายการผู้สมัคร (Job Cards) */}
-          <ScrollArea style={{ height: "70vh" }}>
-            <div className="grid lg:grid-cols-3 sm:grid-cols-1 gap-4">
-              {Array.from({ length: 8 }).map((_, index) => (
-                <JobCardEmp
+        <div className="w-3/4 w-full">
+          <div className="kanit-medium m-6 text-2xl">ค้นหางาน</div>
+          <div className="grid lg:grid-cols-3 sm:grid-cols-1 gap-3 m-1">
+            {currentJobs.map((job, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+              >
+                <JobCard
+                  id={job.id}
                   key={index}
-                  jobTitle={`ตำแหน่งงาน ${index + 1}`}
-                  Name={`ผู้สมัครงาน ${index + 1}`}
-                  expectedPosition="วิศวกรซอฟต์แวร์"
-                  expectedSalary={`฿${(index + 1) * 1000}`}
-                  onViewDetails={() =>
-                    console.log(`ดูรายละเอียดสำหรับผู้สมัครงาน ${index + 1}`)
-                  }
+                  title={job.title}
+                  company={job.company}
+                  time={job.time}
+                  location={job.location}
+                  salary={job.salary}
                 />
-              ))}
-            </div>
-          </ScrollArea>
-
-          {/* ระบบแบ่งหน้า (Pagination) */}
-          <div className="flex items-center justify-center mt-6">
-            <Pagination total={10} color="teal" />
+              </motion.div>
+            ))}
+          </div>
+          <div className="flex items-center justify-center m-4">
+            <Pagination
+              total={Math.ceil(jobData.length / itemsPerPage)}
+              value={currentPage}
+              onChange={handlePageChange}
+              color="gray"
+            />
           </div>
         </div>
       </div>
-
-      {/* ส่วนท้ายของหน้า (Footer) */}
       <Footer />
     </div>
   );
-};
+}
 
-export default FindEmployers;
+export default FindEmp;
