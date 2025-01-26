@@ -33,7 +33,7 @@ function FindEmp() {
       <div className="flex flex-row flex-grow">
         <SidebarEmp />
         <div className="w-3/4 w-full">
-          <div className="kanit-medium m-6 text-2xl">ค้นหางาน</div>
+          <div className="kanit-medium m-6 text-2xl">ค้นหาลูกจ้าง</div>
           <div className="grid lg:grid-cols-3 sm:grid-cols-1 gap-3 m-1">
             {currentJobs.map((job, index) => (
               <motion.div
