@@ -1,31 +1,38 @@
-import React, { useEffect, useState } from "react"
-import { Link } from "react-router-dom"
-import { Avatar, Menu, Divider, Burger, Drawer } from "@mantine/core"
-import { FaUserCircle, FaSearch as FaFind, FaEdit, FaBuilding, FaBell } from "react-icons/fa"
-import { MdPostAdd } from "react-icons/md"
-import { useDisclosure } from "@mantine/hooks"
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { Avatar, Menu, Divider, Burger, Drawer } from "@mantine/core";
+import {
+  FaUserCircle,
+  FaSearch as FaFind,
+  FaEdit,
+  FaBuilding,
+  FaBell,
+} from "react-icons/fa";
+import { MdPostAdd } from "react-icons/md";
+import { useDisclosure } from "@mantine/hooks";
 
 export default function Navbar() {
-  const [isSignedIn, setIsSignedIn] = useState(true)
-  const user = { name: "ชื่อ นามสกุล", profilePicture: "/vite.svg" }
-  const [scrollDirection, setScrollDirection] = useState("up")
-  const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] = useDisclosure(false)
+  const [isSignedIn, setIsSignedIn] = useState(false);
+  const user = { name: "ชื่อ นามสกุล", profilePicture: "/vite.svg" };
+  const [scrollDirection, setScrollDirection] = useState("up");
+  const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
+    useDisclosure(false);
 
   useEffect(() => {
-    let lastScrollY = window.scrollY
+    let lastScrollY = window.scrollY;
 
     const handleScroll = () => {
       if (window.scrollY > lastScrollY && window.scrollY > 50) {
-        setScrollDirection("down")
+        setScrollDirection("down");
       } else {
-        setScrollDirection("up")
+        setScrollDirection("up");
       }
-      lastScrollY = window.scrollY
-    }
+      lastScrollY = window.scrollY;
+    };
 
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const menuItems = (
     <div>
@@ -34,7 +41,10 @@ export default function Navbar() {
           <Menu.Item component={Link} to="/profile" className="kanit-regular">
             โปรไฟร์
           </Menu.Item>
-          <Menu.Item onClick={() => setIsSignedIn(false)} className="kanit-regular">
+          <Menu.Item
+            onClick={() => setIsSignedIn(false)}
+            className="kanit-regular"
+          >
             ออกจากระบบ
           </Menu.Item>
         </>
@@ -49,7 +59,7 @@ export default function Navbar() {
         </>
       )}
     </div>
-  )
+  );
 
   const navLinks = (
     <div className="flex space-x-4">
@@ -82,11 +92,9 @@ export default function Navbar() {
         โพสหางาน
       </Link>
     </div>
-  )
+  );
 
-  const FakeNotifications = [
-    "a","b","c","d","e","f","g"
-  ]
+  const FakeNotifications = ["a", "b", "c", "d", "e", "f", "g"];
 
   return (
     <>
@@ -98,7 +106,9 @@ export default function Navbar() {
         <div className="logo">
           <Link to="/" className="flex items-center space-x-2">
             <img src="/white_logo.png" alt="logo" className="w-12 h-auto" />
-            <span className="font-bold text-white text-2xl leading-none">SkillBridge</span>
+            <span className="font-bold text-white text-2xl leading-none">
+              SkillBridge
+            </span>
           </Link>
         </div>
         <div className="hidden lg:flex items-center space-x-4">
@@ -116,7 +126,9 @@ export default function Navbar() {
                 </Menu.Target>
                 <Menu.Dropdown>
                   <div className="p-2">
-                    <div className="kanit-regular text-center">การแจ้งเตือน</div>
+                    <div className="kanit-regular text-center">
+                      การแจ้งเตือน
+                    </div>
                   </div>
                   <Divider />
                   {FakeNotifications.length > 0 ? (
@@ -126,7 +138,9 @@ export default function Navbar() {
                       </Menu.Item>
                     ))
                   ) : (
-                    <Menu.Item className="kanit-light text-center">ไม่มีการแจ้งเตือน</Menu.Item>
+                    <Menu.Item className="kanit-light text-center">
+                      ไม่มีการแจ้งเตือน
+                    </Menu.Item>
                   )}
                   <Divider />
                   <Menu.Item className="kanit-regular text-center bg-gray-200">
@@ -166,7 +180,12 @@ export default function Navbar() {
                 <Menu.Target>
                   <button className="flex items-center space-x-2 bg-gray-200 text-black px-4 py-2 rounded-3xl hover:bg-white transition">
                     {user.profilePicture ? (
-                      <Avatar src={user.profilePicture} alt={user.name} radius="xl" size={30} />
+                      <Avatar
+                        src={user.profilePicture}
+                        alt={user.name}
+                        radius="xl"
+                        size={30}
+                      />
                     ) : (
                       <FaUserCircle size={24} />
                     )}
@@ -185,7 +204,12 @@ export default function Navbar() {
           </div>
         </div>
         <div className="lg:hidden">
-          <Burger opened={drawerOpened} onClick={toggleDrawer} size="sm" color="white" />
+          <Burger
+            opened={drawerOpened}
+            onClick={toggleDrawer}
+            size="sm"
+            color="white"
+          />
         </div>
       </nav>
       <Drawer
@@ -234,7 +258,9 @@ export default function Navbar() {
                     </Menu.Target>
                     <Menu.Dropdown>
                       <div className="p-2">
-                        <div className="kanit-regular text-center">การแจ้งเตือน</div>
+                        <div className="kanit-regular text-center">
+                          การแจ้งเตือน
+                        </div>
                       </div>
                       <Divider />
                       {FakeNotifications.map((message, index) => (
@@ -269,7 +295,12 @@ export default function Navbar() {
                   <Menu.Target>
                     <button className="flex items-center space-x-2 bg-gray-200 text-black px-4 py-2 rounded-3xl hover:bg-white transition">
                       {user.profilePicture ? (
-                        <Avatar src={user.profilePicture} alt={user.name} radius="xl" size={30} />
+                        <Avatar
+                          src={user.profilePicture}
+                          alt={user.name}
+                          radius="xl"
+                          size={30}
+                        />
                       ) : (
                         <FaUserCircle size={24} />
                       )}
@@ -290,6 +321,5 @@ export default function Navbar() {
         </div>
       </Drawer>
     </>
-  )
+  );
 }
-
