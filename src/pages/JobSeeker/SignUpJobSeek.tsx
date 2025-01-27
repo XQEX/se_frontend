@@ -5,8 +5,10 @@ import { Link } from "react-router-dom";
 // Import Toastify
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 
 function SignUpJobSeek() {
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -67,6 +69,7 @@ function SignUpJobSeek() {
         notifyError(msg || "มีข้อผิดพลาด กรุณาลองอีกครั้ง");
       } else {
         notifySuccess(msg || "สมัครสมาชิกสำเร็จ!");
+        navigate("/");
         // TODO: e.g. Redirect the user or clear the form
       }
       console.log(data);
@@ -79,7 +82,7 @@ function SignUpJobSeek() {
   }
 
   return (
-    <div className="h-screen flex flex-col relative">
+    <div className={`h-screen flex flex-col relative `}>
       {/* Toast Container for notifications */}
       <ToastContainer />
 
