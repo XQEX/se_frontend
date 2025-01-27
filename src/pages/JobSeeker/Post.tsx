@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import NavbarEmp from "../../components/NavbarEmp";
+import NavbarEmp from "../../components/Navbar";
 import Footer from "../../components/Footer";
 
 const PostJob: React.FC = () => {
@@ -86,7 +86,7 @@ const PostJob: React.FC = () => {
           <button
             type="button"
             className="submit-button"
-            onClick={handlePostJob}
+            // onClick={handlePostJob}
           >
             ยืนยันการโพสต์หางาน
           </button>
