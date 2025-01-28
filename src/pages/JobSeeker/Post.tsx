@@ -1,94 +1,91 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import NavbarEmp from "../../components/Navbar";
+import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 
 const PostJob: React.FC = () => {
   const navigate = useNavigate();
-  
+
   const [jobTitle, setJobTitle] = useState("");
   const [location, setLocation] = useState("");
   const [jobDescription, setJobDescription] = useState("");
   const [requirements, setRequirements] = useState("");
+  const [salary, setSalary] = useState(""); 
+  const [workDates, setWorkDates] = useState("");
+  const [workHours, setWorkHours] = useState(""); 
   const [successMessage, setSuccessMessage] = useState("");
 
-  const handlePostJob = () => {
-    if (jobTitle && location && jobDescription && requirements) {
-      const newJob = {
-        id: Date.now(),
-        title: jobTitle,
-        location,
-        description: jobDescription,
-        requirements,
-        postedAt: new Date().toLocaleString("th-TH", {
-          dateStyle: "full",
-          timeStyle: "short",
-        }),
-      };
+  // const handlePostJob = () => {
+  //   if (jobTitle && location && jobDescription && requirements && salary && workDates && workHours) {
+  //     const newJob = {
+  //       id: Date.now(),
+  //       title: jobTitle,
+  //       location,
+  //       description: jobDescription,
+  //       requirements,
+  //       salary,
+  //       workDates,
+  //       workHours,
+  //       postedAt: new Date().toLocaleString("th-TH", {
+  //         dateStyle: "full",
+  //         timeStyle: "short",
+  //       }),
+  //     };
 
-      const existingJobs = JSON.parse(localStorage.getItem("jobs") || "[]");
-      const updatedJobs = [newJob, ...existingJobs];
-      localStorage.setItem("jobs", JSON.stringify(updatedJobs));
+  //     // บันทึกลง Local Storage
+  //     const existingJobs = JSON.parse(localStorage.getItem("jobs") || "[]");
+  //     const updatedJobs = [newJob, ...existingJobs];
+  //     localStorage.setItem("jobs", JSON.stringify(updatedJobs));
 
-      setSuccessMessage("🎉 การโพสต์หางานสำเร็จแล้ว!");
-    }
-  };
+  //     // แสดงข้อความแจ้งเตือน
+  //     setSuccessMessage("🎉 ประกาศงานสำเร็จแล้ว!");
+
+  //     // นำทางไปยังหน้าแรกของนายจ้าง
+  //     setTimeout(() => {
+  //       navigate("/homeemp", { state: { newJob } });
+  //     }, 500);
+  //   } else {
+  //     alert("⚠️ กรุณากรอกข้อมูลให้ครบทุกช่องก่อนโพสต์งาน!");
+  //   }
+  // };
 
   return (
     <div>
-      <NavbarEmp />
+      <Navbar />
       <div className="post-job-container">
-        <h1>โพสต์หางาน</h1>
-        {successMessage && (
-          <p className="success-message">{successMessage}</p>
-        )}
+        <h1>โพสต์งาน</h1>
+        {successMessage && <p className="success-message">{successMessage}</p>}
         <form className="post-job-form">
           <div className="form-group">
-            <label>ตำแหน่งงานที่ต้องการ</label>
-            <input
-              type="text"
-              className="input-field"
-              value={jobTitle}
-              onChange={(e) => setJobTitle(e.target.value)}
-              placeholder="กรอกตำแหน่งงานที่ต้องการ"
-            />
+            <label>ชื่อตำแหน่งงาน</label>
+            <input type="text" value={jobTitle} onChange={(e) => setJobTitle(e.target.value)} placeholder="กรอกชื่อตำแหน่งงาน" />
           </div>
           <div className="form-group">
-            <label>สถานที่ทำงานที่ต้องการ</label>
-            <input
-              type="text"
-              className="input-field"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              placeholder="กรอกสถานที่ทำงานที่ต้องการ"
-            />
+            <label>สถานที่ทำงาน</label>
+            <input type="text" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="กรอกสถานที่ทำงาน" />
           </div>
           <div className="form-group">
-            <label>รายละเอียดเกี่ยวกับคุณ</label>
-            <textarea
-              className="input-field"
-              value={jobDescription}
-              onChange={(e) => setJobDescription(e.target.value)}
-              placeholder="กรอกรายละเอียดเกี่ยวกับคุณ"
-              rows={4}
-            />
+            <label>เงินเดือน (บาท)</label>
+            <input type="number" value={salary} onChange={(e) => setSalary(e.target.value)} placeholder="กรอกเงินเดือน" step="1000" />
           </div>
           <div className="form-group">
-            <label>เงินเดือนที่คาดหวัง</label>
-            <textarea
-              className="input-field"
-              value={requirements}
-              onChange={(e) => setRequirements(e.target.value)}
-              placeholder="กรอกเงินเดือนที่คาดหวัง"
-              rows={4}
-            />
+            <label>วันทำงาน</label>
+            <input type="text" value={workDates} onChange={(e) => setWorkDates(e.target.value)} placeholder="เช่น จันทร์ - ศุกร์" />
           </div>
-          <button
-            type="button"
-            className="submit-button"
-            // onClick={handlePostJob}
-          >
-            ยืนยันการโพสต์หางาน
+          <div className="form-group">
+            <label>ช่วงเวลาทำงาน</label>
+            <input type="text" value={workHours} onChange={(e) => setWorkHours(e.target.value)} placeholder="เช่น 09:00 - 18:00" />
+          </div>
+          <div className="form-group">
+            <label>รายละเอียดงาน</label>
+            <textarea value={jobDescription} onChange={(e) => setJobDescription(e.target.value)} placeholder="กรอกรายละเอียดงาน" rows={2} />
+          </div>
+          <div className="form-group">
+            <label>คุณสมบัติที่ต้องการ</label>
+            <textarea value={requirements} onChange={(e) => setRequirements(e.target.value)} placeholder="กรอกคุณสมบัติที่ต้องการ" rows={2} />
+          </div>
+          <button type="button"  className="submit-button">
+            โพสต์งาน
           </button>
         </form>
       </div>
