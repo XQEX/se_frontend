@@ -8,6 +8,9 @@ interface Job {
   id: number;
   title: string;
   location: string;
+  salary: number;
+  workDays: string;
+  workHours: string;
   description: string;
   requirements: string;
   postedAt: string;
@@ -45,6 +48,9 @@ const ViewPostEmployers: React.FC = () => {
         <div className="job-post-details">
           <h2 className="job-title">{job.title}</h2>
           <p><strong>สถานที่:</strong> {job.location}</p>
+          <p><strong>เงินเดือน:</strong> {job.salary.toLocaleString()} บาท</p>
+          <p><strong>วันทำงาน:</strong> {job.workDays}</p>
+          <p><strong>ช่วงเวลาทำงาน:</strong> {job.workHours}</p>
           <p><strong>รายละเอียด:</strong> {job.description}</p>
           <p><strong>คุณสมบัติที่ต้องการ:</strong> {job.requirements}</p>
           <p><strong>โพสต์เมื่อ:</strong> {job.postedAt || "ไม่ระบุวันที่"}</p>
