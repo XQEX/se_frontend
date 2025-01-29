@@ -1,10 +1,16 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useState } from "react";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  UseQueryResult,
+} from "react-query";
 import { ClipLoader } from "react-spinners"; // You can use any spinner library
+import axios from "axios";
 
 interface AdminInfo {
-  name: string;
-  email: string;
+  id: string;
+  username: string;
 }
 
 interface ApprovalRequest {
@@ -15,103 +21,201 @@ interface ApprovalRequest {
   adminId: string;
 }
 
-interface ApiResponse<T> {
-  success: boolean;
-  msg: string;
-  data: T;
-}
+const fetchAdminInfo = async (): Promise<AdminInfo> => {
+  const { data } = await axios.get<{ data: AdminInfo }>(
+    "http://localhost:6977/api/admin/auth",
+    {
+      withCredentials: true,
+    }
+  );
+  return data.data;
+};
+
+const fetchApprovalRequests = async (): Promise<ApprovalRequest[]> => {
+  const { data } = await axios.get<{ data: ApprovalRequest[] }>(
+    "http://localhost:6977/api/admin/approve",
+    {
+      withCredentials: true,
+    }
+  );
+  return data.data;
+};
+
+const generateAdmin = async (): Promise<AdminInfo> => {
+  const { data } = await axios.post<{ data: AdminInfo }>(
+    "http://localhost:6977/api/admin",
+    {},
+    {
+      headers: {
+        "Content-Type": "application/json",
+        permission_key: "69duangjun69",
+      },
+      withCredentials: true,
+    }
+  );
+  return data.data;
+};
+
+const loginAdmin = async (
+  name: string,
+  password: string
+): Promise<AdminInfo> => {
+  const { data } = await axios.post<{ data: AdminInfo }>(
+    "http://localhost:6977/api/admin/auth",
+    {
+      nameEmail: name,
+      password,
+    },
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+    }
+  );
+  console.log("login success", data);
+  return data.data;
+};
+
+const logoutAdmin = async (): Promise<void> => {
+  const { data } = await axios.delete<{ data: void }>(
+    "http://localhost:6977/api/admin/auth",
+    {
+      withCredentials: true,
+    }
+  );
+  console.log("delete success", data);
+  return data.data;
+};
+
+const approveUser = async (
+  userId: string,
+  status: string
+): Promise<ApprovalRequest> => {
+  const { data } = await axios.post<{ data: ApprovalRequest }>(
+    "/api/admin/approve",
+    { id: userId, status },
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+    }
+  );
+  console.log(data);
+  return data.data;
+};
+
+const useAdminInfo = (enabled: boolean) => {
+  return useQuery("adminInfo", fetchAdminInfo, { enabled });
+};
+
+const useApprovalRequests = (enabled: boolean) => {
+  return useQuery("approvalRequests", fetchApprovalRequests, {
+    enabled,
+  });
+};
+
+const useGenerateAdmin = () => {
+  const queryClient = useQueryClient();
+  return useMutation(generateAdmin, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("adminInfo");
+    },
+  });
+};
+
+const useAdminLogin = () => {
+  const queryClient = useQueryClient();
+  return useMutation(
+    ({ name, password }: { name: string; password: string }) =>
+      loginAdmin(name, password),
+    {
+      onSuccess: (data) => {
+        queryClient.setQueryData("adminInfo", data);
+      },
+    }
+  );
+};
+
+const useAdminLogout = () => {
+  const queryClient = useQueryClient();
+  return useMutation(logoutAdmin, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("adminInfo");
+    },
+  });
+};
+
+const useApproveUser = () => {
+  const queryClient = useQueryClient();
+  return useMutation(
+    ({ userId, status }: { userId: string; status: string }) =>
+      approveUser(userId, status),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("approvalRequests");
+      },
+    }
+  );
+};
 
 const Admin: React.FC = () => {
-  const [adminInfo, setAdminInfo] = useState<AdminInfo | null>(null);
-  const [approvalRequests, setApprovalRequests] = useState<ApprovalRequest[]>(
-    []
-  );
-  const [loading, setLoading] = useState<boolean>(true);
-  const [buttonLoading, setButtonLoading] = useState<boolean>(false);
   const [loginLoading, setLoginLoading] = useState<boolean>(false);
+  const [logoutLoading, setLogoutLoading] = useState<boolean>(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        console.log("Fetching admin data...");
-        const adminResponse = await axios.get<ApiResponse<AdminInfo>>(
-          "http://localhost:6977/api/admin/auth"
-        );
-        setAdminInfo(adminResponse.data.data);
+  const { data: adminInfo, isLoading: adminLoading } = useQuery(
+    "adminInfo",
+    fetchAdminInfo,
+    { enabled: isLoggedIn }
+  );
+  const { data: approvalRequests = [], isLoading: approvalLoading } =
+    useApprovalRequests(isLoggedIn) || { data: [] };
+  const generateAdminMutation = useGenerateAdmin();
+  const loginAdminMutation = useAdminLogin();
 
-        console.log("Fetching approval requests...");
-        const approvalResponse = await axios.get<
-          ApiResponse<ApprovalRequest[]>
-        >("http://localhost:6977/api/admin/approve");
-        setApprovalRequests(approvalResponse.data.data);
-      } catch (error) {
-        console.error("There was an error fetching the data!", error);
-      } finally {
-        setLoading(false);
-        console.log("Fetch complete, loading set to false");
-      }
-    };
+  const logoutAdminMutation = useAdminLogout();
+  const approveUserMutation = useApproveUser();
 
-    fetchData();
-  }, []);
-
-  const handleGenerateAdmin = async () => {
-    setButtonLoading(true);
-    try {
-      const response = await axios.post<ApiResponse<AdminInfo>>(
-        "http://localhost:6977/api/admin",
-        {},
-        {
-          headers: {
-            "Content-Type": "application/json",
-            permission_key: "69duangjun69",
-          },
-        }
-      );
-      if (response.data.success) {
-        console.log("Generated Admin:", response.data.data);
-      } else {
-        console.error("Failed to generate admin:", response.data.msg);
-      }
-    } catch (error) {
-      console.error("There was an error generating the admin!", error);
-    } finally {
-      setButtonLoading(false);
-    }
+  const handleGenerateAdmin = () => {
+    generateAdminMutation.mutate();
   };
 
-  const handleAdminLogin = async (name: string, password: string) => {
+  const handleAdminLogin = (name: string, password: string) => {
     setLoginLoading(true);
-    try {
-      const response = await axios.post<ApiResponse<{ token: string }>>(
-        "http://localhost:6977/api/admin/auth",
-        {
-          nameEmail: name,
-          password,
+    loginAdminMutation.mutate(
+      { name, password },
+      {
+        onSuccess: () => {
+          setIsLoggedIn(true);
         },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Credential: "include",
-          },
-        }
-      );
-      if (response.data.success) {
-        console.log("Login successful:", response.data.data);
-      } else {
-        console.error("Failed to login as admin:", response.data.msg);
+        onSettled: () => {
+          setLoginLoading(false);
+        },
       }
-    } catch (error) {
-      console.error("There was an error logging in as admin!", error);
-    } finally {
-      setLoginLoading(false);
-    }
+    );
+  };
+
+  const handleAdminLogout = () => {
+    setLogoutLoading(true);
+    logoutAdminMutation.mutate(undefined, {
+      onSuccess: () => {
+        setIsLoggedIn(false);
+      },
+      onSettled: () => {
+        setLogoutLoading(false);
+      },
+    });
+  };
+
+  const handleApproveUser = (userId: string, status: string) => {
+    approveUserMutation.mutate({ userId, status });
   };
 
   return (
     <div className="relative p-6 bg-gray-100 min-h-screen">
-      {loading && (
+      {(adminLoading || approvalLoading) && (
         <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <ClipLoader color="#ffffff" size={50} />
         </div>
@@ -122,9 +226,9 @@ const Admin: React.FC = () => {
         <button
           onClick={handleGenerateAdmin}
           className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          disabled={buttonLoading}
+          disabled={generateAdminMutation.isLoading}
         >
-          {buttonLoading ? (
+          {generateAdminMutation.isLoading ? (
             <ClipLoader color="#ffffff" size={20} />
           ) : (
             "Generate Admin"
@@ -169,27 +273,53 @@ const Admin: React.FC = () => {
             {loginLoading ? <ClipLoader color="#ffffff" size={20} /> : "Login"}
           </button>
         </form>
+        <button
+          type="submit"
+          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-green-600"
+          disabled={logoutLoading}
+          onClick={handleAdminLogout}
+        >
+          {logoutLoading ? <ClipLoader color="#ffffff" size={20} /> : "Logout"}
+        </button>
       </div>
       <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
       {adminInfo && (
         <div className="mb-6 p-4 bg-white rounded shadow">
-          <h2 className="text-2xl font-semibold">Welcome, {adminInfo.name}</h2>
-          <p className="text-gray-600">Email: {adminInfo.email}</p>
+          <h2 className="text-2xl font-semibold">
+            Welcome, {adminInfo.username}
+          </h2>
+          <p className="text-gray-600">ID: {adminInfo.id}</p>
         </div>
       )}
       <h2 className="text-2xl font-semibold mb-4">
         Registration Approval Requests
       </h2>
       {adminInfo ? (
-        <ul className="space-y-4">
-          {approvalRequests.map((request) => (
-            <li key={request.id} className="p-4 bg-white rounded shadow">
-              <span className="font-medium">{request.userId}</span> -{" "}
-              <span className="text-gray-600">{request.userType}</span> -{" "}
-              <span className="text-gray-600">{request.status}</span>
-            </li>
-          ))}
-        </ul>
+        Array.isArray(approvalRequests) ? (
+          <ul className="space-y-4">
+            {approvalRequests.map((request: ApprovalRequest) => (
+              <li key={request.id} className="p-4 bg-white rounded shadow">
+                <span className="font-medium">{request.userId}</span> -{" "}
+                <span className="text-gray-600">{request.userType}</span> -{" "}
+                <span className="text-gray-600">{request.status}</span>
+                <button
+                  onClick={() => handleApproveUser(request.id, "APPROVED")}
+                  className="ml-4 px-2 py-1 bg-green-500 text-white rounded"
+                >
+                  Approve
+                </button>
+                <button
+                  onClick={() => handleApproveUser(request.id, "UNAPPROVED")}
+                  className="ml-2 px-2 py-1 bg-red-500 text-white rounded"
+                >
+                  Unapprove
+                </button>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-gray-600">No approval requests found.</p>
+        )
       ) : (
         <p className="text-gray-600">
           Please log in to view approval requests.
