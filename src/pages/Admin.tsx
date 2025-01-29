@@ -1,10 +1,5 @@
 import React, { useState } from "react";
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-  UseQueryResult,
-} from "react-query";
+import { useQuery, useMutation, useQueryClient } from "react-query";
 import { ClipLoader } from "react-spinners"; // You can use any spinner library
 import axios from "axios";
 
@@ -20,6 +15,15 @@ interface ApprovalRequest {
   status: string;
   adminId: string;
 }
+
+const useGenerateAdmin = () => {
+  const queryClient = useQueryClient();
+  return useMutation(generateAdmin, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("adminInfo");
+    },
+  });
+};
 
 const fetchAdminInfo = async (): Promise<AdminInfo> => {
   const { data } = await axios.get<{ data: AdminInfo }>(
@@ -93,7 +97,7 @@ const approveUser = async (
   status: string
 ): Promise<ApprovalRequest> => {
   const { data } = await axios.post<{ data: ApprovalRequest }>(
-    "/api/admin/approve",
+    "http://localhost:6977/api/admin/approve",
     { id: userId, status },
     {
       headers: {
@@ -106,61 +110,8 @@ const approveUser = async (
   return data.data;
 };
 
-const useAdminInfo = (enabled: boolean) => {
-  return useQuery("adminInfo", fetchAdminInfo, { enabled });
-};
-
-const useApprovalRequests = (enabled: boolean) => {
-  return useQuery("approvalRequests", fetchApprovalRequests, {
-    enabled,
-  });
-};
-
-const useGenerateAdmin = () => {
-  const queryClient = useQueryClient();
-  return useMutation(generateAdmin, {
-    onSuccess: () => {
-      queryClient.invalidateQueries("adminInfo");
-    },
-  });
-};
-
-const useAdminLogin = () => {
-  const queryClient = useQueryClient();
-  return useMutation(
-    ({ name, password }: { name: string; password: string }) =>
-      loginAdmin(name, password),
-    {
-      onSuccess: (data) => {
-        queryClient.setQueryData("adminInfo", data);
-      },
-    }
-  );
-};
-
-const useAdminLogout = () => {
-  const queryClient = useQueryClient();
-  return useMutation(logoutAdmin, {
-    onSuccess: () => {
-      queryClient.invalidateQueries("adminInfo");
-    },
-  });
-};
-
-const useApproveUser = () => {
-  const queryClient = useQueryClient();
-  return useMutation(
-    ({ userId, status }: { userId: string; status: string }) =>
-      approveUser(userId, status),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries("approvalRequests");
-      },
-    }
-  );
-};
-
 const Admin: React.FC = () => {
+  const queryClient = useQueryClient();
   const [loginLoading, setLoginLoading] = useState<boolean>(false);
   const [logoutLoading, setLogoutLoading] = useState<boolean>(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -170,13 +121,37 @@ const Admin: React.FC = () => {
     fetchAdminInfo,
     { enabled: isLoggedIn }
   );
-  const { data: approvalRequests = [], isLoading: approvalLoading } =
-    useApprovalRequests(isLoggedIn) || { data: [] };
+  const { data: approvalRequests = [], isLoading: approvalLoading } = useQuery(
+    "approvalRequests",
+    fetchApprovalRequests,
+    {
+      enabled: isLoggedIn,
+    }
+  );
   const generateAdminMutation = useGenerateAdmin();
-  const loginAdminMutation = useAdminLogin();
-
-  const logoutAdminMutation = useAdminLogout();
-  const approveUserMutation = useApproveUser();
+  const loginAdminMutation = useMutation(
+    ({ name, password }: { name: string; password: string }) =>
+      loginAdmin(name, password),
+    {
+      onSuccess: (data) => {
+        queryClient.setQueryData("adminInfo", data);
+      },
+    }
+  );
+  const logoutAdminMutation = useMutation(logoutAdmin, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("adminInfo");
+    },
+  });
+  const approveUserMutation = useMutation(
+    ({ userId, status }: { userId: string; status: string }) =>
+      approveUser(userId, status),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("approvalRequests");
+      },
+    }
+  );
 
   const handleGenerateAdmin = () => {
     generateAdminMutation.mutate();
