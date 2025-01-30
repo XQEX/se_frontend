@@ -1,4 +1,5 @@
 import axios from "axios";
+import { backendPort } from "./globalvariable";
 
 interface EmployerInfo {
   id: string;
@@ -18,7 +19,7 @@ export const registerEmployer = async (
   confirmPassword: string
 ): Promise<{ id: string }> => {
   const { data } = await axios.post<{ data: { id: string } }>(
-    "http://localhost:6977/api/user/employer",
+    `http://localhost:${backendPort}/api/user/employer`,
     { name, email, password, confirmPassword },
     {
       headers: {
@@ -35,7 +36,7 @@ export const loginEmployer = async (
   password: string
 ): Promise<EmployerAuthResponse> => {
   const { data } = await axios.post<{ data: EmployerAuthResponse }>(
-    "http://localhost:6977/api/user/employer/auth",
+    `http://localhost:${backendPort}/api/user/employer/auth`,
     { nameEmail, password },
     {
       headers: {
@@ -49,7 +50,7 @@ export const loginEmployer = async (
 
 export const fetchEmployerInfo = async (): Promise<EmployerInfo> => {
   const { data } = await axios.get<{ data: EmployerInfo }>(
-    "http://localhost:6977/api/user/employer/auth",
+    `http://localhost:${backendPort}/api/user/employer/auth`,
     {
       withCredentials: true,
     }
@@ -59,7 +60,7 @@ export const fetchEmployerInfo = async (): Promise<EmployerInfo> => {
 
 export const logoutEmployer = async (): Promise<void> => {
   const { data } = await axios.delete<{ data: void }>(
-    "http://localhost:6977/api/user/employer/auth",
+    `http://localhost:${backendPort}/api/user/employer/auth`,
     {
       withCredentials: true,
     }

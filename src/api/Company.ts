@@ -1,4 +1,5 @@
 import axios from "axios";
+import { backendPort } from "./globalvariable";
 
 interface CompanyInfo {
   id: string;
@@ -18,7 +19,7 @@ export const registerCompany = async (
   confirmPassword: string
 ): Promise<{ id: string }> => {
   const { data } = await axios.post<{ data: { id: string } }>(
-    "http://localhost:6977/api/user/company",
+    `http://localhost:${backendPort}/api/user/company`,
     { officialName, email, password, confirmPassword },
     {
       headers: {
@@ -35,7 +36,7 @@ export const loginCompany = async (
   password: string
 ): Promise<CompanyAuthResponse> => {
   const { data } = await axios.post<{ data: CompanyAuthResponse }>(
-    "http://localhost:6977/api/user/company/auth",
+    `http://localhost:${backendPort}/api/user/company/auth`,
     { nameEmail, password },
     {
       headers: {
@@ -49,7 +50,7 @@ export const loginCompany = async (
 
 export const fetchCompanyInfo = async (): Promise<CompanyInfo> => {
   const { data } = await axios.get<{ data: CompanyInfo }>(
-    "http://localhost:6977/api/user/company/auth",
+    `http://localhost:${backendPort}/api/user/company/auth`,
     {
       withCredentials: true,
     }
@@ -59,7 +60,7 @@ export const fetchCompanyInfo = async (): Promise<CompanyInfo> => {
 
 export const logoutCompany = async (): Promise<void> => {
   const { data } = await axios.delete<{ data: void }>(
-    "http://localhost:6977/api/user/company/auth",
+    `http://localhost:${backendPort}/api/user/company/auth`,
     {
       withCredentials: true,
     }

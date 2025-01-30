@@ -1,4 +1,5 @@
 import axios from "axios";
+import { backendPort } from "./globalvariable";
 
 interface JobSeekerInfo {
   id: string;
@@ -18,7 +19,7 @@ export const registerJobSeeker = async (
   confirmPassword: string
 ): Promise<{ id: string }> => {
   const { data } = await axios.post<{ data: { id: string } }>(
-    "http://localhost:6977/api/user/job-seeker",
+    `http://localhost:${backendPort}/api/user/job-seeker`,
     { name, email, password, confirmPassword },
     {
       headers: {
@@ -35,7 +36,7 @@ export const loginJobSeeker = async (
   password: string
 ): Promise<JobSeekerAuthResponse> => {
   const { data } = await axios.post<{ data: JobSeekerAuthResponse }>(
-    "http://localhost:6977/api/user/job-seeker/auth",
+    `http://localhost:${backendPort}/api/user/job-seeker/auth`,
     { nameEmail, password },
     {
       headers: {
@@ -49,7 +50,7 @@ export const loginJobSeeker = async (
 
 export const fetchJobSeekerInfo = async (): Promise<JobSeekerInfo> => {
   const { data } = await axios.get<{ data: JobSeekerInfo }>(
-    "http://localhost:6977/api/user/job-seeker/auth",
+    `http://localhost:${backendPort}/api/user/job-seeker/auth`,
     {
       withCredentials: true,
     }
@@ -59,7 +60,7 @@ export const fetchJobSeekerInfo = async (): Promise<JobSeekerInfo> => {
 
 export const logoutJobSeeker = async (): Promise<void> => {
   const { data } = await axios.delete<{ data: void }>(
-    "http://localhost:6977/api/user/job-seeker/auth",
+    `http://localhost:${backendPort}/api/user/job-seeker/auth`,
     {
       withCredentials: true,
     }

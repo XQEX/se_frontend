@@ -18,15 +18,6 @@ interface ApprovalRequest {
   adminId: string;
 }
 
-const useGenerateAdmin = () => {
-  const queryClient = useQueryClient();
-  return useMutation(generateAdmin, {
-    onSuccess: () => {
-      queryClient.invalidateQueries("adminInfo");
-    },
-  });
-};
-
 const Admin: React.FC = () => {
   const queryClient = useQueryClient();
   const [loginLoading, setLoginLoading] = useState<boolean>(false);
@@ -45,7 +36,11 @@ const Admin: React.FC = () => {
       enabled: isLoggedIn,
     }
   );
-  const generateAdminMutation = useGenerateAdmin();
+  const generateAdminMutation = useMutation(generateAdmin, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("adminInfo");
+    },
+  });
   const loginAdminMutation = useMutation(
     ({ name, password }: { name: string; password: string }) =>
       loginAdmin(name, password),
