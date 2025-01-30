@@ -4,12 +4,25 @@ import { Link } from "react-router-dom";
 import { Avatar, Menu, Divider } from "@mantine/core";
 import { FaUserCircle, FaSearch, FaHome, FaBell } from "react-icons/fa";
 import { useUser } from "../context/UserContext";
+import { logoutJobSeeker } from "../api/JobSeeker";
+import { logoutEmployer } from "../api/Employer";
+import { logoutCompany } from "../api/Company";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const NavbarEmp: React.FC = () => {
   const { user, isLoading, isLoggedIn } = useUser();
   const [isSignedIn, setIsSignedIn] = useState(isLoggedIn);
 
   const [scrollDirection, setScrollDirection] = useState("up");
+
+  // Helper function for toast messages
+  const notifyError = (message: string) =>
+    toast.error(message, { position: "top-center" });
+  useEffect(() => {
+    console.log("User:", user);
+    setIsSignedIn(isLoggedIn);
+  }, [isLoggedIn, user]);
 
   useEffect(() => {
     let lastScrollY = window.scrollY;
@@ -25,10 +38,27 @@ export const NavbarEmp: React.FC = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const handleLogout = async () => {
+    try {
+      if (user.type === "JOBSEEKER") {
+        await logoutJobSeeker();
+      } else if (user.type === "EMPLOYER") {
+        await logoutEmployer();
+      } else if (user.type === "COMPANY") {
+        await logoutCompany();
+      }
+      notifyError("คุณออกจากระบบ!"); // Show the notification after navigation
+      setIsSignedIn(isLoggedIn);
+    } catch (error) {
+      console.error("Failed to logout:", error);
+    }
+  };
+
   const FakeNotifications = ["คุณมีการแจ้งเตือนใหม่"];
 
   return (
     <>
+      <ToastContainer />
       <nav
         className={`backdrop-blur-sm bg-seagreen/80 flex justify-between items-center px-6 py-1 shadow-md sticky top-0 z-50 min-h-[60px] transition-transform duration-300 ${
           scrollDirection === "down" ? "-translate-y-full" : "translate-y-0"
@@ -113,10 +143,10 @@ export const NavbarEmp: React.FC = () => {
             <Menu width={250} position="bottom-end">
               <Menu.Target>
                 <button className="flex items-center space-x-2 bg-gray-200 text-black px-4 py-2 rounded-3xl hover:bg-white transition">
-                  {user.profilePicture ? (
+                  {user?.profilePicture ? (
                     <Avatar
                       src={user.profilePicture}
-                      alt={user.username}
+                      alt={user.name}
                       radius="xl"
                       size={30}
                     />
@@ -138,10 +168,7 @@ export const NavbarEmp: React.FC = () => {
                 >
                   ตั้งค่า
                 </Menu.Item>
-                <Menu.Item
-                  onClick={() => setIsSignedIn(false)}
-                  className="font-[Kanit]"
-                >
+                <Menu.Item onClick={handleLogout} className="font-[Kanit]">
                   ออกจากระบบ
                 </Menu.Item>
               </Menu.Dropdown>

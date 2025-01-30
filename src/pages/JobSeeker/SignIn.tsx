@@ -114,7 +114,9 @@ function SignIn() {
           {/* Username/Email Input */}
           <div className="flex flex-col">
             <label className="text-black text-sm mb-2 kanit-light">
-              ชื่อผู้ใช้งานหรืออีเมล
+              {userType === "company"
+                ? "ชื่อบริษัทหรืออีเมล"
+                : "ชื่อผู้ใช้งานหรืออีเมล"}
             </label>
             <input
               type="text"

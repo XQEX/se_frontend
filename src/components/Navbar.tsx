@@ -18,7 +18,6 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export const Navbar: React.FC = () => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { user, isLoading, isLoggedIn } = useUser();
   const [isSignedIn, setIsSignedIn] = useState(isLoggedIn);
   const [scrollDirection, setScrollDirection] = useState("up");
@@ -107,6 +106,13 @@ export const Navbar: React.FC = () => {
       >
         <FaEdit className="mr-2" />
         แก้ไขประวัติ
+      </Link>
+      <Link
+        to="/homeemp"
+        className="text-gray-200 kanit-regular hover:text-white px-4 py-1 rounded-md transition-colors duration-300 flex items-center"
+      >
+        <FaBuilding className="mr-2" />
+        สำหรับบริษัท
       </Link>
       <Link
         to="/postjob"
