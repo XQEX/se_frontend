@@ -110,7 +110,7 @@ function TrackJobSeeker() {
 
   return (
     <div>
-      <Navbar isLoggedIn={false} />
+      <Navbar />
       <div className="min-h-screen flex flex-col md:flex-row bg-white text-[#2e8b57] justify-center items-center p-4 md:p-8">
         {/* Text Section */}
         <div className="flex flex-col items-center md:items-start py-6 text-center md:text-left">

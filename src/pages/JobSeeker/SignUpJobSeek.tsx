@@ -87,7 +87,7 @@ function SignUpJobSeek() {
       <ToastContainer />
 
       {/* Navbar */}
-      <Navbar isLoggedIn={false} />
+      <Navbar />
 
       {/* Main Content */}
       <div

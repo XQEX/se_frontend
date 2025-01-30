@@ -4,7 +4,7 @@ import { TbCurrencyBaht } from "react-icons/tb";
 import { Link } from "react-router-dom";
 
 type JobCardProps = {
-  id: string | number;  
+  id: string | number;
   title: string;
   workDays?: string;
   workHours?: string;
@@ -39,7 +39,9 @@ function JobCard({
         <FaStar
           size={20}
           className={`transition-colors ${
-            isFav ? "fill-yellow-400 text-yellow-400" : "text-gray-300 group-hover:text-gray-400"
+            isFav
+              ? "fill-yellow-400 text-yellow-400"
+              : "text-gray-300 group-hover:text-gray-400"
           }`}
         />
       </button>
@@ -48,7 +50,9 @@ function JobCard({
       <Link to={`/jobseeker/details/${String(id)}`} className="block space-y-4">
         {/* ชื่องาน */}
         <div className="pr-8">
-          <h2 className="text-xl font-bold text-gray-900 mb-1 line-clamp-2">{title}</h2>
+          <h2 className="text-xl font-bold text-gray-900 mb-1 line-clamp-2">
+            {title}
+          </h2>
         </div>
 
         {/* รายละเอียดงาน */}
@@ -57,7 +61,10 @@ function JobCard({
           <div className="flex items-center">
             <TbCurrencyBaht size={16} className="mr-1.5 text-seagreen" />
             <span>
-              ฿{!isNaN(parseFloat(salary)) ? parseFloat(salary).toLocaleString() : salary}
+              ฿
+              {!isNaN(parseFloat(salary))
+                ? parseFloat(salary).toLocaleString()
+                : salary}
             </span>
           </div>
 
@@ -80,9 +87,9 @@ function JobCard({
         <div className="pt-2">
           <div className="flex items-center text-emerald-600 font-medium group-hover:text-emerald-700 transition-colors">
             <span>รายละเอียด</span>
-            <FaArrowRight 
-              size={16} 
-              className="ml-1.5 transition-transform group-hover:translate-x-1" 
+            <FaArrowRight
+              size={16}
+              className="ml-1.5 transition-transform group-hover:translate-x-1"
             />
           </div>
         </div>

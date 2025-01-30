@@ -126,7 +126,7 @@ const TrackEmployersDetails: React.FC = () => {
   if (!applicant) {
     return (
       <div>
-        <NavbarEmp isLoggedIn={false} />
+        <NavbarEmp />
         <div className="details-container">
           <h1>Applicant Not Found</h1>
           <button onClick={() => navigate(-1)} className="back-button">
@@ -141,7 +141,7 @@ const TrackEmployersDetails: React.FC = () => {
   return (
     <div>
       {/* NavbarEmp */}
-      <NavbarEmp isLoggedIn={false} />
+      <NavbarEmp />
 
       <div className="details-container">
         <h1>Applicant Details</h1>

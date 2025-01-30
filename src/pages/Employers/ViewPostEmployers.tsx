@@ -38,7 +38,7 @@ const ViewPostEmployers: React.FC = () => {
   if (!job) {
     return (
       <div>
-        <NavbarEmp isLoggedIn={false} />
+        <NavbarEmp />
         <div className="view-post-container text-center">
           <h1 className="job-not-found">ไม่พบข้อมูลงาน</h1>
           <button className="back-button" onClick={() => navigate("/homeemp")}>
@@ -52,7 +52,7 @@ const ViewPostEmployers: React.FC = () => {
 
   return (
     <div>
-      <NavbarEmp isLoggedIn={false} />
+      <NavbarEmp />
       <div className="view-post-container">
         <h1 className="page-title">รายละเอียดงาน</h1>
         <div className="job-post-details">

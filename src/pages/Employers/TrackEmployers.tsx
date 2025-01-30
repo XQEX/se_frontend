@@ -95,7 +95,7 @@ const TrackEmployers: React.FC = () => {
   return (
     <div>
       {/* ✅ NavbarEmp */}
-      <NavbarEmp isLoggedIn={false} />
+      <NavbarEmp />
 
       <div className="track-container">
         <h1>ติดตามใบสมัคร</h1>

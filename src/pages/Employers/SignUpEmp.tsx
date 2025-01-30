@@ -144,7 +144,7 @@ function SignUpEmp() {
       <ToastContainer />
 
       {/* Navbar */}
-      <Navbar isLoggedIn={false} />
+      <Navbar />
 
       {/* Main Content */}
       <div

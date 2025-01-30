@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from "react";
 
-interface NavbarProps {
-  isLoggedIn: boolean;
-}
 import { Link } from "react-router-dom";
 import { Avatar, Menu, Divider } from "@mantine/core";
 import { FaUserCircle, FaSearch, FaHome, FaBell } from "react-icons/fa";
 
-export const NavbarEmp: React.FC<NavbarProps> = ({ isLoggedIn }) => {
-  const [isSignedIn, setIsSignedIn] = useState(isLoggedIn);
+export const NavbarEmp: React.FC = () => {
+  const [isSignedIn, setIsSignedIn] = useState(true);
   const user = { name: "ชื่อ นามสกุล", profilePicture: "/vite.svg" };
   const [scrollDirection, setScrollDirection] = useState("up");
 

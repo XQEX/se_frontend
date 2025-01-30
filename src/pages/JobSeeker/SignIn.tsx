@@ -67,7 +67,7 @@ function SignIn() {
     <div className="h-screen flex flex-col">
       <ToastContainer />
       {/* Navbar */}
-      <Navbar isLoggedIn={false} />
+      <Navbar />
 
       {/* Main Content */}
       <div

@@ -74,7 +74,7 @@ const ApplicationForm = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 ">
-      <Navbar isLoggedIn={false} />
+      <Navbar />
       <Container size="sm" className="mt-8">
         <Paper shadow="md" radius="md" p="xl" className="bg-white kanit-light">
           <Title order={2} className="text-gray-800 mb-6 text-center pb-8">

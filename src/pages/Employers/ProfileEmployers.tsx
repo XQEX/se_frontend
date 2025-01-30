@@ -27,7 +27,7 @@ const ProfileEmployers: React.FC = () => {
 
   return (
     <div>
-      <NavbarEmp isLoggedIn={false} />
+      <NavbarEmp />
       <div className="profile-container">
         <h1 className="profile-title">โปรไฟล์</h1>
 

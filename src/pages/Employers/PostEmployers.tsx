@@ -99,7 +99,7 @@ const PostJobEmp: React.FC = () => {
 
   return (
     <div>
-      <NavbarEmp isLoggedIn={false} />
+      <NavbarEmp />
       <div className="post-job-container">
         <h1>โพสต์งาน</h1>
 

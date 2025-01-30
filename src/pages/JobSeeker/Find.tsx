@@ -36,7 +36,7 @@ function Find() {
 
   return (
     <div className="min-h-screen flex flex-col font-kanit">
-      <Navbar isLoggedIn={false} />
+      <Navbar />
       <div className="flex flex-row flex-grow">
         <Sidebar />
         <div className="w-full md:w-3/4 p-6">

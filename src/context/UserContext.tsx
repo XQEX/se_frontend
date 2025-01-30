@@ -1,8 +1,8 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState } from "react";
 import { useQuery } from "react-query";
 import { fetchJobSeekerInfo } from "../api/JobSeeker"; // Adjust the import based on your API
-import { fetchEmployerInfo } from "../api/Employer"; // Adjust the import based on your API
-import { fetchAdminInfo } from "../api/Admin"; // Adjust the import based on your API
+// import { fetchEmployerInfo } from "../api/Employer"; // Adjust the import based on your API
+// import { fetchAdminInfo } from "../api/Admin"; // Adjust the import based on your API
 
 interface UserContextType {
   user: any;

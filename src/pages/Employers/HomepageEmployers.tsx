@@ -42,7 +42,7 @@ const HomepageEmployers: React.FC = () => {
   };
   return (
     <div className="min-h-screen bg-white">
-      <NavbarEmp isLoggedIn={false} />
+      <NavbarEmp />
 
       <div className="max-w-7xl mx-auto px-8 py-14 grid grid-cols-1 lg:grid-cols-3 gap-12">
         {/* Left Sidebar (Quick Actions) */}

@@ -82,7 +82,7 @@ const JobPositionForm = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar isLoggedIn={false} />
+      <Navbar />
       <Container size="sm" className="mt-8">
         <Paper shadow="md" radius="md" p="xl" className="bg-white">
           <Title

@@ -14,7 +14,7 @@ function ContactUs() {
   return (
     <div className="min-h-screen flex flex-col justify-between">
       {/* Navbar */}
-      <Navbar isLoggedIn={false} />
+      <Navbar />
 
       {/* Content Section */}
       <Container size="md" className="flex flex-col items-center px-4 py-12">

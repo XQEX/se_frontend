@@ -21,7 +21,7 @@ function Profile() {
 
   return (
     <div>
-      <Navbar isLoggedIn={false} />
+      <Navbar />
 
       <header className="bg-gradient-to-r from-seagreen to-green-400 h-40 w-full relative"></header>
       <motion.div

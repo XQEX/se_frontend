@@ -4,7 +4,7 @@ import { Navbar } from "../../components/Navbar";
 function Settings() {
   return (
     <div>
-      <Navbar isLoggedIn={false} />
+      <Navbar />
     </div>
   );
 }
