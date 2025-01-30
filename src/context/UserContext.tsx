@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useState } from "react";
 import { useQuery } from "react-query";
-import { fetchJobSeekerInfo } from "../api/JobSeeker"; // Adjust the import based on your API
-// import { fetchEmployerInfo } from "../api/Employer"; // Adjust the import based on your API
-// import { fetchAdminInfo } from "../api/Admin"; // Adjust the import based on your API
+import { fetchJobSeekerInfo } from "../api/JobSeeker";
+import { fetchEmployerInfo } from "../api/Employer";
+import { fetchCompanyInfo } from "../api/Company";
 
 interface UserContextType {
   user: any;
@@ -19,15 +19,52 @@ interface UserProviderProps {
 
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const [user, setUser] = useState<any>(null);
-  const { data, isLoading } = useQuery("currentUser", fetchJobSeekerInfo, {
-    onSuccess: (data) => {
-      setUser(data);
-    },
-    onError: () => {
-      setUser(null);
-    },
-  });
 
+  const { isLoading: isLoadingJobSeeker } = useQuery(
+    "currentJobSeeker",
+    fetchJobSeekerInfo,
+    {
+      enabled: !user, // Only fetch if user is not already set
+      refetchOnWindowFocus: false,
+      onSuccess: (data) => {
+        setUser(data);
+      },
+      onError: () => {
+        setUser(null);
+      },
+    }
+  );
+
+  const { isLoading: isLoadingEmployer } = useQuery(
+    "currentEmployer",
+    fetchEmployerInfo,
+    {
+      enabled: !user, // Only fetch if user is not already set
+      refetchOnWindowFocus: false,
+      onSuccess: (data) => {
+        setUser(data);
+      },
+      onError: () => {
+        setUser(null);
+      },
+    }
+  );
+  const { isLoading: isLoadingCompany } = useQuery(
+    "currentCompany",
+    fetchCompanyInfo,
+    {
+      enabled: !user, // Only fetch if user is not already set
+      refetchOnWindowFocus: false,
+      onSuccess: (data) => {
+        setUser(data);
+      },
+      onError: () => {
+        setUser(null);
+      },
+    }
+  );
+
+  const isLoading = isLoadingJobSeeker || isLoadingEmployer || isLoadingCompany;
   const isLoggedIn = !!user;
 
   return (

@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { Navbar } from "../../components/Navbar";
 import { Link } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
 // Import Toastify
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function SignUpEmp() {
+  const navigate = useNavigate();
   const [userType, setUserType] = useState("employer");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -65,7 +66,9 @@ function SignUpEmp() {
         notifyError(msg || "มีข้อผิดพลาด กรุณาลองอีกครั้ง");
       } else {
         notifySuccess(msg || "สมัครสมาชิกสำเร็จ!");
-        // TODO: e.g. Redirect the user or clear the form
+        setTimeout(() => {
+          navigate("/");
+        }, 2000);
       }
       console.log(data);
     } catch (error) {
@@ -116,7 +119,9 @@ function SignUpEmp() {
         notifyError(msg || "มีข้อผิดพลาด กรุณาลองอีกครั้ง");
       } else {
         notifySuccess(msg || "สมัครสมาชิกสำเร็จ!");
-        // TODO: e.g. Redirect the user or clear the form
+        setTimeout(() => {
+          navigate("/");
+        }, 2000);
       }
       console.log(data);
     } catch (error) {

@@ -1,13 +1,15 @@
 import React, { useState } from "react";
-import { Navbar } from "../../components/Navbar";
 import { Link, useNavigate } from "react-router-dom";
-
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { loginJobSeeker } from "../../api/JobSeeker";
+import { loginCompany } from "../../api/Company";
+import { loginEmployer } from "../../api/Employer"; // Assuming you have an Employer API
 
 function SignIn() {
   const [nameEmail, setNameEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [userType, setUserType] = useState("jobseeker"); // Default to jobseeker
   const navigate = useNavigate();
 
   // Loading state
@@ -19,42 +21,35 @@ function SignIn() {
   const notifySuccess = (message: string) =>
     toast.success(message, { position: "top-center" });
 
-  async function LoginJobseek(e: React.FormEvent) {
+  async function LoginUser(e: React.FormEvent) {
     e.preventDefault();
 
     setIsSubmitting(true);
 
     try {
-      const body = {
-        nameEmail: nameEmail,
-        password: password,
-      };
-
-      const response = await fetch(
-        "http://localhost:6977/api/user/job-seeker/auth",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify(body),
-        }
-      );
-
-      const { msg, data } = await response.json();
-
-      // If the server returns an error status (example)
-      if (!response.ok) {
-        notifyError(msg || "มีข้อผิดพลาด กรุณาลองอีกครั้ง");
-      } else {
-        setTimeout(() => {
-          notifySuccess(msg || "เข้าสู่ระบบชิกสำเร็จ!"); // Show the notification after navigation
-        }, 500); // Adjust the delay as needed
-        navigate("/"); // Navigate to the homepage first
+      let response;
+      if (userType === "jobseeker") {
+        response = await loginJobSeeker(nameEmail, password);
+      } else if (userType === "company") {
+        response = await loginCompany(nameEmail, password);
+      } else if (userType === "employer") {
+        response = await loginEmployer(nameEmail, password);
       }
-      console.log(data);
+
+      if (response) {
+        notifySuccess("เข้าสู่ระบบสำเร็จ!"); // Show the notification after navigation
+        if (userType === "jobseeker") {
+          setTimeout(() => {
+            navigate("/");
+          }, 2000);
+        } else {
+          setTimeout(() => {
+            navigate("/homeemp");
+          }, 2000);
+        }
+      }
     } catch (error) {
-      notifyError("ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้ กรุณาลองใหม่");
-      console.error(error);
+      notifyError((error as any).response.data.msg);
     } finally {
       setIsSubmitting(false);
     }
@@ -66,11 +61,10 @@ function SignIn() {
       "_self"
     );
   }
+
   return (
     <div className="h-screen flex flex-col">
       <ToastContainer />
-      {/* Navbar */}
-      <Navbar />
 
       {/* Main Content */}
       <div
@@ -83,6 +77,40 @@ function SignIn() {
 
         {/* Form Section */}
         <div className="w-full max-w-sm space-y-6">
+          {/* User Type Selection */}
+          <div className="flex justify-center mb-4 space-x-2">
+            <button
+              onClick={() => setUserType("jobseeker")}
+              className={`${
+                userType === "jobseeker"
+                  ? "bg-seagreen text-white"
+                  : "bg-white text-seagreen"
+              } kanit-semibold py-2 px-4 rounded-lg border border-seagreen`}
+            >
+              Job Seeker
+            </button>
+            <button
+              onClick={() => setUserType("employer")}
+              className={`${
+                userType === "employer"
+                  ? "bg-seagreen text-white"
+                  : "bg-white text-seagreen"
+              } kanit-semibold py-2 px-4 rounded-lg border border-seagreen`}
+            >
+              Employer
+            </button>
+            <button
+              onClick={() => setUserType("company")}
+              className={`${
+                userType === "company"
+                  ? "bg-seagreen text-white"
+                  : "bg-white text-seagreen"
+              } kanit-semibold py-2 px-4 rounded-lg border border-seagreen`}
+            >
+              Company
+            </button>
+          </div>
+
           {/* Username/Email Input */}
           <div className="flex flex-col">
             <label className="text-black text-sm mb-2 kanit-light">
@@ -91,7 +119,11 @@ function SignIn() {
             <input
               type="text"
               value={nameEmail}
-              placeholder="ชื่อผู้ใช้งานหรืออีเมล"
+              placeholder={
+                userType === "company"
+                  ? "ชื่อบริษัทหรืออีเมล"
+                  : "ชื่อผู้ใช้งานหรืออีเมล"
+              }
               onChange={(e) => setNameEmail(e.target.value)}
               className="text-black placeholder-kanit rounded-lg border border-gray-300 p-3"
             />
@@ -114,7 +146,7 @@ function SignIn() {
           {/* Login Button */}
           <div className="flex justify-center">
             <button
-              onClick={LoginJobseek}
+              onClick={LoginUser}
               className="bg-seagreen text-white kanit-semibold w-full py-3 rounded-lg"
             >
               เข้าสู่ระบบ

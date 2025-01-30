@@ -69,7 +69,9 @@ function SignUpJobSeek() {
         notifyError(msg || "มีข้อผิดพลาด กรุณาลองอีกครั้ง");
       } else {
         notifySuccess(msg || "สมัครสมาชิกสำเร็จ!");
-        navigate("/");
+        setTimeout(() => {
+          navigate("/");
+        }, 2000);
         // TODO: e.g. Redirect the user or clear the form
       }
       console.log(data);

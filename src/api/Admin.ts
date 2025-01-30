@@ -14,88 +14,125 @@ interface ApprovalRequest {
 }
 
 export const fetchAdminInfo = async (): Promise<AdminInfo> => {
-  const { data } = await axios.get<{ data: AdminInfo }>(
-    `http://localhost:${backendPort}/api/admin/auth`,
-    {
-      withCredentials: true,
-    }
-  );
-  return data.data;
+  try {
+    console.log("Fetching admin info...");
+    const { data } = await axios.get<{ data: AdminInfo }>(
+      `http://localhost:${backendPort}/api/admin/auth`,
+      {
+        withCredentials: true,
+      }
+    );
+    console.log("Fetch admin info successful:", data);
+    return data.data;
+  } catch (error) {
+    console.error("Fetch admin info failed:", error);
+    throw error;
+  }
 };
 
 export const fetchApprovalRequests = async (): Promise<ApprovalRequest[]> => {
-  const { data } = await axios.get<{ data: ApprovalRequest[] }>(
-    `http://localhost:${backendPort}/api/admin/approve`,
-    {
-      withCredentials: true,
-    }
-  );
-  console.log("fetch Approval Requests success!!", data);
-  return data.data;
+  try {
+    console.log("Fetching approval requests...");
+    const { data } = await axios.get<{ data: ApprovalRequest[] }>(
+      `http://localhost:${backendPort}/api/admin/approve`,
+      {
+        withCredentials: true,
+      }
+    );
+    console.log("Fetch approval requests successful:", data);
+    return data.data;
+  } catch (error) {
+    console.error("Fetch approval requests failed:", error);
+    throw error;
+  }
 };
 
 export const generateAdmin = async (): Promise<AdminInfo> => {
-  const { data } = await axios.post<{ data: AdminInfo }>(
-    `http://localhost:${backendPort}/api/admin`,
-    {},
-    {
-      headers: {
-        "Content-Type": "application/json",
-        permission_key: "69duangjun69",
-      },
-      withCredentials: true,
-    }
-  );
-  console.log("successfully generate admin", data);
-  return data.data;
+  try {
+    console.log("Generating admin...");
+    const { data } = await axios.post<{ data: AdminInfo }>(
+      `http://localhost:${backendPort}/api/admin`,
+      {},
+      {
+        headers: {
+          "Content-Type": "application/json",
+          permission_key: "69duangjun69",
+        },
+        withCredentials: true,
+      }
+    );
+    console.log("Generate admin successful:", data);
+    return data.data;
+  } catch (error) {
+    console.error("Generate admin failed:", error);
+    throw error;
+  }
 };
 
 export const loginAdmin = async (
   name: string,
   password: string
 ): Promise<AdminInfo> => {
-  const { data } = await axios.post<{ data: AdminInfo }>(
-    `http://localhost:${backendPort}/api/admin/auth`,
-    {
-      nameEmail: name,
-      password,
-    },
-    {
-      headers: {
-        "Content-Type": "application/json",
+  try {
+    console.log("Attempting to login admin with:", { name, password });
+    const { data } = await axios.post<{ data: AdminInfo }>(
+      `http://localhost:${backendPort}/api/admin/auth`,
+      {
+        nameEmail: name,
+        password,
       },
-      withCredentials: true,
-    }
-  );
-  console.log("login success", data);
-  return data.data;
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    console.log("Login successful:", data);
+    return data.data;
+  } catch (error) {
+    console.error("Login failed:", error);
+    throw error;
+  }
 };
 
 export const logoutAdmin = async (): Promise<void> => {
-  const { data } = await axios.delete<{ data: void }>(
-    `http://localhost:${backendPort}/api/admin/auth`,
-    {
-      withCredentials: true,
-    }
-  );
-  console.log("delete success", data);
-  return data.data;
+  try {
+    console.log("Logging out admin...");
+    const { data } = await axios.delete<{ data: void }>(
+      `http://localhost:${backendPort}/api/admin/auth`,
+      {
+        withCredentials: true,
+      }
+    );
+    console.log("Logout successful:", data);
+    return data.data;
+  } catch (error) {
+    console.error("Logout failed:", error);
+    throw error;
+  }
 };
 
 export const approveUser = async (
   userId: string,
   status: string
 ): Promise<ApprovalRequest> => {
-  const { data } = await axios.post<{ data: ApprovalRequest }>(
-    `http://localhost:${backendPort}/api/admin/approve`,
-    { id: userId, status },
-    {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      withCredentials: true,
-    }
-  );
-  console.log(data);
-  return data.data;
+  try {
+    console.log("Approving user with:", { userId, status });
+    const { data } = await axios.post<{ data: ApprovalRequest }>(
+      `http://localhost:${backendPort}/api/admin/approve`,
+      { id: userId, status },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    console.log("Approve user successful:", data);
+    return data.data;
+  } catch (error) {
+    console.error("Approve user failed:", error);
+    throw error;
+  }
 };

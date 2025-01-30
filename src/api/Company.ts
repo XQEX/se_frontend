@@ -18,52 +18,85 @@ export const registerCompany = async (
   password: string,
   confirmPassword: string
 ): Promise<{ id: string }> => {
-  const { data } = await axios.post<{ data: { id: string } }>(
-    `http://localhost:${backendPort}/api/user/company`,
-    { officialName, email, password, confirmPassword },
-    {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      withCredentials: true,
-    }
-  );
-  return data.data;
+  try {
+    console.log("Registering company with:", {
+      officialName,
+      email,
+      password,
+      confirmPassword,
+    });
+    const { data } = await axios.post<{ data: { id: string } }>(
+      `http://localhost:${backendPort}/api/user/company`,
+      { officialName, email, password, confirmPassword },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    console.log("Registration successful:", data);
+    return data.data;
+  } catch (error) {
+    console.error("Registration failed:", error);
+    throw error;
+  }
 };
 
 export const loginCompany = async (
   nameEmail: string,
   password: string
 ): Promise<CompanyAuthResponse> => {
-  const { data } = await axios.post<{ data: CompanyAuthResponse }>(
-    `http://localhost:${backendPort}/api/user/company/auth`,
-    { nameEmail, password },
-    {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      withCredentials: true,
-    }
-  );
-  return data.data;
+  try {
+    console.log("Attempting to login company with:", { nameEmail, password });
+    const { data } = await axios.post<{ data: CompanyAuthResponse }>(
+      `http://localhost:${backendPort}/api/user/company/auth`,
+      { nameEmail, password },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    console.log("Login successful:", data);
+    return data.data;
+  } catch (error) {
+    console.error("Login failed:", error);
+    throw error;
+  }
 };
 
 export const fetchCompanyInfo = async (): Promise<CompanyInfo> => {
-  const { data } = await axios.get<{ data: CompanyInfo }>(
-    `http://localhost:${backendPort}/api/user/company/auth`,
-    {
-      withCredentials: true,
-    }
-  );
-  return data.data;
+  try {
+    console.log("Fetching company info...");
+    const { data } = await axios.get<{ data: CompanyInfo }>(
+      `http://localhost:${backendPort}/api/user/company/auth`,
+      {
+        withCredentials: true,
+      }
+    );
+    console.log("Fetch company info successful:", data);
+    return data.data;
+  } catch (error) {
+    console.error("Fetch company info failed:", error);
+    throw error;
+  }
 };
 
 export const logoutCompany = async (): Promise<void> => {
-  const { data } = await axios.delete<{ data: void }>(
-    `http://localhost:${backendPort}/api/user/company/auth`,
-    {
-      withCredentials: true,
-    }
-  );
-  return data.data;
+  try {
+    console.log("Logging out company...");
+    const { data } = await axios.delete<{ data: void }>(
+      `http://localhost:${backendPort}/api/user/company/auth`,
+      {
+        withCredentials: true,
+      }
+    );
+    console.log("Logout successful:", data);
+    return data.data;
+  } catch (error) {
+    console.error("Logout failed:", error);
+    throw error;
+  }
 };

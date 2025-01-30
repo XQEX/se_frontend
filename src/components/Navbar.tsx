@@ -12,6 +12,10 @@ import { MdPostAdd } from "react-icons/md";
 import { useDisclosure } from "@mantine/hooks";
 import { useUser } from "../context/UserContext";
 import { logoutJobSeeker } from "../api/JobSeeker";
+import { logoutEmployer } from "../api/Employer";
+import { logoutCompany } from "../api/Company";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const Navbar: React.FC = () => {
   const { user, isLoading, isLoggedIn } = useUser();
@@ -20,12 +24,18 @@ export const Navbar: React.FC = () => {
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
 
-  useEffect(() => {
-    setIsSignedIn(isLoggedIn);
-  }, [isLoggedIn]);
+  // Helper function for toast messages
+  const notifyError = (message: string) =>
+    toast.error(message, { position: "top-center" });
 
   useEffect(() => {
-    // console.log(user);
+    console.log("User:", user);
+    setIsSignedIn(isLoggedIn);
+  }, [isLoggedIn, user]);
+
+  useEffect(() => {
+    if (!isLoggedIn) return;
+
     let lastScrollY = window.scrollY;
 
     const handleScroll = () => {
@@ -39,11 +49,18 @@ export const Navbar: React.FC = () => {
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [isLoggedIn]);
 
   const handleLogout = async () => {
     try {
-      await logoutJobSeeker();
+      if (user.type === "JOBSEEKER") {
+        await logoutJobSeeker();
+      } else if (user.type === "EMPLOYER") {
+        await logoutEmployer();
+      } else if (user.type === "COMPANY") {
+        await logoutCompany();
+      }
+      notifyError("คุณออกจากระบบ!"); // Show the notification after navigation
       setIsSignedIn(false);
     } catch (error) {
       console.error("Failed to logout:", error);
@@ -115,6 +132,7 @@ export const Navbar: React.FC = () => {
 
   return (
     <>
+      <ToastContainer />
       <nav
         className={`backdrop-blur-sm bg-seagreen/80 flex justify-between items-center px-6 py-1 shadow-md sticky top-0 z-50 min-h-[60px] transition-transform duration-300 ${
           scrollDirection === "down" ? "-translate-y-full" : "translate-y-0"
@@ -196,22 +214,22 @@ export const Navbar: React.FC = () => {
               <Menu width={250} position="bottom-end">
                 <Menu.Target>
                   <button className="flex items-center space-x-2 bg-gray-200 text-black px-4 py-2 rounded-3xl hover:bg-white transition">
-                    {user.profilePicture ? (
+                    {user?.profilePicture ? (
                       <Avatar
                         src={user.profilePicture}
-                        alt={user.name}
+                        alt={user.username}
                         radius="xl"
                         size={30}
                       />
                     ) : (
                       <FaUserCircle size={24} />
                     )}
-                    <span className="kanit-regular">{user.username}</span>
+                    <span className="kanit-regular">{user?.username}</span>
                   </button>
                 </Menu.Target>
                 <Menu.Dropdown className="m-2">
                   <div className="p-3 text-center">
-                    <div className="kanit-regular">{user.username}</div>
+                    <div className="kanit-regular">{user?.username}</div>
                   </div>
                   <Divider />
                   {menuItems}
@@ -311,7 +329,7 @@ export const Navbar: React.FC = () => {
                 <Menu width={250} position="bottom-end">
                   <Menu.Target>
                     <button className="flex items-center space-x-2 bg-gray-200 text-black px-4 py-2 rounded-3xl hover:bg-white transition">
-                      {user.profilePicture ? (
+                      {user?.profilePicture ? (
                         <Avatar
                           src={user.profilePicture}
                           alt={user.username}
@@ -321,12 +339,12 @@ export const Navbar: React.FC = () => {
                       ) : (
                         <FaUserCircle size={24} />
                       )}
-                      <span className="kanit-regular">{user.username}</span>
+                      <span className="kanit-regular">{user?.username}</span>
                     </button>
                   </Menu.Target>
                   <Menu.Dropdown className="m-2">
                     <div className="p-3 text-center">
-                      <div className="kanit-regular">{user.username}</div>
+                      <div className="kanit-regular">{user?.username}</div>
                     </div>
                     <Divider />
                     {menuItems}

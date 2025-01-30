@@ -3,10 +3,12 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Avatar, Menu, Divider } from "@mantine/core";
 import { FaUserCircle, FaSearch, FaHome, FaBell } from "react-icons/fa";
+import { useUser } from "../context/UserContext";
 
 export const NavbarEmp: React.FC = () => {
-  const [isSignedIn, setIsSignedIn] = useState(true);
-  const user = { name: "ชื่อ นามสกุล", profilePicture: "/vite.svg" };
+  const { user, isLoading, isLoggedIn } = useUser();
+  const [isSignedIn, setIsSignedIn] = useState(isLoggedIn);
+
   const [scrollDirection, setScrollDirection] = useState("up");
 
   useEffect(() => {
@@ -114,18 +116,20 @@ export const NavbarEmp: React.FC = () => {
                   {user.profilePicture ? (
                     <Avatar
                       src={user.profilePicture}
-                      alt={user.name}
+                      alt={user.username}
                       radius="xl"
                       size={30}
                     />
                   ) : (
                     <FaUserCircle size={24} />
                   )}
-                  <span className="font-[Kanit]">{user.name}</span>
+                  <span className="font-[Kanit]">{user.username}</span>
                 </button>
               </Menu.Target>
               <Menu.Dropdown className="m-2">
-                <div className="p-3 text-center font-[Kanit]">{user.name}</div>
+                <div className="p-3 text-center font-[Kanit]">
+                  {user.username}
+                </div>
                 <Divider />
                 <Menu.Item
                   component={Link}
