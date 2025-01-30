@@ -1,29 +1,27 @@
 import React, { useState } from "react";
 import Navbar from "../../components/Navbar";
 import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
 
-// Import Toastify
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function SignIn() {
-  const navigate = useNavigate();
   const [nameEmail, setNameEmail] = useState("");
   const [password, setPassword] = useState("");
 
   // Loading state
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Helper function for toast messages
+  const notifyError = (message: string) =>
+    toast.error(message, { position: "top-center" });
+  const notifySuccess = (message: string) =>
+    toast.success(message, { position: "top-center" });
+
   async function LoginJobseek(e: React.FormEvent) {
     e.preventDefault();
 
     setIsSubmitting(true);
-    // Helper function for toast messages
-    const notifyError = (message: string) =>
-      toast.error(message, { position: "top-center" });
-    const notifySuccess = (message: string) =>
-      toast.success(message, { position: "top-center" });
 
     try {
       const body = {
@@ -39,20 +37,18 @@ function SignIn() {
           credentials: "include",
           body: JSON.stringify(body),
         }
-      ).then((res) => res.json());
+      );
 
-      const { success, msg, data } = await response;
+      const { msg, data } = await response.json();
 
       // If the server returns an error status (example)
-      if (!success) {
+      if (!response.ok) {
         notifyError(msg || "มีข้อผิดพลาด กรุณาลองอีกครั้ง");
       } else {
         notifySuccess(msg || "เข้าสู่ระบบชิกสำเร็จ!");
-        // navigate("/");
         // TODO: e.g. Redirect the user or clear the form
       }
-
-      console.log(success, msg, data);
+      console.log(data);
     } catch (error) {
       notifyError("ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้ กรุณาลองใหม่");
       console.error(error);
@@ -61,9 +57,14 @@ function SignIn() {
     }
   }
 
+  function handleGoogleOauth() {
+    window.open(
+      "http://localhost:6977/api/user/job-seeker/oauth/google",
+      "_self"
+    );
+  }
   return (
-    <div className={`h-screen flex flex-col`}>
-      <ToastContainer />
+    <div className="h-screen flex flex-col">
       {/* Navbar */}
       <Navbar />
 
@@ -85,7 +86,9 @@ function SignIn() {
             </label>
             <input
               type="text"
+              value={nameEmail}
               placeholder="ชื่อผู้ใช้งานหรืออีเมล"
+              onChange={(e) => setNameEmail(e.target.value)}
               className="text-black placeholder-kanit rounded-lg border border-gray-300 p-3"
               onChange={(e) => {
                 setNameEmail(e.target.value);
@@ -100,7 +103,9 @@ function SignIn() {
             </label>
             <input
               type="password"
+              value={password}
               placeholder="รหัสผ่าน"
+              onChange={(e) => setPassword(e.target.value)}
               className="text-black placeholder-kanit rounded-lg border border-gray-300 p-3"
               onChange={(e) => {
                 setPassword(e.target.value);
@@ -111,12 +116,24 @@ function SignIn() {
           {/* Login Button */}
           <div className="flex justify-center">
             <button
-              className="bg-seagreen text-white kanit-semibold w-full py-3 rounded-lg"
               onClick={LoginJobseek}
+              className="bg-seagreen text-white kanit-semibold w-full py-3 rounded-lg"
             >
-              {isSubmitting ? "กำลังดำเนินการ..." : "เข้าสู่ระบบ"}
+              เข้าสู่ระบบ
             </button>
           </div>
+          <button onClick={handleGoogleOauth}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              className="bi bi-google"
+              viewBox="0 0 16 16"
+            >
+              <path d="M15.545 6.558a9.4 9.4 0 0 1 .139 1.626c0 2.434-.87 4.492-2.384 5.885h.002C11.978 15.292 10.158 16 8 16A8 8 0 1 1 8 0a7.7 7.7 0 0 1 5.352 2.082l-2.284 2.284A4.35 4.35 0 0 0 8 3.166c-2.087 0-3.86 1.408-4.492 3.304a4.8 4.8 0 0 0 0 3.063h.003c.635 1.893 2.405 3.301 4.492 3.301 1.078 0 2.004-.276 2.722-.764h-.003a3.7 3.7 0 0 0 1.599-2.431H8v-3.08z" />
+            </svg>
+          </button>
         </div>
 
         {/* Footer */}
@@ -126,7 +143,7 @@ function SignIn() {
           </Link>
         </div>
       </div>
-      {/*Spinning */}
+      {/* Spinner Overlay */}
       {isSubmitting && (
         <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 flex flex-col items-center justify-center z-50">
           {/* Simple spinner */}

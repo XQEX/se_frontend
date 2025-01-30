@@ -23,6 +23,7 @@ import PostJob from "./pages/JobSeeker/Post";
 import JobDetail from "./pages/JobSeeker/JobDetail";
 import JobDetailEmp from "./pages/Employers/๋JobDetailsEmp";
 import UserTypeWizard from "./pages/UserTypeWizard";
+import Admin from "./pages/Admin";
 
 function App() {
   return (
@@ -55,7 +56,9 @@ function App() {
         <Route path="/employer/details/:id" element={<JobDetailEmp />} />
 
         {/* หน้าสำหรับ Route ที่ไม่พบ */}
+        {/* Routes สำหรับ Admin */}
         <Route path="/select-user-type" element={<UserTypeWizard />} />
+        <Route path="admin" element={<Admin />} />
         <Route path="*" element={<NoPage />} />
       </Routes>
     </div>
