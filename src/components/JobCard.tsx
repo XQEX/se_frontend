@@ -61,14 +61,10 @@ function JobCard({
           <div className="flex items-center">
             <TbCurrencyBaht size={16} className="mr-1.5 text-seagreen" />
             <span>
-<<<<<<< HEAD
-              {!isNaN(parseFloat(salary)) ? parseFloat(salary).toLocaleString() : salary}
-=======
               ฿
               {!isNaN(parseFloat(salary))
                 ? parseFloat(salary).toLocaleString()
                 : salary}
->>>>>>> db1c654b9a7999083726195ece9ccb9893d0ce7e
             </span>
           </div>
 

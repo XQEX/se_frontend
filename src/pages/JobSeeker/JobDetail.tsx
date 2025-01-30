@@ -22,15 +22,39 @@ type Job = {
 function JobDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [isStarred, setIsStarred] = useState(false);
   const [job, setJob] = useState<Job | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [isStarred, setIsStarred] = useState(false); // ✅ แก้ให้เป็น state จริง
 
   useEffect(() => {
+    console.log("🔎 กำลังโหลดข้อมูลงาน...");
+    console.log("📌 Job ID จาก URL:", id);
+
     const jobs = JSON.parse(localStorage.getItem("jobs_emp") || "[]");
-    const foundJob = jobs.find((job: Job) => job.id.toString() === id);
-    setJob(foundJob);
+    console.log("📂 ข้อมูลทั้งหมดใน jobs_emp:", jobs);
+
+    const foundJob = jobs.find((job: Job) => job.id === id);
+    console.log("✅ งานที่พบ:", foundJob);
+
+    if (foundJob) {
+      setJob(foundJob);
+    } else {
+      setJob(null);
+    }
+    
+    setLoading(false);
   }, [id]);
 
+  // ✅ ป้องกันหน้าค้างกรณี job โหลดไม่ทัน
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-gray-50">
+        <h2 className="text-gray-600 text-lg">⏳ กำลังโหลดข้อมูลงาน...</h2>
+      </div>
+    );
+  }
+
+  // ✅ แสดงข้อความหากไม่พบงาน
   if (!job) {
     return (
       <div className="flex flex-col items-center justify-center h-screen bg-gray-50 font-kanit">
@@ -44,6 +68,7 @@ function JobDetail() {
       </div>
     );
   }
+
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 font-kanit">
@@ -101,7 +126,7 @@ function JobDetail() {
                 สมัครงานตอนนี้
               </Link>
               <button 
-                onClick={toggleStar}
+             
                 className="flex items-center justify-center space-x-2 text-gray-600 hover:text-gray-800 
                          px-4 py-2 rounded-md border border-gray-200 transition-colors text-sm"
               >

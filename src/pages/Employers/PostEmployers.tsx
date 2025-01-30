@@ -16,31 +16,13 @@ const PostJobEmp: React.FC = () => {
   const [endTime, setEndTime] = useState("15:00");
   const [successMessage, setSuccessMessage] = useState("");
 
-<<<<<<< HEAD
   const workDayOptions = ["จันทร์ - ศุกร์", "จันทร์ - เสาร์", "จันทร์ - อาทิตย์", "เสาร์ - อาทิตย์", "อื่นๆ"];
-=======
-  // ตัวเลือกวันทำงาน
-  const workDayOptions = [
-    "จันทร์ - ศุกร์",
-    "จันทร์ - เสาร์",
-    "จันทร์ - อาทิตย์",
-    "เสาร์ - อาทิตย์",
-    "อื่นๆ",
-  ];
->>>>>>> db1c654b9a7999083726195ece9ccb9893d0ce7e
 
   const generateTimeOptions = () => {
     const times = [];
     for (let hour = 0; hour < 24; hour++) {
       for (const minute of [0, 30]) {
-<<<<<<< HEAD
         times.push(`${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`);
-=======
-        const time = `${String(hour).padStart(2, "0")}:${String(
-          minute
-        ).padStart(2, "0")}`;
-        times.push(time);
->>>>>>> db1c654b9a7999083726195ece9ccb9893d0ce7e
       }
     }
     return times;
@@ -77,14 +59,7 @@ const PostJobEmp: React.FC = () => {
       postedAt: new Date().toLocaleString("th-TH", { dateStyle: "full", timeStyle: "short" }),
     };
 
-<<<<<<< HEAD
     const existingJobsEmp = JSON.parse(localStorage.getItem("jobs_emp") || "[]");
-=======
-    // ✅ บันทึกงานของ Employer ลง `jobs_emp` (HomePageEmp.tsx ใช้)
-    const existingJobsEmp = JSON.parse(
-      localStorage.getItem("jobs_emp") || "[]"
-    );
->>>>>>> db1c654b9a7999083726195ece9ccb9893d0ce7e
     const updatedJobsEmp = [newJob, ...existingJobsEmp];
     localStorage.setItem("jobs_emp", JSON.stringify(updatedJobsEmp));
 
@@ -95,7 +70,6 @@ const PostJobEmp: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col justify-start bg-gray-50 font-kanit">
       <NavbarEmp />
-<<<<<<< HEAD
   
       {/* ทำให้ container อยู่ชิดด้านบน */}
       <div className="max-w-2xl mx-auto p-4 bg-white shadow-md rounded-lg w-full mt-5 pt-0">
@@ -125,58 +99,6 @@ const PostJobEmp: React.FC = () => {
           <div className="flex flex-col w-4/5 mx-auto">
             <label className="font-kanit text-gray-700">วันทำงาน</label>
             <select value={workDays} onChange={(e) => setWorkDays(e.target.value)} className="border border-gray-300 p-2 rounded-md text-sm">
-=======
-      <div className="post-job-container">
-        <h1>โพสต์งาน</h1>
-
-        {/* ข้อความแจ้งเตือน */}
-        {successMessage && <p className="success-message">{successMessage}</p>}
-
-        <form className="post-job-form">
-          {/* ชื่อตำแหน่งงาน */}
-          <div className="form-group">
-            <label>ชื่อตำแหน่งงาน</label>
-            <input
-              type="text"
-              value={jobTitle}
-              onChange={(e) => setJobTitle(e.target.value.trim())}
-              placeholder="เช่น Developer, Designer"
-            />
-          </div>
-
-          {/* สถานที่ทำงาน */}
-          <div className="form-group">
-            <label>สถานที่ทำงาน</label>
-            <input
-              type="text"
-              value={location}
-              onChange={(e) => setLocation(e.target.value.trim())}
-              placeholder="เช่น กรุงเทพฯ, ทำงานทางไกล"
-            />
-          </div>
-
-          {/* เงินเดือน */}
-          <div className="form-group">
-            <label>เงินเดือน (บาท)</label>
-            <input
-              type="number"
-              value={salary}
-              onChange={(e) => setSalary(e.target.value)}
-              placeholder="เช่น 30000"
-              min="1"
-              step="1000"
-            />
-          </div>
-
-          {/* วันทำงาน */}
-          <div className="form-group">
-            <label>วันทำงาน</label>
-            <select
-              value={workDays}
-              onChange={(e) => setWorkDays(e.target.value)}
-              className="form-select time-select"
-            >
->>>>>>> db1c654b9a7999083726195ece9ccb9893d0ce7e
               {workDayOptions.map((day) => (
                 <option key={day} value={day}>{day}</option>
               ))}

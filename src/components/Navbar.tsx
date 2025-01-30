@@ -14,6 +14,7 @@ import { useUser } from "../context/UserContext";
 import { logoutJobSeeker } from "../api/JobSeeker";
 
 export const Navbar: React.FC = () => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { user, isLoading, isLoggedIn } = useUser();
   const [isSignedIn, setIsSignedIn] = useState(isLoggedIn);
   const [scrollDirection, setScrollDirection] = useState("up");

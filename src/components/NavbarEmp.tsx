@@ -4,14 +4,8 @@ import { Link } from "react-router-dom";
 import { Avatar, Menu, Divider } from "@mantine/core";
 import { FaUserCircle, FaSearch, FaHome, FaBell } from "react-icons/fa";
 
-<<<<<<< HEAD
-
-export default function Navbar() {
-  const [isSignedIn, setIsSignedIn] = useState(false);
-=======
 export const NavbarEmp: React.FC = () => {
   const [isSignedIn, setIsSignedIn] = useState(true);
->>>>>>> db1c654b9a7999083726195ece9ccb9893d0ce7e
   const user = { name: "ชื่อ นามสกุล", profilePicture: "/vite.svg" };
   const [scrollDirection, setScrollDirection] = useState("up");
 

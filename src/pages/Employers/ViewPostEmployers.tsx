@@ -26,16 +26,6 @@ const ViewPostEmployers: React.FC = () => {
       (job: Job) => job.id.toString() === id
     );
 
-<<<<<<< HEAD
-=======
-  console.log("Job ID from URL:", id);
-  console.log("Loaded job from state:", location.state?.job);
-  console.log(
-    "Loaded job from localStorage:",
-    JSON.parse(localStorage.getItem("jobs_emp") || "[]")
-  );
-
->>>>>>> db1c654b9a7999083726195ece9ccb9893d0ce7e
   if (!job) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 font-kanit">
@@ -45,7 +35,7 @@ const ViewPostEmployers: React.FC = () => {
           className="mt-6 px-6 py-2 bg-seagreen text-white rounded-md shadow-sm hover:bg-[#246e4a] transition text-base"
           onClick={() => navigate("/homeemp")}
         >
-          🔙 กลับไปหน้าหลัก
+          กลับไปหน้าหลัก
         </button>
         <Footer />
       </div>
@@ -55,7 +45,6 @@ const ViewPostEmployers: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gray-100 font-kanit">
       <NavbarEmp />
-<<<<<<< HEAD
 
       <div className="max-w-1/2 mx-auto p-4 px-8 bg-white shadow-sm rounded-lg mt-6">
 
@@ -80,33 +69,6 @@ const ViewPostEmployers: React.FC = () => {
           >
              กลับไปหน้าหลัก
           </button>
-=======
-      <div className="view-post-container">
-        <h1 className="page-title">รายละเอียดงาน</h1>
-        <div className="job-post-details">
-          <h2 className="job-title">{job.title}</h2>
-          <p>
-            <strong>สถานที่:</strong> {job.location}
-          </p>
-          <p>
-            <strong>เงินเดือน:</strong> {job.salary.toLocaleString()} บาท
-          </p>
-          <p>
-            <strong>วันทำงาน:</strong> {job.workDays}
-          </p>
-          <p>
-            <strong>ช่วงเวลาทำงาน:</strong> {job.workHours}
-          </p>
-          <p>
-            <strong>รายละเอียด:</strong> {job.description}
-          </p>
-          <p>
-            <strong>คุณสมบัติที่ต้องการ:</strong> {job.requirements}
-          </p>
-          <p>
-            <strong>โพสต์เมื่อ:</strong> {job.postedAt || "ไม่ระบุวันที่"}
-          </p>
->>>>>>> db1c654b9a7999083726195ece9ccb9893d0ce7e
         </div>
       </div>
 
