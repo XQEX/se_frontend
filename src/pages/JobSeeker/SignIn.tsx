@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Navbar } from "../../components/Navbar";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 function SignIn() {
   const [nameEmail, setNameEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   // Loading state
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -45,8 +46,10 @@ function SignIn() {
       if (!response.ok) {
         notifyError(msg || "มีข้อผิดพลาด กรุณาลองอีกครั้ง");
       } else {
-        notifySuccess(msg || "เข้าสู่ระบบชิกสำเร็จ!");
-        // TODO: e.g. Redirect the user or clear the form
+        setTimeout(() => {
+          notifySuccess(msg || "เข้าสู่ระบบชิกสำเร็จ!"); // Show the notification after navigation
+        }, 500); // Adjust the delay as needed
+        navigate("/"); // Navigate to the homepage first
       }
       console.log(data);
     } catch (error) {

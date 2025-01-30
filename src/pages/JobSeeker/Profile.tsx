@@ -1,8 +1,10 @@
 import React from "react";
 import { Navbar } from "../../components/Navbar";
 import { motion } from "framer-motion";
+import { useUser } from "../../context/UserContext";
 
 function Profile() {
+  const { user, isLoading, isLoggedIn } = useUser();
   // Track which tab is active; default is "work"
   const [activeTab, setActiveTab] = React.useState("work");
 
@@ -43,12 +45,12 @@ function Profile() {
             <div className="mt-4 md:mt-0 md:ml-6 flex-1">
               <div className="flex items-center">
                 <h1 className="text-xl md:text-2xl font-semibold mr-2">
-                  Irene Brooks
+                  {user.firstName} {user.lastName}
                 </h1>
               </div>
 
               <p className="text-gray-600 mt-1 text-sm md:text-base">
-                Interface and Brand Designer based in San Antonio
+                {user.email}
               </p>
 
               {/* <div className="flex items-center mt-4 space-x-2">
