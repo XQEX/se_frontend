@@ -11,8 +11,12 @@ import {
 import { MdPostAdd } from "react-icons/md";
 import { useDisclosure } from "@mantine/hooks";
 
-export default function Navbar() {
-  const [isSignedIn, setIsSignedIn] = useState(true);
+interface NavbarProps {
+  isLoggedIn: boolean;
+}
+
+export const Navbar: React.FC<NavbarProps> = ({ isLoggedIn }) => {
+  const [isSignedIn, setIsSignedIn] = useState(isLoggedIn);
   const user = { name: "ชื่อ นามสกุล", profilePicture: "/vite.svg" };
   const [scrollDirection, setScrollDirection] = useState("up");
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
@@ -322,4 +326,4 @@ export default function Navbar() {
       </Drawer>
     </>
   );
-}
+};

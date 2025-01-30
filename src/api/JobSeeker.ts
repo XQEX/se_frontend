@@ -52,6 +52,9 @@ export const fetchJobSeekerInfo = async (): Promise<JobSeekerInfo> => {
   const { data } = await axios.get<{ data: JobSeekerInfo }>(
     `http://localhost:${backendPort}/api/user/job-seeker/auth`,
     {
+      headers: {
+        "Content-Type": "application/json",
+      },
       withCredentials: true,
     }
   );

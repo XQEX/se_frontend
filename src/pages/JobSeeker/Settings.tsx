@@ -1,11 +1,10 @@
 import React from "react";
-import Navbar from "../../components/Navbar";
-
+import { Navbar } from "../../components/Navbar";
 
 function Settings() {
   return (
     <div>
-      <Navbar />
+      <Navbar isLoggedIn={false} />
     </div>
   );
 }

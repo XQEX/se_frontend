@@ -1,6 +1,6 @@
 //TrackDetailsJobSeeker.tsx
 import { useParams, useNavigate } from "react-router-dom";
-import Navbar from "../../components/Navbar"; // Navbar component
+import { Navbar } from "../../components/Navbar";
 // Define the JobApplication interface
 interface JobApplication {
   id: number;
@@ -35,7 +35,7 @@ function TrackDetailsJobSeeker() {
   if (!application) {
     return (
       <div>
-        <Navbar />
+        <Navbar isLoggedIn={false} />
         <div className="min-h-screen flex flex-col items-center justify-center">
           <h1 className="text-2xl font-bold text-red-600">ไม่พบข้อมูล</h1>
           <button
@@ -51,7 +51,7 @@ function TrackDetailsJobSeeker() {
 
   return (
     <div>
-      <Navbar />
+      <Navbar isLoggedIn={false} />
       <div className="min-h-screen flex flex-col items-center bg-white text-[#2e8b57] p-4">
         <h1 className="text-4xl font-bold mb-6">
           รายละเอียดการสมัครงาน #{application.id}

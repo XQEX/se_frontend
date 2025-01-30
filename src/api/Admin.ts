@@ -30,6 +30,7 @@ export const fetchApprovalRequests = async (): Promise<ApprovalRequest[]> => {
       withCredentials: true,
     }
   );
+  console.log("fetch Approval Requests success!!", data);
   return data.data;
 };
 

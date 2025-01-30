@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import NavbarEmp from "../../components/NavbarEmp";
+import { NavbarEmp } from "../../components/NavbarEmp";
 import { FaBuilding, FaClock, FaStar, FaArrowLeft } from "react-icons/fa";
 import { CiMoneyBill } from "react-icons/ci";
 import Footer from "../../components/Footer";
@@ -43,15 +43,14 @@ function JobDetailEmp() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      <NavbarEmp />
+      <NavbarEmp isLoggedIn={false} />
 
       {/* Main Content */}
       <main className="flex-1 py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden relative">
-          
           {/* 🔙 ปุ่มย้อนกลับ */}
-          <button 
-            onClick={() => navigate(-1)} 
+          <button
+            onClick={() => navigate(-1)}
             className="absolute top-4 left-4 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full p-3 transition"
           >
             <FaArrowLeft className="h-5 w-5" />
@@ -82,7 +81,7 @@ function JobDetailEmp() {
                 <FaBuilding className="flex-shrink-0 text-seagreen h-5 w-5" />
                 <span className="text-2xl kanit-regular">{job.location}</span>
               </div>
-              
+
               <div className="flex items-center space-x-3 text-gray-700">
                 <FaClock className="flex-shrink-0 text-seagreen h-5 w-5" />
                 <span className="text-2xl kanit-regular">
@@ -107,12 +106,16 @@ function JobDetailEmp() {
               >
                 สมัครงานตอนนี้
               </Link>
-              <button 
+              <button
                 onClick={toggleStar}
                 className="flex items-center justify-center space-x-2 text-gray-600 hover:text-gray-800 
                          px-4 py-3 rounded-lg border border-gray-200 transition-colors"
               >
-                <FaStar className={`h-5 w-5 ${isStarred ? 'text-yellow-400 fill-yellow-400' : ''}`} />
+                <FaStar
+                  className={`h-5 w-5 ${
+                    isStarred ? "text-yellow-400 fill-yellow-400" : ""
+                  }`}
+                />
                 <span className="kanit-regular">บันทึกงาน</span>
               </button>
             </div>

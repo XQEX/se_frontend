@@ -1,6 +1,6 @@
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import NavbarEmp from "../../components/NavbarEmp";
+import { NavbarEmp } from "../../components/NavbarEmp";
 import Footer from "../../components/Footer";
 import "./TrackDetailsEmployers.css";
 
@@ -126,7 +126,7 @@ const TrackEmployersDetails: React.FC = () => {
   if (!applicant) {
     return (
       <div>
-        <NavbarEmp />
+        <NavbarEmp isLoggedIn={false} />
         <div className="details-container">
           <h1>Applicant Not Found</h1>
           <button onClick={() => navigate(-1)} className="back-button">
@@ -141,18 +141,44 @@ const TrackEmployersDetails: React.FC = () => {
   return (
     <div>
       {/* NavbarEmp */}
-      <NavbarEmp />
+      <NavbarEmp isLoggedIn={false} />
 
       <div className="details-container">
         <h1>Applicant Details</h1>
         <div className="details-card">
-          <p><strong>Name:</strong> {applicant.name}</p>
-          <p><strong>Job Title:</strong> {applicant.jobTitle}</p>
-          <p><strong>Email:</strong> {applicant.email}</p>
-          <p><strong>Phone:</strong> {applicant.phone}</p>
-          <p><strong>Status:</strong> <span className={`status ${applicant.status.toLowerCase().replace(" ", "-")}`}>{applicant.status}</span></p>
-          <p><strong>Notes:</strong> {applicant.notes}</p>
-          <a href={applicant.resumeLink} target="_blank" rel="noopener noreferrer" className="resume-link">View Resume</a>
+          <p>
+            <strong>Name:</strong> {applicant.name}
+          </p>
+          <p>
+            <strong>Job Title:</strong> {applicant.jobTitle}
+          </p>
+          <p>
+            <strong>Email:</strong> {applicant.email}
+          </p>
+          <p>
+            <strong>Phone:</strong> {applicant.phone}
+          </p>
+          <p>
+            <strong>Status:</strong>{" "}
+            <span
+              className={`status ${applicant.status
+                .toLowerCase()
+                .replace(" ", "-")}`}
+            >
+              {applicant.status}
+            </span>
+          </p>
+          <p>
+            <strong>Notes:</strong> {applicant.notes}
+          </p>
+          <a
+            href={applicant.resumeLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="resume-link"
+          >
+            View Resume
+          </a>
         </div>
         <button onClick={() => navigate(-1)} className="back-button">
           Go Back

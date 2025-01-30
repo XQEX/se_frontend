@@ -1,5 +1,5 @@
 import React from "react";
-import Navbar from "../../components/Navbar";
+import { Navbar } from "../../components/Navbar";
 import { motion } from "framer-motion";
 
 function Profile() {
@@ -21,7 +21,7 @@ function Profile() {
 
   return (
     <div>
-      <Navbar />
+      <Navbar isLoggedIn={false} />
 
       <header className="bg-gradient-to-r from-seagreen to-green-400 h-40 w-full relative"></header>
       <motion.div

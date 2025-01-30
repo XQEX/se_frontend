@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
+
+interface NavbarProps {
+  isLoggedIn: boolean;
+}
 import { Link } from "react-router-dom";
 import { Avatar, Menu, Divider } from "@mantine/core";
 import { FaUserCircle, FaSearch, FaHome, FaBell } from "react-icons/fa";
-import { useDisclosure } from "@mantine/hooks";
 
-export default function Navbar() {
-  const [isSignedIn, setIsSignedIn] = useState(false);
+export const NavbarEmp: React.FC<NavbarProps> = ({ isLoggedIn }) => {
+  const [isSignedIn, setIsSignedIn] = useState(isLoggedIn);
   const user = { name: "ชื่อ นามสกุล", profilePicture: "/vite.svg" };
   const [scrollDirection, setScrollDirection] = useState("up");
 
@@ -127,10 +130,17 @@ export default function Navbar() {
               <Menu.Dropdown className="m-2">
                 <div className="p-3 text-center font-[Kanit]">{user.name}</div>
                 <Divider />
-                <Menu.Item component={Link} to="/settings" className="font-[Kanit]">
+                <Menu.Item
+                  component={Link}
+                  to="/settings"
+                  className="font-[Kanit]"
+                >
                   ตั้งค่า
                 </Menu.Item>
-                <Menu.Item onClick={() => setIsSignedIn(false)} className="font-[Kanit]">
+                <Menu.Item
+                  onClick={() => setIsSignedIn(false)}
+                  className="font-[Kanit]"
+                >
                   ออกจากระบบ
                 </Menu.Item>
               </Menu.Dropdown>
@@ -140,4 +150,4 @@ export default function Navbar() {
       </nav>
     </>
   );
-}
+};

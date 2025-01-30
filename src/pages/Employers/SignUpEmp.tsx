@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Navbar from "../../components/Navbar";
+import { Navbar } from "../../components/Navbar";
 import { Link } from "react-router-dom";
 
 // Import Toastify
@@ -144,7 +144,7 @@ function SignUpEmp() {
       <ToastContainer />
 
       {/* Navbar */}
-      <Navbar />
+      <Navbar isLoggedIn={false} />
 
       {/* Main Content */}
       <div

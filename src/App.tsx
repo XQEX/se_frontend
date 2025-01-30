@@ -24,6 +24,7 @@ import JobDetail from "./pages/JobSeeker/JobDetail";
 import JobDetailEmp from "./pages/Employers/๋JobDetailsEmp";
 import UserTypeWizard from "./pages/UserTypeWizard";
 import Admin from "./pages/Admin";
+import ExampleComponent from "./components/ExampleComponent";
 
 function App() {
   return (
@@ -57,6 +58,7 @@ function App() {
 
         {/* หน้าสำหรับ Route ที่ไม่พบ */}
         {/* Routes สำหรับ Admin */}
+        <Route path="/example" element={<ExampleComponent />} />
         <Route path="/select-user-type" element={<UserTypeWizard />} />
         <Route path="admin" element={<Admin />} />
         <Route path="*" element={<NoPage />} />

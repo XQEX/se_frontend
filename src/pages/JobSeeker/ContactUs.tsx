@@ -7,14 +7,14 @@ import {
   Text,
 } from "@mantine/core";
 import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
-import Navbar from "../../components/Navbar";
+import { Navbar } from "../../components/Navbar";
 import Footer from "../../components/Footer";
 
 function ContactUs() {
   return (
     <div className="min-h-screen flex flex-col justify-between">
       {/* Navbar */}
-      <Navbar />
+      <Navbar isLoggedIn={false} />
 
       {/* Content Section */}
       <Container size="md" className="flex flex-col items-center px-4 py-12">

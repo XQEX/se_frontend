@@ -1,6 +1,15 @@
 import { useState, useEffect } from "react";
+
+interface Job {
+  id: number;
+  title: string;
+  location: string;
+  salary: string;
+  workDays: string;
+  workHours: string;
+}
 import { motion } from "framer-motion";
-import NavbarEmp from "../../components/NavbarEmp";
+import { NavbarEmp } from "../../components/NavbarEmp";
 import Sidebar from "../../components/SidebarEmp";
 import JobCardEmp from "../../components/JobCardEmp";
 import Footer from "../../components/Footer";
@@ -25,16 +34,20 @@ function FindEmp() {
 
   return (
     <div className="min-h-screen flex flex-col font-kanit">
-      <NavbarEmp />
+      <NavbarEmp isLoggedIn={false} />
       <div className="flex flex-row flex-grow">
         <Sidebar />
         <div className="w-full md:w-3/4 p-6">
           <h1 className="kanit-medium text-2xl mb-4">โพสต์หางาน</h1>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {currentJobs.map((job:Job) => (
-              <motion.div key={job.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+            {currentJobs.map((job: Job) => (
+              <motion.div
+                key={job.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+              >
                 <JobCardEmp
-                  id={job.id}  
+                  id={job.id}
                   title={job.title}
                   location={job.location}
                   salary={job.salary}
@@ -46,7 +59,11 @@ function FindEmp() {
           </div>
           {jobs.length > itemsPerPage && (
             <div className="flex items-center justify-center mt-6">
-              <Pagination total={Math.ceil(jobs.length / itemsPerPage)} value={currentPage} onChange={setCurrentPage} />
+              <Pagination
+                total={Math.ceil(jobs.length / itemsPerPage)}
+                value={currentPage}
+                onChange={setCurrentPage}
+              />
             </div>
           )}
         </div>

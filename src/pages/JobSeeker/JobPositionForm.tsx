@@ -14,7 +14,7 @@ import {
 } from "@mantine/core";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import { showNotification } from "@mantine/notifications";
-import Navbar from "../../components/Navbar";
+import { Navbar } from "../../components/Navbar";
 
 const JobPositionForm = () => {
   const [submittedData, setSubmittedData] = useState<any | null>(null);
@@ -82,7 +82,7 @@ const JobPositionForm = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
+      <Navbar isLoggedIn={false} />
       <Container size="sm" className="mt-8">
         <Paper shadow="md" radius="md" p="xl" className="bg-white">
           <Title

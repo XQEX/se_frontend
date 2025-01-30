@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import NavbarEmp from "../../components/NavbarEmp";
+import { NavbarEmp } from "../../components/NavbarEmp";
 import Footer from "../../components/Footer";
 import "./PostEmployers.css";
 
@@ -24,7 +24,7 @@ const PostJobEmp: React.FC = () => {
     "จันทร์ - เสาร์",
     "จันทร์ - อาทิตย์",
     "เสาร์ - อาทิตย์",
-    "อื่นๆ"
+    "อื่นๆ",
   ];
 
   // สร้างรายการเวลา (00:00 - 23:30 ทุก 30 นาที)
@@ -32,7 +32,9 @@ const PostJobEmp: React.FC = () => {
     const times = [];
     for (let hour = 0; hour < 24; hour++) {
       for (const minute of [0, 30]) {
-        const time = `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
+        const time = `${String(hour).padStart(2, "0")}:${String(
+          minute
+        ).padStart(2, "0")}`;
         times.push(time);
       }
     }
@@ -84,7 +86,9 @@ const PostJobEmp: React.FC = () => {
     };
 
     // ✅ บันทึกงานของ Employer ลง `jobs_emp` (HomePageEmp.tsx ใช้)
-    const existingJobsEmp = JSON.parse(localStorage.getItem("jobs_emp") || "[]");
+    const existingJobsEmp = JSON.parse(
+      localStorage.getItem("jobs_emp") || "[]"
+    );
     const updatedJobsEmp = [newJob, ...existingJobsEmp];
     localStorage.setItem("jobs_emp", JSON.stringify(updatedJobsEmp));
 
@@ -95,10 +99,10 @@ const PostJobEmp: React.FC = () => {
 
   return (
     <div>
-      <NavbarEmp />
+      <NavbarEmp isLoggedIn={false} />
       <div className="post-job-container">
         <h1>โพสต์งาน</h1>
-        
+
         {/* ข้อความแจ้งเตือน */}
         {successMessage && <p className="success-message">{successMessage}</p>}
 

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Navbar from "../../components/Navbar";
+import { Navbar } from "../../components/Navbar";
 import { Link } from "react-router-dom";
 
 import { ToastContainer, toast } from "react-toastify";
@@ -65,8 +65,9 @@ function SignIn() {
   }
   return (
     <div className="h-screen flex flex-col">
+      <ToastContainer />
       {/* Navbar */}
-      <Navbar />
+      <Navbar isLoggedIn={false} />
 
       {/* Main Content */}
       <div
@@ -90,9 +91,6 @@ function SignIn() {
               placeholder="ชื่อผู้ใช้งานหรืออีเมล"
               onChange={(e) => setNameEmail(e.target.value)}
               className="text-black placeholder-kanit rounded-lg border border-gray-300 p-3"
-              onChange={(e) => {
-                setNameEmail(e.target.value);
-              }}
             />
           </div>
 
@@ -107,9 +105,6 @@ function SignIn() {
               placeholder="รหัสผ่าน"
               onChange={(e) => setPassword(e.target.value)}
               className="text-black placeholder-kanit rounded-lg border border-gray-300 p-3"
-              onChange={(e) => {
-                setPassword(e.target.value);
-              }}
             />
           </div>
 
