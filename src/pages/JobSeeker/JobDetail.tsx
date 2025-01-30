@@ -24,7 +24,7 @@ function JobDetail() {
   const navigate = useNavigate();
   const [job, setJob] = useState<Job | null>(null);
   const [loading, setLoading] = useState(true);
-  const [isStarred, setIsStarred] = useState(false); // ✅ แก้ให้เป็น state จริง
+  const [isStarred, setIsStarred] = useState(false);
 
   useEffect(() => {
     console.log("🔎 กำลังโหลดข้อมูลงาน...");

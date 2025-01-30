@@ -16,21 +16,13 @@ const PostJob: React.FC = () => {
   const [endTime, setEndTime] = useState("15:00");
   const [successMessage, setSuccessMessage] = useState("");
 
-  // ตัวเลือกวันทำงาน
-  const workDayOptions = [
-    "จันทร์ - ศุกร์",
-    "จันทร์ - เสาร์",
-    "จันทร์ - อาทิตย์",
-    "เสาร์ - อาทิตย์",
-    "อื่นๆ"
-  ];
+  const workDayOptions = ["จันทร์ - ศุกร์", "จันทร์ - เสาร์", "จันทร์ - อาทิตย์", "เสาร์ - อาทิตย์", "อื่นๆ"];
 
   const generateTimeOptions = () => {
     const times = [];
     for (let hour = 0; hour < 24; hour++) {
       for (const minute of [0, 30]) {
-        const time = `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
-        times.push(time);
+        times.push(`${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`);
       }
     }
     return times;
@@ -67,15 +59,10 @@ const PostJob: React.FC = () => {
       postedAt: new Date().toLocaleString("th-TH", { dateStyle: "full", timeStyle: "short" }),
     };
 
-    // บันทึกลง Local Storage
-    const existingJobsSeek = JSON.parse(
-      localStorage.getItem("jobs_seek") || "[]"
-    );
+    const existingJobsSeek = JSON.parse(localStorage.getItem("jobs_seek") || "[]");
     const updatedJobsSeek = [newJob, ...existingJobsSeek];
     localStorage.setItem("jobs_seek", JSON.stringify(updatedJobsSeek));
-    
 
-    // แสดงข้อความสำเร็จและนำทาง
     setSuccessMessage("🎉 ประกาศงานสำเร็จแล้ว!");
     setTimeout(() => navigate("/find"), 300);
   };
@@ -83,63 +70,40 @@ const PostJob: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col justify-start bg-gray-50 font-kanit">
       <Navbar />
-      <div className="post-job-container">
-        <h1>โพสต์งาน</h1>
-        
-        {/* ข้อความแจ้งเตือน */}
-        {successMessage && <p className="success-message">{successMessage}</p>}
 
-        <form className="post-job-form">
-          {/* ชื่อตำแหน่งงาน */}
-          <div className="form-group">
-            <label>ชื่อตำแหน่งงาน</label>
-            <input
-              type="text"
-              value={jobTitle}
-              onChange={(e) => setJobTitle(e.target.value.trim())}
-              placeholder="เช่น Developer, Designer"
-            />
-          </div>
+      <div className="max-w-2xl mx-auto p-4 bg-white shadow-md rounded-lg w-full mt-5 pt-0">
+        <h1 className="text-2xl font-bold text-center text-gray-800 mt-5">โพสต์งาน</h1>
 
-          {/* สถานที่ทำงาน */}
-          <div className="form-group">
-            <label>สถานที่ทำงาน</label>
-            <input
-              type="text"
-              value={location}
-              onChange={(e) => setLocation(e.target.value.trim())}
-              placeholder="เช่น กรุงเทพฯ, ทำงานทางไกล"
-            />
-          </div>
+        {successMessage && <p className="text-green-600 font-kanit text-center">{successMessage}</p>}
 
-          {/* เงินเดือน */}
-          <div className="form-group">
-            <label>เงินเดือน (บาท)</label>
-            <input
-              type="number"
-              value={salary}
-              onChange={(e) => setSalary(e.target.value)}
-              placeholder="เช่น 30000"
-              min="1"
-              step="1000"
-            />
-          </div>
+        <form className="space-y-3">
+          {[  
+            { label: "ชื่อตำแหน่งงาน", value: jobTitle, setValue: setJobTitle, placeholder: "เช่น Developer, Designer" },
+            { label: "สถานที่ทำงาน", value: location, setValue: setLocation, placeholder: "เช่น กรุงเทพฯ, ทำงานทางไกล" },
+            { label: "เงินเดือน (บาท)", value: salary, setValue: setSalary, placeholder: "เช่น 30000", type: "number", step: "1000" },
+          ].map(({ label, value, setValue, placeholder, type = "text", step }) => (
+            <div key={label} className="flex flex-col w-4/5 mx-auto">
+              <label className="font-kanit text-gray-700">{label}</label>
+              <input
+                type={type}
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                placeholder={placeholder}
+                step={step}
+                className="border border-gray-300 p-2 rounded-md text-sm"
+              />
+            </div>
+          ))}
 
-          {/* วันทำงาน */}
-          <div className="form-group">
-            <label>วันทำงาน</label>
-            <select
-              value={workDays}
-              onChange={(e) => setWorkDays(e.target.value)}
-              className="form-select time-select"
-            >
+          <div className="flex flex-col w-4/5 mx-auto">
+            <label className="font-kanit text-gray-700">วันทำงาน</label>
+            <select value={workDays} onChange={(e) => setWorkDays(e.target.value)} className="border border-gray-300 p-2 rounded-md text-sm">
               {workDayOptions.map((day) => (
                 <option key={day} value={day}>{day}</option>
               ))}
             </select>
           </div>
-  
-          {/* Time Picker */}
+
           <div className="grid grid-cols-2 gap-3 w-4/5 mx-auto">
             <div className="flex flex-col">
               <label className="font-kanit text-gray-700">เวลาเริ่มงาน</label>
@@ -149,7 +113,7 @@ const PostJob: React.FC = () => {
                 ))}
               </select>
             </div>
-  
+
             <div className="flex flex-col">
               <label className="font-kanit text-gray-700">เวลาเลิกงาน</label>
               <select value={endTime} onChange={(e) => setEndTime(e.target.value)} className="border border-gray-300 p-2 rounded-md text-sm w-20">
@@ -159,7 +123,7 @@ const PostJob: React.FC = () => {
               </select>
             </div>
           </div>
-  
+
           {[  
             { label: "รายละเอียดงาน", value: jobDescription, setValue: setJobDescription },
             { label: "คุณสมบัติที่ต้องการ", value: requirements, setValue: setRequirements },
@@ -169,8 +133,7 @@ const PostJob: React.FC = () => {
               <textarea value={value} onChange={(e) => setValue(e.target.value)} placeholder={`เพิ่ม${label.toLowerCase()}`} className="border border-gray-300 p-2 rounded-md h-12 text-sm" />
             </div>
           ))}
-  
-          {/* ปุ่มโพสต์งาน */}
+
           <div className="flex justify-center mt-4">
             <button
               type="button"
@@ -182,11 +145,10 @@ const PostJob: React.FC = () => {
           </div>
         </form>
       </div>
-  
+
       <Footer />
     </div>
   );
-  
 };
 
 export default PostJob;

@@ -96,7 +96,7 @@ export const Navbar: React.FC = () => {
         className="text-gray-200 kanit-regular hover:text-white px-4 py-1 rounded-md transition-colors duration-300 flex items-center"
       >
         <MdPostAdd className="mr-2" />
-        โพสหางาน
+        โพสต์หางาน
       </Link>
     </div>
   );
