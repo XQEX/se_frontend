@@ -10,15 +10,22 @@ import {
 } from "react-icons/fa";
 import { MdPostAdd } from "react-icons/md";
 import { useDisclosure } from "@mantine/hooks";
+import { useUser } from "../context/UserContext";
+import { logoutJobSeeker } from "../api/JobSeeker";
 
-export default function Navbar() {
-  const [isSignedIn, setIsSignedIn] = useState(true);
-  const user = { name: "ชื่อ นามสกุล", profilePicture: "/vite.svg" };
+export const Navbar: React.FC = () => {
+  const { user, isLoading, isLoggedIn } = useUser();
+  const [isSignedIn, setIsSignedIn] = useState(isLoggedIn);
   const [scrollDirection, setScrollDirection] = useState("up");
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
 
   useEffect(() => {
+    setIsSignedIn(isLoggedIn);
+  }, [isLoggedIn]);
+
+  useEffect(() => {
+    // console.log(user);
     let lastScrollY = window.scrollY;
 
     const handleScroll = () => {
@@ -34,6 +41,15 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const handleLogout = async () => {
+    try {
+      await logoutJobSeeker();
+      setIsSignedIn(false);
+    } catch (error) {
+      console.error("Failed to logout:", error);
+    }
+  };
+
   const menuItems = (
     <div>
       {isSignedIn ? (
@@ -41,10 +57,7 @@ export default function Navbar() {
           <Menu.Item component={Link} to="/profile" className="kanit-regular">
             โปรไฟล์
           </Menu.Item>
-          <Menu.Item
-            onClick={() => setIsSignedIn(false)}
-            className="kanit-regular"
-          >
+          <Menu.Item onClick={handleLogout} className="kanit-regular">
             ออกจากระบบ
           </Menu.Item>
         </>
@@ -88,6 +101,10 @@ export default function Navbar() {
   );
 
   const FakeNotifications = ["a", "b", "c", "d", "e", "f", "g"];
+
+  // if (isLoading) {
+  //   return <div>Loading...</div>;
+  // }
 
   return (
     <>
@@ -182,12 +199,12 @@ export default function Navbar() {
                     ) : (
                       <FaUserCircle size={24} />
                     )}
-                    <span className="kanit-regular">{user.name}</span>
+                    <span className="kanit-regular">{user.username}</span>
                   </button>
                 </Menu.Target>
                 <Menu.Dropdown className="m-2">
                   <div className="p-3 text-center">
-                    <div className="kanit-regular">{user.name}</div>
+                    <div className="kanit-regular">{user.username}</div>
                   </div>
                   <Divider />
                   {menuItems}
@@ -290,19 +307,19 @@ export default function Navbar() {
                       {user.profilePicture ? (
                         <Avatar
                           src={user.profilePicture}
-                          alt={user.name}
+                          alt={user.username}
                           radius="xl"
                           size={30}
                         />
                       ) : (
                         <FaUserCircle size={24} />
                       )}
-                      <span className="kanit-regular">{user.name}</span>
+                      <span className="kanit-regular">{user.username}</span>
                     </button>
                   </Menu.Target>
                   <Menu.Dropdown className="m-2">
                     <div className="p-3 text-center">
-                      <div className="kanit-regular">{user.name}</div>
+                      <div className="kanit-regular">{user.username}</div>
                     </div>
                     <Divider />
                     {menuItems}
@@ -315,4 +332,4 @@ export default function Navbar() {
       </Drawer>
     </>
   );
-}
+};

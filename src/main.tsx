@@ -7,18 +7,23 @@ import { MantineProvider } from "@mantine/core";
 import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
+import { UserProvider } from "./context/UserContext";
 
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
+    {/* react-query provider*/}
     <QueryClientProvider client={queryClient}>
-      <MantineProvider>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </MantineProvider>
-      <ReactQueryDevtools initialIsOpen={true} />
+      {/* useContext provider*/}
+      <UserProvider>
+        <MantineProvider>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </MantineProvider>
+        <ReactQueryDevtools initialIsOpen={true} />
+      </UserProvider>
     </QueryClientProvider>
   </StrictMode>
 );

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import Navbar from "../../components/Navbar"; // Navbar component
+import { Navbar } from "../../components/Navbar";
 import Lottie from "lottie-react"; // Lottie animation
 import Animation from "../../Animation/Job.json"; // Lottie animation
 import { gsap } from "gsap"; // for animaitons texts
@@ -63,6 +63,7 @@ function Home() {
       }
     );
   }, []);
+
   return (
     <div>
       <Navbar />
@@ -88,7 +89,7 @@ function Home() {
             <Link to="/find">
               <div
                 ref={link1Ref}
-                className="px-8 flex flex-row text-2xl md:text-3xl px-24 "
+                className=" flex flex-row text-2xl md:text-3xl px-24 "
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -105,7 +106,7 @@ function Home() {
             <Link to="/homeemp">
               <div
                 ref={link2Ref}
-                className="px-8 flex flex-row text-2xl md:text-3xl px-24 "
+                className=" flex flex-row text-2xl md:text-3xl px-24 "
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

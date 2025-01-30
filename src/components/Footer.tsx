@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
@@ -15,7 +15,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link to="/trackemp" className="hover:underline">
-                 การติดตามผลของผู้สมัคร
+                  การติดตามผลของผู้สมัคร
                 </Link>
               </li>
             </ul>
@@ -55,10 +55,11 @@ export default function Footer() {
         </div>
 
         <div className="mt-8 pt-8 border-t border-emerald-400 text-center">
-          <p className="text-sm">© {new Date().getFullYear()} SkillBridge. All rights reserved.</p>
+          <p className="text-sm">
+            © {new Date().getFullYear()} SkillBridge. All rights reserved.
+          </p>
         </div>
       </div>
     </footer>
-  )
+  );
 }
-

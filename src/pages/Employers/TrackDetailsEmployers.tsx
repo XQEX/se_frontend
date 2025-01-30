@@ -1,6 +1,6 @@
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import NavbarEmp from "../../components/NavbarEmp";
+import { NavbarEmp } from "../../components/NavbarEmp";
 import Footer from "../../components/Footer";
 import { FaUser, FaBriefcase, FaEnvelope, FaPhone, FaStickyNote, FaFileAlt, FaArrowLeft, FaExclamationTriangle } from "react-icons/fa";
 
@@ -29,6 +29,7 @@ const TrackEmployersDetails: React.FC = () => {
     <div className="min-h-screen flex flex-col bg-gray-50 font-kanit">
       <NavbarEmp />
 
+<<<<<<< HEAD
       <div className="max-w-2xl mx-auto p-8 bg-white shadow-lg rounded-lg mt-10">
         {/* ✅ ปุ่มย้อนกลับ */}
         <button 
@@ -36,6 +37,47 @@ const TrackEmployersDetails: React.FC = () => {
           className="absolute top-6 left-6 text-gray-700 hover:text-gray-500 transition flex items-center gap-2"
         >
           <FaArrowLeft size={20} /> <span className="text-lg">กลับ</span>
+=======
+      <div className="details-container">
+        <h1>Applicant Details</h1>
+        <div className="details-card">
+          <p>
+            <strong>Name:</strong> {applicant.name}
+          </p>
+          <p>
+            <strong>Job Title:</strong> {applicant.jobTitle}
+          </p>
+          <p>
+            <strong>Email:</strong> {applicant.email}
+          </p>
+          <p>
+            <strong>Phone:</strong> {applicant.phone}
+          </p>
+          <p>
+            <strong>Status:</strong>{" "}
+            <span
+              className={`status ${applicant.status
+                .toLowerCase()
+                .replace(" ", "-")}`}
+            >
+              {applicant.status}
+            </span>
+          </p>
+          <p>
+            <strong>Notes:</strong> {applicant.notes}
+          </p>
+          <a
+            href={applicant.resumeLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="resume-link"
+          >
+            View Resume
+          </a>
+        </div>
+        <button onClick={() => navigate(-1)} className="back-button">
+          Go Back
+>>>>>>> db1c654b9a7999083726195ece9ccb9893d0ce7e
         </button>
 
         <h1 className="text-3xl font-bold text-center text-gray-800 flex items-center justify-center gap-2">

@@ -8,7 +8,9 @@ export default function NoPage() {
       </div>
 
       <h1 className="text-6xl font-bold text-seagreen mb-4">404</h1>
-      <p className="text-xl text-gray-600 mb-8 kanit-medium">ไม่พบหน้าที่คุณกำลังค้นหา</p>
+      <p className="text-xl text-gray-600 mb-8 kanit-medium">
+        ไม่พบหน้าที่คุณกำลังค้นหา
+      </p>
       <div className="space-y-4">
         <Link
           to="/"

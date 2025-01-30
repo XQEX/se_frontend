@@ -14,7 +14,7 @@ import {
 } from "@mantine/core";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import { showNotification } from "@mantine/notifications";
-import Navbar from "../../components/Navbar";
+import { Navbar } from "../../components/Navbar";
 
 const JobPositionForm = () => {
   const [submittedData, setSubmittedData] = useState<any | null>(null);

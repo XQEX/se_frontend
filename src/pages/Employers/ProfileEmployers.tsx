@@ -1,12 +1,15 @@
 import React, { useState } from "react";
-import NavbarEmp from "../../components/NavbarEmp";
+import { NavbarEmp } from "../../components/NavbarEmp";
 import Footer from "../../components/Footer";
 import "./ProfileEmployers.css";
 
 const ProfileEmployers: React.FC = () => {
   const [images, setImages] = useState<(string | null)[]>([null, null, null]);
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+  const handleImageUpload = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
     if (e.target.files && e.target.files[0]) {
       const reader = new FileReader();
       reader.onload = () => {
@@ -34,7 +37,11 @@ const ProfileEmployers: React.FC = () => {
             <div className={`image-upload ${size}`} key={index}>
               <label htmlFor={`imageUpload${index}`}>
                 {images[index] ? (
-                  <img src={images[index]} alt={`Uploaded ${index}`} className="uploaded-image" />
+                  <img
+                    src={images[index]}
+                    alt={`Uploaded ${index}`}
+                    className="uploaded-image"
+                  />
                 ) : (
                   <div className="upload-placeholder">+</div>
                 )}
@@ -54,17 +61,29 @@ const ProfileEmployers: React.FC = () => {
         <div className="form-section">
           <div className="form-group">
             <label htmlFor="companyName">ชื่อ</label>
-            <input type="text" id="companyName" placeholder="กรอกชื่อของคุณ..." />
+            <input
+              type="text"
+              id="companyName"
+              placeholder="กรอกชื่อของคุณ..."
+            />
           </div>
 
           <div className="form-group">
             <label htmlFor="description1">หัวข้อ</label>
-            <input type="text" id="description1" placeholder="กรอกคำอธิบายเกี่ยวกับของคุณ..." />
+            <input
+              type="text"
+              id="description1"
+              placeholder="กรอกคำอธิบายเกี่ยวกับของคุณ..."
+            />
           </div>
 
           <div className="form-group">
             <label htmlFor="description2">หัวข้อ</label>
-            <input type="text" id="description2" placeholder="กรอกคำอธิบายเกี่ยวกับของคุณ..." />
+            <input
+              type="text"
+              id="description2"
+              placeholder="กรอกคำอธิบายเกี่ยวกับของคุณ..."
+            />
           </div>
         </div>
 

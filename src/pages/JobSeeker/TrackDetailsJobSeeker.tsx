@@ -1,6 +1,6 @@
 //TrackDetailsJobSeeker.tsx
 import { useParams, useNavigate } from "react-router-dom";
-import Navbar from "../../components/Navbar"; // Navbar component
+import { Navbar } from "../../components/Navbar";
 // Define the JobApplication interface
 interface JobApplication {
   id: number;

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import Navbar from "../../components/Navbar"; // Navbar component
+import { Navbar } from "../../components/Navbar";
 import Lottie from "lottie-react"; // Lottie animation
 import Animation from "../../Animation/Job2.json"; // Lottie animation
 import { gsap } from "gsap"; // For animations

@@ -1,10 +1,7 @@
-import React from 'react'
+import React from "react";
 
 function Searchbar() {
-  return (
-    <div>
-    </div>
-  )
+  return <div></div>;
 }
 
-export default Searchbar
+export default Searchbar;

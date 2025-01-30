@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import Navbar from "../../components/Navbar";
+import { Navbar } from "../../components/Navbar";
 import { FaBuilding, FaClock, FaStar, FaArrowLeft } from "react-icons/fa";
 import { CiMoneyBill } from "react-icons/ci";
 import Footer from "../../components/Footer";
@@ -50,13 +50,13 @@ function JobDetail() {
       <Navbar />
 
       {/* Main Content */}
-      <main className="flex-1 py-6 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-xl mx-auto bg-white rounded-lg shadow-md overflow-hidden relative">
+      <main className="flex-1 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden relative">
           
-          {/*  ปุ่มย้อนกลับ */}
+          {/* 🔙 ปุ่มย้อนกลับ */}
           <button 
             onClick={() => navigate(-1)} 
-            className="absolute top-3 left-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full p-2 transition"
+            className="absolute top-4 left-4 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full p-3 transition"
           >
             <FaArrowLeft className="h-4 w-4" />
           </button>
@@ -71,16 +71,25 @@ function JobDetail() {
           {/* Job Details */}
           <div className="p-5 space-y-4">
             {/* Info Grid */}
-            <div className="grid gap-3 sm:grid-cols-2 text-gray-700 text-sm">
-              <p className="flex items-center">
-                <FaBuilding className="mr-2 text-seagreen h-4 w-4" /> สถานที่ทำงาน: {job.location}
-              </p>
-              <p className="flex items-center">
-                <FaClock className="mr-2 text-seagreen h-4 w-4" /> เวลาทำงาน: {job.workHours} ({job.workDays})
-              </p>
-              <p className="flex items-center">
-                <CiMoneyBill className="mr-2 text-seagreen h-5 w-5" />เงินเดือน: {parseFloat(job.salary).toLocaleString()} บาท
-              </p>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="flex items-center space-x-3 text-gray-700">
+                <FaBuilding className="flex-shrink-0 text-seagreen h-5 w-5" />
+                <span className="text-2xl kanit-regular">{job.location}</span>
+              </div>
+              
+              <div className="flex items-center space-x-3 text-gray-700">
+                <FaClock className="flex-shrink-0 text-seagreen h-5 w-5" />
+                <span className="text-2xl kanit-regular">
+                  {job.workHours} ({job.workDays})
+                </span>
+              </div>
+
+              <div className="flex items-center space-x-3 text-gray-700">
+                <CiMoneyBill className="flex-shrink-0 text-seagreen h-6 w-6" />
+                <span className="text-2xl kanit-regular">
+                  ฿{parseFloat(job.salary).toLocaleString()} บาท
+                </span>
+              </div>
             </div>
 
             {/* Action Buttons */}
@@ -92,12 +101,12 @@ function JobDetail() {
                 สมัครงานตอนนี้
               </Link>
               <button 
-                onClick={() => setIsStarred((prev) => !prev)}
+                onClick={toggleStar}
                 className="flex items-center justify-center space-x-2 text-gray-600 hover:text-gray-800 
                          px-4 py-2 rounded-md border border-gray-200 transition-colors text-sm"
               >
-                <FaStar className={`h-4 w-4 ${isStarred ? 'text-yellow-400 fill-yellow-400' : ''}`} />
-                <span>บันทึกงาน</span>
+                <FaStar className={`h-5 w-5 ${isStarred ? 'text-yellow-400 fill-yellow-400' : ''}`} />
+                <span className="kanit-regular">บันทึกงาน</span>
               </button>
             </div>
 
