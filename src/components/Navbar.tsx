@@ -12,7 +12,7 @@ import { MdPostAdd } from "react-icons/md";
 import { useDisclosure } from "@mantine/hooks";
 
 export default function Navbar() {
-  const [isSignedIn, setIsSignedIn] = useState(false);
+  const [isSignedIn, setIsSignedIn] = useState(true);
   const user = { name: "ชื่อ นามสกุล", profilePicture: "/vite.svg" };
   const [scrollDirection, setScrollDirection] = useState("up");
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =

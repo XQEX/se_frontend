@@ -21,9 +21,13 @@ const ViewPostEmployers: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // ดึงข้อมูลจาก Local Storage หรือจาก state ที่ถูกส่งมาผ่าน navigate()
+  // 🔹 ตรวจสอบว่า job มาจาก state หรือ localStorage
   const job: Job | undefined =
-    location.state?.job || JSON.parse(localStorage.getItem("jobs") || "[]").find((job: Job) => job.id.toString() === id);
+    location.state?.job || JSON.parse(localStorage.getItem("jobs_emp") || "[]").find((job: Job) => job.id.toString() === id);
+
+  console.log("Job ID from URL:", id);
+  console.log("Loaded job from state:", location.state?.job);
+  console.log("Loaded job from localStorage:", JSON.parse(localStorage.getItem("jobs_emp") || "[]"));
 
   if (!job) {
     return (

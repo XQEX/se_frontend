@@ -1,68 +1,54 @@
-import React, { useState } from "react";
-import NavbarEmp from "../../components/NavbarEmp";
-import Searchbar from "../../components/Searchbar";
-import JobCard from "../../components/JobCard";
-import Footer from "../../components/Footer";
-import SidebarEmp from "../../components/SidebarEmp";
-import { Pagination, PaginationProps } from "@mantine/core";
-import { jobData } from "../../data/FakeJobData";
-import { ScrollArea } from "@mantine/core";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import NavbarEmp from "../../components/NavbarEmp";
+import Sidebar from "../../components/SidebarEmp";
+import JobCardEmp from "../../components/JobCardEmp";
+import Footer from "../../components/Footer";
+import { Pagination } from "@mantine/core";
 
 function FindEmp() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(9);
-  const [favJobs, setFavJobs] = useState<string[]>([]);
+  const [jobs, setJobs] = useState([]);
 
-  const handleFavChange = (jobId: string, isFav: boolean) => {
-    setFavJobs((prev) => 
-      isFav ? [...prev, jobId] : prev.filter((id) => id !== jobId)
-    );
-  };
+  useEffect(() => {
+    const loadJobs = () => {
+      const storedJobs = JSON.parse(localStorage.getItem("jobs_seek") || "[]");
+      setJobs(storedJobs);
+    };
+    loadJobs();
+  }, []);
 
   const indexOfLastJob = currentPage * itemsPerPage;
   const indexOfFirstJob = indexOfLastJob - itemsPerPage;
-  const currentJobs = jobData.slice(indexOfFirstJob, indexOfLastJob);
-
-  const handlePageChange: PaginationProps["onChange"] = (page) =>
-    setCurrentPage(page);
+  const currentJobs = jobs.slice(indexOfFirstJob, indexOfLastJob);
 
   return (
     <div className="min-h-screen flex flex-col font-kanit">
       <NavbarEmp />
       <div className="flex flex-row flex-grow">
-        <SidebarEmp />
-        <div className="w-3/4 w-full">
-          <div className="kanit-medium m-6 text-2xl">ค้นหาลูกจ้าง</div>
-          <div className="grid lg:grid-cols-3 sm:grid-cols-1 gap-3 m-1">
-            {currentJobs.map((job, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
-              >
-                <JobCard
-                  id={job.id}
-                  key={index}
+        <Sidebar />
+        <div className="w-full md:w-3/4 p-6">
+          <h1 className="kanit-medium text-2xl mb-4">โพสต์ของฉัน</h1>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {currentJobs.map((job:Job) => (
+              <motion.div key={job.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+                <JobCardEmp
+                  id={job.id}  
                   title={job.title}
-                  company={job.company}
-                  time={job.time}
                   location={job.location}
                   salary={job.salary}
+                  workDays={job.workDays}
+                  workHours={job.workHours}
                 />
               </motion.div>
             ))}
           </div>
-          <div className="flex items-center justify-center m-4">
-            <Pagination
-              total={Math.ceil(jobData.length / itemsPerPage)}
-              value={currentPage}
-              onChange={handlePageChange}
-              color="gray"
-            />
-          </div>
+          {jobs.length > itemsPerPage && (
+            <div className="flex items-center justify-center mt-6">
+              <Pagination total={Math.ceil(jobs.length / itemsPerPage)} value={currentPage} onChange={setCurrentPage} />
+            </div>
+          )}
         </div>
       </div>
       <Footer />

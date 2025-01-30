@@ -16,11 +16,12 @@ import TrackDetailsEmployers from "./pages/Employers/TrackDetailsEmployers";
 import FindEmployers from "./pages/Employers/FindEmployers";
 import ViewPostEmployers from "./pages/Employers/ViewPostEmployers";
 import ProfileEmployers from "./pages/Employers/ProfileEmployers";
-import JobPositionForm from "./pages/JobPositionForm";
-import JobDetail from "./pages/JobDetail";
+import JobPositionForm from "./pages/JobSeeker/JobPositionForm";
 import TrackJobSeeker from "./pages/JobSeeker/TrackJobSeeker";
 import TrackDetailsJobSeeker from "./pages/JobSeeker/TrackDetailsJobSeeker";
 import PostJob from "./pages/JobSeeker/Post";
+import JobDetail from "./pages/JobSeeker/JobDetail";
+import JobDetailEmp from "./pages/Employers/๋JobDetailsEmp";
 import UserTypeWizard from "./pages/UserTypeWizard";
 
 function App() {
@@ -37,10 +38,10 @@ function App() {
         <Route path="contactus" element={<ContactUs />} />
         <Route path="application" element={<ApplicationForm />} />
         <Route path="application/JobPosition" element={<JobPositionForm />} />
-        <Route path="/job/:id" element={<JobDetail />} />
         <Route path="/trackjobseeker" element={<TrackJobSeeker />} />
         <Route path="/trackJobseeker/:id" element={<TrackDetailsJobSeeker />} />
         <Route path="/postjob" element={<PostJob />} />
+        <Route path="/jobseeker/details/:id" element={<JobDetail />} />
 
         {/* Routes สำหรับ Employers */}
         <Route path="signUp/Employer" element={<SignUpEmp />} />
@@ -49,8 +50,9 @@ function App() {
         <Route path="trackemp" element={<TrackEmployers />} />
         <Route path="track/:id" element={<TrackDetailsEmployers />} />
         <Route path="findemp" element={<FindEmployers />} />
-        <Route path="viewpost/:id" element={<ViewPostEmployers />} />
         <Route path="profileemp" element={<ProfileEmployers />} />
+        <Route path="/employer/viewpost/:id" element={<ViewPostEmployers />} />
+        <Route path="/employer/details/:id" element={<JobDetailEmp />} />
 
         {/* หน้าสำหรับ Route ที่ไม่พบ */}
         <Route path="/select-user-type" element={<UserTypeWizard />} />
