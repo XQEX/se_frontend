@@ -27,117 +27,90 @@ function JobDetailEmp() {
 
   useEffect(() => {
     const jobs = JSON.parse(localStorage.getItem("jobs_seek") || "[]");
-    const foundJob = jobs.find((job: Job) => job.id === id);
+    const foundJob = jobs.find((job: Job) => job.id.toString() === id);
     setJob(foundJob);
   }, [id]);
 
   if (!job) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gray-50">
-        <h2 className="text-gray-600 text-xl font-medium">ไม่พบงานนี้</h2>
+      <div className="flex flex-col items-center justify-center h-screen bg-gray-50 font-kanit">
+        <h2 className="text-lg font-semibold text-red-500">❌ ไม่พบงานนี้</h2>
+        <button 
+          className="mt-4 px-5 py-2 bg-seagreen text-white rounded-lg shadow-md hover:bg-[#246e4a] transition text-sm"
+          onClick={() => navigate(-1)}
+        >
+          🔙 กลับไปหน้าหลัก
+        </button>
       </div>
     );
   }
 
-  const toggleStar = () => setIsStarred((prev) => !prev);
-
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-gray-50 font-kanit">
       <NavbarEmp />
 
       {/* Main Content */}
-      <main className="flex-1 py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden relative">
+      <main className="flex-1 py-6 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-xl mx-auto bg-white rounded-lg shadow-md overflow-hidden relative">
+          
           {/* 🔙 ปุ่มย้อนกลับ */}
-          <button
-            onClick={() => navigate(-1)}
-            className="absolute top-4 left-4 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full p-3 transition"
+          <button 
+            onClick={() => navigate(-1)} 
+            className="absolute top-3 left-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full p-2 transition"
           >
-            <FaArrowLeft className="h-5 w-5" />
+            <FaArrowLeft className="h-4 w-4" />
           </button>
 
           {/* Company Header */}
-          <div className="p-8 border-b border-gray-200">
-            <div className="flex flex-col items-center space-y-4">
-              {/* ✅ ใช้ Mantine Avatar */}
-              <Avatar size="2xl" radius="md" />
-
-              <div className="text-center">
-                <h1 className="text-2xl font-bold text-gray-900 kanit-regular">
-                  {job.company}
-                </h1>
-                <h3 className="text-4xl kanit-regular font-semibold text-gray-900 mb-3">
-                  {job.title}
-                </h3>
-              </div>
-            </div>
+          <div className="p-6 border-b border-gray-200 text-center">
+            <Avatar size="lg" radius="md" className="mx-auto mb-3" />
+            <h1 className="text-xl font-semibold text-gray-800">{job.company || "ไม่ระบุบริษัท"}</h1>
+            <h3 className="text-lg font-medium text-gray-700">{job.title}</h3>
           </div>
 
           {/* Job Details */}
-          <div className="p-8 space-y-6">
+          <div className="p-5 space-y-4">
             {/* Info Grid */}
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="flex items-center space-x-3 text-gray-700">
-                <FaBuilding className="flex-shrink-0 text-seagreen h-5 w-5" />
-                <span className="text-2xl kanit-regular">{job.location}</span>
-              </div>
-
-              <div className="flex items-center space-x-3 text-gray-700">
-                <FaClock className="flex-shrink-0 text-seagreen h-5 w-5" />
-                <span className="text-2xl kanit-regular">
-                  {job.workHours} ({job.workDays})
-                </span>
-              </div>
-
-              <div className="flex items-center space-x-3 text-gray-700">
-                <CiMoneyBill className="flex-shrink-0 text-seagreen h-6 w-6" />
-                <span className="text-2xl kanit-regular">
-                  ฿{parseFloat(job.salary).toLocaleString()} บาท
-                </span>
-              </div>
+            <div className="grid gap-3 sm:grid-cols-2 text-gray-700 text-sm">
+              <p className="flex items-center">
+                <FaBuilding className="mr-2 text-seagreen h-4 w-4" /> {job.location}
+              </p>
+              <p className="flex items-center">
+                <FaClock className="mr-2 text-seagreen h-4 w-4" /> {job.workHours} ({job.workDays})
+              </p>
+              <p className="flex items-center">
+                <CiMoneyBill className="mr-2 text-seagreen h-5 w-5" /> ฿{parseFloat(job.salary).toLocaleString()} บาท
+              </p>
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 pt-4">
+            <div className="flex flex-col sm:flex-row gap-3">
               <Link
                 to="/reserved"
-                className="bg-seagreen hover:bg-seagreen-dark text-white px-8 py-3 rounded-lg kanit-regular 
-                         text-center transition-colors shadow-sm"
+                className="bg-seagreen hover:bg-seagreen-dark text-white px-6 py-2 rounded-md text-sm text-center transition shadow-sm"
               >
                 สมัครงานตอนนี้
               </Link>
-              <button
-                onClick={toggleStar}
+              <button 
+                onClick={() => setIsStarred((prev) => !prev)}
                 className="flex items-center justify-center space-x-2 text-gray-600 hover:text-gray-800 
-                         px-4 py-3 rounded-lg border border-gray-200 transition-colors"
+                         px-4 py-2 rounded-md border border-gray-200 transition-colors text-sm"
               >
-                <FaStar
-                  className={`h-5 w-5 ${
-                    isStarred ? "text-yellow-400 fill-yellow-400" : ""
-                  }`}
-                />
-                <span className="kanit-regular">บันทึกงาน</span>
+                <FaStar className={`h-4 w-4 ${isStarred ? 'text-yellow-400 fill-yellow-400' : ''}`} />
+                <span>บันทึกงาน</span>
               </button>
             </div>
 
             {/* Job Description */}
-            <div className="space-y-6 pt-8">
+            <div className="space-y-3 pt-5">
               <section>
-                <h3 className="text-xl font-semibold text-gray-900 kanit-regular mb-3">
-                  รายละเอียดงาน
-                </h3>
-                <p className="text-gray-700 leading-relaxed kanit-regular whitespace-pre-line">
-                  {job.description}
-                </p>
+                <h3 className="text-base font-semibold text-gray-800 mb-1">รายละเอียดงาน</h3>
+                <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-line">{job.description}</p>
               </section>
 
               <section>
-                <h3 className="text-xl font-semibold text-gray-900 kanit-regular mb-3">
-                  คุณสมบัติที่ต้องการ
-                </h3>
-                <p className="text-gray-700 leading-relaxed kanit-regular whitespace-pre-line">
-                  {job.requirements}
-                </p>
+                <h3 className="text-base font-semibold text-gray-800 mb-1">คุณสมบัติที่ต้องการ</h3>
+                <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-line">{job.requirements}</p>
               </section>
             </div>
           </div>

@@ -22,8 +22,9 @@ type Job = {
 function JobDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [isStarred, setIsStarred] = useState(false);
   const [job, setJob] = useState<Job | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [isStarred, setIsStarred] = useState(false);
 
   useEffect(() => {
     console.log("🔎 กำลังโหลดข้อมูลงาน...");
@@ -32,66 +33,75 @@ function JobDetail() {
     const jobs = JSON.parse(localStorage.getItem("jobs_emp") || "[]");
     console.log("📂 ข้อมูลทั้งหมดใน jobs_emp:", jobs);
 
-    const foundJob = jobs.find((job: Job) => job.id.toString() === id);
+    const foundJob = jobs.find((job: Job) => job.id === id);
     console.log("✅ งานที่พบ:", foundJob);
 
-    setJob(foundJob);
+    if (foundJob) {
+      setJob(foundJob);
+    } else {
+      setJob(null);
+    }
+    
+    setLoading(false);
   }, [id]);
 
-  if (!job) {
+  // ✅ ป้องกันหน้าค้างกรณี job โหลดไม่ทัน
+  if (loading) {
     return (
       <div className="flex items-center justify-center h-screen bg-gray-50">
-        <h2 className="text-gray-600 text-xl font-medium">
-          ❌ ไม่พบงานนี้ (Job ID: {id})
-        </h2>
-        <p className="text-gray-500">กรุณาตรวจสอบ LocalStorage หรือ URL</p>
+        <h2 className="text-gray-600 text-lg">⏳ กำลังโหลดข้อมูลงาน...</h2>
       </div>
     );
   }
 
-  const toggleStar = () => setIsStarred((prev) => !prev);
+  // ✅ แสดงข้อความหากไม่พบงาน
+  if (!job) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen bg-gray-50 font-kanit">
+        <h2 className="text-lg font-semibold text-red-500">❌ ไม่พบงานนี้</h2>
+        <button 
+          className="mt-4 px-5 py-2 bg-seagreen text-white rounded-lg shadow-md hover:bg-[#246e4a] transition text-sm"
+          onClick={() => navigate(-1)}
+        >
+           กลับไปหน้าหลัก
+        </button>
+      </div>
+    );
+  }
+
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-gray-50 font-kanit">
       <Navbar />
 
       {/* Main Content */}
       <main className="flex-1 py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden relative">
+          
           {/* 🔙 ปุ่มย้อนกลับ */}
-          <button
-            onClick={() => navigate(-1)}
+          <button 
+            onClick={() => navigate(-1)} 
             className="absolute top-4 left-4 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full p-3 transition"
           >
-            <FaArrowLeft className="h-5 w-5" />
+            <FaArrowLeft className="h-4 w-4" />
           </button>
 
           {/* Company Header */}
-          <div className="p-8 border-b border-gray-200">
-            <div className="flex flex-col items-center space-y-4">
-              {/* ✅ ใช้ Mantine Avatar */}
-              <Avatar size="2xl" radius="md" />
-
-              <div className="text-center">
-                <h1 className="text-2xl font-bold text-gray-900 kanit-regular">
-                  {job.company || "ไม่ระบุบริษัท"}
-                </h1>
-                <h3 className="text-4xl kanit-regular font-semibold text-gray-900 mb-3">
-                  {job.title}
-                </h3>
-              </div>
-            </div>
+          <div className="p-6 border-b border-gray-200 text-center">
+            <Avatar size="lg" radius="md" className="mx-auto mb-3" />
+            <h1 className="text-xl font-semibold text-gray-800">{job.company || "ชื่อคนโพสต์"}</h1>
+            <h3 className="text-lg font-medium text-gray-700">{job.title}</h3>
           </div>
 
           {/* Job Details */}
-          <div className="p-8 space-y-6">
+          <div className="p-5 space-y-4">
             {/* Info Grid */}
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="flex items-center space-x-3 text-gray-700">
                 <FaBuilding className="flex-shrink-0 text-seagreen h-5 w-5" />
                 <span className="text-2xl kanit-regular">{job.location}</span>
               </div>
-
+              
               <div className="flex items-center space-x-3 text-gray-700">
                 <FaClock className="flex-shrink-0 text-seagreen h-5 w-5" />
                 <span className="text-2xl kanit-regular">
@@ -108,46 +118,33 @@ function JobDetail() {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 pt-4">
+            <div className="flex flex-col sm:flex-row gap-3">
               <Link
                 to="/reserved"
-                className="bg-seagreen hover:bg-seagreen-dark text-white px-8 py-3 rounded-lg kanit-regular 
-                         text-center transition-colors shadow-sm"
+                className="bg-seagreen hover:bg-seagreen-dark text-white px-6 py-2 rounded-md text-sm text-center transition shadow-sm"
               >
                 สมัครงานตอนนี้
               </Link>
-              <button
-                onClick={toggleStar}
+              <button 
+             
                 className="flex items-center justify-center space-x-2 text-gray-600 hover:text-gray-800 
-                         px-4 py-3 rounded-lg border border-gray-200 transition-colors"
+                         px-4 py-2 rounded-md border border-gray-200 transition-colors text-sm"
               >
-                <FaStar
-                  className={`h-5 w-5 ${
-                    isStarred ? "text-yellow-400 fill-yellow-400" : ""
-                  }`}
-                />
+                <FaStar className={`h-5 w-5 ${isStarred ? 'text-yellow-400 fill-yellow-400' : ''}`} />
                 <span className="kanit-regular">บันทึกงาน</span>
               </button>
             </div>
 
             {/* Job Description */}
-            <div className="space-y-6 pt-8">
+            <div className="space-y-3 pt-5">
               <section>
-                <h3 className="text-xl font-semibold text-gray-900 kanit-regular mb-3">
-                  รายละเอียดงาน
-                </h3>
-                <p className="text-gray-700 leading-relaxed kanit-regular whitespace-pre-line">
-                  {job.description}
-                </p>
+                <h3 className="text-base font-semibold text-gray-800 mb-1">รายละเอียดงาน</h3>
+                <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-line">{job.description}</p>
               </section>
 
               <section>
-                <h3 className="text-xl font-semibold text-gray-900 kanit-regular mb-3">
-                  คุณสมบัติที่ต้องการ
-                </h3>
-                <p className="text-gray-700 leading-relaxed kanit-regular whitespace-pre-line">
-                  {job.requirements}
-                </p>
+                <h3 className="text-base font-semibold text-gray-800 mb-1">คุณสมบัติที่ต้องการ</h3>
+                <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-line">{job.requirements}</p>
               </section>
             </div>
           </div>
