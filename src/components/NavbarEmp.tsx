@@ -28,7 +28,7 @@ export const NavbarEmp: React.FC = () => {
   return (
     <>
       <nav
-        className={`font-[Kanit] backdrop-blur-sm bg-seagreen/80 flex justify-between items-center px-6 py-1 shadow-md sticky top-0 z-50 min-h-[60px] transition-transform duration-300 ${
+        className={`backdrop-blur-sm bg-seagreen/80 flex justify-between items-center px-6 py-1 shadow-md sticky top-0 z-50 min-h-[60px] transition-transform duration-300 ${
           scrollDirection === "down" ? "-translate-y-full" : "translate-y-0"
         }`}
       >
