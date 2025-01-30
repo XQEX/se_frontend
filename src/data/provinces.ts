@@ -96,6 +96,3 @@ export const DistrictByProvince: Record<string, string[]> = {
   'ขอนแก่น': ['เมืองขอนแก่น', 'บ้านฝาง', 'พระยืน', 'หนองเรือ', 'ชุมแพ', 'สีชมพู']
 };
 
-export const SubdistrictByDistrict: Record<string, string[]> = {
-  
-}
