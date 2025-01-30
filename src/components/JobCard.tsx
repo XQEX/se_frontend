@@ -57,7 +57,7 @@ function JobCard({
           <div className="flex items-center">
             <TbCurrencyBaht size={16} className="mr-1.5 text-seagreen" />
             <span>
-              ฿{!isNaN(parseFloat(salary)) ? parseFloat(salary).toLocaleString() : salary}
+              {!isNaN(parseFloat(salary)) ? parseFloat(salary).toLocaleString() : salary}
             </span>
           </div>
 

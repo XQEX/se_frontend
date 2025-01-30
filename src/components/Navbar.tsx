@@ -39,7 +39,7 @@ export default function Navbar() {
       {isSignedIn ? (
         <>
           <Menu.Item component={Link} to="/profile" className="kanit-regular">
-            โปรไฟร์
+            โปรไฟล์
           </Menu.Item>
           <Menu.Item
             onClick={() => setIsSignedIn(false)}
@@ -71,18 +71,11 @@ export default function Navbar() {
         ค้นหางาน
       </Link>
       <Link
-        to="/editjob"
+        to="/application/JobPosition"
         className="text-gray-200 kanit-regular hover:text-white px-4 py-1 rounded-md transition-colors duration-300 flex items-center"
       >
         <FaEdit className="mr-2" />
         แก้ไขประวัติ
-      </Link>
-      <Link
-        to="/homeemp"
-        className="text-gray-200 kanit-regular hover:text-white px-4 py-1 rounded-md transition-colors duration-300 flex items-center"
-      >
-        <FaBuilding className="mr-2" />
-        สำหรับบริษัท
       </Link>
       <Link
         to="/postjob"

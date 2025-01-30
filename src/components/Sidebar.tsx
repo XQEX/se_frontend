@@ -133,7 +133,7 @@ function Sidebar() {
           </div>
 
             <div className="flex justify-center mt-8">
-              <button className="bg-seagreen hover:bg-seagreen/90 text-white py-2 w-full mt-4 rounded">
+              <button className="bg-seagreen/80 hover:bg-seagreen text-white py-2 w-full mt-4 rounded">
               ค้นหา
               </button>
             </div>

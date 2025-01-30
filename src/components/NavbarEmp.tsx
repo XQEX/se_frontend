@@ -4,6 +4,7 @@ import { Avatar, Menu, Divider } from "@mantine/core";
 import { FaUserCircle, FaSearch, FaHome, FaBell } from "react-icons/fa";
 import { useDisclosure } from "@mantine/hooks";
 
+
 export default function Navbar() {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const user = { name: "ชื่อ นามสกุล", profilePicture: "/vite.svg" };
