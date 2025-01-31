@@ -91,7 +91,7 @@ export const loginAdmin = async (
     console.log("Login successful:", data);
     return data.data;
   } catch (error) {
-    console.error("Login failed:", error);
+    console.error("Login failed:", (error as any).response.data.msg);
     throw error;
   }
 };

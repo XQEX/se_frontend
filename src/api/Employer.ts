@@ -122,7 +122,7 @@ export const fetchEmployerInfo = async (): Promise<EmployerInfo> => {
     console.log("Fetch employer info successful:", data);
     return data.data;
   } catch (error) {
-    console.error("Fetch employer info failed:", error);
+    console.error("Fetch employer info failed:", (error as any).message);
     throw error;
   }
 };
@@ -191,6 +191,22 @@ export const getAllJobPosts = async (
     return data;
   } catch (error) {
     console.error("Failed to fetch job posts:", error);
+    throw error;
+  }
+};
+
+export const deleteJobPost = async (id: string): Promise<void> => {
+  try {
+    console.log("Deleting job post with ID:", id);
+    const { data } = await axios.delete<{ data: void }>(
+      `http://localhost:${backendPort}/api/post/job-posts/${id}`,
+      {
+        withCredentials: true,
+      }
+    );
+    console.log("Job post deletion successful:", data);
+  } catch (error) {
+    console.error("Job post deletion failed:", error);
     throw error;
   }
 };

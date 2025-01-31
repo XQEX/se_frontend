@@ -14,7 +14,7 @@ import {
 } from "react-icons/fa";
 import { CiMoneyBill } from "react-icons/ci";
 import { useUser } from "../../context/UserContext";
-import { getAllJobPosts } from "../../api/Employer";
+import { getAllJobPosts, deleteJobPost } from "../../api/Employer";
 
 interface Job {
   id: string;
@@ -57,11 +57,15 @@ const HomepageEmployers: React.FC = () => {
     fetchJobs();
   }, []);
 
-  const handleDeleteJob = (id: string) => {
-    const updatedJobs = jobs.filter((job) => job.id !== id);
-    setJobs(updatedJobs);
-    // Assuming there's an API to delete the job post
-    // await deleteJobPost(id);
+  const handleDeleteJob = async (id: string) => {
+    try {
+      await deleteJobPost(id);
+      const updatedJobs = jobs.filter((job) => job.id !== id);
+      setJobs(updatedJobs);
+    } catch (error) {
+      console.error("Failed to delete job post:", error);
+      alert("⚠️ การลบงานล้มเหลว กรุณาลองใหม่อีกครั้ง!");
+    }
   };
 
   return (

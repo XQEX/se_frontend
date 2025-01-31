@@ -116,7 +116,7 @@ export const fetchCompanyInfo = async (): Promise<CompanyInfo> => {
     console.log("Fetch company info successful:", data);
     return data.data;
   } catch (error) {
-    console.error("Fetch company info failed:", error);
+    console.error("Fetch company info failed:", (error as any).message);
     throw error;
   }
 };

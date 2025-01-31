@@ -102,7 +102,7 @@ export const fetchJobSeekerInfo = async (): Promise<JobSeekerInfo> => {
     console.log("Fetch job seeker info successful:", data);
     return data.data;
   } catch (error) {
-    console.error("Fetch job seeker info failed:", error);
+    console.error("Fetch job seeker info failed:", (error as any).message);
     throw error;
   }
 };
