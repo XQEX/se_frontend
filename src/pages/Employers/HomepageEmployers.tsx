@@ -26,6 +26,7 @@ interface Job {
   workHoursRange: string;
   hiredAmount: number;
   createdAt: string;
+  userId: string; // Add userId to Job interface
 }
 
 const HomepageEmployers: React.FC = () => {
@@ -47,6 +48,8 @@ const HomepageEmployers: React.FC = () => {
           workHoursRange: jobPost.workHoursRange,
           hiredAmount: jobPost.hiredAmount,
           createdAt: jobPost.createdAt,
+          userId:
+            jobPost.companyId || jobPost.employerId || jobPost.oauthEmployerId, // Add userId to Job data
         }));
         setJobs(jobsData);
       } catch (error) {
@@ -163,12 +166,14 @@ const HomepageEmployers: React.FC = () => {
                     className="relative bg-white p-5 rounded-xl shadow-md border border-gray-300 transition hover:shadow-lg"
                   >
                     {/* Delete Button */}
-                    <button
-                      className="absolute top-4 right-4 text-black hover:text-gray-800"
-                      onClick={() => handleDeleteJob(job.id)}
-                    >
-                      <FaTrash size={18} />
-                    </button>
+                    {job.userId === user.id && (
+                      <button
+                        className="absolute top-4 right-4 text-black hover:text-gray-800"
+                        onClick={() => handleDeleteJob(job.id)}
+                      >
+                        <FaTrash size={18} />
+                      </button>
+                    )}
 
                     {/* Job Title */}
                     <h3 className="text-base font-bold text-gray-700">

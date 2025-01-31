@@ -62,6 +62,12 @@ function SignIn() {
     );
   }
 
+  function handleKeyDown(event: React.KeyboardEvent) {
+    if (event.key === "Enter") {
+      LoginUser(event as unknown as React.FormEvent);
+    }
+  }
+
   return (
     <div className="h-screen flex flex-col">
       <ToastContainer />
@@ -76,7 +82,7 @@ function SignIn() {
         <h1 className="kanit-bold text-xl text-center mb-8">เข้าสู่ระบบ</h1>
 
         {/* Form Section */}
-        <div className="w-full max-w-sm space-y-6">
+        <div className="w-full max-w-sm space-y-6" onKeyDown={handleKeyDown}>
           {/* User Type Selection */}
           <div className="flex justify-center mb-4 space-x-2">
             <button

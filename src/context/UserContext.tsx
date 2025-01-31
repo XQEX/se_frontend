@@ -24,22 +24,8 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     "currentJobSeeker",
     fetchJobSeekerInfo,
     {
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
-      refetchOnMount: false,
-      enabled: !!!user,
-      retry(failureCount, error): boolean {
-        if ((error as any).status === 401 || failureCount > 2) {
-          setUser(null);
-          return false;
-        }
-        return true;
-      },
       onSuccess: (data) => {
-        setUser(data);
-      },
-      onError: () => {
-        setUser(null);
+        setUser((prev: any) => prev ?? data);
       },
     }
   );
@@ -48,45 +34,18 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     "currentEmployer",
     fetchEmployerInfo,
     {
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
-      refetchOnMount: false,
-      enabled: !!!user,
-      retry(failureCount, error): boolean {
-        if ((error as any).status === 401 || failureCount > 2) {
-          setUser(null);
-          return false;
-        }
-        return true;
-      },
       onSuccess: (data) => {
-        setUser(data);
-      },
-      onError: () => {
-        setUser(null);
+        setUser((prev: any) => prev ?? data);
       },
     }
   );
+
   const { isLoading: isLoadingCompany } = useQuery(
     "currentCompany",
     fetchCompanyInfo,
     {
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
-      refetchOnMount: false,
-      enabled: !!!user,
-      retry(failureCount, error): boolean {
-        if ((error as any).status === 401 || failureCount > 2) {
-          setUser(null);
-          return false;
-        }
-        return true;
-      },
       onSuccess: (data) => {
-        setUser(data);
-      },
-      onError: () => {
-        setUser(null);
+        setUser((prev: any) => prev ?? data);
       },
     }
   );
