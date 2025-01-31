@@ -248,113 +248,131 @@ export const Navbar: React.FC = () => {
         </div>
       </nav>
       <Drawer
-        opened={drawerOpened}
-        onClose={closeDrawer}
-        title="SkillBridge"
-        padding="md"
-        size="100%"
-        className="text-seagreen kanit-regular text-lg"
+  opened={drawerOpened}
+  onClose={closeDrawer}
+  title="SkillBridge"
+  padding="md"
+  size="100%"
+  className="text-seagreen kanit-regular text-lg"
+>
+  <div className="flex flex-col space-y-4">
+    <div className="text-black">
+      <Link
+        to="/find"
+        className="text-gray-900 kanit-regular hover:text-black px-4 py-1 rounded-md transition-colors duration-300 flex items-center"
       >
-        <div className="flex flex-col space-y-4">
-          <div className="text-black">
-            <Link
-              to="/find"
-              className="text-gray-900 kanit-regular hover:text-black px-4 py-1 rounded-md transition-colors duration-300 flex items-center"
-            >
-              <FaFind className="mr-2" />
-              ค้นหางาน
-            </Link>
-            {isSignedIn && (
-              <>
-                <Link
-                  to="/editjob"
-                  className="text-gray-900 kanit-regular hover:text-black px-4 py-1 rounded-md transition-colors duration-300 flex items-center"
-                >
-                  <FaEdit className="mr-2" />
-                  แก้ไขประวัติ
-                </Link>
-                <Link
-                  to="/editjob"
-                  className="text-gray-900 kanit-regular hover:text-black px-4 py-1 rounded-md transition-colors duration-300 flex items-center"
-                >
-                  <MdPostAdd className="mr-2" />
-                  โพสหางาน
-                </Link>
-                <div className="px-4 py-1">
-                  <Menu width={250} position="bottom-start" shadow="md">
-                    <Menu.Target>
-                      <button className="text-gray-900 kanit-regular hover:text-black transition-colors duration-300 relative flex items-center">
-                        <FaBell className="mr-2" size={20} />
-                        การแจ้งเตือน
-                        {FakeNotifications.length > 0 && (
-                          <span className="absolute top-0 left-5 inline-block w-2 h-2 bg-red-500 rounded-full"></span>
-                        )}
-                      </button>
-                    </Menu.Target>
-                    <Menu.Dropdown>
-                      <div className="p-2">
-                        <div className="kanit-regular text-center">
-                          การแจ้งเตือน
-                        </div>
-                      </div>
-                      <Divider />
-                      {FakeNotifications.map((message, index) => (
-                        <Menu.Item key={index} className="kanit-light">
-                          {message}
-                        </Menu.Item>
-                      ))}
-                      <Divider />
-                      <Menu.Item className="kanit-regular text-center bg-gray-200">
-                        <a href="/notifications" className="text-seagreen">
-                          ดูทั้งหมด
-                        </a>
-                      </Menu.Item>
-                    </Menu.Dropdown>
-                  </Menu>
+        <FaFind className="mr-2" />
+        ค้นหางาน
+      </Link>
+      <Link
+        to="/homeemp"
+        className="text-gray-900 kanit-regular hover:text-black px-4 py-1 rounded-md transition-colors duration-300 flex items-center"
+      >
+        <FaBuilding className="mr-2" />
+        สำหรับบริษัท
+      </Link>
+      {isSignedIn ? (
+        <>
+          <Link
+            to="/editjob"
+            className="text-gray-900 kanit-regular hover:text-black px-4 py-1 rounded-md transition-colors duration-300 flex items-center"
+          >
+            <FaEdit className="mr-2" />
+            แก้ไขประวัติ
+          </Link>
+          <Link
+            to="/postjob"
+            className="text-gray-900 kanit-regular hover:text-black px-4 py-1 rounded-md transition-colors duration-300 flex items-center"
+          >
+            <MdPostAdd className="mr-2" />
+            โพสหางาน
+          </Link>
+          <div className="px-4 py-1">
+            <Menu width={250} position="bottom-start" shadow="md">
+              <Menu.Target>
+                <button className="text-gray-900 kanit-regular hover:text-black transition-colors duration-300 relative flex items-center">
+                  <FaBell className="mr-2" size={20} />
+                  การแจ้งเตือน
+                  {FakeNotifications.length > 0 && (
+                    <span className="absolute top-0 left-5 inline-block w-2 h-2 bg-red-500 rounded-full"></span>
+                  )}
+                </button>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <div className="p-2">
+                  <div className="kanit-regular text-center">
+                    การแจ้งเตือน
+                  </div>
                 </div>
-              </>
-            )}
-            <Link
-              to="/homeemp"
-              className="text-gray-900 kanit-regular hover:text-black px-4 py-1 rounded-md transition-colors duration-300 flex items-center"
-            >
-              <FaBuilding className="mr-2" />
-              สำหรับบริษัท
-            </Link>
+                <Divider />
+                {FakeNotifications.map((message, index) => (
+                  <Menu.Item key={index} className="kanit-light">
+                    {message}
+                  </Menu.Item>
+                ))}
+                <Divider />
+                <Menu.Item className="kanit-regular text-center bg-gray-200">
+                  <a href="/notifications" className="text-seagreen">
+                    ดูทั้งหมด
+                  </a>
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
           </div>
-          {isSignedIn && (
-            <>
-              <Divider className="my-4" />
-              <div className="flex flex-col space-y-4">
-                <Menu width={250} position="bottom-end">
-                  <Menu.Target>
-                    <button className="flex items-center space-x-2 bg-gray-200 text-black px-4 py-2 rounded-3xl hover:bg-white transition">
-                      {user?.profilePicture ? (
-                        <Avatar
-                          src={user.profilePicture}
-                          alt={user.username}
-                          radius="xl"
-                          size={30}
-                        />
-                      ) : (
-                        <FaUserCircle size={24} />
-                      )}
-                      <span className="kanit-regular">{user?.username}</span>
-                    </button>
-                  </Menu.Target>
-                  <Menu.Dropdown className="m-2">
-                    <div className="p-3 text-center">
-                      <div className="kanit-regular">{user?.username}</div>
-                    </div>
-                    <Divider />
-                    {menuItems}
-                  </Menu.Dropdown>
-                </Menu>
-              </div>
-            </>
-          )}
+        </>
+      ) : (
+        <div className = "flex  flex-col">
+            <Link
+            to="/signin"
+            className="text-gray-900 kanit-regular hover:text-black px-4 py-1 rounded-md transition-colors duration-300 flex items-center"
+            >
+            <FaUserCircle className="mr-2" />
+            เข้าสู่ระบบ
+            </Link>
+            <Link
+            to="/select-user-type"
+            className="text-gray-900 px-4 py-1 border-seagreen kanit-regular hover:text-black transition-colors duration-300 flex items-center"
+            >
+            <FaUserCircle className="mr-2" />
+            สมัครสมาชิก
+            </Link>
         </div>
-      </Drawer>
+      )}
+      
+    </div>
+    {isSignedIn && (
+      <>
+        <Divider className="my-4" />
+        <div className="flex flex-col space-y-4">
+          <Menu width={250} position="bottom-end">
+            <Menu.Target>
+              <button className="flex items-center space-x-2 bg-gray-200 text-black px-4 py-2 rounded-3xl hover:bg-white transition">
+                {user?.profilePicture ? (
+                  <Avatar
+                    src={user.profilePicture}
+                    alt={user.username}
+                    radius="xl"
+                    size={30}
+                  />
+                ) : (
+                  <FaUserCircle size={24} />
+                )}
+                <span className="kanit-regular">{user?.username}</span>
+              </button>
+            </Menu.Target>
+            <Menu.Dropdown className="m-2">
+              <div className="p-3 text-center">
+                <div className="kanit-regular">{user?.username}</div>
+              </div>
+              <Divider />
+              {menuItems}
+            </Menu.Dropdown>
+          </Menu>
+        </div>
+      </>
+    )}
+  </div>
+</Drawer>
     </>
   );
 };
