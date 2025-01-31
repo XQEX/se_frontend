@@ -13,14 +13,13 @@ import "react-toastify/dist/ReactToastify.css";
 export const NavbarEmp: React.FC = () => {
   const { user, isLoading, isLoggedIn } = useUser();
   const [isSignedIn, setIsSignedIn] = useState(isLoggedIn);
-
   const [scrollDirection, setScrollDirection] = useState("up");
 
   // Helper function for toast messages
   const notifyError = (message: string) =>
     toast.error(message, { position: "top-center" });
   useEffect(() => {
-    console.log("User:", user);
+    // console.log("User:", user);
     setIsSignedIn(isLoggedIn);
   }, [isLoggedIn, user]);
 
@@ -40,11 +39,11 @@ export const NavbarEmp: React.FC = () => {
 
   const handleLogout = async () => {
     try {
-      if (user.type === "JOBSEEKER") {
+      if (user?.type === "JOBSEEKER") {
         await logoutJobSeeker();
-      } else if (user.type === "EMPLOYER") {
+      } else if (user?.type === "EMPLOYER") {
         await logoutEmployer();
-      } else if (user.type === "COMPANY") {
+      } else if (user?.type === "COMPANY") {
         await logoutCompany();
       }
       notifyError("คุณออกจากระบบ!"); // Show the notification after navigation
@@ -153,12 +152,12 @@ export const NavbarEmp: React.FC = () => {
                   ) : (
                     <FaUserCircle size={24} />
                   )}
-                  <span className="font-[Kanit]">{user.username}</span>
+                  <span className="font-[Kanit]">{user?.username}</span>
                 </button>
               </Menu.Target>
               <Menu.Dropdown className="m-2">
                 <div className="p-3 text-center font-[Kanit]">
-                  {user.username}
+                  {user?.username}
                 </div>
                 <Divider />
                 <Menu.Item

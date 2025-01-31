@@ -12,6 +12,43 @@ interface CompanyAuthResponse {
   isOauth: boolean;
 }
 
+interface JobPost {
+  title: string;
+  description: string;
+  jobLocation: string;
+  salary: number;
+  workDates: string;
+  workHoursRange: string;
+  hiredAmount: number;
+  skills: string[];
+  jobCategories: string[];
+}
+
+interface JobPostResponse {
+  success: boolean;
+  msg: string;
+  data: {
+    id: string;
+    title: string;
+    description: string;
+    jobLocation: string;
+    salary: number;
+    workDates: string;
+    workHoursRange: string;
+    status: string;
+    hiredAmount: number;
+    jobHirerType: string;
+    employerId: string | null;
+    oauthEmployerId: string | null;
+    companyId: string;
+    skills: { id: string; name: string }[];
+    jobCategories: { id: string; name: string }[];
+    createdAt: string;
+    updatedAt: string;
+  };
+  status: number;
+}
+
 export const registerCompany = async (
   officialName: string,
   email: string,
@@ -97,6 +134,29 @@ export const logoutCompany = async (): Promise<void> => {
     return data.data;
   } catch (error) {
     console.error("Logout failed:", error);
+    throw error;
+  }
+};
+
+export const createJobPostCom = async (
+  jobPost: JobPost
+): Promise<JobPostResponse> => {
+  try {
+    console.log("Creating job post with:", jobPost);
+    const { data } = await axios.post<{ data: JobPostResponse }>(
+      `http://localhost:${backendPort}/api/post/job-posts/company`,
+      jobPost,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    console.log("Job post creation successful:", data);
+    return data.data;
+  } catch (error) {
+    console.error("Job post creation failed:", error);
     throw error;
   }
 };

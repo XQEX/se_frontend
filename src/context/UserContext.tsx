@@ -24,8 +24,6 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     "currentJobSeeker",
     fetchJobSeekerInfo,
     {
-      enabled: !user, // Only fetch if user is not already set
-      refetchOnWindowFocus: false,
       onSuccess: (data) => {
         setUser(data);
       },
@@ -39,8 +37,6 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     "currentEmployer",
     fetchEmployerInfo,
     {
-      enabled: !user, // Only fetch if user is not already set
-      refetchOnWindowFocus: false,
       onSuccess: (data) => {
         setUser(data);
       },
@@ -53,8 +49,6 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     "currentCompany",
     fetchCompanyInfo,
     {
-      enabled: !user, // Only fetch if user is not already set
-      refetchOnWindowFocus: false,
       onSuccess: (data) => {
         setUser(data);
       },
