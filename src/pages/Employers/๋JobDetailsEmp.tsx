@@ -39,7 +39,7 @@ function JobDetailEmp() {
           className="mt-4 px-5 py-2 bg-seagreen text-white rounded-lg shadow-md hover:bg-[#246e4a] transition text-sm"
           onClick={() => navigate(-1)}
         >
-          🔙 กลับไปหน้าหลัก
+          กลับไปหน้าหลัก
         </button>
       </div>
     );
