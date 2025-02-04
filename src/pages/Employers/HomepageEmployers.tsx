@@ -166,7 +166,7 @@ const HomepageEmployers: React.FC = () => {
                     className="relative bg-white p-5 rounded-xl shadow-md border border-gray-300 transition hover:shadow-lg"
                   >
                     {/* Delete Button */}
-                    {job.userId === user.id && (
+                    {user && job.userId === user.id && (
                       <button
                         className="absolute top-4 right-4 text-black hover:text-gray-800"
                         onClick={() => handleDeleteJob(job.id)}
