@@ -47,7 +47,7 @@ export const NavbarEmp: React.FC = () => {
         await logoutCompany();
       }
       notifyError("คุณออกจากระบบ!"); // Show the notification after navigation
-      setIsSignedIn(isLoggedIn);
+      setIsSignedIn(false);
     } catch (error) {
       console.error("Failed to logout:", error);
     }

@@ -264,7 +264,14 @@ export const Navbar: React.FC = () => {
               <FaFind className="mr-2" />
               ค้นหางาน
             </Link>
-            {isSignedIn && (
+            <Link
+              to="/homeemp"
+              className="text-gray-900 kanit-regular hover:text-black px-4 py-1 rounded-md transition-colors duration-300 flex items-center"
+            >
+              <FaBuilding className="mr-2" />
+              สำหรับบริษัท
+            </Link>
+            {isSignedIn ? (
               <>
                 <Link
                   to="/editjob"
@@ -274,7 +281,7 @@ export const Navbar: React.FC = () => {
                   แก้ไขประวัติ
                 </Link>
                 <Link
-                  to="/editjob"
+                  to="/postjob"
                   className="text-gray-900 kanit-regular hover:text-black px-4 py-1 rounded-md transition-colors duration-300 flex items-center"
                 >
                   <MdPostAdd className="mr-2" />
@@ -313,14 +320,24 @@ export const Navbar: React.FC = () => {
                   </Menu>
                 </div>
               </>
+            ) : (
+              <div className="flex  flex-col">
+                <Link
+                  to="/signin"
+                  className="text-gray-900 kanit-regular hover:text-black px-4 py-1 rounded-md transition-colors duration-300 flex items-center"
+                >
+                  <FaUserCircle className="mr-2" />
+                  เข้าสู่ระบบ
+                </Link>
+                <Link
+                  to="/select-user-type"
+                  className="text-gray-900 px-4 py-1 border-seagreen kanit-regular hover:text-black transition-colors duration-300 flex items-center"
+                >
+                  <FaUserCircle className="mr-2" />
+                  สมัครสมาชิก
+                </Link>
+              </div>
             )}
-            <Link
-              to="/homeemp"
-              className="text-gray-900 kanit-regular hover:text-black px-4 py-1 rounded-md transition-colors duration-300 flex items-center"
-            >
-              <FaBuilding className="mr-2" />
-              สำหรับบริษัท
-            </Link>
           </div>
           {isSignedIn && (
             <>

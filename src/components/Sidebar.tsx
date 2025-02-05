@@ -51,7 +51,7 @@ function Sidebar() {
             type="text"
             id="search"
             placeholder="ค้นหางาน"
-            className="w-full p-2 border border-gray-300 rounded-md"
+            className="w-full p-2 border border-gray-300 rounded-md placeholder-kanit text-sm"
           />
         </div>
 
@@ -102,7 +102,7 @@ function Sidebar() {
             step="1000"
             value={salaryRange}
             onChange={handleSalaryChange}
-            className="w-full h-2 bg-gray-200 rounded-lg"
+            className="w-full h-2 rounded-lg  "
           />
         </div>
 
@@ -126,7 +126,7 @@ function Sidebar() {
 
         {/* 🔍 ปุ่มค้นหา */}
         <div className="flex justify-center">
-          <button className="bg-seagreen hover:bg-seagreen/90 text-white py-2 px-4 w-full rounded-md">
+          <button className="kanit-regular bg-seagreen hover:bg-seagreen/90 text-white py-2 px-4 w-full rounded-md">
             ค้นหา
           </button>
         </div>
