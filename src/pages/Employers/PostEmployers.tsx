@@ -18,6 +18,9 @@ const PostJobEmp: React.FC = () => {
   const [startTime, setStartTime] = useState("08:00");
   const [endTime, setEndTime] = useState("15:00");
   const [successMessage, setSuccessMessage] = useState("");
+  const [jobPostType, setJobPostType] = useState<
+    "FULLTIME" | "PARTTIME" | "FREELANCE"
+  >("FULLTIME");
   const [loading, setLoading] = useState(false);
   const { user } = useUser();
 
@@ -28,6 +31,8 @@ const PostJobEmp: React.FC = () => {
     "เสาร์ - อาทิตย์",
     "อื่นๆ",
   ];
+
+  const jobPostTypeOptions = ["FULLTIME", "PARTTIME", "FREELANCE"];
 
   useEffect(() => {
     if (user) {
@@ -81,6 +86,7 @@ const PostJobEmp: React.FC = () => {
       salary: Number(salary),
       workDates: workDays,
       workHoursRange: `${startTime} - ${endTime}`,
+      jobPostType: jobPostType,
       hiredAmount: 1, // Assuming a default value for hiredAmount
     };
     const newComJob = {
@@ -170,6 +176,25 @@ const PostJobEmp: React.FC = () => {
               </div>
             )
           )}
+
+          <div className="flex flex-col w-4/5 mx-auto">
+            <label className="font-kanit text-gray-700">ประเภทงาน</label>
+            <select
+              value={jobPostType}
+              onChange={(e) =>
+                setJobPostType(
+                  e.target.value as "FULLTIME" | "PARTTIME" | "FREELANCE"
+                )
+              }
+              className="border border-gray-300 p-2 rounded-md text-sm"
+            >
+              {jobPostTypeOptions.map((type) => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
+          </div>
 
           <div className="flex flex-col w-4/5 mx-auto">
             <label className="font-kanit text-gray-700">วันทำงาน</label>

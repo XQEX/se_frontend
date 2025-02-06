@@ -19,6 +19,7 @@ interface JobPost {
   salary: number;
   workDates: string;
   workHoursRange: string;
+  jobPostType: "FULLTIME" | "PARTTIME" | "FREELANCE";
   hiredAmount: number;
 }
 
