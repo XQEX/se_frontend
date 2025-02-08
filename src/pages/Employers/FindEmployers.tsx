@@ -1,12 +1,32 @@
 import { useState, useEffect } from "react";
 
 interface Job {
-  id: number;
+  id: string;
   title: string;
-  location: string;
-  salary: string;
-  workDays: string;
-  workHours: string;
+  description: string;
+  jobLocation: string;
+  expectedSalary: number;
+  workDates: string;
+  workHoursRange: string;
+  status: string;
+  jobPostType: string;
+  jobSeekerType: string;
+  jobSeekerId: string;
+  oauthJobSeekerId: string | null;
+  createdAt: string;
+  updatedAt: string;
+  skills: {
+    id: string;
+    name: string;
+    description: string;
+    createdAt: string;
+    updatedAt: string;
+  }[];
+  jobCategories: {
+    id: string;
+    name: string;
+    description: string;
+  }[];
 }
 import { motion } from "framer-motion";
 import { NavbarEmp } from "../../components/NavbarEmp";
@@ -14,18 +34,25 @@ import Sidebar from "../../components/SidebarEmp";
 import JobCardEmp from "../../components/JobCardEmp";
 import Footer from "../../components/Footer";
 import { Pagination } from "@mantine/core";
+import { getAllJobFindingPosts } from "../../api/JobSeeker";
 
 function FindEmp() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(9);
-  const [jobs, setJobs] = useState([]);
+  const [jobs, setJobs] = useState<Job[]>([]);
 
   useEffect(() => {
-    const loadJobs = () => {
-      const storedJobs = JSON.parse(localStorage.getItem("jobs_seek") || "[]");
-      setJobs(storedJobs);
+    const fetchJobs = async () => {
+      try {
+        const response = await getAllJobFindingPosts();
+        console.log(response.data.jobPosts);
+        setJobs(response.data.jobPosts as Job[]);
+      } catch (error) {
+        console.error("Failed to fetch job finding posts:", error);
+      }
     };
-    loadJobs();
+
+    fetchJobs();
   }, []);
 
   const indexOfLastJob = currentPage * itemsPerPage;
@@ -49,10 +76,10 @@ function FindEmp() {
                 <JobCardEmp
                   id={job.id}
                   title={job.title}
-                  location={job.location}
-                  salary={job.salary}
-                  workDays={job.workDays}
-                  workHours={job.workHours}
+                  location={job.jobLocation}
+                  salary={job.expectedSalary}
+                  workDays={job.workDates}
+                  workHours={job.workHoursRange}
                 />
               </motion.div>
             ))}

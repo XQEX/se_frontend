@@ -21,6 +21,8 @@ interface JobPost {
   workHoursRange: string;
   jobPostType: "FULLTIME" | "PARTTIME" | "FREELANCE";
   hiredAmount: number;
+  skills: string;
+  jobCategories: string;
 }
 
 interface JobPostResponse {
@@ -47,12 +49,50 @@ interface JobPostResponse {
 
 interface JobPostPaginationResponse {
   success: boolean;
-  data: JobPost[];
-  pagination: {
-    currentPage: number;
-    totalPages: number;
-    totalItems: number;
-    itemsPerPage: number;
+  data: {
+    jobPosts: JobPost[];
+    pagination: {
+      currentPage: number;
+      totalPages: number;
+      totalItems: number;
+      itemsPerPage: number;
+    };
+  };
+  message: string;
+}
+
+interface JobPostDetailResponse {
+  success: boolean;
+  status: number;
+  msg: string;
+  data: {
+    id: string;
+    title: string;
+    description: string;
+    jobLocation: string;
+    salary: number;
+    workDates: string;
+    workHoursRange: string;
+    hiredAmount: number;
+    status: string;
+    jobHirerType: string;
+    jobPostType: string;
+    employerId: string;
+    oauthEmployerId: string | null;
+    companyId: string | null;
+    createdAt: string;
+    updatedAt: string;
+    companyName: string | null;
+    skills: {
+      id: string;
+      name: string;
+      description: string;
+    }[];
+    jobCategories: {
+      id: string;
+      name: string;
+      description: string;
+    }[];
   };
 }
 
@@ -208,6 +248,26 @@ export const deleteJobPost = async (id: string): Promise<void> => {
     console.log("Job post deletion successful:", data);
   } catch (error) {
     console.error("Job post deletion failed:", error);
+    throw error;
+  }
+};
+
+//specific by id Employer/Company
+export const getJobPostById = async (
+  id: string
+): Promise<JobPostDetailResponse> => {
+  try {
+    console.log("Fetching job post with ID:", id);
+    const { data } = await axios.get<JobPostDetailResponse>(
+      `http://localhost:${backendPort}/api/post/job-posts/${id}`,
+      {
+        withCredentials: true,
+      }
+    );
+    console.log("Job post fetched successfully:", data);
+    return data;
+  } catch (error) {
+    console.error("Failed to fetch job post:", error);
     throw error;
   }
 };

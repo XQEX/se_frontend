@@ -38,7 +38,7 @@ const HomepageEmployers: React.FC = () => {
     const fetchJobs = async () => {
       try {
         const response = await getAllJobPosts();
-        const jobsData = response.data.map((jobPost: any) => ({
+        const jobsData = response.data.jobPosts.map((jobPost: any) => ({
           id: jobPost.id,
           title: jobPost.title,
           jobLocation: jobPost.jobLocation,

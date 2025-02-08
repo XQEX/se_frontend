@@ -9,7 +9,7 @@ type JobCardEmpProps = {
   workDays?: string;
   workHours?: string;
   location: string;
-  salary: string;
+  salary: number;
 };
 
 function JobCardEmp({
@@ -62,8 +62,8 @@ function JobCardEmp({
             <TbCurrencyBaht size={16} className="mr-1.5 text-seagreen" />
             <span>
               ฿
-              {!isNaN(parseFloat(salary))
-                ? parseFloat(salary).toLocaleString()
+              {!isNaN(parseFloat(salary.toString()))
+                ? parseFloat(salary.toString()).toLocaleString()
                 : salary}
             </span>
           </div>

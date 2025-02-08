@@ -7,7 +7,7 @@ import Footer from "../../components/Footer";
 import { Drawer, MultiSelect, Pagination } from "@mantine/core";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { provinces } from "../../data/provinces";
-
+import { getAllJobPosts } from "../../api/Employer";
 
 const mockJobs = [
   {
@@ -96,12 +96,15 @@ type Job = {
 function Find() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(9);
-  const [jobs, setJobs] = useState([]);
+  const [jobs, setJobs] = useState<Job[]>([]);
   const [opened, setOpened] = useState(false);
   const [salaryRange, setSalaryRange] = useState(0);
-  const [selectedProvinces, setSelectedProvinces] = useState<string[]>(["ทั้งหมด"]);
-  const [selectedJobTypes, setSelectedJobTypes] = useState<string[]>(["ทั้งหมด"]);
-
+  const [selectedProvinces, setSelectedProvinces] = useState<string[]>([
+    "ทั้งหมด",
+  ]);
+  const [selectedJobTypes, setSelectedJobTypes] = useState<string[]>([
+    "ทั้งหมด",
+  ]);
 
   const handleProvinceChange = (value: string[]) => {
     if (value.includes("ทั้งหมด") && value.length > 1) {
@@ -112,7 +115,6 @@ function Find() {
       setSelectedProvinces(value);
     }
   };
-
 
   const handleJobTypeChange = (value: string[]) => {
     if (value.includes("ทั้งหมด") && value.length > 1) {
@@ -126,13 +128,26 @@ function Find() {
 
   const jobTypes = ["ทั้งหมด", "Full-time", "Part-time", "Freelance"];
 
-  // โหลดข้อมูลงานจาก LocalStorage
+  // fetch job posts
   useEffect(() => {
-    const loadJobs = () => {
-      const storedJobs = JSON.parse(localStorage.getItem("jobs_emp") || "[]");
-      setJobs(storedJobs);
+    const fetchJobs = async () => {
+      try {
+        const response = await getAllJobPosts();
+        const jobPosts = response.data.jobPosts.map((jobPost: any) => ({
+          id: jobPost.id,
+          title: jobPost.title,
+          location: jobPost.location,
+          salary: jobPost.salary,
+          workDays: jobPost.workDays,
+          workHours: jobPost.workHours,
+        }));
+        setJobs(jobPosts);
+      } catch (error) {
+        console.error("Failed to fetch job finding posts:", error);
+      }
     };
-    loadJobs();
+
+    fetchJobs();
   }, []);
 
   // คำนวณหน้าปัจจุบัน
@@ -146,7 +161,7 @@ function Find() {
       <div className="flex flex-row flex-grow">
         <Sidebar />
         <div className="w-full md:w-3/4 p-6">
-            <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-4">
             <h1 className="kanit-medium text-2xl">ค้นหางาน</h1>
             <button
               onClick={() => setOpened(true)}
@@ -154,7 +169,7 @@ function Find() {
             >
               <FaMagnifyingGlass />
             </button>
-            </div>
+          </div>
           {/* แสดงรายการงาน */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {currentJobs.map((job: Job) => (
@@ -188,7 +203,6 @@ function Find() {
         </div>
       </div>
       <Footer />
-
 
       <Drawer
         opened={opened}
@@ -239,59 +253,55 @@ function Find() {
             />
           </div>
 
-              <div className="salary mt-4">
-              <label htmlFor="salary" className="kanit-regular text-sm mt-1">
-                เงินเดือนสูงสุด: ฿{salaryRange.toLocaleString()}
-              </label>
-              <div className="flex justify-between text-xs mt-1">
-                <span>฿0</span>
-                <span>฿200,000</span>
-              </div>
-              <input
-                type="range"
-                id="salary"
-                min="0"
-                max="200000"
-                value={salaryRange}
-                onChange={(e) => setSalaryRange(Number(e.target.value))}
-                
-                className="w-full h-2 bg-gray-200 rounded-lg "
-              />
-              </div>
+          <div className="salary mt-4">
+            <label htmlFor="salary" className="kanit-regular text-sm mt-1">
+              เงินเดือนสูงสุด: ฿{salaryRange.toLocaleString()}
+            </label>
+            <div className="flex justify-between text-xs mt-1">
+              <span>฿0</span>
+              <span>฿200,000</span>
+            </div>
+            <input
+              type="range"
+              id="salary"
+              min="0"
+              max="200000"
+              value={salaryRange}
+              onChange={(e) => setSalaryRange(Number(e.target.value))}
+              className="w-full h-2 bg-gray-200 rounded-lg "
+            />
+          </div>
 
           <div className="sort flex flex-col space-y-2">
             <div className="flex space-x-2 items-center kanit-regular text-sm">
               <span>เรียง</span>
               <select
-          id="sort"
-          className="w-full p-1 border border-gray-300 rounded-s-md"
+                id="sort"
+                className="w-full p-1 border border-gray-300 rounded-s-md"
               >
-          <option value="latest">ทั้งหมด</option>
-          <option value="salary">เงินเดือน</option>
-          <option value="distance">ระยะทาง</option>
+                <option value="latest">ทั้งหมด</option>
+                <option value="salary">เงินเดือน</option>
+                <option value="distance">ระยะทาง</option>
               </select>
               <span>จาก</span>
               <select
-          id="order"
-          className="w-full p-1 border border-gray-300 rounded-s-md"
+                id="order"
+                className="w-full p-1 border border-gray-300 rounded-s-md"
               >
-          <option value="all">ทั้งหมด</option>
-          <option value="highToLow">สูง-ตํ่า</option>
-          <option value="lowToHigh">ต่ำ-สูง</option>
+                <option value="all">ทั้งหมด</option>
+                <option value="highToLow">สูง-ตํ่า</option>
+                <option value="lowToHigh">ต่ำ-สูง</option>
               </select>
             </div>
           </div>
 
-            <div className="flex justify-center mt-8">
-              <button className="bg-seagreen hover:bg-seagreen/90 text-white py-2 w-full mt-4 rounded">
+          <div className="flex justify-center mt-8">
+            <button className="bg-seagreen hover:bg-seagreen/90 text-white py-2 w-full mt-4 rounded">
               ค้นหา
-              </button>
-            </div>
+            </button>
+          </div>
         </div>
       </Drawer>
-
-
-
     </div>
   );
 }

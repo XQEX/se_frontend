@@ -89,6 +89,11 @@ const PostJobEmp: React.FC = () => {
       requirements: requirements,
       jobPostType: jobPostType,
       hiredAmount: 1,
+      skills: [
+        "539e6449-e6d0-496f-8857-92117048f33f",
+        "539e6449-e6d0-496f-8857-92117048f33f",
+      ],
+      jobCategories: ["785d56e8-4e99-49eb-8140-0eb7f45103c8"],
     };
     const newComJob = {
       title: jobTitle,
@@ -98,9 +103,10 @@ const PostJobEmp: React.FC = () => {
       workDates: workDays,
       workHoursRange: `${startTime} - ${endTime}`,
       requirements: requirements,
+      jobPostType: jobPostType,
       hiredAmount: 1,
-      skills: ["pingpong"],
-      jobCategories: ["dev"],
+      skills: ["539e6449-e6d0-496f-8857-92117048f33f"],
+      jobCategories: ["785d56e8-4e99-49eb-8140-0eb7f45103c8"],
     };
 
     try {
