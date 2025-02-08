@@ -86,8 +86,9 @@ const PostJobEmp: React.FC = () => {
       salary: Number(salary),
       workDates: workDays,
       workHoursRange: `${startTime} - ${endTime}`,
+      requirements: requirements,
       jobPostType: jobPostType,
-      hiredAmount: 1, // Assuming a default value for hiredAmount
+      hiredAmount: 1,
     };
     const newComJob = {
       title: jobTitle,
@@ -96,7 +97,7 @@ const PostJobEmp: React.FC = () => {
       salary: Number(salary),
       workDates: workDays,
       workHoursRange: `${startTime} - ${endTime}`,
-      // Assuming default values for the following fields
+      requirements: requirements,
       hiredAmount: 1,
       skills: ["pingpong"],
       jobCategories: ["dev"],
