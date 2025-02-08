@@ -26,34 +26,43 @@ interface JobPost {
 interface JobPostResponse {
   success: boolean;
   data: {
-    id: string;
-    title: string;
-    description: string;
-    jobLocation: string;
-    salary: number;
-    workDates: string;
-    workHoursRange: string;
-    status: string;
-    hiredAmount: number;
-    jobHirerType: string;
-    employerId: string;
-    oauthEmployerId: string | null;
-    companyId: string | null;
-    createdAt: string;
-    updatedAt: string;
+    jobPosts: {
+      id: string;
+      title: string;
+      description: string;
+      jobLocation: string;
+      salary: number;
+      workDates: string;
+      workHoursRange: string;
+      status: string;
+      hiredAmount: number;
+      jobHirerType: string;
+      jobPostType: "FULLTIME" | "PARTTIME" | "FREELANCE";
+      companyId: string | null;
+      employerId: string | null;
+      oauthEmployerId: string | null;
+      createdAt: string;
+      updatedAt: string;
+      companyName: string | null;
+      skills: {
+        id: string;
+        name: string;
+        description: string;
+      }[];
+      jobCategories: {
+        id: string;
+        name: string;
+        description: string;
+      }[];
+    }[];
+    pagination: {
+      currentPage: number;
+      totalPages: number;
+      totalItems: number;
+      itemsPerPage: number;
+    };
   };
   message: string;
-}
-
-interface JobPostPaginationResponse {
-  success: boolean;
-  data: JobPost[];
-  pagination: {
-    currentPage: number;
-    totalPages: number;
-    totalItems: number;
-    itemsPerPage: number;
-  };
 }
 
 export const registerEmployer = async (
@@ -178,10 +187,10 @@ export const getAllJobPosts = async (
     salarySort?: "high-low" | "low-high";
     page?: number;
   } = {}
-): Promise<JobPostPaginationResponse> => {
+): Promise<JobPostResponse> => {
   try {
     console.log("Fetching all job posts with filters:", filters);
-    const { data } = await axios.get<JobPostPaginationResponse>(
+    const { data } = await axios.get<JobPostResponse>(
       `http://localhost:${backendPort}/api/post/job-posts`,
       {
         params: filters,

@@ -27,6 +27,16 @@ interface Job {
   hiredAmount: number;
   createdAt: string;
   userId: string; // Add userId to Job interface
+  skills: {
+    id: string;
+    name: string;
+    description: string;
+  }[];
+  jobCategories: {
+    id: string;
+    name: string;
+    description: string;
+  }[];
 }
 
 const HomepageEmployers: React.FC = () => {
@@ -38,7 +48,8 @@ const HomepageEmployers: React.FC = () => {
     const fetchJobs = async () => {
       try {
         const response = await getAllJobPosts();
-        const jobsData = response.data.map((jobPost: any) => ({
+        console.log("Fetched job posts:", response);
+        const jobsData = response.data.jobPosts.map((jobPost: any) => ({
           id: jobPost.id,
           title: jobPost.title,
           jobLocation: jobPost.jobLocation,
@@ -50,6 +61,8 @@ const HomepageEmployers: React.FC = () => {
           createdAt: jobPost.createdAt,
           userId:
             jobPost.companyId || jobPost.employerId || jobPost.oauthEmployerId, // Add userId to Job data
+          skills: jobPost.skills || [],
+          jobCategories: jobPost.jobCategories || [],
         }));
         setJobs(jobsData);
       } catch (error) {
