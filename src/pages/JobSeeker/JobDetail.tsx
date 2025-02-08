@@ -5,7 +5,7 @@ import { FaBuilding, FaClock, FaStar, FaArrowLeft } from "react-icons/fa";
 import { CiMoneyBill } from "react-icons/ci";
 import Footer from "../../components/Footer";
 import { Avatar } from "@mantine/core";
-import { getJobPostById } from "../../api/Employer";
+import { getJobPostById } from "../../api/EmployerAndCompany";
 
 type Job = {
   id: string;

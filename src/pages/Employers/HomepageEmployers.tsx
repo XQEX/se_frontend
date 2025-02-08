@@ -14,7 +14,9 @@ import {
 } from "react-icons/fa";
 import { CiMoneyBill } from "react-icons/ci";
 import { useUser } from "../../context/UserContext";
-import { getAllJobPosts, deleteJobPost } from "../../api/Employer";
+import { getAllJobPosts, deleteJobPost } from "../../api/EmployerAndCompany";
+import { getEmployerJobPosts } from "../../api/Employer";
+import { getCompanyJobPosts } from "../../api/Company";
 
 interface Job {
   id: string;
@@ -37,7 +39,17 @@ const HomepageEmployers: React.FC = () => {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const response = await getAllJobPosts();
+        let response;
+        if (user.type === "EMPLOYER") {
+          response = await getEmployerJobPosts();
+          console.log("Employer job posts:", response);
+        } else if (user.type === "COMPANY") {
+          response = await getCompanyJobPosts();
+          console.log("Company job posts:", response);
+        } else {
+          throw new Error("Invalid user role");
+        }
+
         const jobsData = response.data.jobPosts.map((jobPost: any) => ({
           id: jobPost.id,
           title: jobPost.title,
@@ -58,7 +70,7 @@ const HomepageEmployers: React.FC = () => {
     };
 
     fetchJobs();
-  }, []);
+  }, [user]);
 
   const handleDeleteJob = async (id: string) => {
     try {

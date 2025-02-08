@@ -7,7 +7,7 @@ import Footer from "../../components/Footer";
 import { Drawer, MultiSelect, Pagination } from "@mantine/core";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { provinces } from "../../data/provinces";
-import { getAllJobPosts } from "../../api/Employer";
+import { getAllJobPosts } from "../../api/EmployerAndCompany";
 
 const mockJobs = [
   {

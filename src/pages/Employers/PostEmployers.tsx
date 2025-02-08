@@ -111,12 +111,12 @@ const PostJobEmp: React.FC = () => {
 
     try {
       if (user?.type === "EMPLOYER") {
-        const response = await createJobPostEmp(newEmpJob);
+        const response = await createJobPostEmp(newEmpJob as any);
         console.log("Job post response:", response.message);
         setSuccessMessage("🎉 ประกาศงานสำเร็จแล้ว!");
       }
       if (user?.type === "COMPANY") {
-        const response = await createJobPostCom(newComJob);
+        const response = await createJobPostCom(newComJob as any);
         console.log("Job post response:", response.msg);
         setSuccessMessage("🎉 ประกาศงานสำเร็จแล้ว!");
       }
