@@ -6,10 +6,10 @@ import Footer from "../../components/Footer";
 interface Job {
   id: number;
   title: string;
-  location: string;
+  jobLocation: string;
   salary: number;
-  workDays: string;
-  workHours: string;
+  workDates: string;
+  workHoursRange: string;
   description: string;
   requirements: string;
   postedAt: string;
@@ -53,10 +53,10 @@ const ViewPostEmployers: React.FC = () => {
         <div className="bg-gray-50 p-4 rounded-md shadow-sm space-y-3">
           <h2 className="text-lg font-bold text-gray-900">{job.title}</h2>
           
-          <p className="text-gray-700 text-base"><strong>📍 สถานที่:</strong> {job.location}</p>
+          <p className="text-gray-700 text-base"><strong>📍 สถานที่:</strong> {job.jobLocation}</p>
           <p className="text-gray-700 text-base"><strong>💰 เงินเดือน:</strong> ฿{job.salary.toLocaleString()} บาท</p>
-          <p className="text-gray-700 text-base"><strong>📅 วันทำงาน:</strong> {job.workDays}</p>
-          <p className="text-gray-700 text-base"><strong>⏰ ช่วงเวลาทำงาน:</strong> {job.workHours}</p>
+          <p className="text-gray-700 text-base"><strong>📅 วันทำงาน:</strong> {job.workDates}</p>
+          <p className="text-gray-700 text-base"><strong>⏰ ช่วงเวลาทำงาน:</strong> {job.workHoursRange}</p>
           <p className="text-gray-700 text-base"><strong>📝 รายละเอียด:</strong> {job.description}</p>
           <p className="text-gray-700 text-base"><strong>✅ คุณสมบัติที่ต้องการ:</strong> {job.requirements}</p>
           <p className="text-gray-700 text-base"><strong>📆 โพสต์เมื่อ:</strong> {job.postedAt || "ไม่ระบุวันที่"}</p>
