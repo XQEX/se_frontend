@@ -1,138 +1,215 @@
-import React, { useState } from "react";
-import { MultiSelect } from "@mantine/core";
-import { provinces } from "../data/provinces";
-import { useNavigate } from "react-router-dom";
+"use client"
+
+import type React from "react"
+import { useState, useCallback } from "react"
+import { useNavigate } from "react-router-dom"
+import { MultiSelect, RangeSlider, Button, TextInput, Select, Box, Stack, Text, Group, Divider } from "@mantine/core"
+
+
+// Mocks
+const jobCategories = ["ไอที", "การตลาด", "การขาย", "การออกแบบ", "วิศวกรรม"]
+const universalDesigns = ["ทางเข้าเข้าถึงได้", "ป้ายอักษรเบรลล์", "รองรับโปรแกรมอ่านหน้าจอ"]
+const skills = ["a", "b", "c", "d", "e"]
+const locations = ["กรุงเทพมหานคร", "เชียงใหม่", "ภูเก็ต", "พัทยา"]
+const workDates = ["จันทร์", "อังคาร", "พุธ", "พฤหัสบดี", "ศุกร์", "เสาร์", "อาทิตย์"]
 
 function Sidebar() {
-  const [salaryRange, setSalaryRange] = useState(10000);
-  const [selectedProvinces, setSelectedProvinces] = useState<string[]>(["ทั้งหมด"]);
-  const [selectedJobTypes, setSelectedJobTypes] = useState<string[]>(["ทั้งหมด"]);
+  const navigate = useNavigate()
+  const [searchTerm, setSearchTerm] = useState("")
+  const [selectedJobCategories, setSelectedJobCategories] = useState<string[]>([])
+  const [selectedUniversalDesigns, setSelectedUniversalDesigns] = useState<string[]>([])
+  const [selectedSkills, setSelectedSkills] = useState<string[]>([])
+  const [salaryRange, setSalaryRange] = useState<[number, number]>([0, 200000])
+  const [workHourRange, setWorkHourRange] = useState<[number, number]>([0, 24])
+  const [selectedLocations, setSelectedLocations] = useState<string[]>([])
+  const [selectedWorkDates, setSelectedWorkDates] = useState<string[]>([])
+  const [sortBy, setSortBy] = useState<string | null>(null)
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc")
 
-  const navigate = useNavigate();
-
-  // ✅ ฟังก์ชันจัดการจังหวัด
-  const handleProvinceChange = (value: string[]) => {
-    if (value.includes("ทั้งหมด") && value.length > 1) {
-      setSelectedProvinces(value.filter((v) => v !== "ทั้งหมด"));
-    } else if (value.length === 0) {
-      setSelectedProvinces(["ทั้งหมด"]);
-    } else {
-      setSelectedProvinces(value);
+  const handleMultiSelectChange = useCallback((setter: React.Dispatch<React.SetStateAction<string[]>>) => {
+    return (value: string[]) => {
+      if (value.length === 0) {
+        setter(["ทั้งหมด"])
+      } else {
+        setter(value.filter((item) => item !== "ทั้งหมด"))
+      }
     }
-  };
+  }, [])
 
-  // ✅ ฟังก์ชันจัดการเงินเดือน
-  const handleSalaryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSalaryRange(Number(event.target.value));
-  };
+  const handleSearch = () => {
+    console.log("Searching with filters:", {
+      searchTerm,
+      selectedJobCategories,
+      selectedUniversalDesigns,
+      selectedSkills,
+      salaryRange,
+      workHourRange,
+      selectedLocations,
+      selectedWorkDates,
+      sortBy,
+      sortOrder,
+    })
+  }
 
-  // ✅ ฟังก์ชันจัดการประเภทงาน
-  const handleJobTypeChange = (value: string[]) => {
-    if (value.includes("ทั้งหมด") && value.length > 1) {
-      setSelectedJobTypes(value.filter((v) => v !== "ทั้งหมด"));
-    } else if (value.length === 0) {
-      setSelectedJobTypes(["ทั้งหมด"]);
+  const handleSortChange = (value: string | null) => {
+    if (value === sortBy) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc")
     } else {
-      setSelectedJobTypes(value);
+      setSortBy(value)
+      setSortOrder("asc")
     }
-  };
+  }
 
-  const jobTypes = ["ทั้งหมด", "Full-time", "Part-time", "Freelance"];
+  const sortOptions = [
+    { value: "relevance", label: "ความเกี่ยวข้อง" },
+    { value: "salary_asc", label: "เงินเดือน (ต่ำไปสูง)" },
+    { value: "salary_desc", label: "เงินเดือน (สูงไปต่ำ)" },
+    { value: "date_asc", label: "วันที่ลงประกาศ (เก่าไปใหม่)" },
+    { value: "date_desc", label: "วันที่ลงประกาศ (ใหม่ไปเก่า)" },
+  ]
 
   return (
-    <div className="bg-white shadow-md rounded-lg p-6 w-80 hidden md:block">
-      <div className="space-y-4">
-        {/* 🔎 ค้นหา */}
-        <div className="search">
-          <label htmlFor="search" className="kanit-regular text-sm">
-            ค้นหา
-          </label>
-          <input
-            type="text"
-            id="search"
-            placeholder="ค้นหางาน"
-            className="w-full p-2 border border-gray-300 rounded-md placeholder-kanit text-sm"
-          />
-        </div>
+    <Box className="bg-white shadow-md rounded-lg p-6 w-80 hidden md:block">
+      <Stack>
+        <TextInput
+          className="kanit-regular"
+          placeholder=""
+          label="ค้นหา"
+          value={searchTerm}
+          onChange={(event) => setSearchTerm(event.currentTarget.value)}
+        />
 
-        {/* 📍 จังหวัด */}
-        <div className="provinces">
-          <label htmlFor="provinces" className="kanit-regular text-sm">
-            จังหวัด
-          </label>
-          <MultiSelect
-            placeholder="เลือกจังหวัด"
-            data={provinces}
-            value={selectedProvinces}
-            onChange={handleProvinceChange}
-            clearable
-            searchable
-          />
-        </div>
+        <Divider className="kanit-regular" label="ข้อมูลงาน" labelPosition="center" />
 
-        {/* 🏢 ประเภทงาน */}
-        <div className="job-types">
-          <label htmlFor="jobTypes" className="kanit-regular text-sm">
-            ประเภทงาน
-          </label>
-          <MultiSelect
-            placeholder="เลือกประเภทงาน"
-            data={jobTypes}
-            value={selectedJobTypes}
-            onChange={handleJobTypeChange}
-            clearable
-            searchable
-          />
-        </div>
+        <MultiSelect
+          className="kanit-regular"
+          data={["ทั้งหมด", ...jobCategories]}
+          label="หมวดหมู่งาน"
+          placeholder=""
+          value={selectedJobCategories.length === 0 ? ["ทั้งหมด"] : selectedJobCategories}
+          onChange={handleMultiSelectChange(setSelectedJobCategories)}
+          clearable
+          searchable
+        />
 
-        {/* 💰 เงินเดือน */}
-        <div className="salary">
-          <label htmlFor="salary" className="kanit-regular text-sm">
-            เงินเดือนสูงสุด: ฿{salaryRange.toLocaleString()}
-          </label>
-          <div className="flex justify-between text-xs mt-1">
-            <span>฿0</span>
-            <span>฿200,000</span>
-          </div>
-          <input
-            type="range"
-            id="salary"
-            min="0"
-            max="200000"
-            step="1000"
+        <MultiSelect
+          className="kanit-regular"
+          data={["ทั้งหมด", ...universalDesigns]}
+          label="Universal Design"
+          placeholder=""
+          value={selectedUniversalDesigns.length === 0 ? ["ทั้งหมด"] : selectedUniversalDesigns}
+          onChange={handleMultiSelectChange(setSelectedUniversalDesigns)}
+          clearable
+          searchable
+        />
+
+        <MultiSelect
+          className="kanit-regular"
+          data={["ทั้งหมด", ...skills]}
+          label="ทักษะ"
+          placeholder=""
+          value={selectedSkills.length === 0 ? ["ทั้งหมด"] : selectedSkills}
+          onChange={handleMultiSelectChange(setSelectedSkills)}
+          clearable
+          searchable
+        />
+
+        <Box>
+          <Text size="sm" className="kanit-regular">
+            เงินเดือน: ฿{salaryRange[0].toLocaleString()} - ฿{salaryRange[1].toLocaleString()}
+          </Text>
+          <RangeSlider
+            min={0}
+            max={200000}
+            step={1000}
             value={salaryRange}
-            onChange={handleSalaryChange}
-            className="w-full h-2 rounded-lg  "
+            onChange={setSalaryRange}
+            label={(value) => `฿${value.toLocaleString()}`}
           />
-        </div>
+        </Box>
 
-        {/* 🔀 เรียงลำดับ */}
-        <div className="sort flex flex-col space-y-2">
-          <div className="flex space-x-2 items-center kanit-regular text-sm">
-            <span>เรียง</span>
-            <select id="sort" className="w-full p-2 border border-gray-300 rounded-md">
-              <option value="latest">ทั้งหมด</option>
-              <option value="salary">เงินเดือน</option>
-              <option value="distance">ระยะทาง</option>
-            </select>
-            <span>จาก</span>
-            <select id="order" className="w-full p-2 border border-gray-300 rounded-md">
-              <option value="all">ทั้งหมด</option>
-              <option value="highToLow">สูง-ต่ำ</option>
-              <option value="lowToHigh">ต่ำ-สูง</option>
-            </select>
-          </div>
-        </div>
+        <Divider className="kanit-regular" label="เวลาทำงาน" labelPosition="center" />
 
-        {/* 🔍 ปุ่มค้นหา */}
-        <div className="flex justify-center">
-          <button className="kanit-regular bg-seagreen hover:bg-seagreen/90 text-white py-2 px-4 w-full rounded-md">
-            ค้นหา
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+        <Box>
+          <Text size="sm" className="kanit-regular">
+            ช่วงเวลาทำงาน: {workHourRange[0]}:00 - {workHourRange[1]}:00
+          </Text>
+          <RangeSlider
+            min={0}
+            max={24}
+            step={1}
+            value={workHourRange}
+            onChange={setWorkHourRange}
+            label={(value) => `${value}:00`}
+          />
+        </Box>
+
+        <MultiSelect
+          className="kanit-regular"
+          data={["ทั้งหมด", ...workDates]}
+          label="วันทำงาน"
+          placeholder=""
+          value={selectedWorkDates.length === 0 ? ["ทั้งหมด"] : selectedWorkDates}
+          onChange={handleMultiSelectChange(setSelectedWorkDates)}
+          clearable
+          searchable
+        />
+
+        <Divider className="kanit-regular" label="สถานที่ทำงาน" labelPosition="center" />
+
+        <MultiSelect
+          className="kanit-regular"
+          data={["ทั้งหมด", ...locations]}
+          label="สถานที่ทำงาน"
+          placeholder=""
+          value={selectedLocations.length === 0 ? ["ทั้งหมด"] : selectedLocations}
+          onChange={handleMultiSelectChange(setSelectedLocations)}
+          clearable
+          searchable
+        />
+
+        <Divider />
+
+        <Group grow>
+          <Select
+            className="kanit-regular"
+            label="เรียงตาม"
+            placeholder=""
+            value={sortBy}
+            onChange={(value) => {
+              setSortBy(value)
+              setSortOrder(value?.endsWith("_desc") ? "desc" : "asc")
+            }}
+            data={sortOptions}
+             rightSection={
+              sortBy ? (
+                sortOrder === "asc" ? (
+                <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-arrow-up" width="16" height="16" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="18" y1="11" x2="12" y2="5" />
+                  <line x1="6" y1="11" x2="12" y2="5" />
+                </svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-arrow-down" width="16" height="16" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="18" y1="13" x2="12" y2="19" />
+                    <line x1="6" y1="13" x2="12" y2="19" />
+                  </svg>
+                )
+              ) : null
+            }
+          />
+        </Group>
+
+        <Button className="kanit-regular" onClick={handleSearch} fullWidth>
+          ค้นหา
+        </Button>
+      </Stack>
+    </Box>
+  )
 }
 
-export default Sidebar;
+export default Sidebar
+
