@@ -323,9 +323,7 @@ export const deleteJobFindingPost = async (id: string): Promise<void> => {
   }
 };
 
-export const getJobFindingPostById = async (
-  id: string
-): Promise<JobPostDetailResponse> => {
+export const getJobFindingPostById = async (id: string): Promise<any> => {
   try {
     console.log("Fetching job finding post with ID:", id);
     const { data } = await axios.get<{ data: JobPostDetailResponse }>(

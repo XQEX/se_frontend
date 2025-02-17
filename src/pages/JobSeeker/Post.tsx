@@ -16,6 +16,9 @@ const PostJob: React.FC = () => {
   const [startTime, setStartTime] = useState("08:00");
   const [endTime, setEndTime] = useState("15:00");
   const [successMessage, setSuccessMessage] = useState("");
+  const [jobPostType, setJobPostType] = useState<
+    "FULLTIME" | "PARTTIME" | "FREELANCE"
+  >("FULLTIME");
 
   const workDayOptions = [
     "จันทร์ - ศุกร์",
@@ -36,6 +39,8 @@ const PostJob: React.FC = () => {
     }
     return times;
   };
+
+  const jobPostTypeOptions = ["FULLTIME", "PARTTIME", "FREELANCE"];
 
   const validateInputs = () => {
     if (
@@ -59,32 +64,34 @@ const PostJob: React.FC = () => {
     return true;
   };
 
-  const handlePostJob = () => {
+  const handlePostJob = async () => {
     if (!validateInputs()) return;
 
     const newJob = {
-      id: Date.now().toString(),
       title: jobTitle,
-      location,
       description: jobDescription,
-      requirements,
-      salary,
-      workDays,
-      workHours: `${startTime} - ${endTime}`,
-      postedAt: new Date().toLocaleString("th-TH", {
-        dateStyle: "full",
-        timeStyle: "short",
-      }),
+      jobLocation: location,
+      expectedSalary: Number(salary),
+      workDates: workDays,
+      workHoursRange: `${startTime} - ${endTime}`,
+      jobPostType: jobPostType,
+      jobSeekerType: "NORMAL",
+      skills: ["539e6449-e6d0-496f-8857-92117048f33f"],
+      jobCategories: ["f8a8802e-f7d9-4e2f-be3c-58dd5d225121"],
     };
 
-    const existingJobsSeek = JSON.parse(
-      localStorage.getItem("jobs_seek") || "[]"
-    );
-    const updatedJobsSeek = [newJob, ...existingJobsSeek];
-    localStorage.setItem("jobs_seek", JSON.stringify(updatedJobsSeek));
-
-    setSuccessMessage("🎉 ประกาศงานสำเร็จแล้ว!");
-    setTimeout(() => navigate("/find"), 300);
+    try {
+      const response = await createJobFindingPost(newJob as any);
+      if (response.success) {
+        setSuccessMessage("🎉 ประกาศงานสำเร็จแล้ว!");
+        setTimeout(() => navigate("/find"), 300);
+      } else {
+        alert(`⚠️ ${response.msg}`);
+      }
+    } catch (error) {
+      console.error("Error creating job post:", error);
+      alert("⚠️ เกิดข้อผิดพลาดในการประกาศงาน!");
+    }
   };
 
   return (
@@ -139,6 +146,25 @@ const PostJob: React.FC = () => {
               </div>
             )
           )}
+
+          <div className="flex flex-col w-4/5 mx-auto">
+            <label className="font-kanit text-gray-700">ประเภทงาน</label>
+            <select
+              value={jobPostType}
+              onChange={(e) =>
+                setJobPostType(
+                  e.target.value as "FULLTIME" | "PARTTIME" | "FREELANCE"
+                )
+              }
+              className="border border-gray-300 p-2 rounded-md text-sm"
+            >
+              {jobPostTypeOptions.map((type) => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
+          </div>
 
           <div className="flex flex-col w-4/5 mx-auto">
             <label className="font-kanit text-gray-700">วันทำงาน</label>

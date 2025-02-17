@@ -14,7 +14,7 @@ import {
 } from "react-icons/fa";
 import { CiMoneyBill } from "react-icons/ci";
 import { useUser } from "../../context/UserContext";
-import { getAllJobPosts, deleteJobPost } from "../../api/EmployerAndCompany";
+import { deleteJobPost } from "../../api/EmployerAndCompany";
 import { getEmployerJobPosts } from "../../api/Employer";
 import { getCompanyJobPosts } from "../../api/Company";
 

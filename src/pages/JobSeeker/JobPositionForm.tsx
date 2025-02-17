@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "@mantine/form";
 import {
   TextInput,
@@ -15,12 +15,40 @@ import {
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import { showNotification } from "@mantine/notifications";
 import { Navbar } from "../../components/Navbar";
+import { fetchAllVulnerabilities } from "../../api/Vulnerability";
 
 const JobPositionForm = () => {
   const [submittedData, setSubmittedData] = useState<any | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [filePreview, setFilePreview] = useState<string | null>(null);
+
+  const [vulnerabilities, setVulnerabilities] = useState<Vulnerability[]>([]);
+  const [jobSeekerType, setJobSeekerType] = useState<string>("");
+
+  interface Vulnerability {
+    id: string;
+    name: string;
+  }
+
+  useEffect(() => {
+    const fetchVulnerabilities = async () => {
+      try {
+        const response = await fetchAllVulnerabilities();
+        if (response.success) {
+          if ("data" in response) {
+            setVulnerabilities(response.data);
+          }
+        } else {
+          console.error("Failed to fetch vulnerabilities:", response);
+        }
+      } catch (error) {
+        console.error("Error fetching vulnerabilities:", error);
+      }
+    };
+
+    fetchVulnerabilities();
+  }, []);
 
   const form = useForm({
     initialValues: {
@@ -197,6 +225,23 @@ const JobPositionForm = () => {
                 required
                 {...form.getInputProps("workRestrictions")}
               />
+
+              <div className="flex flex-col w-4/5 mx-auto">
+                <label className="font-kanit text-gray-700">
+                  ประเภทผู้หางาน
+                </label>
+                <select
+                  value={jobSeekerType}
+                  onChange={(e) => setJobSeekerType(e.target.value)}
+                  className="border border-gray-300 p-2 rounded-md text-sm"
+                >
+                  {vulnerabilities.map((vul) => (
+                    <option key={vul.id} value={vul.id}>
+                      {vul.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
               {form.values.workRestrictions.trim() !== "ไม่มี" && (
                 <div>
