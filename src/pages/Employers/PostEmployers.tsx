@@ -5,12 +5,14 @@ import Footer from "../../components/Footer";
 import { useUser } from "../../context/UserContext";
 import { createJobPostEmp } from "../../api/Employer";
 import { createJobPostCom } from "../../api/Company";
+import { MultiSelect } from "@mantine/core";
+import { provinces } from "../../data/provinces";
 
 const PostJobEmp: React.FC = () => {
   const navigate = useNavigate();
 
   const [jobTitle, setJobTitle] = useState("");
-  const [location, setLocation] = useState("");
+  const [location, setLocation] = useState<string[]>([]);
   const [jobDescription, setJobDescription] = useState("");
   const [requirements, setRequirements] = useState("");
   const [salary, setSalary] = useState("");
@@ -55,7 +57,7 @@ const PostJobEmp: React.FC = () => {
   const validateInputs = () => {
     if (
       !jobTitle.trim() ||
-      !location.trim() ||
+      location.length === 0 ||
       !jobDescription.trim() ||
       !requirements.trim() ||
       !salary.trim()
@@ -82,7 +84,7 @@ const PostJobEmp: React.FC = () => {
     const newEmpJob = {
       title: jobTitle,
       description: jobDescription,
-      jobLocation: location,
+      jobLocation: location.join(", "),
       salary: Number(salary),
       workDates: workDays,
       workHoursRange: `${startTime} - ${endTime}`,
@@ -98,7 +100,7 @@ const PostJobEmp: React.FC = () => {
     const newComJob = {
       title: jobTitle,
       description: jobDescription,
-      jobLocation: location,
+      jobLocation: location.join(", "),
       salary: Number(salary),
       workDates: workDays,
       workHoursRange: `${startTime} - ${endTime}`,
@@ -115,13 +117,13 @@ const PostJobEmp: React.FC = () => {
         const response = await createJobPostEmp(newEmpJob as any);
         console.log("Job post response:", response.message);
         setSuccessMessage("🎉 ประกาศงานสำเร็จแล้ว!");
-        setTimeout(() => navigate("/homeemp"), 3000);
+        navigate("/homeemp");
       }
       if (user?.type === "COMPANY") {
         const response = await createJobPostCom(newComJob as any);
         console.log("Job post response:", response.msg);
         setSuccessMessage("🎉 ประกาศงานสำเร็จแล้ว!");
-        setTimeout(() => navigate("/homeemp"), 3000);
+        navigate("/homeemp");
       }
     } catch (error) {
       console.error("Failed to post job:", error);
@@ -156,12 +158,6 @@ const PostJobEmp: React.FC = () => {
               placeholder: "เช่น Developer, Designer",
             },
             {
-              label: "สถานที่ทำงาน",
-              value: location,
-              setValue: setLocation,
-              placeholder: "เช่น กรุงเทพฯ, ทำงานทางไกล",
-            },
-            {
               label: "เงินเดือน (บาท)",
               value: salary,
               setValue: setSalary,
@@ -170,7 +166,7 @@ const PostJobEmp: React.FC = () => {
               step: "1000",
             },
           ].map(
-            ({ label, value, setValue, placeholder, type = "text", step }) => (
+            ({ label, value, setValue, placeholder, type = "text", step, min }) => (
               <div key={label} className="flex flex-col w-4/5 mx-auto">
                 <label className="font-kanit text-gray-700">{label}</label>
                 <input
@@ -179,11 +175,35 @@ const PostJobEmp: React.FC = () => {
                   onChange={(e) => setValue(e.target.value)}
                   placeholder={placeholder}
                   step={step}
+                  min={min}
                   className="border border-gray-300 p-2 rounded-md text-sm"
                 />
               </div>
             )
           )}
+
+          <div className="flex flex-col w-4/5 mx-auto">
+            <label className="font-kanit text-gray-700">จำนวนที่เปิดรับสมัคร</label>
+            <input
+              type="number"
+              placeholder="..."
+              className="border border-gray-300 p-2 rounded-md text-sm"
+            />
+
+          </div>
+
+          <div className="flex flex-col w-4/5 mx-auto">
+            <label className="font-kanit text-gray-700">สถานที่ทำงาน</label>
+            <MultiSelect
+              placeholder="เลือกจังหวัด"
+              data={provinces}
+              value={location}
+              onChange={setLocation}
+              clearable
+              searchable
+              className="font-kanit"
+            />
+          </div>
 
           <div className="flex flex-col w-4/5 mx-auto">
             <label className="font-kanit text-gray-700">ประเภทงาน</label>

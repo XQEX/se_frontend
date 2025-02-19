@@ -155,21 +155,26 @@ export const NavbarEmp: React.FC = () => {
                   <span className="font-[Kanit]">{user?.username}</span>
                 </button>
               </Menu.Target>
-              <Menu.Dropdown className="m-2">
-                <div className="p-3 text-center font-[Kanit]">
-                  {user?.username}
-                </div>
-                <Divider />
-                <Menu.Item
-                  component={Link}
-                  to="/settings"
-                  className="font-[Kanit]"
-                >
-                  ตั้งค่า
-                </Menu.Item>
-                <Menu.Item onClick={handleLogout} className="font-[Kanit]">
-                  ออกจากระบบ
-                </Menu.Item>
+              <Menu.Dropdown>
+                {isSignedIn ? (
+                  <>
+                    <Menu.Item component={Link} to="/profile" className="kanit-regular">
+                      โปรไฟล์
+                    </Menu.Item>
+                    <Menu.Item onClick={handleLogout} className="kanit-regular">
+                      ออกจากระบบ
+                    </Menu.Item>
+                  </>
+                ) : (
+                  <>
+                    <Menu.Item component={Link} to="/signin" className="kanit-regular">
+                      เข้าสู่ระบบ
+                    </Menu.Item>
+                    <Menu.Item component={Link} to="/signup" className="kanit-regular">
+                      สมัครสมาชิก
+                    </Menu.Item>
+                  </>
+                )}
               </Menu.Dropdown>
             </Menu>
           )}

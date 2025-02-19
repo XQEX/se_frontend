@@ -11,12 +11,15 @@ import {
   FaPlus,
   FaSearch,
   FaEye,
+  FaChevronLeft,
+  FaChevronRight,
 } from "react-icons/fa";
 import { CiMoneyBill } from "react-icons/ci";
 import { useUser } from "../../context/UserContext";
 import { deleteJobPost } from "../../api/EmployerAndCompany";
 import { getEmployerJobPosts } from "../../api/Employer";
 import { getCompanyJobPosts } from "../../api/Company";
+import { MultiSelect } from '@mantine/core';
 
 interface Job {
   id: string;
@@ -45,6 +48,22 @@ const HomepageEmployers: React.FC = () => {
   const { user } = useUser();
   const navigate = useNavigate();
   const [jobs, setJobs] = useState<Job[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+
+  // ข้อมูล categories ตัวอย่าง
+  const jobCategories = [
+    { value: 'restaurant', label: 'ร้านอาหาร' },
+    { value: 'retail', label: 'ค้าปลีก' },
+    { value: 'event', label: 'อีเวนต์' },
+    { value: 'hotel', label: 'โรงแรม' },
+    { value: 'office', label: 'ออฟฟิศ' },
+    { value: 'delivery', label: 'ส่งของ' },
+    { value: 'warehouse', label: 'คลังสินค้า' },
+    { value: 'cleaning', label: 'ทำความสะอาด' },
+    { value: 'marketing', label: 'การตลาด' },
+    { value: 'customer-service', label: 'บริการลูกค้า' },
+  ];
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -93,6 +112,18 @@ const HomepageEmployers: React.FC = () => {
       console.error("Failed to delete job post:", error);
       alert("⚠️ การลบงานล้มเหลว กรุณาลองใหม่อีกครั้ง!");
     }
+  };
+
+  const nextSlide = () => {
+    setCurrentIndex((prevIndex) => 
+      prevIndex === jobs.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+
+  const prevSlide = () => {
+    setCurrentIndex((prevIndex) => 
+      prevIndex === 0 ? jobs.length - 1 : prevIndex - 1
+    );
   };
 
   return (
@@ -183,58 +214,99 @@ const HomepageEmployers: React.FC = () => {
                 </button>
               </div>
             ) : (
-              <div className="space-y-6">
-                {jobs.map((job) => (
-                  <div
-                    key={job.id}
-                    className="relative bg-white p-5 rounded-xl shadow-md border border-gray-300 transition hover:shadow-lg"
-                  >
-                    {/* Delete Button */}
-                    {user && job.userId === user.id && (
-                      <button
-                        className="absolute top-4 right-4 text-black hover:text-gray-800"
-                        onClick={() => handleDeleteJob(job.id)}
-                      >
-                        <FaTrash size={18} />
-                      </button>
-                    )}
-
-                    {/* Job Title */}
-                    <h3 className="text-base font-bold text-gray-700">
-                      {job.title}
-                    </h3>
-
-                    {/* Job Info */}
-                    <div className="mt-2 space-y-1 text-gray-600 text-sm">
-                      <p className="flex items-center">
-                        <FaMapMarkerAlt className="mr-2 text-[#2e8b57]" />
-                        สถานที่ตั้ง: {job.jobLocation}
-                      </p>
-                      <p className="flex items-center">
-                        <CiMoneyBill className="mr-2 text-[#2e8b57]" />{" "}
-                        เงินเดือน: {job.salary.toLocaleString()} บาท
-                      </p>
-                      <p className="flex items-center">
-                        <FaClock className="mr-2 text-[#2e8b57]" /> เวลาทำงาน:{" "}
-                        {job.workDates} | {job.workHoursRange}
-                      </p>
-                    </div>
-
-                    {/* Action Buttons */}
-                    <div className="mt-4 flex gap-4">
-                      <button
-                        className="flex-1 bg-seagreen/80 hover:bg-seagreen text-white px-4 py-2 text-sm rounded-lg shadow-md transition"
-                        onClick={() =>
-                          navigate(`/employer/viewpost/${String(job.id)}`, {
-                            state: { job },
-                          })
-                        }
-                      >
-                        ดูรายละเอียด
-                      </button>
-                    </div>
+              <div className="relative">
+                {/* Job Counter - แยกออกมาอยู่นอก carousel */}
+                <div className="absolute top-4 right-4 z-20">
+                  <div className="bg-white border border-gray-200 text-gray-800 px-4 py-1.5 rounded-full text-sm font-bold shadow-sm">
+                    {`${currentIndex + 1}/${jobs.length}`}
                   </div>
-                ))}
+                </div>
+
+                {/* Carousel Controls */}
+                <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 flex justify-between px-4 z-10">
+                  <button
+                    onClick={prevSlide}
+                    className="bg-white/80 hover:bg-white text-gray-700 p-2 rounded-full shadow-md transition"
+                  >
+                    <FaChevronLeft size={20} />
+                  </button>
+                  <button
+                    onClick={nextSlide}
+                    className="bg-white/80 hover:bg-white text-gray-700 p-2 rounded-full shadow-md transition"
+                  >
+                    <FaChevronRight size={20} />
+                  </button>
+                </div>
+
+                {/* Job Cards */}
+                <div className="overflow-hidden">
+                  <div 
+                    className="flex transition-transform duration-300 ease-in-out"
+                    style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+                  >
+                    {jobs.map((job, index) => (
+                      <div
+                        key={job.id}
+                        className="w-full flex-shrink-0 bg-white p-5 rounded-xl shadow-md border border-gray-300 transition hover:shadow-lg"
+                      >
+                        {/* Delete Button */}
+                        {user && job.userId === user.id && (
+                          <button
+                            className="absolute top-4 right-12 text-black hover:text-gray-800"
+                            onClick={() => handleDeleteJob(job.id)}
+                          >
+                            <FaTrash size={18} />
+                          </button>
+                        )}
+
+                        {/* Job Title */}
+                        <h3 className="text-lg font-bold text-gray-800 px-4">
+                          {job.title}
+                        </h3>
+
+                        {/* Job Info */}
+                        <div className="mt-2 space-y-2.5 text-gray-700 text-sm px-12">
+                          <div className="flex flex-wrap gap-2 mb-3">
+                            {job.categories?.map((category) => (
+                              <span
+                                key={category}
+                                className="bg-seagreen/10 text-seagreen px-3 py-1.5 rounded-full text-sm font-medium"
+                              >
+                                {jobCategories.find(cat => cat.value === category)?.label}
+                              </span>
+                            ))}
+                          </div>
+                          <p className="flex items-center font-medium">
+                            <FaMapMarkerAlt className="mr-2.5 text-[#2e8b57]" size={16} />
+                            สถานที่ตั้ง: {job.jobLocation}
+                          </p>
+                          <p className="flex items-center font-medium">
+                            <CiMoneyBill className="mr-2.5 text-[#2e8b57]" size={18} />
+                            เงินเดือน: {job.salary.toLocaleString()} บาท
+                          </p>
+                          <p className="flex items-center font-medium">
+                            <FaClock className="mr-2.5 text-[#2e8b57]" size={16} />
+                            เวลาทำงาน: {job.workDates} | {job.workHoursRange}
+                          </p>
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="mt-4">
+                          <button
+                            className="w-full bg-seagreen/80 hover:bg-seagreen text-white px-4 py-2 text-sm rounded-lg shadow-md transition"
+                            onClick={() =>
+                              navigate(`/employer/viewpost/${String(job.id)}`, {
+                                state: { job },
+                              })
+                            }
+                          >
+                            ดูรายละเอียด
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
             )}
           </div>
