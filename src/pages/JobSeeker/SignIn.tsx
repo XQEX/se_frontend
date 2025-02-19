@@ -176,7 +176,7 @@ function SignIn() {
 
         {/* Footer */}
         <div className="mt-4 text-center">
-          <Link to="/SignUp" className="text-seagreen kanit-semibold underline">
+          <Link to="/select-user-type" className="text-seagreen kanit-semibold underline">
             ยังไม่ได้สมัครสมาชิก? สมัครที่นี่
           </Link>
         </div>
