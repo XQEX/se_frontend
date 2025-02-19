@@ -92,10 +92,10 @@ const PostJobEmp: React.FC = () => {
       jobPostType: jobPostType,
       hiredAmount: 1,
       skills: [
-        "539e6449-e6d0-496f-8857-92117048f33f",
-        "539e6449-e6d0-496f-8857-92117048f33f",
+        "48516316-9609-4344-914e-41ccc729d118",
+        "48516316-9609-4344-914e-41ccc729d118",
       ],
-      jobCategories: ["785d56e8-4e99-49eb-8140-0eb7f45103c8"],
+      jobCategories: ["e6507ce1-e7f6-47ac-8ac4-7a6b67115e50"],
     };
     const newComJob = {
       title: jobTitle,
@@ -107,8 +107,8 @@ const PostJobEmp: React.FC = () => {
       requirements: requirements,
       jobPostType: jobPostType,
       hiredAmount: 1,
-      skills: ["539e6449-e6d0-496f-8857-92117048f33f"],
-      jobCategories: ["785d56e8-4e99-49eb-8140-0eb7f45103c8"],
+      skills: ["48516316-9609-4344-914e-41ccc729d118"],
+      jobCategories: ["e6507ce1-e7f6-47ac-8ac4-7a6b67115e50"],
     };
 
     try {
