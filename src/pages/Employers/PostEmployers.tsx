@@ -89,6 +89,11 @@ const PostJobEmp: React.FC = () => {
       requirements: requirements,
       jobPostType: jobPostType,
       hiredAmount: 1,
+      skills: [
+        "539e6449-e6d0-496f-8857-92117048f33f",
+        "539e6449-e6d0-496f-8857-92117048f33f",
+      ],
+      jobCategories: ["785d56e8-4e99-49eb-8140-0eb7f45103c8"],
     };
     const newComJob = {
       title: jobTitle,
@@ -98,24 +103,26 @@ const PostJobEmp: React.FC = () => {
       workDates: workDays,
       workHoursRange: `${startTime} - ${endTime}`,
       requirements: requirements,
+      jobPostType: jobPostType,
       hiredAmount: 1,
-      skills: ["pingpong"],
-      jobCategories: ["dev"],
+      skills: ["539e6449-e6d0-496f-8857-92117048f33f"],
+      jobCategories: ["785d56e8-4e99-49eb-8140-0eb7f45103c8"],
     };
 
     try {
+      console.log("User type:", user?.type);
       if (user?.type === "EMPLOYER") {
-        const response = await createJobPostEmp(newEmpJob);
+        const response = await createJobPostEmp(newEmpJob as any);
         console.log("Job post response:", response.message);
         setSuccessMessage("🎉 ประกาศงานสำเร็จแล้ว!");
+        setTimeout(() => navigate("/homeemp"), 3000);
       }
       if (user?.type === "COMPANY") {
-        const response = await createJobPostCom(newComJob);
+        const response = await createJobPostCom(newComJob as any);
         console.log("Job post response:", response.msg);
         setSuccessMessage("🎉 ประกาศงานสำเร็จแล้ว!");
+        setTimeout(() => navigate("/homeemp"), 3000);
       }
-
-      // setTimeout(() => navigate("/homeemp"), 3000);
     } catch (error) {
       console.error("Failed to post job:", error);
       alert("⚠️ การโพสต์งานล้มเหลว กรุณาลองใหม่อีกครั้ง!");

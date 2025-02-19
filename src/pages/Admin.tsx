@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import { ClipLoader } from "react-spinners"; // You can use any spinner library
 import {
@@ -24,6 +24,16 @@ const Admin: React.FC = () => {
   const [logoutLoading, setLogoutLoading] = useState<boolean>(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
+  useEffect(() => {
+    const storedIsLoggedIn = localStorage.getItem("isLoggedIn");
+    const storedAdminInfo = localStorage.getItem("adminInfo");
+
+    if (storedIsLoggedIn === "true" && storedAdminInfo) {
+      setIsLoggedIn(true);
+      queryClient.setQueryData("adminInfo", JSON.parse(storedAdminInfo));
+    }
+  }, [queryClient]);
+
   const { data: adminInfo, isLoading: adminLoading } = useQuery(
     "adminInfo",
     fetchAdminInfo,
@@ -41,18 +51,24 @@ const Admin: React.FC = () => {
       queryClient.invalidateQueries("adminInfo");
     },
   });
+
   const loginAdminMutation = useMutation(
     ({ name, password }: { name: string; password: string }) =>
       loginAdmin(name, password),
     {
       onSuccess: (data) => {
         queryClient.setQueryData("adminInfo", data);
+        localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("adminInfo", JSON.stringify(data));
       },
     }
   );
   const logoutAdminMutation = useMutation(logoutAdmin, {
     onSuccess: () => {
       queryClient.invalidateQueries("adminInfo");
+      localStorage.removeItem("isLoggedIn");
+      localStorage.removeItem("adminInfo");
+      queryClient.setQueryData("adminInfo", null);
     },
   });
   const approveUserMutation = useMutation(

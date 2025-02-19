@@ -21,10 +21,36 @@ interface JobPost {
   workHoursRange: string;
   jobPostType: "FULLTIME" | "PARTTIME" | "FREELANCE";
   hiredAmount: number;
+  skills: string;
+  jobCategories: string;
 }
 
 interface JobPostResponse {
   success: boolean;
+  data: {
+    id: string;
+    title: string;
+    description: string;
+    jobLocation: string;
+    salary: number;
+    workDates: string;
+    workHoursRange: string;
+    status: string;
+    hiredAmount: number;
+    jobHirerType: string;
+    employerId: string;
+    oauthEmployerId: string | null;
+    companyId: string | null;
+    createdAt: string;
+    updatedAt: string;
+  };
+  message: string;
+}
+
+interface EmployerJobPostsResponse {
+  success: boolean;
+  status: number;
+  msg: string;
   data: {
     jobPosts: {
       id: string;
@@ -34,13 +60,13 @@ interface JobPostResponse {
       salary: number;
       workDates: string;
       workHoursRange: string;
-      status: string;
       hiredAmount: number;
+      status: string;
       jobHirerType: string;
-      jobPostType: "FULLTIME" | "PARTTIME" | "FREELANCE";
-      companyId: string | null;
-      employerId: string | null;
+      jobPostType: string;
+      employerId: string;
       oauthEmployerId: string | null;
+      companyId: string | null;
       createdAt: string;
       updatedAt: string;
       companyName: string | null;
@@ -62,7 +88,6 @@ interface JobPostResponse {
       itemsPerPage: number;
     };
   };
-  message: string;
 }
 
 export const registerEmployer = async (
@@ -177,46 +202,22 @@ export const createJobPostEmp = async (
   }
 };
 
-export const getAllJobPosts = async (
-  filters: {
-    title?: string;
-    provinces?: string[];
-    jobCategories?: string[];
-    salaryRange?: number;
-    sortBy?: "asc" | "desc";
-    salarySort?: "high-low" | "low-high";
-    page?: number;
-  } = {}
-): Promise<JobPostResponse> => {
-  try {
-    console.log("Fetching all job posts with filters:", filters);
-    const { data } = await axios.get<JobPostResponse>(
-      `http://localhost:${backendPort}/api/post/job-posts`,
-      {
-        params: filters,
-        withCredentials: true,
-      }
-    );
-    console.log("Job posts fetched successfully:", data);
-    return data;
-  } catch (error) {
-    console.error("Failed to fetch job posts:", error);
-    throw error;
-  }
-};
-
-export const deleteJobPost = async (id: string): Promise<void> => {
-  try {
-    console.log("Deleting job post with ID:", id);
-    const { data } = await axios.delete<{ data: void }>(
-      `http://localhost:${backendPort}/api/post/job-posts/${id}`,
-      {
-        withCredentials: true,
-      }
-    );
-    console.log("Job post deletion successful:", data);
-  } catch (error) {
-    console.error("Job post deletion failed:", error);
-    throw error;
-  }
-};
+export const getEmployerJobPosts =
+  async (): Promise<EmployerJobPostsResponse> => {
+    try {
+      console.log(
+        "Fetching job posts created by the authenticated employer..."
+      );
+      const { data } = await axios.get<EmployerJobPostsResponse>(
+        `http://localhost:${backendPort}/api/post/user/job-posts`,
+        {
+          withCredentials: true,
+        }
+      );
+      console.log("Job posts fetched successfully:", data);
+      return data;
+    } catch (error) {
+      console.error("Failed to fetch job posts:", error);
+      throw error;
+    }
+  };

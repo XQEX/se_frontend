@@ -22,6 +22,25 @@ interface JobPost {
   hiredAmount: number;
   skills: string[];
   jobCategories: string[];
+  jobPostType: string;
+  companyName: string | null;
+}
+
+interface JobPostPagination {
+  currentPage: number;
+  totalPages: number;
+  totalItems: number;
+  itemsPerPage: number;
+}
+
+interface CompanyJobPostsResponse {
+  success: boolean;
+  status: number;
+  msg: string;
+  data: {
+    jobPosts: JobPost[];
+    pagination: JobPostPagination;
+  };
 }
 
 interface JobPostResponse {
@@ -160,3 +179,21 @@ export const createJobPostCom = async (
     throw error;
   }
 };
+
+export const getCompanyJobPosts =
+  async (): Promise<CompanyJobPostsResponse> => {
+    try {
+      console.log("Fetching company job posts...");
+      const { data } = await axios.get<{ data: CompanyJobPostsResponse }>(
+        `http://localhost:${backendPort}/api/post/company/job-posts`,
+        {
+          withCredentials: true,
+        }
+      );
+      console.log("Fetch company job posts successful:", data);
+      return data;
+    } catch (error) {
+      console.error("Fetch company job posts failed:", error);
+      throw error;
+    }
+  };
