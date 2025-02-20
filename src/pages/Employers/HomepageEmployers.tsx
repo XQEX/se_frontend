@@ -249,16 +249,6 @@ const HomepageEmployers: React.FC = () => {
                         key={job.id}
                         className="w-full flex-shrink-0 bg-white p-5 rounded-xl shadow-md border border-gray-300 transition hover:shadow-lg"
                       >
-                        {/* Delete Button */}
-                        {user && job.userId === user.id && (
-                          <button
-                            className="absolute top-4 right-12 text-black hover:text-gray-800"
-                            onClick={() => handleDeleteJob(job.id)}
-                          >
-                            <FaTrash size={18} />
-                          </button>
-                        )}
-
                         {/* Job Title */}
                         <h3 className="text-lg font-bold text-gray-800 px-4">
                           {job.title}
@@ -267,12 +257,12 @@ const HomepageEmployers: React.FC = () => {
                         {/* Job Info */}
                         <div className="mt-2 space-y-2.5 text-gray-700 text-sm px-12">
                           <div className="flex flex-wrap gap-2 mb-3">
-                            {job.categories?.map((category) => (
+                            {job.jobCategories.map((category) => (
                               <span
-                                key={category}
+                                key={category.id}
                                 className="bg-seagreen/10 text-seagreen px-3 py-1.5 rounded-full text-sm font-medium"
                               >
-                                {jobCategories.find(cat => cat.value === category)?.label}
+                                {category.name}
                               </span>
                             ))}
                           </div>
@@ -291,9 +281,9 @@ const HomepageEmployers: React.FC = () => {
                         </div>
 
                         {/* Action Buttons */}
-                        <div className="mt-4">
+                        <div className="mt-4 flex gap-2">
                           <button
-                            className="w-full bg-seagreen/80 hover:bg-seagreen text-white px-4 py-2 text-sm rounded-lg shadow-md transition"
+                            className="flex-1 bg-seagreen/80 hover:bg-seagreen text-white px-4 py-2 text-sm rounded-lg shadow-md transition"
                             onClick={() =>
                               navigate(`/employer/viewpost/${String(job.id)}`, {
                                 state: { job },
@@ -302,6 +292,14 @@ const HomepageEmployers: React.FC = () => {
                           >
                             ดูรายละเอียด
                           </button>
+                          {user && job.userId === user.id && (
+                            <button
+                              className="bg-black/80 hover:bg-black text-white px-4 py-2 text-sm rounded-lg shadow-md transition"
+                              onClick={() => handleDeleteJob(job.id)}
+                            >
+                              <FaTrash size={16} />
+                            </button>
+                          )}
                         </div>
                       </div>
                     ))}
