@@ -25,6 +25,7 @@ import JobDetailEmp from "./pages/Employers/๋JobDetailsEmp";
 import UserTypeWizard from "./pages/UserTypeWizard";
 import Admin from "./pages/Admin";
 import ExampleComponent from "./components/ExampleComponent";
+import Terms from "./pages/Term";
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
         <Route path="/trackJobseeker/:id" element={<TrackDetailsJobSeeker />} />
         <Route path="/postjob" element={<PostJob />} />
         <Route path="/jobseeker/details/:id" element={<JobDetail />} />
+        <Route path = "/terms" element={<Terms />} />
 
         {/* Routes สำหรับ Employers */}
         <Route path="signUp/Employer" element={<SignUpEmp />} />
