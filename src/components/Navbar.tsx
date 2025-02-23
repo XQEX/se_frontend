@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { Link } from "react-router-dom";
 import { Avatar, Menu, Divider, Burger, Drawer } from "@mantine/core";
 import {
@@ -18,8 +19,17 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export const Navbar: React.FC = () => {
-  const { user, isLoading, isLoggedIn ,refetchjobseeker,refetchemployer,refetchCompany} = useUser();
-  const [isSignedIn, setIsSignedIn] = useState(isLoggedIn);
+  const {
+    user,
+    isLoading,
+    isLoggedIn,
+    refetchjobseeker,
+    refetchemployer,
+    refetchCompany,
+    isSignedIn,
+    setIsSignedIn,
+  } = useUser();
+  // const [isSignedIn, setIsSignedIn] = useState(isLoggedIn);
   const [scrollDirection, setScrollDirection] = useState("up");
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
@@ -31,12 +41,28 @@ export const Navbar: React.FC = () => {
   useEffect(() => {
     console.log("User:", user);
     setIsSignedIn(isLoggedIn);
-    if (isLoggedIn) {
-      refetchjobseeker();
-      refetchCompany();
-      refetchemployer();
-    }
+    // if (isLoggedIn) {
+    //   refetchjobseeker();
+    //   refetchCompany();
+    //   refetchemployer();
+    // }
   }, [isLoggedIn, user]);
+
+  useEffect(() => {
+    const interceptor = axios.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (error.response?.status === 401) {
+          handleLogout(); // Call the logout function if a 401 status is detected
+        }
+        return Promise.reject(error);
+      }
+    );
+
+    return () => {
+      axios.interceptors.response.eject(interceptor);
+    };
+  }, []);
 
   useEffect(() => {
     if (!isLoggedIn) return;
@@ -65,6 +91,11 @@ export const Navbar: React.FC = () => {
       } else if (user.type === "COMPANY") {
         await logoutCompany();
       }
+      // Clear cookies or session data if necessary
+      document.cookie =
+        "yourCookieName=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      localStorage.removeItem("isLoggedIn");
+      localStorage.removeItem("adminInfo");
       notifyError("คุณออกจากระบบ!"); // Show the notification after navigation
       setIsSignedIn(false);
     } catch (error) {
