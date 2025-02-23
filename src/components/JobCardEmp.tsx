@@ -15,8 +15,8 @@ type JobCardEmpProps = {
 function JobCardEmp({
   id,
   title,
-  workDays = "ไม่ระบุวันทำงาน",
-  workHours = "ไม่ระบุเวลา",
+  workDays,
+  workHours,
   location,
   salary,
 }: JobCardEmpProps) {

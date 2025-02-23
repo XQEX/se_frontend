@@ -1,64 +1,93 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState, useCallback } from "react"
-import { useNavigate } from "react-router-dom"
-import { MultiSelect, RangeSlider, Button, TextInput, Select, Box, Stack, Text, Group, Divider } from "@mantine/core"
-
+import type React from "react";
+import { useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  MultiSelect,
+  Button,
+  TextInput,
+  Select,
+  Box,
+  Stack,
+  Text,
+  Group,
+  Divider,
+  RangeSlider,
+} from "@mantine/core";
 
 // Mocks
-const jobCategories = ["ไอที", "การตลาด", "การขาย", "การออกแบบ", "วิศวกรรม"]
-const universalDesigns = ["ทางเข้าเข้าถึงได้", "ป้ายอักษรเบรลล์", "รองรับโปรแกรมอ่านหน้าจอ"]
-const skills = ["a", "b", "c", "d", "e"]
-const locations = ["กรุงเทพมหานคร", "เชียงใหม่", "ภูเก็ต", "พัทยา"]
-const workDates = ["จันทร์", "อังคาร", "พุธ", "พฤหัสบดี", "ศุกร์", "เสาร์", "อาทิตย์"]
+const jobCategories = ["ไอที", "การตลาด", "การขาย", "การออกแบบ", "วิศวกรรม"];
+const jobTypes = ["Full Time", "Part Time", "Freelance"];
+const skills = ["a", "b", "c", "d", "e"];
+const locations = ["กรุงเทพมหานคร", "เชียงใหม่", "ภูเก็ต", "พัทยา"];
+const workDays = [
+  "จันทร์-ศุกร์",
+  "จันทร์-เสาร์",
+  "จันทร์-อาทิตย์",
+  "เสาร์-อาทิตย์",
+  "อื่นๆ",
+];
+const workHours = Array.from({ length: 48 }, (_, i) => ({
+  value: `${Math.floor(i / 2)}:${i % 2 === 0 ? "00" : "30"}`,
+  label: `${Math.floor(i / 2)}:${i % 2 === 0 ? "00" : "30"}`,
+}));
 
 function Sidebar() {
-  const navigate = useNavigate()
-  const [searchTerm, setSearchTerm] = useState("")
-  const [selectedJobCategories, setSelectedJobCategories] = useState<string[]>([])
-  const [selectedUniversalDesigns, setSelectedUniversalDesigns] = useState<string[]>([])
-  const [selectedSkills, setSelectedSkills] = useState<string[]>([])
-  const [salaryRange, setSalaryRange] = useState<[number, number]>([0, 200000])
-  const [workHourRange, setWorkHourRange] = useState<[number, number]>([0, 24])
-  const [selectedLocations, setSelectedLocations] = useState<string[]>([])
-  const [selectedWorkDates, setSelectedWorkDates] = useState<string[]>([])
-  const [sortBy, setSortBy] = useState<string | null>(null)
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc")
+  const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedJobCategories, setSelectedJobCategories] = useState<string[]>(
+    []
+  );
+  const [selectedJobTypes, setSelectedJobTypes] = useState<string[]>([
+    "ทั้งหมด",
+  ]);
+  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+  const [salaryRange, setSalaryRange] = useState<[number, number]>([0, 200000]);
+  const [startTime, setStartTime] = useState<string | null>(null);
+  const [endTime, setEndTime] = useState<string | null>(null);
+  const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
+  const [selectedWorkDays, setSelectedWorkDays] = useState<string[]>([]);
+  const [sortBy, setSortBy] = useState<string | null>(null);
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
-  const handleMultiSelectChange = useCallback((setter: React.Dispatch<React.SetStateAction<string[]>>) => {
-    return (value: string[]) => {
-      if (value.length === 0) {
-        setter(["ทั้งหมด"])
-      } else {
-        setter(value.filter((item) => item !== "ทั้งหมด"))
-      }
-    }
-  }, [])
+  const handleMultiSelectChange = useCallback(
+    (setter: React.Dispatch<React.SetStateAction<string[]>>) => {
+      return (value: string[]) => {
+        if (value.length === 0) {
+          setter(["ทั้งหมด"]);
+        } else {
+          setter(value.filter((item) => item !== "ทั้งหมด"));
+        }
+      };
+    },
+    []
+  );
 
   const handleSearch = () => {
     console.log("Searching with filters:", {
       searchTerm,
       selectedJobCategories,
-      selectedUniversalDesigns,
+      selectedJobTypes,
       selectedSkills,
       salaryRange,
-      workHourRange,
+      startTime,
+      endTime,
+      selectedWorkDays,
       selectedLocations,
-      selectedWorkDates,
       sortBy,
       sortOrder,
-    })
-  }
+    });
+  };
 
   const handleSortChange = (value: string | null) => {
     if (value === sortBy) {
-      setSortOrder(sortOrder === "asc" ? "desc" : "asc")
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
     } else {
-      setSortBy(value)
-      setSortOrder("asc")
+      setSortBy(value);
+      setSortOrder("asc");
     }
-  }
+  };
 
   const sortOptions = [
     { value: "relevance", label: "ความเกี่ยวข้อง" },
@@ -66,10 +95,10 @@ function Sidebar() {
     { value: "salary_desc", label: "เงินเดือน (สูงไปต่ำ)" },
     { value: "date_asc", label: "วันที่ลงประกาศ (เก่าไปใหม่)" },
     { value: "date_desc", label: "วันที่ลงประกาศ (ใหม่ไปเก่า)" },
-  ]
+  ];
 
   return (
-    <Box className="bg-white shadow-md rounded-lg p-6 w-80 hidden md:block">
+    <Box className="bg-white shadow-md rounded-lg p-6 w-full max-w-sm hidden md:block">
       <Stack>
         <TextInput
           className="kanit-regular"
@@ -79,14 +108,23 @@ function Sidebar() {
           onChange={(event) => setSearchTerm(event.currentTarget.value)}
         />
 
-        <Divider className="kanit-regular" label="ข้อมูลงาน" labelPosition="center" />
+        <Divider
+          className="kanit-regular"
+          label="ข้อมูลงาน"
+          labelPosition="center"
+          my={4}
+        />
 
         <MultiSelect
           className="kanit-regular"
           data={["ทั้งหมด", ...jobCategories]}
           label="หมวดหมู่งาน"
           placeholder=""
-          value={selectedJobCategories.length === 0 ? ["ทั้งหมด"] : selectedJobCategories}
+          value={
+            selectedJobCategories.length === 0
+              ? ["ทั้งหมด"]
+              : selectedJobCategories
+          }
           onChange={handleMultiSelectChange(setSelectedJobCategories)}
           clearable
           searchable
@@ -94,11 +132,11 @@ function Sidebar() {
 
         <MultiSelect
           className="kanit-regular"
-          data={["ทั้งหมด", ...universalDesigns]}
-          label="Universal Design"
+          data={["ทั้งหมด", ...jobTypes]}
+          label="ชนิดงาน"
           placeholder=""
-          value={selectedUniversalDesigns.length === 0 ? ["ทั้งหมด"] : selectedUniversalDesigns}
-          onChange={handleMultiSelectChange(setSelectedUniversalDesigns)}
+          value={selectedJobTypes}
+          onChange={handleMultiSelectChange(setSelectedJobTypes)}
           clearable
           searchable
         />
@@ -116,7 +154,8 @@ function Sidebar() {
 
         <Box>
           <Text size="sm" className="kanit-regular">
-            เงินเดือน: ฿{salaryRange[0].toLocaleString()} - ฿{salaryRange[1].toLocaleString()}
+            เงินเดือน: ฿{salaryRange[0].toLocaleString()} - ฿
+            {salaryRange[1].toLocaleString()}
           </Text>
           <RangeSlider
             min={0}
@@ -128,71 +167,112 @@ function Sidebar() {
           />
         </Box>
 
-        <Divider className="kanit-regular" label="เวลาทำงาน" labelPosition="center" />
+        <Divider
+          className="kanit-regular"
+          label="เวลาทำงาน"
+          labelPosition="center"
+          my={4}
+        />
 
-        <Box>
-          <Text size="sm" className="kanit-regular">
-            ช่วงเวลาทำงาน: {workHourRange[0]}:00 - {workHourRange[1]}:00
-          </Text>
-          <RangeSlider
-            min={0}
-            max={24}
-            step={1}
-            value={workHourRange}
-            onChange={setWorkHourRange}
-            label={(value) => `${value}:00`}
+        <Group grow>
+          <Select
+            className="kanit-regular"
+            label="เวลาเริ่มงาน"
+            placeholder={startTime === null ? "ยังไม่ได้เลือก" : "เลือกเวลา"}
+            data={workHours}
+            value={startTime}
+            onChange={setStartTime}
+            clearable
           />
-        </Box>
+          <Select
+            className="kanit-regular"
+            label="เวลาเลิกงาน"
+            placeholder={endTime === null ? "ยังไม่ได้เลือก" : "เลือกเวลา"}
+            data={workHours}
+            value={endTime}
+            onChange={setEndTime}
+            clearable
+          />
+        </Group>
 
         <MultiSelect
           className="kanit-regular"
-          data={["ทั้งหมด", ...workDates]}
+          data={["ทั้งหมด", ...workDays]}
           label="วันทำงาน"
-          placeholder=""
-          value={selectedWorkDates.length === 0 ? ["ทั้งหมด"] : selectedWorkDates}
-          onChange={handleMultiSelectChange(setSelectedWorkDates)}
+          placeholder="เลือกวันทำงาน"
+          value={selectedWorkDays.length === 0 ? ["ทั้งหมด"] : selectedWorkDays}
+          onChange={handleMultiSelectChange(setSelectedWorkDays)}
           clearable
           searchable
         />
 
-        <Divider className="kanit-regular" label="สถานที่ทำงาน" labelPosition="center" />
+        <Divider
+          className="kanit-regular"
+          label="สถานที่ทำงาน"
+          labelPosition="center"
+          my={4}
+        />
 
         <MultiSelect
           className="kanit-regular"
           data={["ทั้งหมด", ...locations]}
           label="สถานที่ทำงาน"
           placeholder=""
-          value={selectedLocations.length === 0 ? ["ทั้งหมด"] : selectedLocations}
+          value={
+            selectedLocations.length === 0 ? ["ทั้งหมด"] : selectedLocations
+          }
           onChange={handleMultiSelectChange(setSelectedLocations)}
           clearable
           searchable
         />
 
-        <Divider />
+        <Divider my={4} />
 
         <Group grow>
           <Select
             className="kanit-regular"
             label="เรียงตาม"
-            placeholder=""
+            placeholder="ยังไม่ได้เลือก"
             value={sortBy}
             onChange={(value) => {
-              setSortBy(value)
-              setSortOrder(value?.endsWith("_desc") ? "desc" : "asc")
+              setSortBy(value);
+              setSortOrder(value?.endsWith("_desc") ? "desc" : "asc");
             }}
             data={sortOptions}
-             rightSection={
+            rightSection={
               sortBy ? (
                 sortOrder === "asc" ? (
-                <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-arrow-up" width="16" height="16" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                  <line x1="12" y1="5" x2="12" y2="19" />
-                  <line x1="18" y1="11" x2="12" y2="5" />
-                  <line x1="6" y1="11" x2="12" y2="5" />
-                </svg>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="icon icon-tabler icon-tabler-arrow-up"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    strokeWidth="2"
+                    stroke="currentColor"
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="18" y1="11" x2="12" y2="5" />
+                    <line x1="6" y1="11" x2="12" y2="5" />
+                  </svg>
                 ) : (
-                  <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-arrow-down" width="16" height="16" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="icon icon-tabler icon-tabler-arrow-down"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    strokeWidth="2"
+                    stroke="currentColor"
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                     <line x1="12" y1="5" x2="12" y2="19" />
                     <line x1="18" y1="13" x2="12" y2="19" />
                     <line x1="6" y1="13" x2="12" y2="19" />
@@ -203,13 +283,15 @@ function Sidebar() {
           />
         </Group>
 
-        <Button className="kanit-regular" onClick={handleSearch} fullWidth>
+        <button
+          className="kanit-regular bg-seagreen text-white p-2 border rounded-lg"
+          onClick={handleSearch}
+        >
           ค้นหา
-        </Button>
+        </button>
       </Stack>
     </Box>
-  )
+  );
 }
 
-export default Sidebar
-
+export default Sidebar;

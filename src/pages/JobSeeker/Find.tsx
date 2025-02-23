@@ -1,3 +1,4 @@
+// pages/Find.tsx
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Navbar } from "../../components/Navbar";
@@ -9,89 +10,14 @@ import { FaMagnifyingGlass } from "react-icons/fa6";
 import { provinces } from "../../data/provinces";
 import { getAllJobPosts } from "../../api/EmployerAndCompany";
 
-const mockJobs = [
-  {
-    id: 1,
-    title: "Software Engineer",
-    location: "Bangkok, Thailand",
-    salary: "50,000 THB",
-    workDays: "Monday - Friday",
-    workHours: "9:00 AM - 6:00 PM",
-  },
-  {
-    id: 2,
-    title: "Data Scientist",
-    location: "Chiang Mai, Thailand",
-    salary: "45,000 THB",
-    workDays: "Monday - Friday",
-    workHours: "9:00 AM - 6:00 PM",
-  },
-  {
-    id: 3,
-    title: "Product Manager",
-    location: "Phuket, Thailand",
-    salary: "60,000 THB",
-    workDays: "Monday - Friday",
-    workHours: "9:00 AM - 6:00 PM",
-  },
-  {
-    id: 4,
-    title: "UX/UI Designer",
-    location: "Pattaya, Thailand",
-    salary: "40,000 THB",
-    workDays: "Monday - Friday",
-    workHours: "9:00 AM - 6:00 PM",
-  },
-  {
-    id: 5,
-    title: "DevOps Engineer",
-    location: "Bangkok, Thailand",
-    salary: "55,000 THB",
-    workDays: "Monday - Friday",
-    workHours: "9:00 AM - 6:00 PM",
-  },
-  {
-    id: 6,
-    title: "QA Engineer",
-    location: "Bangkok, Thailand",
-    salary: "35,000 THB",
-    workDays: "Monday - Friday",
-    workHours: "9:00 AM - 6:00 PM",
-  },
-  {
-    id: 7,
-    title: "Backend Developer",
-    location: "Bangkok, Thailand",
-    salary: "50,000 THB",
-    workDays: "Monday - Friday",
-    workHours: "9:00 AM - 6:00 PM",
-  },
-  {
-    id: 8,
-    title: "Frontend Developer",
-    location: "Bangkok, Thailand",
-    salary: "50,000 THB",
-    workDays: "Monday - Friday",
-    workHours: "9:00 AM - 6:00 PM",
-  },
-  {
-    id: 9,
-    title: "Full Stack Developer",
-    location: "Bangkok, Thailand",
-    salary: "55,000 THB",
-    workDays: "Monday - Friday",
-    workHours: "9:00 AM - 6:00 PM",
-  },
-];
-
-type Job = {
+interface Job {
   id: number;
   title: string;
-  location: string;
-  salary: string;
-  workDays: string;
-  workHours: string;
-};
+  jobLocation: string;
+  expectedSalary: number;
+  workDates: string;
+  workHoursRange: string;
+}
 
 function Find() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -99,12 +25,8 @@ function Find() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [opened, setOpened] = useState(false);
   const [salaryRange, setSalaryRange] = useState(0);
-  const [selectedProvinces, setSelectedProvinces] = useState<string[]>([
-    "ทั้งหมด",
-  ]);
-  const [selectedJobTypes, setSelectedJobTypes] = useState<string[]>([
-    "ทั้งหมด",
-  ]);
+  const [selectedProvinces, setSelectedProvinces] = useState<string[]>(["ทั้งหมด"]);
+  const [selectedJobTypes, setSelectedJobTypes] = useState<string[]>(["ทั้งหมด"]);
 
   const handleProvinceChange = (value: string[]) => {
     if (value.includes("ทั้งหมด") && value.length > 1) {
@@ -128,7 +50,6 @@ function Find() {
 
   const jobTypes = ["ทั้งหมด", "Full-time", "Part-time", "Freelance"];
 
-  // fetch job posts
   useEffect(() => {
     const fetchJobs = async () => {
       try {
@@ -136,21 +57,19 @@ function Find() {
         const jobPosts = response.data.jobPosts.map((jobPost: any) => ({
           id: jobPost.id,
           title: jobPost.title,
-          location: jobPost.location,
-          salary: jobPost.salary,
-          workDays: jobPost.workDays,
-          workHours: jobPost.workHours,
+          jobLocation: jobPost.jobLocation || "ไม่ระบุสถานที่",
+          expectedSalary: jobPost.expectedSalary || 0,
+          workDates: jobPost.workDates || "ไม่ระบุวันทำงาน",
+          workHoursRange: jobPost.workHoursRange || "ไม่ระบุเวลา"
         }));
         setJobs(jobPosts);
       } catch (error) {
-        console.error("Failed to fetch job finding posts:", error);
+        console.error("Failed to fetch job posts:", error);
       }
     };
-
     fetchJobs();
   }, []);
 
-  // คำนวณหน้าปัจจุบัน
   const indexOfLastJob = currentPage * itemsPerPage;
   const indexOfFirstJob = indexOfLastJob - itemsPerPage;
   const currentJobs = jobs.slice(indexOfFirstJob, indexOfLastJob);
@@ -170,9 +89,9 @@ function Find() {
               <FaMagnifyingGlass />
             </button>
           </div>
-          {/* แสดงรายการงาน */}
+          
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {currentJobs.map((job: Job) => (
+            {currentJobs.map((job) => (
               <motion.div
                 key={job.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -181,16 +100,15 @@ function Find() {
                 <JobCard
                   id={job.id}
                   title={job.title}
-                  location={job.location}
-                  salary={job.salary}
-                  workDays={job.workDays}
-                  workHours={job.workHours}
+                  location={job.jobLocation}
+                  salary={job.expectedSalary}
+                  workDays={job.workDates}
+                  workHours={job.workHoursRange}
                 />
               </motion.div>
             ))}
           </div>
 
-          {/* Pagination (แสดงเฉพาะถ้าจำนวนงานมากกว่า itemsPerPage) */}
           {jobs.length > itemsPerPage && (
             <div className="flex items-center justify-center mt-6">
               <Pagination
@@ -220,7 +138,6 @@ function Find() {
             <input
               type="text"
               id="search"
-              placeholder=""
               className="w-full p-1 border border-gray-300 rounded-s-md"
             />
           </div>
@@ -270,29 +187,6 @@ function Find() {
               onChange={(e) => setSalaryRange(Number(e.target.value))}
               className="w-full h-2 bg-gray-200 rounded-lg "
             />
-          </div>
-
-          <div className="sort flex flex-col space-y-2">
-            <div className="flex space-x-2 items-center kanit-regular text-sm">
-              <span>เรียง</span>
-              <select
-                id="sort"
-                className="w-full p-1 border border-gray-300 rounded-s-md"
-              >
-                <option value="latest">ทั้งหมด</option>
-                <option value="salary">เงินเดือน</option>
-                <option value="distance">ระยะทาง</option>
-              </select>
-              <span>จาก</span>
-              <select
-                id="order"
-                className="w-full p-1 border border-gray-300 rounded-s-md"
-              >
-                <option value="all">ทั้งหมด</option>
-                <option value="highToLow">สูง-ตํ่า</option>
-                <option value="lowToHigh">ต่ำ-สูง</option>
-              </select>
-            </div>
           </div>
 
           <div className="flex justify-center mt-8">

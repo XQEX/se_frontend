@@ -1,3 +1,4 @@
+// components/JobCard.tsx
 import React, { useState } from "react";
 import { FaStar, FaArrowRight, FaMapPin, FaClock } from "react-icons/fa";
 import { TbCurrencyBaht } from "react-icons/tb";
@@ -8,21 +9,30 @@ type JobCardProps = {
   title: string;
   workDays?: string;
   workHours?: string;
-  location: string;
-  salary: string;
+  location?: string;
+  salary: number | string;
 };
 
 function JobCard({
   id,
   title,
-  workDays = "ไม่ระบุวันทำงาน",
-  workHours = "ไม่ระบุเวลา",
+  workDays,
+  workHours,
   location,
   salary,
 }: JobCardProps) {
   const [isFav, setIsFav] = useState(false);
 
-  // ฟังก์ชันจัดการการคลิกปุ่ม Favorite
+  const formatSalary = () => {
+    if (typeof salary === "number") {
+      return salary.toLocaleString("th-TH");
+    }
+    if (!isNaN(Number(salary))) {
+      return Number(salary).toLocaleString("th-TH");
+    }
+    return salary;
+  };
+
   const handleFav = (e: React.MouseEvent) => {
     e.stopPropagation();
     setIsFav(!isFav);
@@ -30,11 +40,9 @@ function JobCard({
 
   return (
     <div className="kanit-regular group relative bg-white p-6 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 border border-gray-100 w-full">
-      {/* ปุ่ม Favorite */}
       <button
         onClick={handleFav}
         className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-50 transition-colors"
-        aria-label={isFav ? "Remove from favorites" : "Add to favorites"}
       >
         <FaStar
           size={20}
@@ -46,44 +54,40 @@ function JobCard({
         />
       </button>
 
-      {/* 🔗 ลิงก์ไปหน้ารายละเอียดงาน */}
       <Link to={`/jobseeker/details/${String(id)}`} className="block space-y-4">
-        {/* ชื่องาน */}
         <div className="pr-8">
           <h2 className="text-xl font-bold text-gray-900 mb-1 line-clamp-2">
-            {title}
+            {title || "ไม่ระบุชื่องาน"}
           </h2>
         </div>
 
-        {/* รายละเอียดงาน */}
         <div className="flex flex-col space-y-1 text-gray-600">
-          {/* เงินเดือน */}
           <div className="flex items-center">
             <TbCurrencyBaht size={16} className="mr-1.5 text-seagreen" />
             <span>
-              ฿
-              {!isNaN(parseFloat(salary))
-                ? parseFloat(salary).toLocaleString()
-                : salary}
+              {typeof salary === "string" && salary.startsWith("฿") 
+                ? salary
+                : `฿${formatSalary()}`}
             </span>
           </div>
 
-          {/* สถานที่ทำงาน */}
           <div className="flex items-center">
             <FaMapPin size={16} className="mr-1.5 text-seagreen" />
-            <span>{location}</span>
+            <span className="line-clamp-1">{location}</span>
           </div>
 
-          {/* วันและเวลาทำงาน */}
           <div className="flex items-center">
             <FaClock size={16} className="mr-1.5 text-seagreen" />
-            <span className="line-clamp-1">
-              {workDays} | {workHours}
-            </span>
+            <div className="flex flex-col sm:flex-row sm:gap-1 line-clamp-1">
+              <span>{workDays}</span>
+              {(workDays && workHours) && (
+                <span className="hidden sm:inline">|</span>
+              )}
+              <span>{workHours}</span>
+            </div>
           </div>
         </div>
 
-        {/* ปุ่มดูรายละเอียด */}
         <div className="pt-2">
           <div className="flex items-center text-emerald-600 font-medium group-hover:text-emerald-700 transition-colors">
             <span>รายละเอียด</span>
