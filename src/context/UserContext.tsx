@@ -9,6 +9,9 @@ interface UserContextType {
   isLoading: boolean;
   isLoggedIn: boolean;
   setUser: React.Dispatch<React.SetStateAction<any>>;
+  refetchjobseeker: () => void;
+  refetchemployer: () => void;
+  refetchCompany: () => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -20,7 +23,7 @@ interface UserProviderProps {
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const [user, setUser] = useState<any>(null);
 
-  const { isLoading: isLoadingJobSeeker } = useQuery(
+  const { isLoading: isLoadingJobSeeker , refetch: refetchjobseeker} = useQuery(
     "currentJobSeeker",
     fetchJobSeekerInfo,
     {
@@ -30,7 +33,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     }
   );
 
-  const { isLoading: isLoadingEmployer } = useQuery(
+  const { isLoading: isLoadingEmployer ,refetch: refetchemployer} = useQuery(
     "currentEmployer",
     fetchEmployerInfo,
     {
@@ -40,7 +43,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     }
   );
 
-  const { isLoading: isLoadingCompany } = useQuery(
+  const { isLoading: isLoadingCompany, refetch: refetchCompany} = useQuery(
     "currentCompany",
     fetchCompanyInfo,
     {
@@ -54,7 +57,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const isLoggedIn = !!user;
 
   return (
-    <UserContext.Provider value={{ user, isLoading, isLoggedIn, setUser }}>
+    <UserContext.Provider value={{ user, isLoading, isLoggedIn, setUser , refetchjobseeker, refetchemployer, refetchCompany}}>
       {children}
     </UserContext.Provider>
   );

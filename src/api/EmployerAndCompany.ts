@@ -63,6 +63,26 @@ interface JobPostDetailResponse {
   };
 }
 
+interface JobPostUpdateRequest {
+  title: string;
+  description: string;
+  jobLocation: string;
+  salary: number;
+  workDates: string;
+  workHoursRange: string;
+  hiredAmount: number;
+  jobPostType: "FULLTIME" | "PARTTIME" | "FREELANCE";
+  skills: string[];
+  jobCategories: string[];
+}
+
+interface JobPostUpdateResponse {
+  success: boolean;
+  status: number;
+  msg: string;
+  data: JobPostDetailResponse["data"];
+}
+
 export const getAllJobPosts = async (
   filters: {
     title?: string;
@@ -122,6 +142,28 @@ export const getJobPostById = async (
     return data;
   } catch (error) {
     console.error("Failed to fetch job post:", error);
+    throw error;
+  }
+};
+
+
+export const updateJobPostById = async (
+  id: string,
+  updateData: JobPostUpdateRequest
+): Promise<JobPostUpdateResponse> => {
+  try {
+    console.log("Updating job post with ID:", id);
+    const { data } = await axios.put<JobPostUpdateResponse>(
+      `http://localhost:${backendPort}/api/post/job-posts/${id}`,
+      updateData,
+      {
+        withCredentials: true,
+      }
+    );
+    console.log("Job post updated successfully:", data);
+    return data;
+  } catch (error) {
+    console.error("Failed to update job post:", error);
     throw error;
   }
 };

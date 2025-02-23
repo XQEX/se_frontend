@@ -18,7 +18,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export const Navbar: React.FC = () => {
-  const { user, isLoading, isLoggedIn } = useUser();
+  const { user, isLoading, isLoggedIn ,refetchjobseeker,refetchemployer,refetchCompany} = useUser();
   const [isSignedIn, setIsSignedIn] = useState(isLoggedIn);
   const [scrollDirection, setScrollDirection] = useState("up");
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
@@ -31,6 +31,11 @@ export const Navbar: React.FC = () => {
   useEffect(() => {
     console.log("User:", user);
     setIsSignedIn(isLoggedIn);
+    if (isLoggedIn) {
+      refetchjobseeker();
+      refetchCompany();
+      refetchemployer();
+    }
   }, [isLoggedIn, user]);
 
   useEffect(() => {
