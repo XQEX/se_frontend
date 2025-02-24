@@ -1,21 +1,20 @@
-import { useEffect, useRef, useState } from "react";
-import { Navbar } from "../../components/Navbar";
-import Lottie from "lottie-react"; // Lottie animation
-import Animation from "../../Animation/Job.json"; // Lottie animation
-import { gsap } from "gsap"; // for animaitons texts
-import { Link } from "react-router-dom"; // for link to other page
+"use client"
+
+import { useEffect, useRef, useState } from "react"
+import { Navbar } from "../../components/Navbar"
+import Lottie from "lottie-react"
+import Animation from "../../Animation/Job.json"
+import { gsap } from "gsap"
+import { Link } from "react-router-dom"
 import { useUser } from "../../context/UserContext";
 
 function Home() {
-  const style = {
-    height: "auto", // Let the height adjust based on container
-  };
-  // Refs for animations
-  const headingRef = useRef(null);
-  const subTextRef = useRef(null);
-  const link1Ref = useRef(null);
-  const link2Ref = useRef(null);
-  const lottieRef = useRef(null); // Ref for the Lottie animation
+  const headingRef = useRef(null)
+  const subTextRef = useRef(null)
+  const link1Ref = useRef(null)
+  const link2Ref = useRef(null)
+  const lottieRef = useRef(null)
+
   const {
     user,
     isLoading,
@@ -38,31 +37,29 @@ function Home() {
   }, [user, isLoading, isStale]);
 
   useEffect(() => {
-    // Slide-left animation for the subtext
     gsap.fromTo(
       subTextRef.current,
-      { opacity: 0, x: 50 }, // Start from the right (x: 50)
+      { opacity: 0, x: 50 },
       {
         opacity: 1,
-        x: 0, // Move to original position
+        x: 0,
         duration: 2.5,
-        ease: "power2.out", // Smooth easing
-      }
-    );
-    // Slide-left animation for the portal links
+        ease: "power2.out",
+      },
+    )
+
     gsap.fromTo(
       [link1Ref.current, link2Ref.current],
-      { opacity: 0, x: 50 }, // Start from the right
+      { opacity: 0, x: 50 },
       {
         opacity: 1,
-        x: 0, // Move to the original position
+        x: 0,
         duration: 3.5,
-        ease: "power2.out", // Smooth easing
-        stagger: 0.5, // Delay between the two links
-      }
-    );
+        ease: "power2.out",
+        stagger: 0.5,
+      },
+    )
 
-    // Fade-in and slide-up animation for heading
     gsap.fromTo(
       headingRef.current,
       { opacity: 0, y: 50 },
@@ -71,23 +68,22 @@ function Home() {
         y: 0,
         duration: 2.5,
         ease: "power2.out",
-      }
-    );
+      },
+    )
 
-    // Fade-in animation for Lottie animation
     gsap.fromTo(
       lottieRef.current,
-      { opacity: 0 }, // Start with opacity 0
+      { opacity: 0 },
       {
-        opacity: 1, // Fade in to full opacity
+        opacity: 1,
         duration: 2.5,
         ease: "power2.out",
-      }
-    );
-  }, []);
+      },
+    )
+  }, [])
 
   return (
-    <div>
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-green-50 to-white">
       <Navbar
         user={user}
         isLoading={isLoading}
@@ -98,68 +94,54 @@ function Home() {
         isStale={isStale}
         setUser={setUser}
       />
-      <div className="min-h-screen flex flex-col md:flex-row bg-white text-[#2e8b57] justify-center items-center p-4 md:p-12 ">
-        {/* Text Section */}
-        <div className="flex flex-col items-center md:items-start  text-center md:text-left">
-          {/* Animated Heading */}
-          <div
-            ref={headingRef}
-            className="text-5xl md:text-8xl font-bold mb-4 md:mb-6 px-8"
-          >
-            Welcome To SkillBridge
-          </div>
-          {/* Animated Subtext */}
-          <div
-            ref={subTextRef}
-            className="text-xl md:text-2xl mb-6 text-gray-600 kanit-light px-16"
-          >
-            แหล่งรวมงานสำหรับการหางานของบุคคลกลุ่มเฉพาะทาง
-            ที่ช่วยเสริมสร้างความเท่าเทียมกันในสังคม
-          </div>
-          <div className="flex flex-col  gap-5 kanit-light px-24">
-            <Link to="/find">
-              <div
-                ref={link1Ref}
-                className=" flex flex-row text-2xl md:text-3xl px-24 "
+      <div className="flex-grow flex flex-col md:flex-row justify-center items-center p-6 md:p-16 gap-8 md:gap-16 ">
+        <div className="flex flex-col items-center md:items-start text-center md:text-left max-w-2xl">
+          <h1 ref={headingRef} className="text-5xl md:text-7xl font-bold mb-6 text-green-700 leading-tight">
+            Welcome To <span className="text-seagreen">SkillBridge</span>
+          </h1>
+          <p ref={subTextRef} className="text-xl md:text-2xl mb-8 text-gray-600 leading-relaxed kanit-regular">
+            แหล่งรวมงานสำหรับการหางานของบุคคลกลุ่มเฉพาะทาง ที่ช่วยเสริมสร้างความเท่าเทียมกันในสังคม
+          </p>
+          <div className="flex flex-col gap-4 w-full md:w-auto">
+            <Link
+              to="/find"
+              ref={link1Ref}
+              className="group flex items-center justify-center md:justify-start text-xl md:text-2xl text-green-600 hover:text-green-700 transition-colors duration-300"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                className="w-6 h-6 mr-2 transform group-hover:translate-x-1 transition-transform duration-300"
+                fill="currentColor"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  width="24"
-                  height="24"
-                  fill="currentColor"
-                >
-                  <path d="M8 4l8 8-8 8V4z" />
-                </svg>
-                <u>เริ่มค้นหางานที่นี่</u>
-              </div>
+                <path d="M8 4l8 8-8 8V4z" />
+              </svg>
+              <span className="border-b-2 border-green-500 pb-1 kanit-regular">เริ่มค้นหางานที่นี่</span>
             </Link>
-            <Link to="/homeemp">
-              <div
-                ref={link2Ref}
-                className=" flex flex-row text-2xl md:text-3xl px-24 "
+            <Link
+              to="/homeemp"
+              ref={link2Ref}
+              className="group flex items-center justify-center md:justify-start text-xl md:text-2xl text-green-600 hover:text-green-700 transition-colors duration-300"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                className="w-6 h-6 mr-2 transform group-hover:translate-x-1 transition-transform duration-300"
+                fill="currentColor"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  width="24"
-                  height="24"
-                  fill="currentColor"
-                >
-                  <path d="M8 4l8 8-8 8V4z" />
-                </svg>
-                <u>เริ่มค้นหาพนักงาน</u>
-              </div>
+                <path d="M8 4l8 8-8 8V4z" />
+              </svg>
+              <span className="border-b-2 border-green-500 pb-1 kanit-regular">เริ่มค้นหาพนักงาน</span>
             </Link>
           </div>
         </div>
-        {/* Animation Section */}
-        <div ref={lottieRef} className="w-full max-w-xs md:max-w-2xl mt-5">
-          <Lottie animationData={Animation} style={style} />
+        <div ref={lottieRef} className="w-full max-w-md md:max-w-lg">
+          <Lottie animationData={Animation} />
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default Home;
+export default Home
+
