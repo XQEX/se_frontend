@@ -3,12 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { Navbar } from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import { createJobFindingPost } from "../../api/JobSeeker";
+import { provinces } from "../../data/provinces";
+import { MultiSelect } from "@mantine/core";
 
 const PostJob: React.FC = () => {
   const navigate = useNavigate();
 
   const [jobTitle, setJobTitle] = useState("");
-  const [location, setLocation] = useState("");
+  const [location, setLocation] = useState<string[]>([]);
   const [jobDescription, setJobDescription] = useState("");
   const [requirements, setRequirements] = useState("");
   const [salary, setSalary] = useState("");
@@ -117,17 +119,12 @@ const PostJob: React.FC = () => {
               setValue: setJobTitle,
               placeholder: "เช่น Developer, Designer",
             },
-            {
-              label: "สถานที่ทำงาน",
-              value: location,
-              setValue: setLocation,
-              placeholder: "เช่น กรุงเทพฯ, ทำงานทางไกล",
-            },
+
             {
               label: "เงินเดือน (บาท)",
               value: salary,
               setValue: setSalary,
-              placeholder: "เช่น 30000",
+              placeholder: "เช่น 18000",
               type: "number",
               step: "1000",
             },
@@ -147,6 +144,28 @@ const PostJob: React.FC = () => {
             )
           )}
 
+          <div className="flex flex-col w-4/5 mx-auto">
+            <label className="font-kanit text-gray-700">สถานที่ทำงาน</label>
+            <MultiSelect
+              placeholder="เลือกจังหวัด"
+              data={provinces}
+              value={location}
+              onChange={setLocation}
+              clearable
+              searchable
+              className="font-kanit"
+            />
+          </div>
+          
+          <div className="flex flex-col w-4/5 mx-auto">
+            <label className="font-kanit text-gray-700">จำนวนที่เปิดรับสมัคร</label>
+            <input
+              type="number"
+              placeholder="..."
+              className="border border-gray-300 p-2 rounded-md text-sm"
+            />
+
+          </div>
           <div className="flex flex-col w-4/5 mx-auto">
             <label className="font-kanit text-gray-700">ประเภทงาน</label>
             <select
