@@ -183,7 +183,7 @@ const PostJobEmp: React.FC = () => {
               label: "เงินเดือน (บาท)",
               value: salary,
               setValue: setSalary,
-              placeholder: "เช่น 30000",
+              placeholder: "เช่น 18000",
               type: "number",
               step: "1000",
             },
@@ -213,17 +213,6 @@ const PostJobEmp: React.FC = () => {
           )}
 
           <div className="flex flex-col w-4/5 mx-auto">
-            <label className="font-kanit text-gray-700">
-              จำนวนที่เปิดรับสมัคร
-            </label>
-            <input
-              type="number"
-              placeholder="..."
-              className="border border-gray-300 p-2 rounded-md text-sm"
-            />
-          </div>
-
-          <div className="flex flex-col w-4/5 mx-auto">
             <label className="font-kanit text-gray-700">สถานที่ทำงาน</label>
             <MultiSelect
               placeholder="เลือกจังหวัด"
@@ -234,6 +223,16 @@ const PostJobEmp: React.FC = () => {
               searchable
               className="font-kanit"
             />
+          </div>
+
+          <div className="flex flex-col w-4/5 mx-auto">
+            <label className="font-kanit text-gray-700">จำนวนที่เปิดรับสมัคร</label>
+            <input
+              type="number"
+              placeholder="..."
+              className="border border-gray-300 p-2 rounded-md text-sm"
+            />
+
           </div>
 
           <div className="flex flex-col w-4/5 mx-auto">
