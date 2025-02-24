@@ -47,7 +47,7 @@ const PostJob: React.FC = () => {
   const validateInputs = () => {
     if (
       !jobTitle.trim() ||
-      !location.trim() ||
+      location.length === 0 ||
       !jobDescription.trim() ||
       !requirements.trim() ||
       !salary.trim()
@@ -72,7 +72,7 @@ const PostJob: React.FC = () => {
     const newJob = {
       title: jobTitle,
       description: jobDescription,
-      jobLocation: location,
+      jobLocation: location.join(", "),
       expectedSalary: Number(salary),
       workDates: workDays,
       workHoursRange: `${startTime} - ${endTime}`,
@@ -156,15 +156,16 @@ const PostJob: React.FC = () => {
               className="font-kanit"
             />
           </div>
-          
+
           <div className="flex flex-col w-4/5 mx-auto">
-            <label className="font-kanit text-gray-700">จำนวนที่เปิดรับสมัคร</label>
+            <label className="font-kanit text-gray-700">
+              จำนวนที่เปิดรับสมัคร
+            </label>
             <input
               type="number"
               placeholder="..."
               className="border border-gray-300 p-2 rounded-md text-sm"
             />
-
           </div>
           <div className="flex flex-col w-4/5 mx-auto">
             <label className="font-kanit text-gray-700">ประเภทงาน</label>
