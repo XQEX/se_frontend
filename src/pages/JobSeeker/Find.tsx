@@ -109,7 +109,7 @@ function Find() {
           id: jobPost.id,
           title: jobPost.title,
           jobLocation: jobPost.jobLocation || "ไม่ระบุสถานที่",
-          expectedSalary: jobPost.expectedSalary || 0,
+          expectedSalary: jobPost.salary || 0,
           workDates: jobPost.workDates || "ไม่ระบุวันทำงาน",
           workHoursRange: jobPost.workHoursRange || "ไม่ระบุเวลา",
         }));
