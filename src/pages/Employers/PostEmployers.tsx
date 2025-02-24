@@ -195,7 +195,7 @@ const PostJobEmp: React.FC = () => {
               placeholder,
               type = "text",
               step,
-              min,
+              
             }) => (
               <div key={label} className="flex flex-col w-4/5 mx-auto">
                 <label className="font-kanit text-gray-700">{label}</label>
@@ -205,7 +205,6 @@ const PostJobEmp: React.FC = () => {
                   onChange={(e) => setValue(e.target.value)}
                   placeholder={placeholder}
                   step={step}
-                  min={min}
                   className="border border-gray-300 p-2 rounded-md text-sm"
                 />
               </div>
