@@ -8,6 +8,7 @@ import { Drawer, MultiSelect, Pagination } from "@mantine/core";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { provinces } from "../../data/provinces";
 import { getAllJobPosts } from "../../api/EmployerAndCompany";
+import { useUser } from "../../context/UserContext";
 
 const mockJobs = [
   {
@@ -105,6 +106,26 @@ function Find() {
   const [selectedJobTypes, setSelectedJobTypes] = useState<string[]>([
     "ทั้งหมด",
   ]);
+  const {
+    user,
+    isLoading,
+    refetchjobseeker,
+    refetchemployer,
+    refetchCompany,
+    isStale,
+    setUser,
+  } = useUser();
+  const [isHaveUser, setIsHaveUser] = useState(false);
+  useEffect(() => {
+    refetchjobseeker();
+    refetchCompany();
+    refetchemployer();
+    // console.log("current user:", user);
+    // console.log("isLoading:", isLoading);
+    // console.log("isHaveUser :", isHaveUser);
+    // console.log("isStale :", isStale);
+    setIsHaveUser(!!user);
+  }, [user, isLoading, isStale]);
 
   const handleProvinceChange = (value: string[]) => {
     if (value.includes("ทั้งหมด") && value.length > 1) {
@@ -157,7 +178,16 @@ function Find() {
 
   return (
     <div className="min-h-screen flex flex-col font-kanit">
-      <Navbar />
+      <Navbar
+        user={user}
+        isLoading={isLoading}
+        isHaveUser={isHaveUser}
+        refetchjobseeker={refetchjobseeker}
+        refetchemployer={refetchemployer}
+        refetchCompany={refetchCompany}
+        isStale={isStale}
+        setUser={setUser}
+      />
       <div className="flex flex-row flex-grow">
         <Sidebar />
         <div className="w-full md:w-3/4 p-6">

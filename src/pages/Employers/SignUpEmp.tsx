@@ -1,12 +1,33 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Navbar } from "../../components/Navbar";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 // Import Toastify
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useUser } from "../../context/UserContext";
 
 function SignUpEmp() {
+  const {
+    user,
+    isLoading,
+    refetchjobseeker,
+    refetchemployer,
+    refetchCompany,
+    isStale,
+    setUser,
+  } = useUser();
+  const [isHaveUser, setIsHaveUser] = useState(false);
+  useEffect(() => {
+    refetchjobseeker();
+    refetchCompany();
+    refetchemployer();
+    // console.log("current user:", user);
+    // console.log("isLoading:", isLoading);
+    // console.log("isHaveUser :", isHaveUser);
+    // console.log("isStale :", isStale);
+    setIsHaveUser(!!user);
+  }, [user, isLoading, isStale]);
   const navigate = useNavigate();
   const [userType, setUserType] = useState("employer");
   const [name, setName] = useState("");
@@ -149,7 +170,16 @@ function SignUpEmp() {
       <ToastContainer />
 
       {/* Navbar */}
-      <Navbar />
+      <Navbar
+        user={user}
+        isLoading={isLoading}
+        isHaveUser={isHaveUser}
+        refetchjobseeker={refetchjobseeker}
+        refetchemployer={refetchemployer}
+        refetchCompany={refetchCompany}
+        isStale={isStale}
+        setUser={setUser}
+      />
 
       {/* Main Content */}
       <div

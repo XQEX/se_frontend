@@ -35,8 +35,19 @@ import JobCardEmp from "../../components/JobCardEmp";
 import Footer from "../../components/Footer";
 import { Pagination } from "@mantine/core";
 import { getAllJobFindingPosts } from "../../api/JobSeeker";
+import { useUser } from "../../context/UserContext";
 
 function FindEmp() {
+  const {
+    user,
+    isLoading,
+    refetchjobseeker,
+    refetchemployer,
+    refetchCompany,
+    isStale,
+    setUser,
+  } = useUser();
+  const [isHaveUser, setIsHaveUser] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(9);
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -55,13 +66,33 @@ function FindEmp() {
     fetchJobs();
   }, []);
 
+  useEffect(() => {
+    refetchjobseeker();
+    refetchCompany();
+    refetchemployer();
+    // console.log("current user:", user);
+    // console.log("isLoading:", isLoading);
+    // console.log("isHaveUser :", isHaveUser);
+    // console.log("isStale :", isStale);
+    setIsHaveUser(!!user);
+  }, [user, isLoading, isStale]);
+
   const indexOfLastJob = currentPage * itemsPerPage;
   const indexOfFirstJob = indexOfLastJob - itemsPerPage;
   const currentJobs = jobs.slice(indexOfFirstJob, indexOfLastJob);
 
   return (
     <div className="min-h-screen flex flex-col font-kanit">
-      <NavbarEmp />
+      <NavbarEmp
+        user={user}
+        isLoading={isLoading}
+        isHaveUser={isHaveUser}
+        refetchjobseeker={refetchjobseeker}
+        refetchemployer={refetchemployer}
+        refetchCompany={refetchCompany}
+        isStale={isStale}
+        setUser={setUser}
+      />
       <div className="flex flex-row flex-grow">
         <Sidebar />
         <div className="w-full md:w-3/4 p-6">

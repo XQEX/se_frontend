@@ -1,9 +1,10 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Navbar } from "../../components/Navbar";
 import Lottie from "lottie-react"; // Lottie animation
 import Animation from "../../Animation/Job.json"; // Lottie animation
 import { gsap } from "gsap"; // for animaitons texts
 import { Link } from "react-router-dom"; // for link to other page
+import { useUser } from "../../context/UserContext";
 
 function Home() {
   const style = {
@@ -15,6 +16,27 @@ function Home() {
   const link1Ref = useRef(null);
   const link2Ref = useRef(null);
   const lottieRef = useRef(null); // Ref for the Lottie animation
+  const {
+    user,
+    isLoading,
+    refetchjobseeker,
+    refetchemployer,
+    refetchCompany,
+    isStale,
+    setUser,
+  } = useUser();
+  const [isHaveUser, setIsHaveUser] = useState(false);
+  useEffect(() => {
+    refetchjobseeker();
+    refetchCompany();
+    refetchemployer();
+    // console.log("current user:", user);
+    // console.log("isLoading:", isLoading);
+    // console.log("isHaveUser :", isHaveUser);
+    // console.log("isStale :", isStale);
+    setIsHaveUser(!!user);
+  }, [user, isLoading, isStale]);
+
   useEffect(() => {
     // Slide-left animation for the subtext
     gsap.fromTo(
@@ -66,7 +88,16 @@ function Home() {
 
   return (
     <div>
-      <Navbar />
+      <Navbar
+        user={user}
+        isLoading={isLoading}
+        isHaveUser={isHaveUser}
+        refetchjobseeker={refetchjobseeker}
+        refetchemployer={refetchemployer}
+        refetchCompany={refetchCompany}
+        isStale={isStale}
+        setUser={setUser}
+      />
       <div className="min-h-screen flex flex-col md:flex-row bg-white text-[#2e8b57] justify-center items-center p-4 md:p-12 ">
         {/* Text Section */}
         <div className="flex flex-col items-center md:items-start  text-center md:text-left">

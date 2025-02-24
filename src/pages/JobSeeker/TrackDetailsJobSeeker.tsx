@@ -1,6 +1,8 @@
 //TrackDetailsJobSeeker.tsx
 import { useParams, useNavigate } from "react-router-dom";
 import { Navbar } from "../../components/Navbar";
+import { useUser } from "../../context/UserContext";
+import { useEffect, useState } from "react";
 // Define the JobApplication interface
 interface JobApplication {
   id: number;
@@ -28,6 +30,26 @@ const mockApplications: JobApplication[] = [
 function TrackDetailsJobSeeker() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const {
+    user,
+    isLoading,
+    refetchjobseeker,
+    refetchemployer,
+    refetchCompany,
+    isStale,
+    setUser,
+  } = useUser();
+  const [isHaveUser, setIsHaveUser] = useState(false);
+  useEffect(() => {
+    refetchjobseeker();
+    refetchCompany();
+    refetchemployer();
+    // console.log("current user:", user);
+    // console.log("isLoading:", isLoading);
+    // console.log("isHaveUser :", isHaveUser);
+    // console.log("isStale :", isStale);
+    setIsHaveUser(!!user);
+  }, [user, isLoading, isStale]);
 
   // Find the application details by ID
   const application = mockApplications.find((app) => app.id === Number(id));
@@ -35,7 +57,16 @@ function TrackDetailsJobSeeker() {
   if (!application) {
     return (
       <div>
-        <Navbar />
+        <Navbar
+          user={user}
+          isLoading={isLoading}
+          isHaveUser={isHaveUser}
+          refetchjobseeker={refetchjobseeker}
+          refetchemployer={refetchemployer}
+          refetchCompany={refetchCompany}
+          isStale={isStale}
+          setUser={setUser}
+        />
         <div className="min-h-screen flex flex-col items-center justify-center">
           <h1 className="text-2xl font-bold text-red-600">ไม่พบข้อมูล</h1>
           <button
@@ -51,7 +82,16 @@ function TrackDetailsJobSeeker() {
 
   return (
     <div>
-      <Navbar />
+      <Navbar
+        user={user}
+        isLoading={isLoading}
+        isHaveUser={isHaveUser}
+        refetchjobseeker={refetchjobseeker}
+        refetchemployer={refetchemployer}
+        refetchCompany={refetchCompany}
+        isStale={isStale}
+        setUser={setUser}
+      />
       <div className="min-h-screen flex flex-col items-center bg-white text-[#2e8b57] p-4">
         <h1 className="text-4xl font-bold mb-6">
           รายละเอียดการสมัครงาน #{application.id}

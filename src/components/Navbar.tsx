@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { Link } from "react-router-dom";
 import { Avatar, Menu, Divider, Burger, Drawer } from "@mantine/core";
 import {
@@ -18,18 +17,28 @@ import { logoutCompany } from "../api/Company";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export const Navbar: React.FC = () => {
-  const {
-    user,
-    isLoading,
-    isLoggedIn,
-    refetchjobseeker,
-    refetchemployer,
-    refetchCompany,
-    isSignedIn,
-    setIsSignedIn,
-  } = useUser();
-  // const [isSignedIn, setIsSignedIn] = useState(isLoggedIn);
+interface NavbarProps {
+  user: any;
+  isLoading: boolean;
+  isHaveUser: boolean;
+  refetchjobseeker: () => void;
+  refetchemployer: () => void;
+  refetchCompany: () => void;
+  isStale: boolean;
+  setUser: React.Dispatch<React.SetStateAction<any>>;
+}
+
+export const Navbar: React.FC<NavbarProps> = ({
+  user,
+  isLoading,
+  isHaveUser,
+  refetchjobseeker,
+  refetchemployer,
+  refetchCompany,
+  isStale,
+  setUser,
+}) => {
+  const [isSignedIn, setIsSignedIn] = useState(isHaveUser);
   const [scrollDirection, setScrollDirection] = useState("up");
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
@@ -39,33 +48,7 @@ export const Navbar: React.FC = () => {
     toast.error(message, { position: "top-center" });
 
   useEffect(() => {
-    console.log("User:", user);
-    setIsSignedIn(isLoggedIn);
-    // if (isLoggedIn) {
-    //   refetchjobseeker();
-    //   refetchCompany();
-    //   refetchemployer();
-    // }
-  }, [isLoggedIn, user]);
-
-  useEffect(() => {
-    const interceptor = axios.interceptors.response.use(
-      (response) => response,
-      (error) => {
-        if (error.response?.status === 401) {
-          handleLogout(); // Call the logout function if a 401 status is detected
-        }
-        return Promise.reject(error);
-      }
-    );
-
-    return () => {
-      axios.interceptors.response.eject(interceptor);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!isLoggedIn) return;
+    setIsSignedIn(isHaveUser);
 
     let lastScrollY = window.scrollY;
 
@@ -80,7 +63,7 @@ export const Navbar: React.FC = () => {
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [isLoggedIn]);
+  }, [isHaveUser]);
 
   const handleLogout = async () => {
     try {
@@ -94,7 +77,7 @@ export const Navbar: React.FC = () => {
       // Clear cookies or session data if necessary
       document.cookie =
         "yourCookieName=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-      localStorage.removeItem("isLoggedIn");
+      localStorage.removeItem("isHaveUser");
       localStorage.removeItem("adminInfo");
       notifyError("คุณออกจากระบบ!"); // Show the notification after navigation
       setIsSignedIn(false);

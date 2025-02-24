@@ -9,8 +9,28 @@ import { MultiSelect } from "@mantine/core";
 import { provinces } from "../../data/provinces";
 
 const PostJobEmp: React.FC = () => {
-  const navigate = useNavigate();
+  const {
+    user,
+    isLoading,
+    refetchjobseeker,
+    refetchemployer,
+    refetchCompany,
+    isStale,
+    setUser,
+  } = useUser();
+  const [isHaveUser, setIsHaveUser] = useState(false);
+  useEffect(() => {
+    refetchjobseeker();
+    refetchCompany();
+    refetchemployer();
+    // console.log("current user:", user);
+    // console.log("isLoading:", isLoading);
+    // console.log("isHaveUser :", isHaveUser);
+    // console.log("isStale :", isStale);
+    setIsHaveUser(!!user);
+  }, [user, isLoading, isStale]);
 
+  const navigate = useNavigate();
   const [jobTitle, setJobTitle] = useState("");
   const [location, setLocation] = useState<string[]>([]);
   const [jobDescription, setJobDescription] = useState("");
@@ -24,7 +44,6 @@ const PostJobEmp: React.FC = () => {
     "FULLTIME" | "PARTTIME" | "FREELANCE"
   >("FULLTIME");
   const [loading, setLoading] = useState(false);
-  const { user } = useUser();
 
   const workDayOptions = [
     "จันทร์ - ศุกร์",
@@ -35,12 +54,6 @@ const PostJobEmp: React.FC = () => {
   ];
 
   const jobPostTypeOptions = ["FULLTIME", "PARTTIME", "FREELANCE"];
-
-  useEffect(() => {
-    if (user) {
-      console.log("User type:", user.type);
-    }
-  }, []);
 
   const generateTimeOptions = () => {
     const times = [];
@@ -135,7 +148,16 @@ const PostJobEmp: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col justify-start bg-gray-50 font-kanit">
-      <NavbarEmp />
+      <NavbarEmp
+        user={user}
+        isLoading={isLoading}
+        isHaveUser={isHaveUser}
+        refetchjobseeker={refetchjobseeker}
+        refetchemployer={refetchemployer}
+        refetchCompany={refetchCompany}
+        isStale={isStale}
+        setUser={setUser}
+      />
 
       {/* ทำให้ container อยู่ชิดด้านบน */}
       <div className="max-w-2xl mx-auto p-4 bg-white shadow-md rounded-lg w-full mt-5 pt-0">
@@ -166,7 +188,15 @@ const PostJobEmp: React.FC = () => {
               step: "1000",
             },
           ].map(
-            ({ label, value, setValue, placeholder, type = "text", step, min }) => (
+            ({
+              label,
+              value,
+              setValue,
+              placeholder,
+              type = "text",
+              step,
+              min,
+            }) => (
               <div key={label} className="flex flex-col w-4/5 mx-auto">
                 <label className="font-kanit text-gray-700">{label}</label>
                 <input
@@ -183,13 +213,14 @@ const PostJobEmp: React.FC = () => {
           )}
 
           <div className="flex flex-col w-4/5 mx-auto">
-            <label className="font-kanit text-gray-700">จำนวนที่เปิดรับสมัคร</label>
+            <label className="font-kanit text-gray-700">
+              จำนวนที่เปิดรับสมัคร
+            </label>
             <input
               type="number"
               placeholder="..."
               className="border border-gray-300 p-2 rounded-md text-sm"
             />
-
           </div>
 
           <div className="flex flex-col w-4/5 mx-auto">

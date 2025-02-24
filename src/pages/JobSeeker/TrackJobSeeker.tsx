@@ -4,6 +4,7 @@ import Lottie from "lottie-react"; // Lottie animation
 import Animation from "../../Animation/Job2.json"; // Lottie animation
 import { gsap } from "gsap"; // For animations
 import { Link } from "react-router-dom"; // For navigation
+import { useUser } from "../../context/UserContext";
 
 interface JobApplication {
   id: number;
@@ -32,6 +33,27 @@ function TrackJobSeeker() {
   const headingRef = useRef(null); // Ref for heading
   const tableRef = useRef(null); // Ref for table
   const lottieRef = useRef(null); // Ref for Lottie animation
+
+  const {
+    user,
+    isLoading,
+    refetchjobseeker,
+    refetchemployer,
+    refetchCompany,
+    isStale,
+    setUser,
+  } = useUser();
+  const [isHaveUser, setIsHaveUser] = useState(false);
+  useEffect(() => {
+    refetchjobseeker();
+    refetchCompany();
+    refetchemployer();
+    // console.log("current user:", user);
+    // console.log("isLoading:", isLoading);
+    // console.log("isHaveUser :", isHaveUser);
+    // console.log("isStale :", isStale);
+    setIsHaveUser(!!user);
+  }, [user, isLoading, isStale]);
 
   useEffect(() => {
     // Animate heading
@@ -110,7 +132,16 @@ function TrackJobSeeker() {
 
   return (
     <div>
-      <Navbar />
+      <Navbar
+        user={user}
+        isLoading={isLoading}
+        isHaveUser={isHaveUser}
+        refetchjobseeker={refetchjobseeker}
+        refetchemployer={refetchemployer}
+        refetchCompany={refetchCompany}
+        isStale={isStale}
+        setUser={setUser}
+      />
       <div className="min-h-screen flex flex-col md:flex-row bg-white text-[#2e8b57] justify-center items-center p-4 md:p-8">
         {/* Text Section */}
         <div className="flex flex-col items-center md:items-start py-6 text-center md:text-left">

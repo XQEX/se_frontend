@@ -19,7 +19,7 @@ import { useUser } from "../../context/UserContext";
 import { deleteJobPost } from "../../api/EmployerAndCompany";
 import { getEmployerJobPosts } from "../../api/Employer";
 import { getCompanyJobPosts } from "../../api/Company";
-import { MultiSelect } from '@mantine/core';
+import { MultiSelect } from "@mantine/core";
 
 interface Job {
   id: string;
@@ -45,25 +45,46 @@ interface Job {
 }
 
 const HomepageEmployers: React.FC = () => {
-  const { user } = useUser();
   const navigate = useNavigate();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-
+  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
   // ข้อมูล categories ตัวอย่าง
   const jobCategories = [
-    { value: 'restaurant', label: 'ร้านอาหาร' },
-    { value: 'retail', label: 'ค้าปลีก' },
-    { value: 'event', label: 'อีเวนต์' },
-    { value: 'hotel', label: 'โรงแรม' },
-    { value: 'office', label: 'ออฟฟิศ' },
-    { value: 'delivery', label: 'ส่งของ' },
-    { value: 'warehouse', label: 'คลังสินค้า' },
-    { value: 'cleaning', label: 'ทำความสะอาด' },
-    { value: 'marketing', label: 'การตลาด' },
-    { value: 'customer-service', label: 'บริการลูกค้า' },
+    { value: "restaurant", label: "ร้านอาหาร" },
+    { value: "retail", label: "ค้าปลีก" },
+    { value: "event", label: "อีเวนต์" },
+    { value: "hotel", label: "โรงแรม" },
+    { value: "office", label: "ออฟฟิศ" },
+    { value: "delivery", label: "ส่งของ" },
+    { value: "warehouse", label: "คลังสินค้า" },
+    { value: "cleaning", label: "ทำความสะอาด" },
+    { value: "marketing", label: "การตลาด" },
+    { value: "customer-service", label: "บริการลูกค้า" },
   ];
+
+  const {
+    user,
+    isLoading,
+    refetchjobseeker,
+    refetchemployer,
+    refetchCompany,
+    isStale,
+    setUser,
+  } = useUser();
+  const [isHaveUser, setIsHaveUser] = useState(false);
+
+  useEffect(() => {
+    refetchjobseeker();
+    refetchCompany();
+    refetchemployer();
+    // console.log("current user:", user);
+    // console.log("isLoading:", isLoading);
+    // console.log("isHaveUser :", isHaveUser);
+    // console.log("isStale :", isStale);
+    setIsHaveUser(!!user);
+  }, [user, isLoading, isStale]);
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -115,20 +136,29 @@ const HomepageEmployers: React.FC = () => {
   };
 
   const nextSlide = () => {
-    setCurrentIndex((prevIndex) => 
+    setCurrentIndex((prevIndex) =>
       prevIndex === jobs.length - 1 ? 0 : prevIndex + 1
     );
   };
 
   const prevSlide = () => {
-    setCurrentIndex((prevIndex) => 
+    setCurrentIndex((prevIndex) =>
       prevIndex === 0 ? jobs.length - 1 : prevIndex - 1
     );
   };
 
   return (
     <div className="min-h-screen bg-white">
-      <NavbarEmp />
+      <NavbarEmp
+        user={user}
+        isLoading={isLoading}
+        isHaveUser={isHaveUser}
+        refetchjobseeker={refetchjobseeker}
+        refetchemployer={refetchemployer}
+        refetchCompany={refetchCompany}
+        isStale={isStale}
+        setUser={setUser}
+      />
 
       <div className="max-w-5xl xl:max-w-6xl mx-auto px-12 sm:px-16 lg:px-24 py-12 grid grid-cols-1 lg:grid-cols-3 gap-10">
         {/* Left Sidebar (Quick Actions) */}
@@ -240,7 +270,7 @@ const HomepageEmployers: React.FC = () => {
 
                 {/* Job Cards */}
                 <div className="overflow-hidden">
-                  <div 
+                  <div
                     className="flex transition-transform duration-300 ease-in-out"
                     style={{ transform: `translateX(-${currentIndex * 100}%)` }}
                   >
@@ -267,15 +297,24 @@ const HomepageEmployers: React.FC = () => {
                             ))}
                           </div>
                           <p className="flex items-center font-medium">
-                            <FaMapMarkerAlt className="mr-2.5 text-[#2e8b57]" size={16} />
+                            <FaMapMarkerAlt
+                              className="mr-2.5 text-[#2e8b57]"
+                              size={16}
+                            />
                             สถานที่ตั้ง: {job.jobLocation}
                           </p>
                           <p className="flex items-center font-medium">
-                            <CiMoneyBill className="mr-2.5 text-[#2e8b57]" size={18} />
+                            <CiMoneyBill
+                              className="mr-2.5 text-[#2e8b57]"
+                              size={18}
+                            />
                             เงินเดือน: {job.salary.toLocaleString()} บาท
                           </p>
                           <p className="flex items-center font-medium">
-                            <FaClock className="mr-2.5 text-[#2e8b57]" size={16} />
+                            <FaClock
+                              className="mr-2.5 text-[#2e8b57]"
+                              size={16}
+                            />
                             เวลาทำงาน: {job.workDates} | {job.workHoursRange}
                           </p>
                         </div>

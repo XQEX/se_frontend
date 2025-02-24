@@ -1,9 +1,30 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { NavbarEmp } from "../../components/NavbarEmp";
 import Footer from "../../components/Footer";
 import "./ProfileEmployers.css";
+import { useUser } from "../../context/UserContext";
 
 const ProfileEmployers: React.FC = () => {
+  const {
+    user,
+    isLoading,
+    refetchjobseeker,
+    refetchemployer,
+    refetchCompany,
+    isStale,
+    setUser,
+  } = useUser();
+  const [isHaveUser, setIsHaveUser] = useState(false);
+  useEffect(() => {
+    refetchjobseeker();
+    refetchCompany();
+    refetchemployer();
+    // console.log("current user:", user);
+    // console.log("isLoading:", isLoading);
+    // console.log("isHaveUser :", isHaveUser);
+    // console.log("isStale :", isStale);
+    setIsHaveUser(!!user);
+  }, [user, isLoading, isStale]);
   const [images, setImages] = useState<(string | null)[]>([null, null, null]);
 
   const handleImageUpload = (
@@ -27,7 +48,16 @@ const ProfileEmployers: React.FC = () => {
 
   return (
     <div>
-      <NavbarEmp />
+      <NavbarEmp
+        user={user}
+        isLoading={isLoading}
+        isHaveUser={isHaveUser}
+        refetchjobseeker={refetchjobseeker}
+        refetchemployer={refetchemployer}
+        refetchCompany={refetchCompany}
+        isStale={isStale}
+        setUser={setUser}
+      />
       <div className="profile-container">
         <h1 className="profile-title">โปรไฟล์</h1>
 

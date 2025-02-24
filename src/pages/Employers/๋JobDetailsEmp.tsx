@@ -6,6 +6,7 @@ import { CiMoneyBill } from "react-icons/ci";
 import Footer from "../../components/Footer";
 import { Avatar } from "@mantine/core";
 import { getJobFindingPostById } from "../../api/JobSeeker";
+import { useUser } from "../../context/UserContext";
 
 type Job = {
   id: string;
@@ -21,11 +22,33 @@ type Job = {
 };
 
 function JobDetailEmp() {
+  const {
+    user,
+    isLoading,
+    refetchjobseeker,
+    refetchemployer,
+    refetchCompany,
+    isStale,
+    setUser,
+  } = useUser();
+  const [isHaveUser, setIsHaveUser] = useState(false);
+
   const { id } = useParams();
   const navigate = useNavigate();
   const [isStarred, setIsStarred] = useState(false);
   const [job, setJob] = useState<Job | null>(null);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    refetchjobseeker();
+    refetchCompany();
+    refetchemployer();
+    // console.log("current user:", user);
+    // console.log("isLoading:", isLoading);
+    // console.log("isHaveUser :", isHaveUser);
+    // console.log("isStale :", isStale);
+    setIsHaveUser(!!user);
+  }, [user, isLoading, isStale]);
 
   useEffect(() => {
     console.log("🔎 กำลังโหลดข้อมูลงาน...");
@@ -89,7 +112,16 @@ function JobDetailEmp() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 font-kanit">
-      <NavbarEmp />
+      <NavbarEmp
+        user={user}
+        isLoading={isLoading}
+        isHaveUser={isHaveUser}
+        refetchjobseeker={refetchjobseeker}
+        refetchemployer={refetchemployer}
+        refetchCompany={refetchCompany}
+        isStale={isStale}
+        setUser={setUser}
+      />
 
       {/* Main Content */}
       <main className="flex-1 py-6 px-4 sm:px-6 lg:px-8">

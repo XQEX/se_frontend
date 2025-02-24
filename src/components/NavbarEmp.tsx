@@ -3,27 +3,44 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Avatar, Menu, Divider } from "@mantine/core";
 import { FaUserCircle, FaSearch, FaHome, FaBell } from "react-icons/fa";
-import { useUser } from "../context/UserContext";
 import { logoutJobSeeker } from "../api/JobSeeker";
 import { logoutEmployer } from "../api/Employer";
 import { logoutCompany } from "../api/Company";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export const NavbarEmp: React.FC = () => {
-  const { user, isLoading, isLoggedIn } = useUser();
-  const [isSignedIn, setIsSignedIn] = useState(isLoggedIn);
+interface NavbarEmpProps {
+  user: any;
+  isLoading: boolean;
+  isHaveUser: boolean;
+  refetchjobseeker: () => void;
+  refetchemployer: () => void;
+  refetchCompany: () => void;
+  isStale: boolean;
+  setUser: React.Dispatch<React.SetStateAction<any>>;
+}
+
+export const NavbarEmp: React.FC<NavbarEmpProps> = ({
+  user,
+  isLoading,
+  isHaveUser,
+  refetchjobseeker,
+  refetchemployer,
+  refetchCompany,
+  isStale,
+  setUser,
+}) => {
+  const [isSignedIn, setIsSignedIn] = useState(isHaveUser);
   const [scrollDirection, setScrollDirection] = useState("up");
 
   // Helper function for toast messages
   const notifyError = (message: string) =>
     toast.error(message, { position: "top-center" });
-  useEffect(() => {
-    // console.log("User:", user);
-    setIsSignedIn(isLoggedIn);
-  }, [isLoggedIn, user]);
 
   useEffect(() => {
+    // console.log("NavbarEmp: isSignedIn", isSignedIn);
+    setIsSignedIn(isHaveUser);
+
     let lastScrollY = window.scrollY;
     const handleScroll = () => {
       if (window.scrollY > lastScrollY && window.scrollY > 50) {
@@ -35,7 +52,7 @@ export const NavbarEmp: React.FC = () => {
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [isHaveUser]);
 
   const handleLogout = async () => {
     try {
@@ -158,7 +175,11 @@ export const NavbarEmp: React.FC = () => {
               <Menu.Dropdown>
                 {isSignedIn ? (
                   <>
-                    <Menu.Item component={Link} to="/profile" className="kanit-regular">
+                    <Menu.Item
+                      component={Link}
+                      to="/profile"
+                      className="kanit-regular"
+                    >
                       โปรไฟล์
                     </Menu.Item>
                     <Menu.Item onClick={handleLogout} className="kanit-regular">
@@ -167,10 +188,18 @@ export const NavbarEmp: React.FC = () => {
                   </>
                 ) : (
                   <>
-                    <Menu.Item component={Link} to="/signin" className="kanit-regular">
+                    <Menu.Item
+                      component={Link}
+                      to="/signin"
+                      className="kanit-regular"
+                    >
                       เข้าสู่ระบบ
                     </Menu.Item>
-                    <Menu.Item component={Link} to="/signup" className="kanit-regular">
+                    <Menu.Item
+                      component={Link}
+                      to="/signup"
+                      className="kanit-regular"
+                    >
                       สมัครสมาชิก
                     </Menu.Item>
                   </>

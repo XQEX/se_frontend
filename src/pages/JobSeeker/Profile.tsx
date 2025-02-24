@@ -1,11 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Navbar } from "../../components/Navbar";
 import { motion } from "framer-motion";
 import { useUser } from "../../context/UserContext";
 import { Link } from "react-router-dom";
 
 function Profile() {
-  const { user, isLoading, isLoggedIn } = useUser();
+  const {
+    user,
+    isLoading,
+    refetchjobseeker,
+    refetchemployer,
+    refetchCompany,
+    isStale,
+    setUser,
+  } = useUser();
+  const [isHaveUser, setIsHaveUser] = useState(false);
+  useEffect(() => {
+    refetchjobseeker();
+    refetchCompany();
+    refetchemployer();
+    // console.log("current user:", user);
+    // console.log("isLoading:", isLoading);
+    // console.log("isHaveUser :", isHaveUser);
+    // console.log("isStale :", isStale);
+    setIsHaveUser(!!user);
+  }, [user, isLoading, isStale]);
   // Track which tab is active; default is "work"
   const [activeTab, setActiveTab] = React.useState("work");
 
@@ -24,7 +43,16 @@ function Profile() {
 
   return (
     <div>
-      <Navbar />
+      <Navbar
+        user={user}
+        isLoading={isLoading}
+        isHaveUser={isHaveUser}
+        refetchjobseeker={refetchjobseeker}
+        refetchemployer={refetchemployer}
+        refetchCompany={refetchCompany}
+        isStale={isStale}
+        setUser={setUser}
+      />
 
       <header className="bg-gradient-to-r from-seagreen to-green-400 h-40 w-full relative"></header>
       <motion.div
@@ -42,7 +70,6 @@ function Profile() {
                 className="object-cover w-full h-full"
               />
             </div>
-
 
             <div className="mt-4 md:mt-0 md:ml-6 flex-1">
               <div className="flex items-center">
@@ -65,7 +92,6 @@ function Profile() {
             </div> */}
             </div>
 
-              
             <div className="mt-6 md:mt-0 md:ml-auto grid grid-cols-3 gap-6 text-center">
               <div>
                 <p className="text-lg font-semibold">2,985</p>
@@ -84,20 +110,20 @@ function Profile() {
 
           {/* Add Quick Action Buttons */}
           <div className="bg-white rounded-lg shadow-md p-4 mt-4 flex justify-center space-x-4">
-            <Link 
-              to="/my-posts" 
+            <Link
+              to="/my-posts"
               className="flex-1 bg-seagreen/80 text-white px-4 py-3 rounded-lg hover:bg-seagreen transition text-center font-medium"
             >
               โพสต์งานของฉัน
             </Link>
-            <Link 
-              to="/find" 
+            <Link
+              to="/find"
               className="flex-1 bg-seagreen/80 text-white px-4 py-3 rounded-lg hover:bg-seagreen transition text-center font-medium"
             >
               ค้นหางาน
             </Link>
-            <Link 
-              to="/trackjobseeker" 
+            <Link
+              to="/trackjobseeker"
               className="flex-1 bg-seagreen/80 text-white px-4 py-3 rounded-lg hover:bg-seagreen transition text-center font-medium"
             >
               ติดตามงาน

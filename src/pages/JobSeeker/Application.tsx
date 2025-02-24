@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "@mantine/form";
 import {
@@ -13,6 +13,7 @@ import {
 } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { Navbar } from "../../components/Navbar";
+import { useUser } from "../../context/UserContext";
 
 const ApplicationForm = () => {
   const navigate = useNavigate();
@@ -27,6 +28,26 @@ const ApplicationForm = () => {
 
   const [submittedData, setSubmittedData] = useState<FormData | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const {
+    user,
+    isLoading,
+    refetchjobseeker,
+    refetchemployer,
+    refetchCompany,
+    isStale,
+    setUser,
+  } = useUser();
+  const [isHaveUser, setIsHaveUser] = useState(false);
+  useEffect(() => {
+    refetchjobseeker();
+    refetchCompany();
+    refetchemployer();
+    // console.log("current user:", user);
+    // console.log("isLoading:", isLoading);
+    // console.log("isHaveUser :", isHaveUser);
+    // console.log("isStale :", isStale);
+    setIsHaveUser(!!user);
+  }, [user, isLoading, isStale]);
 
   const form = useForm({
     initialValues: {
@@ -74,7 +95,16 @@ const ApplicationForm = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 ">
-      <Navbar />
+      <Navbar
+        user={user}
+        isLoading={isLoading}
+        isHaveUser={isHaveUser}
+        refetchjobseeker={refetchjobseeker}
+        refetchemployer={refetchemployer}
+        refetchCompany={refetchCompany}
+        isStale={isStale}
+        setUser={setUser}
+      />
       <Container size="sm" className="mt-8">
         <Paper shadow="md" radius="md" p="xl" className="bg-white kanit-light">
           <Title order={2} className="text-gray-800 mb-6 text-center pb-8">

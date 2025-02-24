@@ -16,6 +16,7 @@ import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import { showNotification } from "@mantine/notifications";
 import { Navbar } from "../../components/Navbar";
 import { fetchAllVulnerabilities } from "../../api/Vulnerability";
+import { useUser } from "../../context/UserContext";
 
 const JobPositionForm = () => {
   const [submittedData, setSubmittedData] = useState<any | null>(null);
@@ -30,6 +31,26 @@ const JobPositionForm = () => {
     id: string;
     name: string;
   }
+  const {
+    user,
+    isLoading,
+    refetchjobseeker,
+    refetchemployer,
+    refetchCompany,
+    isStale,
+    setUser,
+  } = useUser();
+  const [isHaveUser, setIsHaveUser] = useState(false);
+  useEffect(() => {
+    refetchjobseeker();
+    refetchCompany();
+    refetchemployer();
+    // console.log("current user:", user);
+    // console.log("isLoading:", isLoading);
+    // console.log("isHaveUser :", isHaveUser);
+    // console.log("isStale :", isStale);
+    setIsHaveUser(!!user);
+  }, [user, isLoading, isStale]);
 
   useEffect(() => {
     const fetchVulnerabilities = async () => {
@@ -110,7 +131,16 @@ const JobPositionForm = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
+      <Navbar
+        user={user}
+        isLoading={isLoading}
+        isHaveUser={isHaveUser}
+        refetchjobseeker={refetchjobseeker}
+        refetchemployer={refetchemployer}
+        refetchCompany={refetchCompany}
+        isStale={isStale}
+        setUser={setUser}
+      />
       <Container size="sm" className="mt-8">
         <Paper shadow="md" radius="md" p="xl" className="bg-white">
           <Title
