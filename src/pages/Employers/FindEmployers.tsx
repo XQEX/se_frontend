@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { NavbarEmp } from "../../components/NavbarEmp";
@@ -166,10 +167,10 @@ const sortJobs = (jobs: Job[]): Job[] => {
         return filters.sortOrder === 'asc' 
           ? a.expectedSalary - b.expectedSalary 
           : b.expectedSalary - a.expectedSalary;
-      case 'date':
-        const dateA = new Date(a.createdAt).getTime();
-        const dateB = new Date(b.createdAt).getTime();
-        return filters.sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+      // case 'date':
+      //   const dateA = new Date(a.createdAt).getTime();
+      //   const dateB = new Date(b.createdAt).getTime();
+      //   return filters.sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
       default:
         return 0;
     }
@@ -182,6 +183,7 @@ const sortJobs = (jobs: Job[]): Job[] => {
   const currentJobs = filteredJobs.slice(indexOfFirstJob, indexOfLastJob);
 
   return (
+    
     <div className="min-h-screen flex flex-col font-kanit">
       <NavbarEmp
         user={user}
@@ -216,7 +218,7 @@ const sortJobs = (jobs: Job[]): Job[] => {
                     title={job.title}
                     location={job.jobLocation}
                     salary={job.expectedSalary}
-                    workDays={job.workDates}
+           workDays={job.workDates}         
                     workHours={job.workHoursRange}
                     jobCategories={job.jobCategories}
                   />

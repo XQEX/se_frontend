@@ -13,14 +13,15 @@ import {
 } from "@mantine/core";
 import { provinces } from "../data/provinces";
 
-const jobTypes = ["Full Time", "Part Time", "Freelance"];
-const workDays = [
-  "จันทร์-ศุกร์",
-  "จันทร์-เสาร์",
-  "จันทร์-อาทิตย์",
-  "เสาร์-อาทิตย์",
-  "อื่นๆ",
-];
+const jobTypes = ["FULLTIME", "PARTTIME", "FREELANCE"];
+
+// const workDays = [
+//   "จันทร์-ศุกร์",
+//   "จันทร์-เสาร์",
+//   "จันทร์-อาทิตย์",
+//   "เสาร์-อาทิตย์",
+//   "อื่นๆ",
+// ];
 
 const workHours = Array.from({ length: 48 }, (_, i) => ({
   value: `${Math.floor(i / 2)}:${i % 2 === 0 ? "00" : "30"}`,
@@ -117,7 +118,7 @@ function Sidebar({ filters, setFilters }: SidebarProps) {
       <Stack>
         <TextInput
           className="kanit-regular"
-          placeholder="ค้นหาด้วยคำสำคัญ..."
+          placeholder="ค้นหาด้วยคำที่ใกล้เคียง..."
           label="ค้นหา"
           value={filters.searchTerm}
           onChange={(e) =>
@@ -174,7 +175,7 @@ function Sidebar({ filters, setFilters }: SidebarProps) {
           />
         </Group>
 
-        <MultiSelect
+        {/* <MultiSelect
           data={["ทั้งหมด", ...workDays]}
           label="วันทำงาน"
           placeholder="เลือกวันทำงาน"
@@ -183,7 +184,7 @@ function Sidebar({ filters, setFilters }: SidebarProps) {
           clearable
           searchable
           className="kanit-regular"
-        />
+        /> */}
 
         <Divider label="สถานที่ทำงาน" labelPosition="center" my={4} />
 

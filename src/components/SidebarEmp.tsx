@@ -13,14 +13,15 @@ import {
 } from "@mantine/core";
 import { provinces } from "../data/provinces";
 
-const jobTypes = ["Full Time", "Part Time", "Freelance"];
-const workDays = [
-  "จันทร์-ศุกร์",
-  "จันทร์-เสาร์",
-  "จันทร์-อาทิตย์",
-  "เสาร์-อาทิตย์",
-  "อื่นๆ",
-];
+const jobTypes = ["FULLTIME", "PARTTIME", "FREELANCE"];
+
+// const workDays = [
+//   "จันทร์-ศุกร์",
+//   "จันทร์-เสาร์",
+//   "จันทร์-อาทิตย์",
+//   "เสาร์-อาทิตย์",
+//   "อื่นๆ",
+// ];
 
 const workHours = Array.from({ length: 48 }, (_, i) => ({
   value: `${Math.floor(i / 2)}:${i % 2 === 0 ? "00" : "30"}`,
@@ -117,7 +118,7 @@ function SidebarEmp({ filters, setFilters }: SidebarEmpProps) {
       <Stack>
         <TextInput
           className="kanit-regular"
-          placeholder="ค้นหาด้วยคำสำคัญ..."
+          placeholder="ค้นหาด้วยคำที่ใกล้เคียง..."
           label="ค้นหา"
           value={filters.searchTerm}
           onChange={(e) =>
@@ -127,16 +128,23 @@ function SidebarEmp({ filters, setFilters }: SidebarEmpProps) {
 
         <Divider label="ข้อมูลงาน" labelPosition="center" my={4} />
 
-        <MultiSelect
-          data={["ทั้งหมด", ...jobTypes]}
+         <MultiSelect
+          data={jobTypes}
           label="ชนิดงาน"
           placeholder="เลือกประเภทงาน"
-          value={filters.selectedJobTypes}
-          onChange={handleMultiSelectChange("selectedJobTypes")}
+          value={filters.selectedJobTypes.includes("ทั้งหมด") ? [] : filters.selectedJobTypes}
+          onChange={(value) => {
+            if (value.includes("ทั้งหมด")) {
+              handleMultiSelectChange("selectedJobTypes")([]);
+            } else {
+              handleMultiSelectChange("selectedJobTypes")(value);
+            }
+          }}
           clearable
           searchable
           className="kanit-regular"
         />
+
 
         <Box>
           <Text size="sm" className="kanit-regular">
@@ -174,7 +182,7 @@ function SidebarEmp({ filters, setFilters }: SidebarEmpProps) {
           />
         </Group>
 
-        <MultiSelect
+        {/* <MultiSelect
           data={["ทั้งหมด", ...workDays]}
           label="วันทำงาน"
           placeholder="เลือกวันทำงาน"
@@ -183,7 +191,7 @@ function SidebarEmp({ filters, setFilters }: SidebarEmpProps) {
           clearable
           searchable
           className="kanit-regular"
-        />
+        /> */}
 
         <Divider label="สถานที่ทำงาน" labelPosition="center" my={4} />
 
