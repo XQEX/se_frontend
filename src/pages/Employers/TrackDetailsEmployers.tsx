@@ -29,7 +29,7 @@ const TrackEmployersDetails: React.FC = () => {
     <div className="min-h-screen flex flex-col bg-gray-50 font-kanit">
       <NavbarEmp />
 
-      <div className="max-w-2xl mx-auto p-8 bg-white shadow-lg rounded-lg mt-10">
+      <div className="kanit-regular max-w-2xl mx-auto p-8 bg-white shadow-lg rounded-lg mt-10">
         {/* ✅ ปุ่มย้อนกลับ */}
         <button 
           onClick={() => navigate(-1)}
@@ -69,7 +69,7 @@ const TrackEmployersDetails: React.FC = () => {
         {/* ✅ ปุ่มกลับ */}
         <div className="flex justify-center mt-8">
           <button 
-            className="px-8 py-3 bg-seagreen/80 text-white rounded-lg shadow-md hover:bg-seagreen transition text-lg flex items-center gap-2"
+            className="px-8 py-3 bg-seagreen hover:bg-seagreen/90 text-white rounded-lg shadow-md hover:bg-seagreen transition text-lg flex items-center gap-2"
             onClick={() => navigate(-1)}
           >
             <FaArrowLeft /> กลับไปหน้าหลัก
