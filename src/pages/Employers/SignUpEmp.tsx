@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 // Import Toastify
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { motion, AnimatePresence } from "framer-motion";
 
 function SignUpEmp() {
   const navigate = useNavigate();
@@ -158,7 +159,7 @@ function SignUpEmp() {
         }`}
       >
         {/* Title */}
-        <h1 className="kanit-bold text-xl text-center mb-6">
+        <h1 className="kanit-bold text-xl text-center mb-6 mt-6">
           {userType === "employer"
             ? "สมัครสมาชิก (นายจ้าง)"
             : "สมัครสมาชิก (บริษัท)"}
@@ -166,30 +167,36 @@ function SignUpEmp() {
 
         {/* Toggle Buttons */}
         <div className="flex space-x-4 mb-8">
-          <button
+            <motion.button
             onClick={() => setUserType("employer")}
-            className={`px-4 py-2 rounded-lg kanit-semibold ${
+            className={`w-32 px-4 py-2 rounded-lg transition-colors duration-300 kanit-semibold ${
               userType === "employer"
-                ? "bg-seagreen text-white"
-                : "bg-gray-200 text-black"
+              ? "bg-seagreen text-white"
+              : "bg-gray-200 text-black"
             }`}
-          >
+
+            whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
             นายจ้าง
-          </button>
-          <button
+            </motion.button>
+            <motion.button
             onClick={() => setUserType("company")}
-            className={`px-4 py-2 rounded-lg kanit-semibold ${
+            className={`w-32 px-4 py-2 rounded-lg transition-colors duration-300 kanit-semibold ${
               userType === "company"
-                ? "bg-seagreen text-white"
-                : "bg-gray-200 text-black"
+              ? "bg-seagreen text-white"
+              : "bg-gray-200 text-black"
             }`}
-          >
+
+            whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
             บริษัท
-          </button>
+            </motion.button>
         </div>
 
         {/* Form Section */}
-        <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-6">
+        <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-2">
           {/* Name Input */}
           <div className="flex flex-col">
             <label className="text-black text-sm mb-2 kanit-light">
@@ -245,17 +252,24 @@ function SignUpEmp() {
           </div>
 
           {/* Example Checkbox */}
-          <div className="flex flex-row items-center">
-            <input
-              type="checkbox"
-              id="agree"
-              checked={isChecked}
-              onChange={(e) => setIsChecked(e.target.checked)}
-            />
-            <label htmlFor="agree" className="text-black kanit-light text-sm">
-              ฉันยอมรับเงื่อนไขในการใช้บริการ
-            </label>
-          </div>
+         <div className="flex flex-row items-center gap-2 text-left">
+                     <input
+                       type="checkbox"
+                       id="agree"
+                       checked={isChecked}
+                       onChange={(e) => setIsChecked(e.target.checked)}
+                     />
+                     <label htmlFor="agree" className="text-black kanit-light text-sm">
+                       ฉันยอมรับ
+                       <Link
+                         to="/terms"
+                         className="text-blue-500 hover:text-blue-400 text-bold"
+                       >
+                         {" "}
+                         เงื่อนไขในการใช้บริการ
+                       </Link>
+                     </label>
+                   </div>
 
           {/* Sign Up Button */}
           <div className="flex justify-center">

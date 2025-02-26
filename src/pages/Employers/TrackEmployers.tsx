@@ -39,7 +39,7 @@ const TrackEmployers: React.FC = () => {
       {/* Navbar */}
       <NavbarEmp />
 
-      <div className="max-w-5xl mx-auto mt-8 p-6 bg-white shadow-lg rounded-lg relative">
+      <div className="kanit-regular max-w-5xl mx-auto mt-8 p-6 bg-white shadow-lg rounded-lg relative">
         {/* 🔙 ปุ่มย้อนกลับ */}
         <button
           onClick={() => navigate(-1)}

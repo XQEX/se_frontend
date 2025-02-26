@@ -130,7 +130,7 @@ const HomepageEmployers: React.FC = () => {
     <div className="min-h-screen bg-white">
       <NavbarEmp />
 
-      <div className="max-w-5xl xl:max-w-6xl mx-auto px-12 sm:px-16 lg:px-24 py-12 grid grid-cols-1 lg:grid-cols-3 gap-10">
+      <div className="kanit-regular max-w-5xl xl:max-w-6xl mx-auto px-12 sm:px-16 lg:px-24 py-12 grid grid-cols-1 lg:grid-cols-3 gap-10">
         {/* Left Sidebar (Quick Actions) */}
         <div className="bg-[#f9f9f9] p-6 rounded-xl shadow-lg border border-gray-300 lg:col-span-1">
           <h2 className="text-lg font-semibold text-gray-700 mb-5 text-center">
