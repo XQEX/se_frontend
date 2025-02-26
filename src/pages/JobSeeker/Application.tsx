@@ -54,34 +54,30 @@ const ApplicationForm = () => {
   });
 
   const handleSubmit = (values: FormData) => {
-    console.log("Form Submitted:", values); // Log ข้อมูลที่กรอกในฟอร์ม
-    // ตั้งค่า submittedData
+    console.log("Form Submitted:", values);
     setSubmittedData(values);
-    console.log("Submitted Data Set:", values); // Log หลังจากที่ state ถูกอัปเดต
-    // เปิด Modal
     setModalOpen(true);
   };
 
   const handleConfirm = () => {
-    setModalOpen(false); // ปิด Modal
+    setModalOpen(false);
     showNotification({
       title: "สำเร็จ",
       message: "ข้อมูลถูกบันทึกเรียบร้อย",
       color: "teal",
     });
-    navigate("/application/JobPosition"); // เปลี่ยนเส้นทางไปยังหน้าถัดไป
+    navigate("/application/JobPosition");
   };
-
   return (
-    <div className="min-h-screen bg-gray-100 ">
+    <div className="min-h-screen bg-gray-100">
       <Navbar />
-      <Container size="sm" className="mt-8">
+      <Container className="mx-auto max-w-md mt-8">
         <Paper shadow="md" radius="md" p="xl" className="bg-white kanit-light">
-          <Title order={2} className="text-gray-800 mb-6 text-center pb-8">
+          <div className="text-gray-800 mb-6 text-center pb-8 kanit-bold text-2xl">
             กรอกประวัติ
-          </Title>
+          </div>
           <form onSubmit={form.onSubmit(handleSubmit)}>
-            <Stack gap="md">
+            <Stack >
               <div className="flex flex-row justify-between gap-4">
                 <TextInput
                   label="ชื่อ-นามสกุล"
@@ -139,7 +135,6 @@ const ApplicationForm = () => {
         </Paper>
       </Container>
 
-      {/* Modal for Submitted Data */}
       <Modal
         opened={modalOpen}
         onClose={() => setModalOpen(false)}
