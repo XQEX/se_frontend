@@ -26,6 +26,7 @@
     "@mantine/nprogress": "^7.14.3",
     "@mantine/spotlight": "^7.14.3",
     "@mantine/tiptap": "^7.14.3",
+    "@tabler/icons-react": "^3.30.0",
     "@tiptap/extension-link": "^2.10.3",
     "@tiptap/pm": "^2.10.3",
     "@tiptap/react": "^2.10.3",
@@ -50,6 +51,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.15.0",
+    "@types/node": "^22.13.5",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.4",
