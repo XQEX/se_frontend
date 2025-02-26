@@ -9,6 +9,8 @@ import { createJobPostEmp } from "../../api/Employer";
 import { createJobPostCom } from "../../api/Company";
 import { MultiSelect } from "@mantine/core";
 import { provinces } from "../../data/provinces";
+import { getAllSkills } from "../../api/skills";
+import { getAllCategories } from "../../api/JobCategories";
 
 const PostJobEmp: React.FC = () => {
   const {
@@ -25,12 +27,27 @@ const PostJobEmp: React.FC = () => {
     refetchjobseeker();
     refetchCompany();
     refetchemployer();
-    // console.log("current user:", user);
-    // console.log("isLoading:", isLoading);
-    // console.log("isHaveUser :", isHaveUser);
-    // console.log("isStale :", isStale);
     setIsHaveUser(!!user);
   }, [user, isLoading, isStale]);
+
+  useEffect(() => {
+    const fetchSkillsAndCategories = async () => {
+      if (!user) {
+        console.error("User is not authenticated");
+        return;
+      }
+      try {
+        const skillsData = await getAllSkills();
+        const categoriesData = await getAllCategories();
+        setSkills(skillsData.data);
+        setJobCategories(categoriesData.data);
+      } catch (error) {
+        console.error("Failed to fetch skills or categories:", error);
+      }
+    };
+
+    fetchSkillsAndCategories();
+  }, [user]);
 
   const navigate = useNavigate();
   const [jobTitle, setJobTitle] = useState("");
@@ -46,6 +63,8 @@ const PostJobEmp: React.FC = () => {
     "FULLTIME" | "PARTTIME" | "FREELANCE"
   >("FULLTIME");
   const [loading, setLoading] = useState(false);
+  const [skills, setSkills] = useState<any[]>([]);
+  const [jobCategories, setJobCategories] = useState<any[]>([]);
 
   const workDayOptions = [
     "จันทร์ - ศุกร์",
@@ -190,15 +209,7 @@ const PostJobEmp: React.FC = () => {
               step: "1000",
             },
           ].map(
-            ({
-              label,
-              value,
-              setValue,
-              placeholder,
-              type = "text",
-              step,
-              
-            }) => (
+            ({ label, value, setValue, placeholder, type = "text", step }) => (
               <div key={label} className="flex flex-col w-4/5 mx-auto">
                 <label className="font-kanit text-gray-700">{label}</label>
                 <input
@@ -227,13 +238,14 @@ const PostJobEmp: React.FC = () => {
           </div>
 
           <div className="flex flex-col w-4/5 mx-auto">
-            <label className="font-kanit text-gray-700">จำนวนที่เปิดรับสมัคร</label>
+            <label className="font-kanit text-gray-700">
+              จำนวนที่เปิดรับสมัคร
+            </label>
             <input
               type="number"
               placeholder="..."
               className="border border-gray-300 p-2 rounded-md text-sm"
             />
-
           </div>
 
           <div className="flex flex-col w-4/5 mx-auto">
@@ -325,6 +337,28 @@ const PostJobEmp: React.FC = () => {
               />
             </div>
           ))}
+
+          <div className="flex flex-col w-4/5 mx-auto">
+            <label className="font-kanit text-gray-700">ทักษะที่ต้องการ</label>
+            <MultiSelect
+              placeholder="เลือกทักษะ"
+              data={skills.map((skill) => ({
+                value: skill.id,
+                label: skill.name,
+              }))}
+            />
+          </div>
+
+          <div className="flex flex-col w-4/5 mx-auto">
+            <label className="font-kanit text-gray-700">หมวดหมู่งาน</label>
+            <MultiSelect
+              placeholder="เลือกหมวดหมู่งาน"
+              data={jobCategories.map((category) => ({
+                value: category.id,
+                label: category.name,
+              }))}
+            />
+          </div>
 
           {/* ปุ่มโพสต์งาน */}
           <div className="flex justify-center mt-4">

@@ -4,6 +4,8 @@ import { NavbarEmp } from "../../components/NavbarEmp";
 import Footer from "../../components/Footer";
 import { updateJobPostById } from "../../api/EmployerAndCompany";
 import { useUser } from "../../context/UserContext";
+import { MultiSelect } from "@mantine/core";
+import { provinces } from "../../data/provinces";
 
 interface Job {
   id: number;
@@ -59,12 +61,22 @@ const ViewPostEmployers: React.FC = () => {
     editedJob?.workHoursRange.split("-")[1].trim().padStart(5, "0")
   );
 
+  const workDayOptions = [
+    "จันทร์ - ศุกร์",
+    "จันทร์ - เสาร์",
+    "จันทร์ - อาทิตย์",
+    "เสาร์ - อาทิตย์",
+    "อื่นๆ",
+  ];
+
   const handleEditClick = () => {
     setIsEditing(true);
   };
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const { name, value } = e.target;
     setEditedJob((prevJob) => {
@@ -72,6 +84,16 @@ const ViewPostEmployers: React.FC = () => {
       return {
         ...prevJob,
         [name]: name === "salary" && value === "" ? "" : value,
+      };
+    });
+  };
+
+  const handleLocationChange = (value: string[]) => {
+    setEditedJob((prevJob) => {
+      if (!prevJob) return undefined;
+      return {
+        ...prevJob,
+        jobLocation: value.join(", "),
       };
     });
   };
@@ -160,12 +182,14 @@ const ViewPostEmployers: React.FC = () => {
             <p className="text-gray-700 text-base">
               <strong>📍 สถานที่:</strong>{" "}
               {isEditing ? (
-                <input
-                  type="text"
-                  name="jobLocation"
-                  value={editedJob?.jobLocation}
-                  onChange={handleInputChange}
-                  className="w-full p-2 border rounded-md"
+                <MultiSelect
+                  placeholder="เลือกจังหวัด"
+                  data={provinces}
+                  value={editedJob?.jobLocation.split(", ") || []}
+                  onChange={handleLocationChange}
+                  clearable
+                  searchable
+                  className="font-kanit"
                 />
               ) : (
                 job.jobLocation
@@ -189,13 +213,18 @@ const ViewPostEmployers: React.FC = () => {
             <p className="text-gray-700 text-base">
               <strong>📅 วันทำงาน:</strong>{" "}
               {isEditing ? (
-                <input
-                  type="text"
+                <select
                   name="workDates"
                   value={editedJob?.workDates}
                   onChange={handleInputChange}
                   className="w-full p-2 border rounded-md"
-                />
+                >
+                  {workDayOptions.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
               ) : (
                 job.workDates
               )}
