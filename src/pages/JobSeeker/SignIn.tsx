@@ -263,7 +263,7 @@ function SignIn() {
       </div>
       {/* Spinner Overlay */}
       {isSubmitting && (
-        <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 flex flex-col items-center justify-center z-50">
+        <div className="gap-2 absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 flex flex-col items-center justify-center z-50">
           {/* Simple spinner */}
           <label className="text-white  kanit-semibold">กำลังเข้าสู่ระบบ</label>
           <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
