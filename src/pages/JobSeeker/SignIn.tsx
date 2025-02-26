@@ -105,11 +105,11 @@ function SignIn() {
                 userType === "jobseeker"
                   ? "bg-seagreen text-white"
                   : "bg-white text-seagreen"
-              } kanit-semibold py-2 px-4 rounded-lg border border-seagreen transition-colors duration-300`}
+              } kanit-semibold py-2 px-4 rounded-lg border border-seagreen transition-colors duration-300 w-32`}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              Job Seeker
+              ผู้หางาน
             </motion.button>
             <motion.button
               onClick={() => setUserType("employer")}
@@ -117,11 +117,11 @@ function SignIn() {
                 userType === "employer"
                   ? "bg-seagreen text-white"
                   : "bg-white text-seagreen"
-              } kanit-semibold py-2 px-4 rounded-lg border border-seagreen transition-colors duration-300`}
+              } kanit-semibold py-2 px-4 rounded-lg border border-seagreen transition-colors duration-300 w-32`}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              Employer
+              ผู้จ้างงาน
             </motion.button>
             <motion.button
               onClick={() => setUserType("company")}
@@ -129,11 +129,11 @@ function SignIn() {
                 userType === "company"
                   ? "bg-seagreen text-white"
                   : "bg-white text-seagreen"
-              } kanit-semibold py-2 px-4 rounded-lg border border-seagreen transition-colors duration-300`}
+              } kanit-semibold py-2 px-4 rounded-lg border border-seagreen transition-colors duration-300 w-32`}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              Company
+              บริษัท
             </motion.button>
           </div>
 
@@ -159,9 +159,18 @@ function SignIn() {
 
           {/* Password Input */}
           <div className="flex flex-col">
-            <label className="text-black text-sm mb-2 kanit-light">
+            <div className="flex flex-row justify-between items-center">
+            <label className="text-black text-sm mb-2 kanit-light flex items-center">
               รหัสผ่าน
+              <Link
+              to="/forgot-password"
+              className="text-seagreen kanit-semibold underline ml-2"
+              >
+              ลืมรหัสผ่าน?
+              </Link>
             </label>
+            </div>
+            
             <input
               type="password"
               value={password}
@@ -169,6 +178,7 @@ function SignIn() {
               onChange={(e) => setPassword(e.target.value)}
               className="text-black placeholder-kanit rounded-lg border border-gray-300 p-3"
             />
+            
           </div>
 
           {/* Login Button */}
@@ -237,36 +247,6 @@ function SignIn() {
                 </g>
               </svg>
               <span className="kanit-regular">เข้าสู่ระบบด้วย Google</span>
-            </button>
-            <button className="w-60 flex items-center bg-white border border-gray-300 rounded-lg shadow-md max-w-xs px-6 py-2 text-sm font-medium text-gray-800 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-              <svg
-                className="h-6 w-6 mr-2"
-                xmlns="http://www.w3.org/2000/svg"
-                xmlnsXlink="http://www.w3.org/1999/xlink"
-                viewBox="0 0 48 48"
-                version="1.1"
-              >
-                <g
-                  id="Icons"
-                  stroke="none"
-                  stroke-width="1"
-                  fill="none"
-                  fill-rule="evenodd"
-                >
-                  <g
-                    id="Color-"
-                    transform="translate(-200.000000, -160.000000)"
-                    fill="#4460A0"
-                  >
-                    <path
-                      d="M225.638355,208 L202.649232,208 C201.185673,208 200,206.813592 200,205.350603 L200,162.649211 C200,161.18585 201.185859,160 202.649232,160 L245.350955,160 C246.813955,160 248,161.18585 248,162.649211 L248,205.350603 C248,206.813778 246.813769,208 245.350955,208 L233.119305,208 L233.119305,189.411755 L239.358521,189.411755 L240.292755,182.167586 L233.119305,182.167586 L233.119305,177.542641 C233.119305,175.445287 233.701712,174.01601 236.70929,174.01601 L240.545311,174.014333 L240.545311,167.535091 C239.881886,167.446808 237.604784,167.24957 234.955552,167.24957 C229.424834,167.24957 225.638355,170.625526 225.638355,176.825209 L225.638355,182.167586 L219.383122,182.167586 L219.383122,189.411755 L225.638355,189.411755 L225.638355,208 L225.638355,208 Z"
-                      id="Facebook"
-                    ></path>
-                  </g>
-                </g>
-              </svg>
-
-              <span className="kanit-regular">เข้าสู่ระบบด้วย Facebook</span>
             </button>
           </div>
         </div>
