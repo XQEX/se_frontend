@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 import { Navbar } from "../../components/Navbar"
+import { NavbarEmp } from "../../components/NavbarEmp"
 import Lottie from "lottie-react"
 import Animation from "../../Animation/Job.json"
 import { gsap } from "gsap"
@@ -84,7 +85,8 @@ function Home() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-green-50 to-white">
-      <Navbar
+      {user?.type== "JOBSEEKER" ||user?.type== null?
+      (<Navbar
         user={user}
         isLoading={isLoading}
         isHaveUser={isHaveUser}
@@ -93,7 +95,17 @@ function Home() {
         refetchCompany={refetchCompany}
         isStale={isStale}
         setUser={setUser}
-      />
+      />):
+      (<NavbarEmp
+        user={user}
+        isLoading={isLoading}
+        isHaveUser={isHaveUser}
+        refetchjobseeker={refetchjobseeker}
+        refetchemployer={refetchemployer}
+        refetchCompany={refetchCompany}
+        isStale={isStale}
+        setUser={setUser}
+      />)}
       <div className="kanit-regular flex-grow flex flex-col md:flex-row justify-center items-center p-6 md:p-16 gap-8 md:gap-16 ">
         <div className="flex flex-col items-center md:items-start text-center md:text-left max-w-2xl">
           <h1 ref={headingRef} className="text-5xl md:text-7xl font-bold mb-6 text-green-700 leading-tight">
