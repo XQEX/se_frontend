@@ -14,7 +14,7 @@ import {
   createSkill,
   updateSkill,
   deleteSkill,
-} from "../api/skills";
+} from "../api/Skills";
 import {
   getAllCategories,
   createCategory,
