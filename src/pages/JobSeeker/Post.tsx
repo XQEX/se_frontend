@@ -6,6 +6,8 @@ import { createJobFindingPost } from "../../api/JobSeeker";
 import { provinces } from "../../data/provinces";
 import { MultiSelect } from "@mantine/core";
 import { useUser } from "../../context/UserContext";
+import { getAllSkills } from "../../api/Skills";
+import { getAllCategories } from "../../api/JobCategories";
 
 const PostJob: React.FC = () => {
   const navigate = useNavigate();
@@ -22,6 +24,34 @@ const PostJob: React.FC = () => {
   const [jobPostType, setJobPostType] = useState<
     "FULLTIME" | "PARTTIME" | "FREELANCE"
   >("FULLTIME");
+
+  const [skills, setSkills] = useState<any[]>([]);
+  const [jobCategories, setJobCategories] = useState<any[]>([]);
+  const [selectedSkills, setSelectedSkills] = useState<any[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchSkillsAndCategories = async () => {
+      if (!user) {
+        console.error("User is not authenticated");
+        return;
+      }
+      try {
+        const categoriesData = await getAllCategories();
+        const skillsData = await getAllSkills();
+
+        setSkills(skillsData.data);
+        console.log("skillsData:", skillsData.data);
+        setJobCategories(categoriesData.data);
+        console.log("categoriesData:", categoriesData.data);
+      } catch (error) {
+        console.error("Failed to fetch skills or categories:", error);
+      }
+    };
+
+    fetchSkillsAndCategories();
+  }, []);
+
   const {
     user,
     isLoading,
@@ -99,8 +129,8 @@ const PostJob: React.FC = () => {
       workHoursRange: `${startTime} - ${endTime}`,
       jobPostType: jobPostType,
       jobSeekerType: "NORMAL",
-      skills: ["539e6449-e6d0-496f-8857-92117048f33f"],
-      jobCategories: ["f8a8802e-f7d9-4e2f-be3c-58dd5d225121"],
+      skills: selectedSkills,
+      jobCategories: selectedCategories,
     };
 
     try {
@@ -261,6 +291,32 @@ const PostJob: React.FC = () => {
                 ))}
               </select>
             </div>
+          </div>
+
+          <div className="flex flex-col w-4/5 mx-auto">
+            <label className="font-kanit text-gray-700">ทักษะที่ต้องการ</label>
+            <MultiSelect
+              placeholder="เลือกทักษะ"
+              data={skills.map((skill) => ({
+                value: skill.id,
+                label: skill.name,
+              }))}
+              value={selectedSkills}
+              onChange={setSelectedSkills}
+            />
+          </div>
+
+          <div className="flex flex-col w-4/5 mx-auto">
+            <label className="font-kanit text-gray-700">หมวดหมู่งาน</label>
+            <MultiSelect
+              placeholder="เลือกหมวดหมู่งาน"
+              data={jobCategories.map((category) => ({
+                value: category.id,
+                label: category.name,
+              }))}
+              value={selectedCategories}
+              onChange={setSelectedCategories}
+            />
           </div>
 
           {[

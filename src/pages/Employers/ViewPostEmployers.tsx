@@ -4,6 +4,10 @@ import { NavbarEmp } from "../../components/NavbarEmp";
 import Footer from "../../components/Footer";
 import { updateJobPostById } from "../../api/EmployerAndCompany";
 import { useUser } from "../../context/UserContext";
+import { MultiSelect } from "@mantine/core";
+import { provinces } from "../../data/provinces";
+import { getAllSkills } from "../../api/Skills";
+import { getAllCategories } from "../../api/JobCategories";
 
 interface Job {
   id: number;
@@ -15,6 +19,8 @@ interface Job {
   description: string;
   requirements: string;
   postedAt: string;
+  skills: { id: string; name: string; description: string }[];
+  jobCategories: { id: string; name: string; description: string }[];
 }
 
 const ViewPostEmployers: React.FC = () => {
@@ -28,17 +34,37 @@ const ViewPostEmployers: React.FC = () => {
     setUser,
   } = useUser();
   const [isHaveUser, setIsHaveUser] = useState(false);
+  const [skills, setSkills] = useState<any[]>([]);
+  const [jobCategories, setJobCategories] = useState<any[]>([]);
+
   useEffect(() => {
     refetchjobseeker();
     refetchCompany();
     refetchemployer();
-    // console.log("current user:", user);
-    // console.log("isLoading:", isLoading);
-    // console.log("isHaveUser :", isHaveUser);
-    // console.log("isStale :", isStale);
     setIsHaveUser(!!user);
-    console.log(editedJob?.workHoursRange.split("-")[0]);
+    console.log(job);
   }, [user, isLoading, isStale]);
+
+  useEffect(() => {
+    const fetchSkillsAndCategories = async () => {
+      if (!user) {
+        console.error("User is not authenticated");
+        return;
+      }
+      try {
+        const categoriesData = await getAllCategories();
+        const skillsData = await getAllSkills();
+
+        setSkills(skillsData.data);
+        setJobCategories(categoriesData.data);
+      } catch (error) {
+        console.error("Failed to fetch skills or categories:", error);
+      }
+    };
+
+    fetchSkillsAndCategories();
+  }, []);
+
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const location = useLocation();
@@ -59,12 +85,22 @@ const ViewPostEmployers: React.FC = () => {
     editedJob?.workHoursRange.split("-")[1].trim().padStart(5, "0")
   );
 
+  const workDayOptions = [
+    "จันทร์ - ศุกร์",
+    "จันทร์ - เสาร์",
+    "จันทร์ - อาทิตย์",
+    "เสาร์ - อาทิตย์",
+    "อื่นๆ",
+  ];
+
   const handleEditClick = () => {
     setIsEditing(true);
   };
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const { name, value } = e.target;
     setEditedJob((prevJob) => {
@@ -76,10 +112,44 @@ const ViewPostEmployers: React.FC = () => {
     });
   };
 
+  const handleLocationChange = (value: string[]) => {
+    setEditedJob((prevJob) => {
+      if (!prevJob) return undefined;
+      return {
+        ...prevJob,
+        jobLocation: value.join(", "),
+      };
+    });
+  };
+
+  const handleSkillsChange = (value: string[]) => {
+    const selectedSkills = skills.filter((skill) => value.includes(skill.id));
+    setEditedJob((prevJob) => {
+      if (!prevJob) return undefined;
+      return {
+        ...prevJob,
+        skills: selectedSkills,
+      };
+    });
+  };
+
+  const handleCategoriesChange = (value: string[]) => {
+    const selectedCategories = jobCategories.filter((cat) =>
+      value.includes(cat.id)
+    );
+    setEditedJob((prevJob) => {
+      if (!prevJob) return undefined;
+      return {
+        ...prevJob,
+        jobCategories: selectedCategories,
+      };
+    });
+  };
+
   const handleConfirmClick = async () => {
     if (editedJob) {
       try {
-        await updateJobPostById(id, {
+        await updateJobPostById(id as any, {
           title: editedJob.title,
           description: editedJob.description,
           jobLocation: editedJob.jobLocation,
@@ -88,8 +158,8 @@ const ViewPostEmployers: React.FC = () => {
           workHoursRange: `${startTime} - ${endTime}`,
           hiredAmount: 1, // Assuming a default value
           jobPostType: "FULLTIME", // Assuming a default value
-          skills: [], // Assuming a default value
-          jobCategories: [], // Assuming a default value
+          skills: editedJob.skills.map((skill) => skill.id),
+          jobCategories: editedJob.jobCategories.map((cat) => cat.id),
         });
         setIsEditing(false);
         navigate("/homeemp");
@@ -160,12 +230,14 @@ const ViewPostEmployers: React.FC = () => {
             <p className="text-gray-700 text-base">
               <strong>📍 สถานที่:</strong>{" "}
               {isEditing ? (
-                <input
-                  type="text"
-                  name="jobLocation"
-                  value={editedJob?.jobLocation}
-                  onChange={handleInputChange}
-                  className="w-full p-2 border rounded-md"
+                <MultiSelect
+                  placeholder="เลือกจังหวัด"
+                  data={provinces}
+                  value={editedJob?.jobLocation.split(", ") || []}
+                  onChange={handleLocationChange}
+                  clearable
+                  searchable
+                  className="font-kanit"
                 />
               ) : (
                 job.jobLocation
@@ -189,13 +261,18 @@ const ViewPostEmployers: React.FC = () => {
             <p className="text-gray-700 text-base">
               <strong>📅 วันทำงาน:</strong>{" "}
               {isEditing ? (
-                <input
-                  type="text"
+                <select
                   name="workDates"
                   value={editedJob?.workDates}
                   onChange={handleInputChange}
                   className="w-full p-2 border rounded-md"
-                />
+                >
+                  {workDayOptions.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
               ) : (
                 job.workDates
               )}
@@ -262,6 +339,38 @@ const ViewPostEmployers: React.FC = () => {
                 />
               ) : (
                 job.requirements
+              )}
+            </p>
+            <p className="text-gray-700 text-base">
+              <strong>✅ ทักษะที่ต้องการ:</strong>{" "}
+              {isEditing ? (
+                <MultiSelect
+                  placeholder="เลือกทักษะ"
+                  data={skills.map((skill) => ({
+                    value: skill.id,
+                    label: skill.name,
+                  }))}
+                  value={editedJob?.skills.map((skill) => skill.id) || []}
+                  onChange={handleSkillsChange}
+                />
+              ) : (
+                job.skills.map((skill) => skill.name).join(", ")
+              )}
+            </p>
+            <p className="text-gray-700 text-base">
+              <strong>📂 หมวดหมู่งาน:</strong>{" "}
+              {isEditing ? (
+                <MultiSelect
+                  placeholder="เลือกหมวดหมู่งาน"
+                  data={jobCategories.map((category) => ({
+                    value: category.id,
+                    label: category.name,
+                  }))}
+                  value={editedJob?.jobCategories.map((cat) => cat.id) || []}
+                  onChange={handleCategoriesChange}
+                />
+              ) : (
+                job.jobCategories.map((cat) => cat.name).join(", ")
               )}
             </p>
             <p className="text-gray-700 text-base">

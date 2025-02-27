@@ -146,7 +146,6 @@ export const getJobPostById = async (
   }
 };
 
-
 export const updateJobPostById = async (
   id: string,
   updateData: JobPostUpdateRequest

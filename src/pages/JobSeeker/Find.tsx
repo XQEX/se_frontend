@@ -98,9 +98,18 @@ function Find() {
     isStale,
     setUser,
   } = useUser();
-  const isHaveUser = useState(false);
+  const [isHaveUser, setIsHaveUser] = useState(false);
   const [opened, setOpened] = useState(false);
-  // const setIsHaveUser = useState(false);
+  useEffect(() => {
+    refetchjobseeker();
+    refetchCompany();
+    refetchemployer();
+    // console.log("current user:", user);
+    // console.log("isLoading:", isLoading);
+    // console.log("isHaveUser :", isHaveUser);
+    // console.log("isStale :", isStale);
+    setIsHaveUser(!!user);
+  }, [user, isLoading, isStale]);
 
   // Fetch Jobs
   useEffect(() => {

@@ -132,6 +132,57 @@ interface JobPostDetailResponse {
   message: string;
 }
 
+interface UserJobFindingPostResponse {
+  success: boolean;
+  status: number;
+  msg: string;
+  data: {
+    jobPosts: {
+      id: string;
+      title: string;
+      description: string;
+      jobLocation: string;
+      expectedSalary: number;
+      workDates: string;
+      workHoursRange: string;
+      status: string;
+      jobPostType: string;
+      jobSeekerType: string;
+      jobSeekerId: string;
+      oauthJobSeekerId: string | null;
+      createdAt: string;
+      updatedAt: string;
+      skills: {
+        id: string;
+        name: string;
+        description: string;
+        createdAt: string;
+        updatedAt: string;
+      }[];
+      jobCategories: {
+        id: string;
+        name: string;
+        description: string;
+      }[];
+    }[];
+    pagination: {
+      currentPage: number;
+      totalPages: number;
+      totalItems: number;
+      itemsPerPage: number;
+    };
+  };
+}
+
+interface UpdateUserProfileRequest {
+  firstName: string;
+  lastName: string;
+  aboutMe: string;
+  address: string;
+  email: string;
+  contact: string;
+}
+
 export const registerJobSeeker = async (
   name: string,
   email: string,
@@ -336,6 +387,86 @@ export const getJobFindingPostById = async (id: string): Promise<any> => {
     return data;
   } catch (error) {
     console.error("Failed to fetch job finding post:", error);
+    throw error;
+  }
+};
+
+export const getUserJobFindingPosts =
+  async (): Promise<UserJobFindingPostResponse> => {
+    try {
+      console.log("Fetching user's job finding posts...");
+      const { data } = await axios.get<UserJobFindingPostResponse>(
+        `http://localhost:${backendPort}/api/post/user/finding-posts`,
+        {
+          withCredentials: true,
+        }
+      );
+      console.log("User's job finding posts fetched successfully:", data);
+      return data;
+    } catch (error) {
+      console.error("Failed to fetch user's job finding posts:", error);
+      throw error;
+    }
+  };
+
+export const updateUserProfile = async (
+  profileData: UpdateUserProfileRequest
+): Promise<void> => {
+  try {
+    console.log("Updating user profile with:", profileData);
+    const { data } = await axios.post<{ data: void }>(
+      `http://localhost:${backendPort}/api/user/job-seeker/auth/edit/full-name`,
+      { firstName: profileData.firstName, lastName: profileData.lastName },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    await axios.post<{ data: void }>(
+      `http://localhost:${backendPort}/api/user/job-seeker/auth/edit/about`,
+      { about: profileData.aboutMe },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    await axios.post<{ data: void }>(
+      `http://localhost:${backendPort}/api/user/job-seeker/auth/edit/address`,
+      { address: profileData.address },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    await axios.post<{ data: void }>(
+      `http://localhost:${backendPort}/api/user/job-seeker/auth/edit/email`,
+      { email: profileData.email },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    await axios.post<{ data: void }>(
+      `http://localhost:${backendPort}/api/user/job-seeker/auth/edit/contact`,
+      { contact: profileData.contact },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    console.log("User profile updated successfully");
+  } catch (error) {
+    console.error("Failed to update user profile:", error);
     throw error;
   }
 };
