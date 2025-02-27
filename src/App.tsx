@@ -37,7 +37,7 @@ function App() {
         <Route path="find" element={<Find />} />
         <Route path="signUp/job-seeker" element={<SignUpJobSeek />} />
         <Route path="signin" element={<SignIn />} />
-        <Route path="profile" element={<Profile />} />
+        <Route path="profile" element={<Profile/>} />
         <Route path="settings" element={<Settings />} />
         <Route path="contactus" element={<ContactUs />} />
         <Route path="application" element={<ApplicationForm />} />

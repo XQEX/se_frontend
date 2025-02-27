@@ -24,26 +24,26 @@ import { MdWorkspacePremium } from "react-icons/md";
 import { getUserJobFindingPosts, updateUserProfile } from "../../api/JobSeeker";
 
 function Profile() {
-  const {
-    user,
-    isLoading,
-    refetchjobseeker,
-    refetchemployer,
-    refetchCompany,
-    isStale,
-    setUser,
-  } = useUser();
-  const [isHaveUser, setIsHaveUser] = useState(false);
-  useEffect(() => {
-    refetchjobseeker();
-    refetchCompany();
-    refetchemployer();
-    // console.log("current user:", user);
-    // console.log("isLoading:", isLoading);
-    // console.log("isHaveUser :", isHaveUser);
-    // console.log("isStale :", isStale);
-    setIsHaveUser(!!user);
-  }, [user, isLoading, isStale]);
+    const {
+       user,
+       isLoading,
+       refetchjobseeker,
+       refetchemployer,
+       refetchCompany,
+       isStale,
+       setUser,
+     } = useUser();
+     const [isHaveUser, setIsHaveUser] = useState(false);
+     useEffect(() => {
+       refetchjobseeker();
+       refetchCompany();
+       refetchemployer();
+       // console.log("current user:", user);
+       // console.log("isLoading:", isLoading);
+       // console.log("isHaveUser :", isHaveUser);
+       // console.log("isStale :", isStale);
+       setIsHaveUser(!!user);
+     }, [user, isLoading, isStale]);
   // Track which tab is active; default is "work"
   const [activeTab, setActiveTab] = React.useState("work");
 
@@ -197,17 +197,17 @@ function Profile() {
                 className="object-cover w-full h-full"
               />
 
-              <div
+              <div 
                 className="absolute top-7 left-[202px] rounded-3xl p-[6px] z-10 cursor-pointer"
                 onClick={profileDropzoneToggle}
               >
                 <div className="absolute text-base rounded-3xl p-[6px] z-10">
                   <span className="absolute left-0 top-0 w-full h-full bg-white rounded-3xl opacity-70"></span>
-                  <RiPencilFill className="opacity-0" />
+                  <RiPencilFill className="opacity-0"/>
                 </div>
 
                 <div className="absolute text-lg rounded-3xl p-[6px] z-30">
-                  <RiPencilFill />
+                  <RiPencilFill/>
                 </div>
               </div>
             </div>
@@ -237,16 +237,16 @@ function Profile() {
             </Modal>
 
             <div className="mt-4 md:mt-0 md:ml-6 md:mr-3 flex-1">
-              <div
-                className={`
+              <div 
+                  className={`
                     flex items-center rounded-lg
                     ${style["jobseeker-name-container"]}
                   `}
-              >
+                >
                 <h1 className="text-xl md:text-2xl font-semibold mr-2 pl-3">
                   {user.firstName} {user.lastName}
                 </h1>
-
+                
                 <p className="text-gray-600 mt-1 text-sm md:text-base">
                   ({user.aboutMe})
                 </p>
@@ -282,7 +282,7 @@ function Profile() {
                   </span>
                   : {user.email}
                 </div>
-
+                
                 <div className="flex items-center text-sm md:text-base mt-2 text-gray-700">
                   <span className="mr-2">
                     <FaPhoneAlt color="#4a5568" />
@@ -324,7 +324,7 @@ function Profile() {
               </div>
 
               <div className="mt-28 w-full flex justify-end">
-                <button
+                <button 
                   className="text-base bg-gray-600 text-white px-3 py-1 rounded-md hover:bg-gray-500 transition"
                   onClick={editProfileToggle}
                 >
@@ -332,9 +332,9 @@ function Profile() {
                 </button>
               </div>
 
-              <Modal
-                opened={editProfileOpened}
-                onClose={editProfileClose}
+              <Modal 
+                opened={editProfileOpened} 
+                onClose={editProfileClose} 
                 title="Edit Profile"
                 styles={{
                   title: {
@@ -386,14 +386,14 @@ function Profile() {
                 />
 
                 <div className="mt-6 w-full flex justify-end">
-                  <button
+                  <button 
                     className="text-base bg-green-600 text-white px-3 py-1 rounded-sm hover:bg-green-500 transition"
                     onClick={onUserConfirmEdit}
                   >
                     Confirm
                   </button>
 
-                  <button
+                  <button 
                     className="text-base bg-gray-500 text-white px-3 py-1 ml-2 rounded-sm hover:bg-gray-400 transition"
                     onClick={editProfileToggle}
                   >
@@ -443,8 +443,8 @@ function Profile() {
 
           {/* Add Quick Action Buttons */}
           <div className="bg-white rounded-lg shadow-md p-4 mt-6 flex justify-center space-x-4">
-            <Link
-              to="/my-posts"
+            <Link 
+              to="/my-posts" 
               className="flex-1 bg-seagreen/80 text-white px-4 py-3 rounded-lg hover:bg-seagreen transition text-center font-medium"
             >
               <div className="flex justify-center items-center">
@@ -454,8 +454,8 @@ function Profile() {
                 โพสต์งานของฉัน
               </div>
             </Link>
-            <Link
-              to="/find"
+            <Link 
+              to="/find" 
               className="flex-1 bg-seagreen/80 text-white px-4 py-3 rounded-lg hover:bg-seagreen transition text-center font-medium"
             >
               <div className="flex justify-center items-center">
@@ -465,8 +465,8 @@ function Profile() {
                 ค้นหางาน
               </div>
             </Link>
-            <Link
-              to="/trackjobseeker"
+            <Link 
+              to="/trackjobseeker" 
               className="flex-1 bg-seagreen/80 text-white px-4 py-3 rounded-lg hover:bg-seagreen transition text-center font-medium"
             >
               <div className="flex justify-center items-center">
