@@ -48,11 +48,11 @@ function ContactUs() {
       />
 
       {/* Content Section */}
-      <Container size="md" className="flex flex-col items-center px-4 py-12">
+      <Container size="md" className="kanit-regular flex flex-col items-center px-4 py-12">
         {/* Header */}
-        <Title className="text-4xl font-bold text-green-600 mb-10 text-center">
+        <div className="text-4xl font-bold text-seagreen mb-10 text-center">
           ติดต่อเรา
-        </Title>
+        </div>
         <div className="mt-10">
           <Text className="text-lg text-gray-600 text-center">
             หากมีคำถาม ข้อสงสัย หรือต้องการติดต่อเรา
@@ -64,13 +64,13 @@ function ContactUs() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center mb-12 mt-10">
           {/* Phone */}
           <div className="flex flex-col items-center">
-            <FaPhoneAlt className="text-green-500 text-4xl mb-2" />
+            <FaPhoneAlt className="text-seagreen text-4xl mb-2" />
             <Text className="text-gray-700 font-semibold">+66 123 456 789</Text>
           </div>
 
           {/* Email */}
           <div className="flex flex-col items-center">
-            <FaEnvelope className="text-green-500 text-4xl mb-2" />
+            <FaEnvelope className="text-seagreen text-4xl mb-2" />
             <Text className="text-gray-700 font-semibold">
               contact@skillbridge.com
             </Text>
@@ -78,7 +78,7 @@ function ContactUs() {
 
           {/* Address */}
           <div className="flex flex-col items-center">
-            <FaMapMarkerAlt className="text-green-500 text-4xl mb-2" />
+            <FaMapMarkerAlt className="text-seagreen text-4xl mb-2" />
             <Text className="text-gray-700 font-semibold">
               123 Main Street, Bangkok
             </Text>
@@ -114,13 +114,13 @@ function ContactUs() {
             minRows={4}
             className="mb-6"
           />
-          <Button
-            fullWidth
-            className="bg-green-500 hover:bg-green-600 text-white text-lg"
+          <button
+           
+            className="w-full rounded-lg p-2 bg-seagreen text-white text-lg"
             type="submit"
           >
             ส่งข้อความ
-          </Button>
+          </button>
         </form>
       </Container>
 

@@ -26,6 +26,7 @@ import UserTypeWizard from "./pages/UserTypeWizard";
 import Admin from "./pages/Admin";
 import ExampleComponent from "./components/ExampleComponent";
 import Terms from "./pages/Term";
+import ForgotPassword from "./pages/ForgotPassword";
 
 function App() {
   return (
@@ -64,6 +65,9 @@ function App() {
         <Route path="/select-user-type" element={<UserTypeWizard />} />
         <Route path="admin" element={<Admin />} />
         <Route path="*" element={<NoPage />} />
+
+
+        <Route path ="/forgot-password" element={<ForgotPassword />} />
       </Routes>
     </div>
   );

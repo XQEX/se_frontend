@@ -141,14 +141,14 @@ const JobPositionForm = () => {
         isStale={isStale}
         setUser={setUser}
       />
-      <Container size="sm" className="mt-8">
+      <Container size="sm" className="mt-8 kanit-regular">
         <Paper shadow="md" radius="md" p="xl" className="bg-white">
-          <Title
-            order={2}
-            className="text-gray-800 mb-6 text-center kanit-light pb-8"
+          <div
+            
+            className="kanit-bold text-2xl text-gray-800 mb-6 text-center kanit-light pb-8"
           >
             ระบุข้อมูลตำแหน่งงานที่สนใจ
-          </Title>
+          </div>
 
           <form onSubmit={form.onSubmit(handleSubmit)}>
             <Stack gap="md">
@@ -321,13 +321,13 @@ const JobPositionForm = () => {
 
               <div className="flex justify-center">
                 <Group align="center" mt="lg">
-                  <Button
+                  <button
                     type="submit"
-                    size="md"
-                    className="bg-green-500 hover:bg-green-600 transition flex"
+                   
+                    className="rounded-lg pt-2 pb-2 pl-4 pr-4 text-white bg-seagreen hover:bg-seagreen/90 transition flex"
                   >
                     ถัดไป
-                  </Button>
+                  </button>
                 </Group>
               </div>
             </Stack>

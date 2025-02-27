@@ -94,10 +94,10 @@ function Home() {
         isStale={isStale}
         setUser={setUser}
       />
-      <div className="flex-grow flex flex-col md:flex-row justify-center items-center p-6 md:p-16 gap-8 md:gap-16 ">
+      <div className="kanit-regular flex-grow flex flex-col md:flex-row justify-center items-center p-6 md:p-16 gap-8 md:gap-16 ">
         <div className="flex flex-col items-center md:items-start text-center md:text-left max-w-2xl">
           <h1 ref={headingRef} className="text-5xl md:text-7xl font-bold mb-6 text-green-700 leading-tight">
-            Welcome To <span className="text-seagreen">SkillBridge</span>
+            ยินดีต้อนรับสู่ <span className="text-seagreen">SkillBridge</span>
           </h1>
           <p ref={subTextRef} className="text-xl md:text-2xl mb-8 text-gray-600 leading-relaxed kanit-regular">
             แหล่งรวมงานสำหรับการหางานของบุคคลกลุ่มเฉพาะทาง ที่ช่วยเสริมสร้างความเท่าเทียมกันในสังคม

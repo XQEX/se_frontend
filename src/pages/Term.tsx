@@ -8,6 +8,7 @@ function Term() {
             <div className="my-4">
                 <h1 className="text-4xl font-bold mb-4 ml-4">
                     ข้อกำหนดและเงื่อนไข
+
                 </h1>
                
             </div>
