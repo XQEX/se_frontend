@@ -139,7 +139,8 @@ const PostJob: React.FC = () => {
         setSuccessMessage("🎉 ประกาศงานสำเร็จแล้ว!");
         setTimeout(() => navigate("/find"), 300);
       } else {
-        alert(`⚠️ ${response.msg}`);
+        alert(`⚠️ ${response}`);
+        console.error("Error creating job post:", response);
       }
     } catch (error) {
       console.error("Error creating job post:", error);
