@@ -24,26 +24,26 @@ import { MdWorkspacePremium } from "react-icons/md";
 
 
 function Profile() {
-  const {
-    user,
-    isLoading,
-    refetchjobseeker,
-    refetchemployer,
-    refetchCompany,
-    isStale,
-    setUser,
-  } = useUser();
-  const [isHaveUser, setIsHaveUser] = useState(false);
-  useEffect(() => {
-    refetchjobseeker();
-    refetchCompany();
-    refetchemployer();
-    // console.log("current user:", user);
-    // console.log("isLoading:", isLoading);
-    // console.log("isHaveUser :", isHaveUser);
-    // console.log("isStale :", isStale);
-    setIsHaveUser(!!user);
-  }, [user, isLoading, isStale]);
+    const {
+       user,
+       isLoading,
+       refetchjobseeker,
+       refetchemployer,
+       refetchCompany,
+       isStale,
+       setUser,
+     } = useUser();
+     const [isHaveUser, setIsHaveUser] = useState(false);
+     useEffect(() => {
+       refetchjobseeker();
+       refetchCompany();
+       refetchemployer();
+       // console.log("current user:", user);
+       // console.log("isLoading:", isLoading);
+       // console.log("isHaveUser :", isHaveUser);
+       // console.log("isStale :", isStale);
+       setIsHaveUser(!!user);
+     }, [user, isLoading, isStale]);
   // Track which tab is active; default is "work"
   const [activeTab, setActiveTab] = React.useState("work");
 
@@ -110,7 +110,7 @@ function Profile() {
     if (lastNameValue == '') {
       isValidateLastName = false
       setLastNameError('Please enter your last name')
-    }
+    } 
 
     // address validation
     if (addressValue == '') {
@@ -136,22 +136,17 @@ function Profile() {
 
   return (
     <div>
-      <Navbar
-        user={user}
-        isLoading={isLoading}
-        isHaveUser={isHaveUser}
-        refetchjobseeker={refetchjobseeker}
-        refetchemployer={refetchemployer}
-        refetchCompany={refetchCompany}
-        isStale={isStale}
-        setUser={setUser}
-      />
-
-
-      {user.type === 'JOBSEEKER' ?
-        <header className="bg-gradient-to-r from-seagreen to-teal-200 h-40 w-full relative"></header>
-        : <header className="bg-gradient-to-r from-seagreen to-amber-200 h-40 w-full relative"></header>
-      }
+         <Navbar
+           user={user}
+           isLoading={isLoading}
+           isHaveUser={isHaveUser}
+           refetchjobseeker={refetchjobseeker}
+           refetchemployer={refetchemployer}
+           refetchCompany={refetchCompany}
+           isStale={isStale}
+           setUser={setUser}
+         />
+      <header className="bg-gradient-to-r from-seagreen to-teal-200 h-40 w-full relative"></header>
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -168,67 +163,62 @@ function Profile() {
                 className="object-cover w-full h-full"
               />
 
-              <div
+              <div 
                 className="absolute top-7 left-[202px] rounded-3xl p-[6px] z-10 cursor-pointer"
                 onClick={profileDropzoneToggle}
               >
                 <div className="absolute text-base rounded-3xl p-[6px] z-10">
                   <span className="absolute left-0 top-0 w-full h-full bg-white rounded-3xl opacity-70"></span>
-                  <RiPencilFill className="opacity-0" />
+                  <RiPencilFill className="opacity-0"/>
                 </div>
 
                 <div className="absolute text-lg rounded-3xl p-[6px] z-30">
-                  <RiPencilFill />
+                  <RiPencilFill/>
                 </div>
               </div>
             </div>
 
             <Modal opened={profileDropzoneOpened} onClose={profileDropzoneClose} title="">
               {user ? (
-                user.type === 'EMPLOYER' ?
-                  <ImageDropzoneButton userId={user.id} bucketName={"employer"} prefixPath={"profile"} />
-                  : <ImageDropzoneButton userId={user.id} bucketName={"job-seeker"} prefixPath={"profile"} />
+                <ImageDropzoneButton userId={user.id} bucketName={"job-seeker"} prefixPath={"profile"} />
               ) : (
                 <p>Loading...</p>
               )}
             </Modal>
 
             <div className="mt-4 md:mt-0 md:ml-6 md:mr-3 flex-1">
-              <div
-                className={`
+              <div 
+                  className={`
                     flex items-center rounded-lg
                     ${style['jobseeker-name-container']}
                   `}
-              >
+                >
                 <h1 className="text-xl md:text-2xl font-semibold mr-2 pl-3">
                   {user.firstName} {user.lastName}
                 </h1>
-
+                
                 <p className="text-gray-600 mt-1 text-sm md:text-base">
                   ({user.aboutMe})
                 </p>
               </div>
 
               <div className="relative mt-3 ml-1">
-                <div
-                  className={`
-                    flex items-center text-sm md:text-base font-semibold
-                    ${user.type === 'JOBSEEKER' ? 'text-green-500' : 'text-amber-400'}
-                  `}
+                <div 
+                  className="flex items-center text-sm md:text-base font-semibold text-green-500"
                 >
-                  <span className="mr-[6px] -ml-[2px] pt-[1px] text-xl"><MdWorkspacePremium /></span>: {user.type}
+                  <span className="mr-[6px] -ml-[2px] pt-[1px] text-xl"><MdWorkspacePremium/></span>: {user.type}
                 </div>
 
                 <div className="flex items-center text-sm md:text-base mt-2 text-gray-700">
-                  <span className="mr-2"><FaAddressBook color="#4a5568" /></span>: {user.address}
+                  <span className="mr-2"><FaAddressBook color="#4a5568"/></span>: {user.address}
                 </div>
 
                 <div className="flex items-center text-sm md:text-base mt-2 text-gray-700">
-                  <span className="mr-2 pt-[1px]"><SiGmail color="#4a5568" /></span>: {user.email}
+                  <span className="mr-2 pt-[1px]"><SiGmail color="#4a5568"/></span>: {user.email}
                 </div>
-
+                
                 <div className="flex items-center text-sm md:text-base mt-2 text-gray-700">
-                  <span className="mr-2"><FaPhoneAlt color="#4a5568" /></span>: {user.contact}
+                  <span className="mr-2"><FaPhoneAlt color="#4a5568"/></span>: {user.contact}
                 </div>
               </div>
             </div>
@@ -238,13 +228,13 @@ function Profile() {
                 <div>
                   <p className="text-lg font-semibold">2,985</p>
                   <div className="flex justify-center text-sm font-medium text-orange-400">
-                    <span className="pt-[1px] mr-1 text-lg"><MdWork /></span>Work
+                    <span className="pt-[1px] mr-1 text-lg"><MdWork/></span>Work
                   </div>
                 </div>
                 <div>
                   <p className="text-lg font-semibold">132</p>
                   <div className="flex justify-center text-sm font-medium text-blue-400">
-                    <span className="pt-[1px] mr-1 text-lg"><RiUserFollowFill /></span>Following
+                    <span className="pt-[1px] mr-1 text-lg"><RiUserFollowFill/></span>Following
                   </div>
                 </div>
                 <div>
@@ -256,7 +246,7 @@ function Profile() {
               </div>
 
               <div className="mt-28 w-full flex justify-end">
-                <button
+                <button 
                   className="text-base bg-gray-600 text-white px-3 py-1 rounded-md hover:bg-gray-500 transition"
                   onClick={editProfileToggle}
                 >
@@ -264,9 +254,9 @@ function Profile() {
                 </button>
               </div>
 
-              <Modal
-                opened={editProfileOpened}
-                onClose={editProfileClose}
+              <Modal 
+                opened={editProfileOpened} 
+                onClose={editProfileClose} 
                 title="Edit Profile"
                 styles={{
                   title: {
@@ -318,14 +308,14 @@ function Profile() {
                 />
 
                 <div className="mt-6 w-full flex justify-end">
-                  <button
+                  <button 
                     className="text-base bg-green-600 text-white px-3 py-1 rounded-sm hover:bg-green-500 transition"
                     onClick={onUserConfirmEdit}
                   >
                     Confirm
                   </button>
 
-                  <button
+                  <button 
                     className="text-base bg-gray-500 text-white px-3 py-1 ml-2 rounded-sm hover:bg-gray-400 transition"
                     onClick={editProfileToggle}
                   >
@@ -336,64 +326,60 @@ function Profile() {
             </div>
           </div>
 
-          {user.type === 'JOBSEEKER' && (
-            <p className="mt-8 text-xl font-semibold">
-              Skills <span className="text-base text-gray-500 font-normal">{user.skills.length}</span>
-            </p>
-          )}
+          <p className="mt-8 text-xl font-semibold">
+            Skills <span className="text-base text-gray-500 font-normal">{user.skills.length}</span>
+          </p>
 
-          {user.type === 'JOBSEEKER' && (
-            <section className="max-w-6xl mt-4">
-              <div className="grid md:grid-cols-3 gap-6">
-                {user.skills.map((skill: any) => {
-                  return (
-                    <div className="inline-block h-[240px] lg:h-[224px]">
-                      <SkillCardGradient
-                        title={skill.toSkill.name}
-                        content={skill.toSkill.description}
-                      />
-                    </div>
-                  )
-                })}
+          <section className="max-w-6xl mt-4">
+            <div className="grid md:grid-cols-3 gap-6">
+              {user.skills.map((skill: any) => {
+                return (
+                  <div className="inline-block h-[240px] lg:h-[224px]">
+                    <SkillCardGradient 
+                      title={skill.toSkill.name} 
+                      content={skill.toSkill.description}
+                    />
+                  </div>
+                )
+              })}
 
-                <div
-                  className="inline-block h-[240px] lg:h-[224px]"
-                  onClick={() => { }}
-                >
-                  <SkillCardGradient
-                    title={'Add Skill'}
-                    content={'Add more your skills, click here!'}
-                    isAddNewSkill
-                  />
-                </div>
+              <div 
+                className="inline-block h-[240px] lg:h-[224px]"
+                onClick={() => {}}
+              >
+                <SkillCardGradient 
+                  title={'Add Skill'} 
+                  content={'Add more your skills, click here!'}
+                  isAddNewSkill
+                />
               </div>
-            </section>
-          )}
+            </div>
+          </section>
 
           {/* Add Quick Action Buttons */}
           <div className="bg-white rounded-lg shadow-md p-4 mt-6 flex justify-center space-x-4">
-            <Link
-              to="/my-posts"
+            <Link 
+              to="/my-posts" 
               className="flex-1 bg-seagreen/80 text-white px-4 py-3 rounded-lg hover:bg-seagreen transition text-center font-medium"
             >
               <div className="flex justify-center items-center">
-                <span className="mr-2 text-xl"><BsPostcardHeart /></span> โพสต์งานของฉัน
+                <span className="mr-2 text-xl"><BsPostcardHeart/></span> โพสต์งานของฉัน
               </div>
             </Link>
-            <Link
-              to="/find"
+            <Link 
+              to="/find" 
               className="flex-1 bg-seagreen/80 text-white px-4 py-3 rounded-lg hover:bg-seagreen transition text-center font-medium"
             >
               <div className="flex justify-center items-center">
-                <span className="mr-2 text-xl"><AiOutlineFileSearch /></span> ค้นหางาน
+                <span className="mr-2 text-xl"><AiOutlineFileSearch/></span> ค้นหางาน
               </div>
             </Link>
-            <Link
-              to="/trackjobseeker"
+            <Link 
+              to="/trackjobseeker" 
               className="flex-1 bg-seagreen/80 text-white px-4 py-3 rounded-lg hover:bg-seagreen transition text-center font-medium"
             >
               <div className="flex justify-center items-center">
-                <span className="mr-2 text-xl"><MdAutoGraph /></span> ติดตามงาน
+                <span className="mr-2 text-xl"><MdAutoGraph/></span> ติดตามงาน
               </div>
             </Link>
           </div>
@@ -485,43 +471,43 @@ function Profile() {
 
             <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
               <div className="grid md:grid-cols-3 gap-6">
-                <ArticleCard
-                  url={"https://d1a2t1aqgesyrk.cloudfront.net/sites/default/files/styles/media_thumbnail/public/field/image/amazon_adobestock_291428005_editorial_use_only.jpeg?itok=6y6WfV1X"}
+                <ArticleCard 
+                  url={"https://d1a2t1aqgesyrk.cloudfront.net/sites/default/files/styles/media_thumbnail/public/field/image/amazon_adobestock_291428005_editorial_use_only.jpeg?itok=6y6WfV1X"} 
                   badgeList={['Looking for a job', 'Developer', 'UX/UI Design']}
-                  title={"Hiring for Mobile/Web Appication developer positions"}
-                  description={"Receive 2 people per position, More than 5 years of experience"}
-                  profileImage={"พิการ.jpg"}
+                  title={"Hiring for Mobile/Web Appication developer positions"} 
+                  description={"Receive 2 people per position, More than 5 years of experience"} 
+                  profileImage={"พิการ.jpg"}   
                   postOwner={'Jane Smith'}
-                  postedTime={'23 minutes ago'}
-                  liked={1232}
+                  postedTime={'23 minutes ago'}   
+                  liked={1232}          
                 />
 
-                <ArticleCard
-                  url={"https://money.com/wp-content/uploads/2017/03/gettyimages-517862941.jpg?quality=60&w=600"}
+                <ArticleCard 
+                  url={"https://money.com/wp-content/uploads/2017/03/gettyimages-517862941.jpg?quality=60&w=600"} 
                   badgeList={['Easy job', 'Cleaning Staff']}
-                  title={"Open recruitment for cleaning staff"}
+                  title={"Open recruitment for cleaning staff"} 
                   description={`
                     Receive 5 people per position, Completed basic education.
                     Work 8 hours a day. 
-                  `}
+                  `} 
                   profileImage={"พิการ.jpg"}
                   postOwner={'Charlotte Robinson'}
-                  postedTime={'45 minutes ago'}
-                  liked={552}
+                  postedTime={'45 minutes ago'} 
+                  liked={552}                
                 />
 
-                <ArticleCard
-                  url={"https://s.isanook.com/ga/0/ud/236/1180650/hsh-movie-in-production-cover.jpg"}
+                <ArticleCard 
+                  url={"https://s.isanook.com/ga/0/ud/236/1180650/hsh-movie-in-production-cover.jpg"} 
                   badgeList={['Game Developer', 'HSH3', 'UX/UI Design']}
-                  title={"Hiring for game developer positions"}
+                  title={"Hiring for game developer positions"} 
                   description={`
                     Receive 5 people per position, More than 7 years of experience, 
                     We are developing home sweet home ss3 project (PC Game). Come join us!!!
-                  `}
+                  `} 
                   profileImage={"พิการ.jpg"}
                   postOwner={'Elsa Gardenowl'}
-                  postedTime={'1 hours ago'}
-                  liked={792}
+                  postedTime={'1 hours ago'} 
+                  liked={792}               
                 />
               </div>
             </section>
@@ -530,15 +516,15 @@ function Profile() {
           {activeTab === "about" && (
             <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
               <div className="grid md:grid-cols-3 gap-6">
-                <ArticleCard
-                  url={""}
+                <ArticleCard 
+                  url={""} 
                   badgeList={['TODO', 'Somthing', 'Here']}
-                  title={"About"}
-                  description={" Lorem ipsum dolor sit, amet consectetur adipisicing elit. Asperiores assumenda omnis sequi eveniet debitis autem at, a iure non beatae molestiae nobis in unde delectus quis reiciendis. Dicta, quidem deleniti!"}
-                  profileImage={"พิการ.jpg"}
+                  title={"About"} 
+                  description={" Lorem ipsum dolor sit, amet consectetur adipisicing elit. Asperiores assumenda omnis sequi eveniet debitis autem at, a iure non beatae molestiae nobis in unde delectus quis reiciendis. Dicta, quidem deleniti!"} 
+                  profileImage={"พิการ.jpg"}   
                   postOwner={'พิการ คุง'}
-                  postedTime={'3 minutes ago'}
-                  liked={14}
+                  postedTime={'3 minutes ago'}   
+                  liked={14}          
                 />
               </div>
             </section>
