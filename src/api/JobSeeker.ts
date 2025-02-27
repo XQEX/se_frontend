@@ -132,6 +132,48 @@ interface JobPostDetailResponse {
   message: string;
 }
 
+interface UserJobFindingPostResponse {
+  success: boolean;
+  status: number;
+  msg: string;
+  data: {
+    jobPosts: {
+      id: string;
+      title: string;
+      description: string;
+      jobLocation: string;
+      expectedSalary: number;
+      workDates: string;
+      workHoursRange: string;
+      status: string;
+      jobPostType: string;
+      jobSeekerType: string;
+      jobSeekerId: string;
+      oauthJobSeekerId: string | null;
+      createdAt: string;
+      updatedAt: string;
+      skills: {
+        id: string;
+        name: string;
+        description: string;
+        createdAt: string;
+        updatedAt: string;
+      }[];
+      jobCategories: {
+        id: string;
+        name: string;
+        description: string;
+      }[];
+    }[];
+    pagination: {
+      currentPage: number;
+      totalPages: number;
+      totalItems: number;
+      itemsPerPage: number;
+    };
+  };
+}
+
 export const registerJobSeeker = async (
   name: string,
   email: string,
@@ -339,3 +381,21 @@ export const getJobFindingPostById = async (id: string): Promise<any> => {
     throw error;
   }
 };
+
+export const getUserJobFindingPosts =
+  async (): Promise<UserJobFindingPostResponse> => {
+    try {
+      console.log("Fetching user's job finding posts...");
+      const { data } = await axios.get<UserJobFindingPostResponse>(
+        `http://localhost:${backendPort}/api/post/user/finding-posts`,
+        {
+          withCredentials: true,
+        }
+      );
+      console.log("User's job finding posts fetched successfully:", data);
+      return data;
+    } catch (error) {
+      console.error("Failed to fetch user's job finding posts:", error);
+      throw error;
+    }
+  };

@@ -75,10 +75,6 @@ export const Navbar: React.FC<NavbarProps> = ({
         await logoutCompany();
       }
       // Clear cookies or session data if necessary
-      document.cookie =
-        "yourCookieName=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-      localStorage.removeItem("isHaveUser");
-      localStorage.removeItem("adminInfo");
       notifyError("คุณออกจากระบบ!"); // Show the notification after navigation
       setIsSignedIn(false);
     } catch (error) {

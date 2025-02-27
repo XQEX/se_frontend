@@ -9,6 +9,18 @@ import {
   logoutAdmin,
   approveUser,
 } from "../api/Admin";
+import {
+  getAllSkills,
+  createSkill,
+  updateSkill,
+  deleteSkill,
+} from "../api/skills";
+import {
+  getAllCategories,
+  createCategory,
+  updateCategory,
+  deleteCategory,
+} from "../api/JobCategories";
 
 interface ApprovalRequest {
   id: string;
@@ -24,12 +36,73 @@ const Admin: React.FC = () => {
   const [logoutLoading, setLogoutLoading] = useState<boolean>(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
+  const [skills, setSkills] = useState<any[]>([]);
+  const [jobCategories, setJobCategories] = useState<any[]>([]);
+  const [newSkill, setNewSkill] = useState({ name: "", description: "" });
+  const [newCategory, setNewCategory] = useState({ name: "", description: "" });
+
+  const fetchSkills = async () => {
+    try {
+      const response = await getAllSkills();
+      setSkills(response.data);
+    } catch (error) {
+      console.error("Failed to fetch skills:", error);
+    }
+  };
+
+  const fetchCategories = async () => {
+    try {
+      const response = await getAllCategories();
+      setJobCategories(response.data);
+    } catch (error) {
+      console.error("Failed to fetch categories:", error);
+    }
+  };
+
+  const handleCreateSkill = async () => {
+    try {
+      await createSkill(newSkill);
+      fetchSkills();
+      setNewSkill({ name: "", description: "" });
+    } catch (error) {
+      console.error("Failed to create skill:", error);
+    }
+  };
+
+  const handleCreateCategory = async () => {
+    try {
+      await createCategory(newCategory);
+      fetchCategories();
+      setNewCategory({ name: "", description: "" });
+    } catch (error) {
+      console.error("Failed to create category:", error);
+    }
+  };
+
+  const handleDeleteSkill = async (id: string) => {
+    try {
+      await deleteSkill(id);
+    } catch (error) {
+      console.error("Failed to delete skill:", error);
+    }
+  };
+
+  const handleDeleteCategory = async (id: string) => {
+    try {
+      await deleteCategory(id);
+    } catch (error) {
+      console.error("Failed to delete category:", error);
+    }
+  };
+
   useEffect(() => {
     const storedIsLoggedIn = localStorage.getItem("isLoggedIn");
     const storedAdminInfo = localStorage.getItem("adminInfo");
 
     if (storedIsLoggedIn === "true" && storedAdminInfo) {
       setIsLoggedIn(true);
+      fetchSkills();
+      fetchCategories();
       queryClient.setQueryData("adminInfo", JSON.parse(storedAdminInfo));
     }
   }, [queryClient]);
@@ -199,33 +272,134 @@ const Admin: React.FC = () => {
       </h2>
       {adminInfo ? (
         Array.isArray(approvalRequests) ? (
-          <ul className="space-y-4">
-            {approvalRequests.map((request: ApprovalRequest) => (
-              <li key={request.id} className="p-4 bg-white rounded shadow">
-                <span className="font-medium">{request.userId}</span> -{" "}
-                <span className="text-gray-600">{request.userType}</span> -{" "}
-                <span className="text-gray-600">{request.status}</span>
+          <>
+            <ul className="space-y-4">
+              {approvalRequests.map((request: ApprovalRequest) => (
+                <li key={request.id} className="p-4 bg-white rounded shadow">
+                  <span className="font-medium">{request.userId}</span> -{" "}
+                  <span className="text-gray-600">{request.userType}</span> -{" "}
+                  <span className="text-gray-600">{request.status}</span>
+                  <button
+                    onClick={() => handleApproveUser(request.id, "APPROVED")}
+                    className="ml-4 px-2 py-1 bg-green-500 text-white rounded"
+                  >
+                    Approve
+                  </button>
+                  <button
+                    onClick={() => handleApproveUser(request.id, "UNAPPROVED")}
+                    className="ml-2 px-2 py-1 bg-red-500 text-white rounded"
+                  >
+                    Unapprove
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <div className="mb-6 p-4 bg-white rounded shadow">
+              <h2 className="text-2xl font-semibold mb-4">Skills</h2>
+              <ul className="space-y-2">
+                {skills.map((skill) => (
+                  <li
+                    key={skill.id}
+                    className="flex justify-between items-center p-2 bg-gray-100 rounded"
+                  >
+                    <span>
+                      {skill.name} - {skill.description}
+                    </span>
+                    <button
+                      onClick={() => handleDeleteSkill(skill.id)}
+                      className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                    >
+                      Delete
+                    </button>
+                  </li>
+                ))}
+              </ul>
+              <h3 className="text-xl font-semibold mt-4">Add New Skill</h3>
+              <div className="flex space-x-2 mt-2">
+                <input
+                  type="text"
+                  placeholder="Name"
+                  value={newSkill.name}
+                  onChange={(e) =>
+                    setNewSkill({ ...newSkill, name: e.target.value })
+                  }
+                  className="p-2 border rounded w-full"
+                />
+                <input
+                  type="text"
+                  placeholder="Description"
+                  value={newSkill.description}
+                  onChange={(e) =>
+                    setNewSkill({ ...newSkill, description: e.target.value })
+                  }
+                  className="p-2 border rounded w-full"
+                />
                 <button
-                  onClick={() => handleApproveUser(request.id, "APPROVED")}
-                  className="ml-4 px-2 py-1 bg-green-500 text-white rounded"
+                  onClick={handleCreateSkill}
+                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                 >
-                  Approve
+                  Add Skill
                 </button>
+              </div>
+            </div>
+            <div className="mb-6 p-4 bg-white rounded shadow">
+              <h2 className="text-2xl font-semibold mb-4">Job Categories</h2>
+              <ul className="space-y-2">
+                {jobCategories.map((category) => (
+                  <li
+                    key={category.id}
+                    className="flex justify-between items-center p-2 bg-gray-100 rounded"
+                  >
+                    <span>
+                      {category.name} - {category.description}
+                    </span>
+                    <button
+                      onClick={() => handleDeleteCategory(category.id)}
+                      className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                    >
+                      Delete
+                    </button>
+                  </li>
+                ))}
+              </ul>
+              <h3 className="text-xl font-semibold mt-4">Add New Category</h3>
+              <div className="flex space-x-2 mt-2">
+                <input
+                  type="text"
+                  placeholder="Name"
+                  value={newCategory.name}
+                  onChange={(e) =>
+                    setNewCategory({ ...newCategory, name: e.target.value })
+                  }
+                  className="p-2 border rounded w-full"
+                />
+                <input
+                  type="text"
+                  placeholder="Description"
+                  value={newCategory.description}
+                  onChange={(e) =>
+                    setNewCategory({
+                      ...newCategory,
+                      description: e.target.value,
+                    })
+                  }
+                  className="p-2 border rounded w-full"
+                />
                 <button
-                  onClick={() => handleApproveUser(request.id, "UNAPPROVED")}
-                  className="ml-2 px-2 py-1 bg-red-500 text-white rounded"
+                  onClick={handleCreateCategory}
+                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                 >
-                  Unapprove
+                  Add Category
                 </button>
-              </li>
-            ))}
-          </ul>
+              </div>
+            </div>
+          </>
         ) : (
           <p className="text-gray-600">No approval requests found.</p>
         )
       ) : (
         <p className="text-gray-600">
-          Please log in to view approval requests.
+          Please log in to view approval requests current skill and jobCategory.
         </p>
       )}
     </div>

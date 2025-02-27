@@ -24,6 +24,17 @@ interface UserProviderProps {
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const [user, setUser] = useState<any>(null);
 
+  const handleError = (error: any) => {
+    console.error("Error fetching user info:", error);
+    if (error.queryKey === "currentJobSeeker" && isStaleJobseeker) {
+      setUser((prev: any) => (prev?.type === "jobseeker" ? null : prev));
+    } else if (error.queryKey === "currentEmployer" && isStaleEmployer) {
+      setUser((prev: any) => (prev?.type === "employer" ? null : prev));
+    } else if (error.queryKey === "currentCompany" && isStaleCompany) {
+      setUser((prev: any) => (prev?.type === "company" ? null : prev));
+    }
+  };
+
   const {
     isLoading: isLoadingJobSeeker,
     refetch: refetchjobseeker,
@@ -32,6 +43,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     onSuccess: (data) => {
       setUser((prev: any) => prev ?? data);
     },
+    onError: handleError,
   });
 
   const {
@@ -42,6 +54,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     onSuccess: (data) => {
       setUser((prev: any) => prev ?? data);
     },
+    onError: handleError,
   });
 
   const {
@@ -52,6 +65,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     onSuccess: (data) => {
       setUser((prev: any) => prev ?? data);
     },
+    onError: handleError,
   });
 
   const isLoading = isLoadingJobSeeker || isLoadingEmployer || isLoadingCompany;

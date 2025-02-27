@@ -5,13 +5,13 @@ import { useUser } from "../../context/UserContext";
 import { Link } from "react-router-dom";
 import { RiPencilFill } from "react-icons/ri";
 import { ImageDropzoneButton } from "../../components/ImageDropzoneButton";
-import { useDisclosure } from '@mantine/hooks';
-import { Modal } from '@mantine/core';
-import style from './Profile.module.css'
+import { useDisclosure } from "@mantine/hooks";
+import { Modal } from "@mantine/core";
+import style from "./Profile.module.css";
 import { SiGmail } from "react-icons/si";
 import { FaPhoneAlt } from "react-icons/fa";
 import { FaAddressBook } from "react-icons/fa6";
-import { TextInput } from '@mantine/core';
+import { TextInput } from "@mantine/core";
 import { MdWork } from "react-icons/md";
 import { RiUserFollowFill } from "react-icons/ri";
 import { FaHeart } from "react-icons/fa6";
@@ -21,7 +21,7 @@ import { AiOutlineFileSearch } from "react-icons/ai";
 import { MdAutoGraph } from "react-icons/md";
 import { ArticleCard } from "../../components/ArticleCard";
 import { MdWorkspacePremium } from "react-icons/md";
-
+import { getUserJobFindingPosts } from "../../api/JobSeeker";
 
 function Profile() {
   const {
@@ -60,79 +60,100 @@ function Profile() {
     "text-gray-900 font-semibold border-b-2 border-gray-900";
   const inactiveClasses = "text-gray-600 hover:text-gray-900";
 
-  const [profileDropzoneOpened, { toggle: profileDropzoneToggle, close: profileDropzoneClose }] = useDisclosure(false);
-  const [editProfileOpened, { toggle: editProfileToggle, close: editProfileClose }] = useDisclosure(false);
-  const [firstNameValue, setFirstNameValue] = useState<string>('')
-  const [lastNameValue, setLastNameValue] = useState<string>('')
-  const [aboutMeValue, setAboutMeValue] = useState<string>('')
-  const [addressValue, setAddressValue] = useState<string>('')
-  const [emailValue, setEmailValue] = useState<string>('')
-  const [phoneNumberValue, setPhoneNumberValue] = useState<string>('')
-  const [firstNameError, setFirstNameError] = useState<string>('')
-  const [lastNameError, setLastNameError] = useState<string>('')
-  const [aboutMeError, setAboutMeError] = useState<string>('')
-  const [addressError, setAddressError] = useState<string>('')
+  const [
+    profileDropzoneOpened,
+    { toggle: profileDropzoneToggle, close: profileDropzoneClose },
+  ] = useDisclosure(false);
+  const [
+    editProfileOpened,
+    { toggle: editProfileToggle, close: editProfileClose },
+  ] = useDisclosure(false);
+  const [firstNameValue, setFirstNameValue] = useState<string>("");
+  const [lastNameValue, setLastNameValue] = useState<string>("");
+  const [aboutMeValue, setAboutMeValue] = useState<string>("");
+  const [addressValue, setAddressValue] = useState<string>("");
+  const [emailValue, setEmailValue] = useState<string>("");
+  const [phoneNumberValue, setPhoneNumberValue] = useState<string>("");
+  const [firstNameError, setFirstNameError] = useState<string>("");
+  const [lastNameError, setLastNameError] = useState<string>("");
+  const [aboutMeError, setAboutMeError] = useState<string>("");
+  const [addressError, setAddressError] = useState<string>("");
+  const [userPosts, setUserPosts] = useState<any[]>([]);
 
   useEffect(() => {
-    setFirstNameValue(user.firstName)
-    setLastNameValue(user.lastName)
-    setAboutMeValue(user.aboutMe)
-    setAddressValue(user.address)
-    setEmailValue(user.email)
-    const [_, phoneNumber] = user.contact.split('+66')
-    setPhoneNumberValue(phoneNumber)
+    const fetchUserPost = async () => {
+      try {
+        const response = await getUserJobFindingPosts();
+        setUserPosts(response.data.jobPosts);
+      } catch (error) {}
+    };
+    fetchUserPost();
+    console.log("userPosts:", userPosts);
 
-    setFirstNameError('')
-    setLastNameError('')
-    setAboutMeError('')
-    setAddressError('')
-  }, [editProfileOpened])
+    setFirstNameValue(user.firstName);
+    setLastNameValue(user.lastName);
+    setAboutMeValue(user.aboutMe);
+    setAddressValue(user.address);
+    setEmailValue(user.email);
+    const [_, phoneNumber] = user.contact.split("+66");
+    setPhoneNumberValue(phoneNumber);
+
+    setFirstNameError("");
+    setLastNameError("");
+    setAboutMeError("");
+    setAddressError("");
+  }, [editProfileOpened]);
 
   const validateEditData = () => {
-    let isValidateFirstName = true
-    let isValidateLastName = true
-    let isValidateAddress = true
-    let isValidateEmail = true
-    let isValidatePhoneNumber = true
+    let isValidateFirstName = true;
+    let isValidateLastName = true;
+    let isValidateAddress = true;
+    let isValidateEmail = true;
+    let isValidatePhoneNumber = true;
 
-    setFirstNameError('')
-    setLastNameError('')
-    setAboutMeError('')
-    setAddressError('')
+    setFirstNameError("");
+    setLastNameError("");
+    setAboutMeError("");
+    setAddressError("");
 
     // first name validation
-    if (firstNameValue == '') {
-      isValidateFirstName = false
-      setFirstNameError('Please enter your first name')
+    if (firstNameValue == "") {
+      isValidateFirstName = false;
+      setFirstNameError("Please enter your first name");
     }
 
     // last name validation
-    if (lastNameValue == '') {
-      isValidateLastName = false
-      setLastNameError('Please enter your last name')
+    if (lastNameValue == "") {
+      isValidateLastName = false;
+      setLastNameError("Please enter your last name");
     }
 
     // address validation
-    if (addressValue == '') {
-      isValidateAddress = false
-      setAddressError('Please enter your address')
+    if (addressValue == "") {
+      isValidateAddress = false;
+      setAddressError("Please enter your address");
     }
 
-    return isValidateFirstName && isValidateLastName && isValidateAddress && isValidateEmail && isValidatePhoneNumber
-  }
+    return (
+      isValidateFirstName &&
+      isValidateLastName &&
+      isValidateAddress &&
+      isValidateEmail &&
+      isValidatePhoneNumber
+    );
+  };
 
   const onUserConfirmEdit = () => {
     if (validateEditData()) {
-      // TODO: save data to DB 
-      console.log('first name: ', firstNameValue)
-      console.log('last name: ', lastNameValue)
-      console.log('about me: ', aboutMeValue)
-      console.log('address: ', addressValue)
-      console.log('email: ', emailValue)
-      console.log('phone number: ', phoneNumberValue)
+      // TODO: save data to DB
+      console.log("first name: ", firstNameValue);
+      console.log("last name: ", lastNameValue);
+      console.log("about me: ", aboutMeValue);
+      console.log("address: ", addressValue);
+      console.log("email: ", emailValue);
+      console.log("phone number: ", phoneNumberValue);
     }
-  }
-
+  };
 
   return (
     <div>
@@ -147,11 +168,11 @@ function Profile() {
         setUser={setUser}
       />
 
-
-      {user.type === 'JOBSEEKER' ?
+      {user?.type === "JOBSEEKER" ? (
         <header className="bg-gradient-to-r from-seagreen to-teal-200 h-40 w-full relative"></header>
-        : <header className="bg-gradient-to-r from-seagreen to-amber-200 h-40 w-full relative"></header>
-      }
+      ) : (
+        <header className="bg-gradient-to-r from-seagreen to-amber-200 h-40 w-full relative"></header>
+      )}
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -183,11 +204,25 @@ function Profile() {
               </div>
             </div>
 
-            <Modal opened={profileDropzoneOpened} onClose={profileDropzoneClose} title="">
+            <Modal
+              opened={profileDropzoneOpened}
+              onClose={profileDropzoneClose}
+              title=""
+            >
               {user ? (
-                user.type === 'EMPLOYER' ?
-                  <ImageDropzoneButton userId={user.id} bucketName={"employer"} prefixPath={"profile"} />
-                  : <ImageDropzoneButton userId={user.id} bucketName={"job-seeker"} prefixPath={"profile"} />
+                user.type === "EMPLOYER" ? (
+                  <ImageDropzoneButton
+                    userId={user.id}
+                    bucketName={"employer"}
+                    prefixPath={"profile"}
+                  />
+                ) : (
+                  <ImageDropzoneButton
+                    userId={user.id}
+                    bucketName={"job-seeker"}
+                    prefixPath={"profile"}
+                  />
+                )
               ) : (
                 <p>Loading...</p>
               )}
@@ -197,7 +232,7 @@ function Profile() {
               <div
                 className={`
                     flex items-center rounded-lg
-                    ${style['jobseeker-name-container']}
+                    ${style["jobseeker-name-container"]}
                   `}
               >
                 <h1 className="text-xl md:text-2xl font-semibold mr-2 pl-3">
@@ -213,22 +248,38 @@ function Profile() {
                 <div
                   className={`
                     flex items-center text-sm md:text-base font-semibold
-                    ${user.type === 'JOBSEEKER' ? 'text-green-500' : 'text-amber-400'}
+                    ${
+                      user.type === "JOBSEEKER"
+                        ? "text-green-500"
+                        : "text-amber-400"
+                    }
                   `}
                 >
-                  <span className="mr-[6px] -ml-[2px] pt-[1px] text-xl"><MdWorkspacePremium /></span>: {user.type}
+                  <span className="mr-[6px] -ml-[2px] pt-[1px] text-xl">
+                    <MdWorkspacePremium />
+                  </span>
+                  : {user.type}
                 </div>
 
                 <div className="flex items-center text-sm md:text-base mt-2 text-gray-700">
-                  <span className="mr-2"><FaAddressBook color="#4a5568" /></span>: {user.address}
+                  <span className="mr-2">
+                    <FaAddressBook color="#4a5568" />
+                  </span>
+                  : {user.address}
                 </div>
 
                 <div className="flex items-center text-sm md:text-base mt-2 text-gray-700">
-                  <span className="mr-2 pt-[1px]"><SiGmail color="#4a5568" /></span>: {user.email}
+                  <span className="mr-2 pt-[1px]">
+                    <SiGmail color="#4a5568" />
+                  </span>
+                  : {user.email}
                 </div>
 
                 <div className="flex items-center text-sm md:text-base mt-2 text-gray-700">
-                  <span className="mr-2"><FaPhoneAlt color="#4a5568" /></span>: {user.contact}
+                  <span className="mr-2">
+                    <FaPhoneAlt color="#4a5568" />
+                  </span>
+                  : {user.contact}
                 </div>
               </div>
             </div>
@@ -238,19 +289,28 @@ function Profile() {
                 <div>
                   <p className="text-lg font-semibold">2,985</p>
                   <div className="flex justify-center text-sm font-medium text-orange-400">
-                    <span className="pt-[1px] mr-1 text-lg"><MdWork /></span>Work
+                    <span className="pt-[1px] mr-1 text-lg">
+                      <MdWork />
+                    </span>
+                    Work
                   </div>
                 </div>
                 <div>
                   <p className="text-lg font-semibold">132</p>
                   <div className="flex justify-center text-sm font-medium text-blue-400">
-                    <span className="pt-[1px] mr-1 text-lg"><RiUserFollowFill /></span>Following
+                    <span className="pt-[1px] mr-1 text-lg">
+                      <RiUserFollowFill />
+                    </span>
+                    Following
                   </div>
                 </div>
                 <div>
                   <p className="text-lg font-semibold">548</p>
                   <div className="flex justify-center text-sm font-medium text-pink-400">
-                    <span className="pt-[1px] mr-1 text-lg"><FaHeart /></span>Likes
+                    <span className="pt-[1px] mr-1 text-lg">
+                      <FaHeart />
+                    </span>
+                    Likes
                   </div>
                 </div>
               </div>
@@ -280,7 +340,7 @@ function Profile() {
                   placeholder="your first name"
                   required
                   error={firstNameError}
-                  inputWrapperOrder={['label', 'input', 'error']}
+                  inputWrapperOrder={["label", "input", "error"]}
                   value={firstNameValue}
                   onChange={(event) => setFirstNameValue(event.target.value)}
                 />
@@ -291,7 +351,7 @@ function Profile() {
                   placeholder="your last name"
                   required
                   error={lastNameError}
-                  inputWrapperOrder={['label', 'input', 'error']}
+                  inputWrapperOrder={["label", "input", "error"]}
                   value={lastNameValue}
                   onChange={(event) => setLastNameValue(event.target.value)}
                 />
@@ -301,7 +361,7 @@ function Profile() {
                   label="About Me"
                   placeholder="your about me"
                   error={aboutMeError}
-                  inputWrapperOrder={['label', 'input', 'error']}
+                  inputWrapperOrder={["label", "input", "error"]}
                   value={aboutMeValue}
                   onChange={(event) => setAboutMeValue(event.target.value)}
                 />
@@ -312,7 +372,7 @@ function Profile() {
                   placeholder="your address"
                   required
                   error={addressError}
-                  inputWrapperOrder={['label', 'input', 'error']}
+                  inputWrapperOrder={["label", "input", "error"]}
                   value={addressValue}
                   onChange={(event) => setAddressValue(event.target.value)}
                 />
@@ -336,13 +396,16 @@ function Profile() {
             </div>
           </div>
 
-          {user.type === 'JOBSEEKER' && (
+          {user.type === "JOBSEEKER" && (
             <p className="mt-8 text-xl font-semibold">
-              Skills <span className="text-base text-gray-500 font-normal">{user.skills.length}</span>
+              Skills{" "}
+              <span className="text-base text-gray-500 font-normal">
+                {user.skills.length}
+              </span>
             </p>
           )}
 
-          {user.type === 'JOBSEEKER' && (
+          {user.type === "JOBSEEKER" && (
             <section className="max-w-6xl mt-4">
               <div className="grid md:grid-cols-3 gap-6">
                 {user.skills.map((skill: any) => {
@@ -353,16 +416,16 @@ function Profile() {
                         content={skill.toSkill.description}
                       />
                     </div>
-                  )
+                  );
                 })}
 
                 <div
                   className="inline-block h-[240px] lg:h-[224px]"
-                  onClick={() => { }}
+                  onClick={() => {}}
                 >
                   <SkillCardGradient
-                    title={'Add Skill'}
-                    content={'Add more your skills, click here!'}
+                    title={"Add Skill"}
+                    content={"Add more your skills, click here!"}
                     isAddNewSkill
                   />
                 </div>
@@ -377,7 +440,10 @@ function Profile() {
               className="flex-1 bg-seagreen/80 text-white px-4 py-3 rounded-lg hover:bg-seagreen transition text-center font-medium"
             >
               <div className="flex justify-center items-center">
-                <span className="mr-2 text-xl"><BsPostcardHeart /></span> โพสต์งานของฉัน
+                <span className="mr-2 text-xl">
+                  <BsPostcardHeart />
+                </span>{" "}
+                โพสต์งานของฉัน
               </div>
             </Link>
             <Link
@@ -385,7 +451,10 @@ function Profile() {
               className="flex-1 bg-seagreen/80 text-white px-4 py-3 rounded-lg hover:bg-seagreen transition text-center font-medium"
             >
               <div className="flex justify-center items-center">
-                <span className="mr-2 text-xl"><AiOutlineFileSearch /></span> ค้นหางาน
+                <span className="mr-2 text-xl">
+                  <AiOutlineFileSearch />
+                </span>{" "}
+                ค้นหางาน
               </div>
             </Link>
             <Link
@@ -393,7 +462,10 @@ function Profile() {
               className="flex-1 bg-seagreen/80 text-white px-4 py-3 rounded-lg hover:bg-seagreen transition text-center font-medium"
             >
               <div className="flex justify-center items-center">
-                <span className="mr-2 text-xl"><MdAutoGraph /></span> ติดตามงาน
+                <span className="mr-2 text-xl">
+                  <MdAutoGraph />
+                </span>{" "}
+                ติดตามงาน
               </div>
             </Link>
           </div>
@@ -407,7 +479,7 @@ function Profile() {
               }
               onClick={() => handleTabClick("work")}
             >
-              Work <span className="text-sm text-gray-500">54</span>
+              My Post <span className="text-sm text-gray-500">54</span>
             </button>
             <button
               className={
@@ -424,105 +496,62 @@ function Profile() {
 
         <div className="mb-8">
           {activeTab === "work" && (
-            // <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
-            //   <div className="grid md:grid-cols-3 gap-6">
-            //     <div className="bg-white rounded-lg shadow hover:shadow-lg transition p-4">
-            //       <img
-            //         src="https://via.placeholder.com/400x250?text=VPN+Mobile+App"
-            //         alt="VPN Mobile App"
-            //         className="w-full rounded-md"
-            //       />
-            //       <h3 className="mt-4 text-lg font-semibold">VPN Mobile App</h3>
-            //       <p className="text-gray-500 text-sm">Mobile UI, Research</p>
-            //       <div className="flex items-center justify-between mt-3 text-gray-400 text-xs">
-            //         <div>
-            //           <span className="font-medium">517</span>
-            //           <span className="ml-1">❤️</span>
-            //         </div>
-            //         <span className="font-medium">9.3k</span>
-            //       </div>
-            //     </div>
-
-            //     <div className="bg-white rounded-lg shadow hover:shadow-lg transition p-4">
-            //       <img
-            //         src="https://via.placeholder.com/400x250?text=Property+Dashboard"
-            //         alt="Property Dashboard"
-            //         className="w-full rounded-md"
-            //       />
-            //       <h3 className="mt-4 text-lg font-semibold">
-            //         Property Dashboard
-            //       </h3>
-            //       <p className="text-gray-500 text-sm">Web interface</p>
-            //       <div className="flex items-center justify-between mt-3 text-gray-400 text-xs">
-            //         <div>
-            //           <span className="font-medium">983</span>
-            //           <span className="ml-1">❤️</span>
-            //         </div>
-            //         <span className="font-medium">14k</span>
-            //       </div>
-            //     </div>
-
-            //     <div className="bg-white rounded-lg shadow hover:shadow-lg transition p-4">
-            //       <img
-            //         src="https://via.placeholder.com/400x250?text=Healthcare+Mobile+App"
-            //         alt="Healthcare Mobile App"
-            //         className="w-full rounded-md"
-            //       />
-            //       <h3 className="mt-4 text-lg font-semibold">
-            //         Healthcare Mobile App
-            //       </h3>
-            //       <p className="text-gray-500 text-sm">Mobile UI, Branding</p>
-            //       <div className="flex items-center justify-between mt-3 text-gray-400 text-xs">
-            //         <div>
-            //           <span className="font-medium">875</span>
-            //           <span className="ml-1">❤️</span>
-            //         </div>
-            //         <span className="font-medium">13.5k</span>
-            //       </div>
-            //     </div>
-            //   </div>
-            // </section>
-
             <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
               <div className="grid md:grid-cols-3 gap-6">
-                <ArticleCard
-                  url={"https://d1a2t1aqgesyrk.cloudfront.net/sites/default/files/styles/media_thumbnail/public/field/image/amazon_adobestock_291428005_editorial_use_only.jpeg?itok=6y6WfV1X"}
-                  badgeList={['Looking for a job', 'Developer', 'UX/UI Design']}
-                  title={"Hiring for Mobile/Web Appication developer positions"}
-                  description={"Receive 2 people per position, More than 5 years of experience"}
-                  profileImage={"พิการ.jpg"}
-                  postOwner={'Jane Smith'}
-                  postedTime={'23 minutes ago'}
-                  liked={1232}
-                />
-
-                <ArticleCard
-                  url={"https://money.com/wp-content/uploads/2017/03/gettyimages-517862941.jpg?quality=60&w=600"}
-                  badgeList={['Easy job', 'Cleaning Staff']}
-                  title={"Open recruitment for cleaning staff"}
-                  description={`
-                    Receive 5 people per position, Completed basic education.
-                    Work 8 hours a day. 
-                  `}
-                  profileImage={"พิการ.jpg"}
-                  postOwner={'Charlotte Robinson'}
-                  postedTime={'45 minutes ago'}
-                  liked={552}
-                />
-
-                <ArticleCard
-                  url={"https://s.isanook.com/ga/0/ud/236/1180650/hsh-movie-in-production-cover.jpg"}
-                  badgeList={['Game Developer', 'HSH3', 'UX/UI Design']}
-                  title={"Hiring for game developer positions"}
-                  description={`
-                    Receive 5 people per position, More than 7 years of experience, 
-                    We are developing home sweet home ss3 project (PC Game). Come join us!!!
-                  `}
-                  profileImage={"พิการ.jpg"}
-                  postOwner={'Elsa Gardenowl'}
-                  postedTime={'1 hours ago'}
-                  liked={792}
-                />
+                {userPosts.map((post) => (
+                  <div
+                    key={post.title}
+                    className="bg-white rounded-lg shadow-md p-4"
+                  >
+                    <h2 className="text-xl font-semibold">{post.title}</h2>
+                    <p className="text-gray-700 mt-2">{post.description}</p>
+                    <p className="text-gray-700 mt-2">
+                      Location: {post.jobLocation}
+                    </p>
+                    <p className="text-gray-700 mt-2">
+                      Expected Salary: {post.expectedSalary}
+                    </p>
+                    <p className="text-gray-700 mt-2">
+                      Work Dates: {post.workDates}
+                    </p>
+                    <p className="text-gray-700 mt-2">
+                      Work Hours: {post.workHoursRange}
+                    </p>
+                    <p className="text-gray-700 mt-2">Status: {post.status}</p>
+                    <p className="text-gray-700 mt-2">
+                      Job Type: {post.jobPostType}
+                    </p>
+                    <p className="text-gray-700 mt-2">
+                      Job Seeker Type: {post.jobSeekerType}
+                    </p>
+                    <p className="text-gray-700 mt-2">
+                      Created At: {new Date(post.createdAt).toLocaleString()}
+                    </p>
+                    <p className="text-gray-700 mt-2">
+                      Updated At: {new Date(post.updatedAt).toLocaleString()}
+                    </p>
+                    <div className="mt-4">
+                      <h3 className="text-lg font-semibold">Skills</h3>
+                      <ul className="list-disc list-inside">
+                        {post.skills.map((skill: any) => (
+                          <li key={skill.name}>
+                            {skill.name}: {skill.description}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="mt-4">
+                      <h3 className="text-lg font-semibold">Job Categories</h3>
+                      <ul className="list-disc list-inside">
+                        {post.jobCategories.map((category: any) => (
+                          <li key={category.name}>
+                            {category.name}: {category.description}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                ))}
               </div>
             </section>
           )}
@@ -532,12 +561,14 @@ function Profile() {
               <div className="grid md:grid-cols-3 gap-6">
                 <ArticleCard
                   url={""}
-                  badgeList={['TODO', 'Somthing', 'Here']}
+                  badgeList={["TODO", "Somthing", "Here"]}
                   title={"About"}
-                  description={" Lorem ipsum dolor sit, amet consectetur adipisicing elit. Asperiores assumenda omnis sequi eveniet debitis autem at, a iure non beatae molestiae nobis in unde delectus quis reiciendis. Dicta, quidem deleniti!"}
+                  description={
+                    " Lorem ipsum dolor sit, amet consectetur adipisicing elit. Asperiores assumenda omnis sequi eveniet debitis autem at, a iure non beatae molestiae nobis in unde delectus quis reiciendis. Dicta, quidem deleniti!"
+                  }
                   profileImage={"พิการ.jpg"}
-                  postOwner={'พิการ คุง'}
-                  postedTime={'3 minutes ago'}
+                  postOwner={"พิการ คุง"}
+                  postedTime={"3 minutes ago"}
                   liked={14}
                 />
               </div>
