@@ -107,13 +107,13 @@ export const Navbar: React.FC = () => {
         <FaEdit className="mr-2" />
         แก้ไขประวัติ
       </Link>
-      <Link
+      {/* <Link
         to="/homeemp"
         className="text-gray-200 kanit-regular hover:text-white px-4 py-1 rounded-md transition-colors duration-300 flex items-center"
       >
         <FaBuilding className="mr-2" />
         สำหรับบริษัท
-      </Link>
+      </Link> */}
       <Link
         to="/postjob"
         className="text-gray-200 kanit-regular hover:text-white px-4 py-1 rounded-md transition-colors duration-300 flex items-center"
@@ -211,30 +211,40 @@ export const Navbar: React.FC = () => {
                 </Link>
               </>
             ) : (
-              <Menu width={250} position="bottom-end">
+                <Menu width={250} position="bottom-end" >
                 <Menu.Target>
-                  <button className="flex items-center space-x-2 bg-gray-200 text-black px-4 py-2 rounded-3xl hover:bg-white transition">
+                  <button 
+                  className="flex items-center space-x-2 bg-gray-200 text-black px-4 py-2 rounded-3xl hover:bg-white transition-all duration-300 shadow-sm hover:shadow-md"
+                  aria-label="User menu"
+                  >
+                  <div className="relative">
                     {user?.profilePicture ? (
-                      <Avatar
-                        src={user.profilePicture}
-                        alt={user.username}
-                        radius="xl"
-                        size={30}
-                      />
+                    <Avatar
+                      src={user.profilePicture}
+                      alt={user.username}
+                      radius="xl"
+                      size={30}
+                      className="border-2 border-seagreen"
+                    />
                     ) : (
-                      <FaUserCircle size={24} />
+                    <FaUserCircle size={24} className="text-seagreen" />
                     )}
-                    <span className="kanit-regular">{user?.username}</span>
+                    {/* <span className="absolute -top-1 -right-1 h-3 w-3 bg-green-500 rounded-full border-2 border-white"></span> */} {/* in case you want the online status */}
+                  </div>
+                  <span className="kanit-regular font-medium truncate max-w-[150px]">
+                    {user?.username}
+                  </span>
                   </button>
                 </Menu.Target>
-                <Menu.Dropdown className="m-2">
-                  <div className="p-3 text-center">
-                    <div className="kanit-regular">{user?.username}</div>
+                <Menu.Dropdown className="p-2 shadow-lg rounded-lg border border-gray-100">
+                  <div className="p-3 text-center bg-gray-50 rounded-md">
+                  <div className="kanit-regular font-medium">{user?.username}</div>
+                  <div className="text-sm text-gray-500 truncate">{user?.email}</div>
                   </div>
-                  <Divider />
+                  <Divider className="my-2" />
                   {menuItems}
                 </Menu.Dropdown>
-              </Menu>
+                </Menu>
             )}
           </div>
         </div>
