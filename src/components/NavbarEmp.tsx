@@ -177,7 +177,7 @@ export const NavbarEmp: React.FC<NavbarEmpProps> = ({
                   <>
                     <Menu.Item
                       component={Link}
-                      to="/profile"
+                      to="/profileemp"
                       className="kanit-regular"
                     >
                       โปรไฟล์
