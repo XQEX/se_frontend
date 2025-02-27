@@ -21,7 +21,7 @@ import { AiOutlineFileSearch } from "react-icons/ai";
 import { MdAutoGraph } from "react-icons/md";
 import { ArticleCard } from "../../components/ArticleCard";
 import { MdWorkspacePremium } from "react-icons/md";
-import { getUserJobFindingPosts } from "../../api/JobSeeker";
+import { getUserJobFindingPosts, updateUserProfile } from "../../api/JobSeeker";
 
 function Profile() {
   const {
@@ -143,15 +143,23 @@ function Profile() {
     );
   };
 
-  const onUserConfirmEdit = () => {
+  const onUserConfirmEdit = async () => {
     if (validateEditData()) {
-      // TODO: save data to DB
-      console.log("first name: ", firstNameValue);
-      console.log("last name: ", lastNameValue);
-      console.log("about me: ", aboutMeValue);
-      console.log("address: ", addressValue);
-      console.log("email: ", emailValue);
-      console.log("phone number: ", phoneNumberValue);
+      try {
+        const updatedUser = {
+          firstName: firstNameValue,
+          lastName: lastNameValue,
+          aboutMe: aboutMeValue,
+          address: addressValue,
+          email: emailValue,
+          contact: phoneNumberValue,
+        };
+        await updateUserProfile(updatedUser);
+        console.log("Profile updated successfully");
+        // Optionally, refetch user data here
+      } catch (error) {
+        console.error("Failed to update profile:", error);
+      }
     }
   };
 

@@ -174,6 +174,15 @@ interface UserJobFindingPostResponse {
   };
 }
 
+interface UpdateUserProfileRequest {
+  firstName: string;
+  lastName: string;
+  aboutMe: string;
+  address: string;
+  email: string;
+  contact: string;
+}
+
 export const registerJobSeeker = async (
   name: string,
   email: string,
@@ -399,3 +408,65 @@ export const getUserJobFindingPosts =
       throw error;
     }
   };
+
+export const updateUserProfile = async (
+  profileData: UpdateUserProfileRequest
+): Promise<void> => {
+  try {
+    console.log("Updating user profile with:", profileData);
+    const { data } = await axios.post<{ data: void }>(
+      `http://localhost:${backendPort}/api/user/job-seeker/auth/edit/full-name`,
+      { firstName: profileData.firstName, lastName: profileData.lastName },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    await axios.post<{ data: void }>(
+      `http://localhost:${backendPort}/api/user/job-seeker/auth/edit/about`,
+      { about: profileData.aboutMe },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    await axios.post<{ data: void }>(
+      `http://localhost:${backendPort}/api/user/job-seeker/auth/edit/address`,
+      { address: profileData.address },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    await axios.post<{ data: void }>(
+      `http://localhost:${backendPort}/api/user/job-seeker/auth/edit/email`,
+      { email: profileData.email },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    await axios.post<{ data: void }>(
+      `http://localhost:${backendPort}/api/user/job-seeker/auth/edit/contact`,
+      { contact: profileData.contact },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    console.log("User profile updated successfully");
+  } catch (error) {
+    console.error("Failed to update user profile:", error);
+    throw error;
+  }
+};
