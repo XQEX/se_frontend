@@ -82,6 +82,7 @@ const Admin: React.FC = () => {
   const handleDeleteSkill = async (id: string) => {
     try {
       await deleteSkill(id);
+      fetchSkills();
     } catch (error) {
       console.error("Failed to delete skill:", error);
     }
@@ -90,6 +91,7 @@ const Admin: React.FC = () => {
   const handleDeleteCategory = async (id: string) => {
     try {
       await deleteCategory(id);
+      fetchCategories();
     } catch (error) {
       console.error("Failed to delete category:", error);
     }

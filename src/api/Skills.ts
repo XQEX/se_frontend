@@ -21,11 +21,13 @@ const api = axios.create({
   headers: {
     Accept: "application/json",
   },
+  withCredentials: true,
 });
 
 export const getAllSkills = async (): Promise<SkillResponse> => {
   try {
     const { data } = await api.get<SkillResponse>("/");
+    console.log("Fetched skills:", data);
     return data;
   } catch (error) {
     console.error("Failed to fetch skills:", error);
@@ -39,6 +41,7 @@ export const createSkill = async (skill: {
 }): Promise<SkillResponse> => {
   try {
     const { data } = await api.post<SkillResponse>("/", skill);
+    console.log("Created skill:", data);
     return data;
   } catch (error) {
     console.error("Failed to create skill:", error);
@@ -49,6 +52,7 @@ export const createSkill = async (skill: {
 export const getSkillById = async (id: string): Promise<SkillResponse> => {
   try {
     const { data } = await api.get<SkillResponse>(`/${id}`);
+    console.log("Fetched skill:", data);
     return data;
   } catch (error) {
     console.error("Failed to fetch skill:", error);
@@ -62,6 +66,7 @@ export const updateSkill = async (
 ): Promise<SkillResponse> => {
   try {
     const { data } = await api.put<SkillResponse>(`/${id}`, skill);
+    console.log("Updated skill:", data);
     return data;
   } catch (error) {
     console.error("Failed to update skill:", error);
@@ -72,6 +77,7 @@ export const updateSkill = async (
 export const deleteSkill = async (id: string): Promise<SkillResponse> => {
   try {
     const { data } = await api.delete<SkillResponse>(`/${id}`);
+    console.log("Deleted skill:", data);
     return data;
   } catch (error) {
     console.error("Failed to delete skill:", error);
