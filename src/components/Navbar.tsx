@@ -11,12 +11,30 @@ import {
 import { MdPostAdd } from "react-icons/md";
 import { useDisclosure } from "@mantine/hooks";
 import { useUser } from "../context/UserContext";
-import { logoutJobSeeker } from "../api/JobSeeker";
+import {
+  logoutJobSeeker,
+  fetchNotifications,
+  markNotificationAsRead,
+} from "../api/JobSeeker";
 import { logoutEmployer } from "../api/Employer";
 import { logoutCompany } from "../api/Company";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+interface Notification {
+  id: string;
+  status: "READ" | "UNREAD";
+  title: string;
+  description: string;
+  userType: string;
+  jobSeekerId?: string;
+  oauthJobSeekerId?: string;
+  employerId?: string;
+  oauthEmployerId?: string;
+  companyId?: string;
+  createdAt: string;
+  updatedAt: string;
+}
 interface NavbarProps {
   user: any;
   isLoading: boolean;
@@ -42,6 +60,43 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [scrollDirection, setScrollDirection] = useState("up");
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState("all"); // เริ่มต้นด้วย "all"
+  const filteredNotifications = notifications.filter((notification) => {
+    if (filter === "all") return true;
+    return notification.status === filter;
+  });
+  useEffect(() => {
+    const loadNotifications = async () => {
+      if (!user) return; // ป้องกันการโหลดถ้าไม่มี user
+      try {
+        const data = await fetchNotifications();
+        if (Array.isArray(data)) {
+          const filteredData: Notification[] = data.map((item) => ({
+            ...item,
+            jobSeekerId: item.jobSeekerId || "",
+            oauthJobSeekerId: item.oauthJobSeekerId || "",
+            employerId: item.employerId || "",
+            oauthEmployerId: item.oauthEmployerId || "",
+            companyId: item.companyId || "",
+          }));
+          setNotifications(filteredData);
+          console.log(notifications);
+        } else {
+          throw new Error("Invalid notifications data");
+        }
+      } catch (err) {
+        console.error("Error loading notifications:", err); // 👉 เพิ่ม log
+        setError("Failed to load notifications");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadNotifications();
+  }, [user]); // ให้ `user` เป็น dependency
 
   // Helper function for toast messages
   const notifyError = (message: string) =>
@@ -79,6 +134,25 @@ export const Navbar: React.FC<NavbarProps> = ({
       setIsSignedIn(false);
     } catch (error) {
       console.error("Failed to logout:", error);
+    }
+  };
+
+  const handleNotificationClick = async (notification: Notification) => {
+    try {
+      // Mark the notification as read
+      const updatedNotification = await markNotificationAsRead(notification.id);
+      // Update the notification state
+      setNotifications((prevNotifications) =>
+        prevNotifications.map((notif) =>
+          notif.id === notification.id ? updatedNotification : notif
+        )
+      );
+      // Show the notification details
+      alert(
+        `Notification Details:\n\nTitle: ${notification.title}\nDescription: ${notification.description}`
+      );
+    } catch (error) {
+      console.error("Failed to mark notification as read:", error);
     }
   };
 
@@ -122,13 +196,6 @@ export const Navbar: React.FC<NavbarProps> = ({
         <FaEdit className="mr-2" />
         แก้ไขประวัติ
       </Link>
-      {/* <Link
-        to="/homeemp"
-        className="text-gray-200 kanit-regular hover:text-white px-4 py-1 rounded-md transition-colors duration-300 flex items-center"
-      >
-        <FaBuilding className="mr-2" />
-        สำหรับบริษัท
-      </Link> */}
       <Link
         to="/postjob"
         className="text-gray-200 kanit-regular hover:text-white px-4 py-1 rounded-md transition-colors duration-300 flex items-center"
@@ -138,12 +205,6 @@ export const Navbar: React.FC<NavbarProps> = ({
       </Link>
     </div>
   );
-
-  const FakeNotifications = ["a", "b", "c", "d", "e", "f", "g"];
-
-  // if (isLoading) {
-  //   return <div>Loading...</div>;
-  // }
 
   return (
     <>
@@ -169,7 +230,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <Menu.Target>
                   <button className="text-gray-200 kanit-regular hover:text-white transition-colors duration-300 relative">
                     <FaBell size={20} />
-                    {FakeNotifications.length > 0 && (
+                    {notifications.length > 0 && (
                       <span className="absolute top-0 right-0 inline-block w-2 h-2 bg-red-500 rounded-full"></span>
                     )}
                   </button>
@@ -181,10 +242,32 @@ export const Navbar: React.FC<NavbarProps> = ({
                     </div>
                   </div>
                   <Divider />
-                  {FakeNotifications.length > 0 ? (
-                    FakeNotifications.map((message, index) => (
-                      <Menu.Item key={index} className="kanit-light">
-                        {message}
+                  {loading ? (
+                    <Menu.Item className="kanit-light text-center">
+                      กำลังโหลด...
+                    </Menu.Item>
+                  ) : error ? (
+                    <Menu.Item className="kanit-light text-center text-red-500">
+                      {error}
+                    </Menu.Item>
+                  ) : notifications.length > 0 ? (
+                    notifications.map((notification, index) => (
+                      <Menu.Item
+                        key={index}
+                        className="kanit-light"
+                        onClick={() => handleNotificationClick(notification)}
+                      >
+                        <div>
+                          <div>
+                            {notification.title}
+                            {notification.status === "UNREAD" && (
+                              <span className="text-red-500"> (NEW)</span>
+                            )}
+                          </div>
+                          <div className="text-xs text-gray-500">
+                            {notification.status}
+                          </div>
+                        </div>
                       </Menu.Item>
                     ))
                   ) : (
@@ -194,9 +277,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                   )}
                   <Divider />
                   <Menu.Item className="kanit-regular text-center bg-gray-200">
-                    <a href="/notifications" className="text-seagreen">
+                    <Link to="/notifications" className="text-seagreen">
                       ดูทั้งหมด
-                    </a>
+                    </Link>
                   </Menu.Item>
                 </Menu.Dropdown>
               </Menu>
@@ -226,40 +309,43 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </Link>
               </>
             ) : (
-                <Menu width={250} position="bottom-end" >
+              <Menu width={250} position="bottom-end">
                 <Menu.Target>
-                  <button 
-                  className="flex items-center space-x-2 bg-gray-200 text-black px-4 py-2 rounded-3xl hover:bg-white transition-all duration-300 shadow-sm hover:shadow-md"
-                  aria-label="User menu"
+                  <button
+                    className="flex items-center space-x-2 bg-gray-200 text-black px-4 py-2 rounded-3xl hover:bg-white transition-all duration-300 shadow-sm hover:shadow-md"
+                    aria-label="User menu"
                   >
-                  <div className="relative">
-                    {user?.profilePicture ? (
-                    <Avatar
-                      src={user.profilePicture}
-                      alt={user.username}
-                      radius="xl"
-                      size={30}
-                      className="border-2 border-seagreen"
-                    />
-                    ) : (
-                    <FaUserCircle size={24} className="text-seagreen" />
-                    )}
-                    {/* <span className="absolute -top-1 -right-1 h-3 w-3 bg-green-500 rounded-full border-2 border-white"></span> */} {/* in case you want the online status */}
-                  </div>
-                  <span className="kanit-regular font-medium truncate max-w-[150px]">
-                    {user?.username}
-                  </span>
+                    <div className="relative">
+                      {user?.profilePicture ? (
+                        <Avatar
+                          src={user.profilePicture}
+                          alt={user.username}
+                          radius="xl"
+                          size={30}
+                          className="border-2 border-seagreen"
+                        />
+                      ) : (
+                        <FaUserCircle size={24} className="text-seagreen" />
+                      )}
+                    </div>
+                    <span className="kanit-regular font-medium truncate max-w-[150px]">
+                      {user?.username}
+                    </span>
                   </button>
                 </Menu.Target>
                 <Menu.Dropdown className="p-2 shadow-lg rounded-lg border border-gray-100">
                   <div className="p-3 text-center bg-gray-50 rounded-md">
-                  <div className="kanit-regular font-medium">{user?.username}</div>
-                  <div className="text-sm text-gray-500 truncate">{user?.email}</div>
+                    <div className="kanit-regular font-medium">
+                      {user?.username}
+                    </div>
+                    <div className="text-sm text-gray-500 truncate">
+                      {user?.email}
+                    </div>
                   </div>
                   <Divider className="my-2" />
                   {menuItems}
                 </Menu.Dropdown>
-                </Menu>
+              </Menu>
             )}
           </div>
         </div>
@@ -318,7 +404,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                       <button className="text-gray-900 kanit-regular hover:text-black transition-colors duration-300 relative flex items-center">
                         <FaBell className="mr-2" size={20} />
                         การแจ้งเตือน
-                        {FakeNotifications.length > 0 && (
+                        {notifications.length > 0 && (
                           <span className="absolute top-0 left-5 inline-block w-2 h-2 bg-red-500 rounded-full"></span>
                         )}
                       </button>
@@ -328,18 +414,74 @@ export const Navbar: React.FC<NavbarProps> = ({
                         <div className="kanit-regular text-center">
                           การแจ้งเตือน
                         </div>
+                        <div className="flex justify-around my-2">
+                          <button
+                            onClick={() => setFilter("all")}
+                            className={`px-2 py-1 ${
+                              filter === "all" ? "bg-gray-200" : ""
+                            }`}
+                          >
+                            ทั้งหมด
+                          </button>
+                          <button
+                            onClick={() => setFilter("READ")}
+                            className={`px-2 py-1 ${
+                              filter === "READ" ? "bg-gray-200" : ""
+                            }`}
+                          >
+                            อ่านแล้ว
+                          </button>
+                          <button
+                            onClick={() => setFilter("UNREAD")}
+                            className={`px-2 py-1 ${
+                              filter === "UNREAD" ? "bg-gray-200" : ""
+                            }`}
+                          >
+                            ยังไม่อ่าน
+                          </button>
+                        </div>
                       </div>
                       <Divider />
-                      {FakeNotifications.map((message, index) => (
-                        <Menu.Item key={index} className="kanit-light">
-                          {message}
+                      {loading ? (
+                        <Menu.Item className="kanit-light text-center">
+                          กำลังโหลด...
                         </Menu.Item>
-                      ))}
+                      ) : error ? (
+                        <Menu.Item className="kanit-light text-center text-red-500">
+                          {error}
+                        </Menu.Item>
+                      ) : filteredNotifications.length > 0 ? (
+                        filteredNotifications.map((notification, index) => (
+                          <Menu.Item
+                            key={index}
+                            className="kanit-light"
+                            onClick={() =>
+                              handleNotificationClick(notification)
+                            }
+                          >
+                            <div>
+                              <div>
+                                {notification.title}
+                                {notification.status === "UNREAD" && (
+                                  <span className="text-red-500"> (NEW)</span>
+                                )}
+                              </div>
+                              <div className="text-xs text-gray-500">
+                                {notification.status}
+                              </div>
+                            </div>
+                          </Menu.Item>
+                        ))
+                      ) : (
+                        <Menu.Item className="kanit-light text-center">
+                          ไม่มีการแจ้งเตือน
+                        </Menu.Item>
+                      )}
                       <Divider />
                       <Menu.Item className="kanit-regular text-center bg-gray-200">
-                        <a href="/notifications" className="text-seagreen">
+                        <Link to="/notifications" className="text-seagreen">
                           ดูทั้งหมด
-                        </a>
+                        </Link>
                       </Menu.Item>
                     </Menu.Dropdown>
                   </Menu>

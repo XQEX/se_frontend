@@ -182,6 +182,25 @@ interface UpdateUserProfileRequest {
   email: string;
   contact: string;
 }
+interface Notification {
+  id: string;
+  status: "READ" | "UNREAD";
+  title: string;
+  description: string;
+  userType: string;
+  jobSeekerId?: string;
+  oauthJobSeekerId?: string;
+  employerId?: string;
+  oauthEmployerId?: string;
+  companyId?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface NotificationResponse {
+  success: boolean;
+  data: Notification[];
+}
 
 export const registerJobSeeker = async (
   name: string,
@@ -467,6 +486,49 @@ export const updateUserProfile = async (
     console.log("User profile updated successfully");
   } catch (error) {
     console.error("Failed to update user profile:", error);
+    throw error;
+  }
+};
+
+export const fetchNotifications = async (
+  status: "all" | "READ" | "UNREAD" = "all"
+): Promise<Notification[]> => {
+  try {
+    console.log("Fetching notifications with status:", status);
+    const { data } = await axios.get<NotificationResponse>(
+      `http://localhost:${backendPort}/api/notification`,
+      {
+        params: { status },
+        withCredentials: true,
+      }
+    );
+    console.log("Notifications fetched successfully:", data);
+    return data.data;
+  } catch (error) {
+    console.error("Failed to fetch notifications:", error);
+    throw error;
+  }
+};
+
+export const markNotificationAsRead = async (
+  id: string
+): Promise<Notification> => {
+  try {
+    console.log("Marking notification as read with ID:", id);
+    const { data } = await axios.post<{ data: Notification }>(
+      `http://localhost:${backendPort}/api/notification/${id}/read`,
+      {},
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    console.log("Notification marked as read successfully:", data);
+    return data.data;
+  } catch (error) {
+    console.error("Failed to mark notification as read:", error);
     throw error;
   }
 };
