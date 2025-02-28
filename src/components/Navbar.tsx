@@ -15,6 +15,7 @@ import {
   logoutJobSeeker,
   fetchNotifications,
   markNotificationAsRead,
+  markAllNotificationsAsRead,
 } from "../api/JobSeeker";
 import { logoutEmployer } from "../api/Employer";
 import { logoutCompany } from "../api/Company";
@@ -155,6 +156,20 @@ export const Navbar: React.FC<NavbarProps> = ({
     }
   };
 
+  const handleMarkAllAsRead = async () => {
+    try {
+      // Mark all notifications as read
+      const updatedNotifications = await markAllNotificationsAsRead();
+      // Update the notification state
+      setNotifications(updatedNotifications);
+      // Show a success message
+      alert("All notifications have been marked as read.");
+    } catch (error) {
+      console.error("Failed to mark all notifications as read:", error);
+      alert("Failed to mark all notifications as read.");
+    }
+  };
+
   const menuItems = (
     <div>
       {isSignedIn ? (
@@ -235,7 +250,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </button>
                 </Menu.Target>
                 <Menu.Dropdown>
-                  <div className="p-2 kanit-light">
+                  <div className="p-2">
                     <div className="kanit-regular text-center">
                       การแจ้งเตือน
                     </div>
@@ -302,9 +317,12 @@ export const Navbar: React.FC<NavbarProps> = ({
                   )}
                   <Divider />
                   <Menu.Item className="kanit-regular text-center bg-gray-200">
-                    <Link to="/notifications" className="text-seagreen">
-                      ดูทั้งหมด
-                    </Link>
+                    <button
+                      className="text-seagreen"
+                      onClick={handleMarkAllAsRead} // Ensure this line is correct
+                    >
+                      อ่านทั้งหมด
+                    </button>
                   </Menu.Item>
                 </Menu.Dropdown>
               </Menu>
@@ -504,9 +522,12 @@ export const Navbar: React.FC<NavbarProps> = ({
                       )}
                       <Divider />
                       <Menu.Item className="kanit-regular text-center bg-gray-200">
-                        <Link to="/notifications" className="text-seagreen">
-                          ดูทั้งหมด
-                        </Link>
+                        <button
+                          className="text-seagreen"
+                          onClick={handleMarkAllAsRead} // Ensure this line is correct
+                        >
+                          อ่านทั้งหมด
+                        </button>
                       </Menu.Item>
                     </Menu.Dropdown>
                   </Menu>

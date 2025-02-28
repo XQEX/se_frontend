@@ -532,3 +532,24 @@ export const markNotificationAsRead = async (
     throw error;
   }
 };
+
+export const markAllNotificationsAsRead = async (): Promise<Notification[]> => {
+  try {
+    console.log("Marking all notifications as read...");
+    const { data } = await axios.post<{ data: Notification[] }>(
+      `http://localhost:${backendPort}/api/notification/mark-all-read`,
+      {},
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    console.log("All notifications marked as read successfully:", data);
+    return data.data;
+  } catch (error) {
+    console.error("Failed to mark all notifications as read:", error);
+    throw error;
+  }
+};
