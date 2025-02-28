@@ -414,7 +414,9 @@ export const updateUserProfile = async (
 ): Promise<void> => {
   try {
     console.log("Updating user profile with:", profileData);
-    const { data } = await axios.post<{ data: void }>(
+
+    console.log("Updating full name...");
+    const fullNameResponse = await axios.put<{ data: void }>(
       `http://localhost:${backendPort}/api/user/job-seeker/auth/edit/full-name`,
       { firstName: profileData.firstName, lastName: profileData.lastName },
       {
@@ -424,7 +426,10 @@ export const updateUserProfile = async (
         withCredentials: true,
       }
     );
-    await axios.post<{ data: void }>(
+    console.log("Full name update response:", fullNameResponse);
+
+    console.log("Updating about me...");
+    const aboutResponse = await axios.put<{ data: void }>(
       `http://localhost:${backendPort}/api/user/job-seeker/auth/edit/about`,
       { about: profileData.aboutMe },
       {
@@ -434,9 +439,12 @@ export const updateUserProfile = async (
         withCredentials: true,
       }
     );
-    await axios.post<{ data: void }>(
+    console.log("About me update response:", aboutResponse);
+
+    console.log("Updating address...");
+    const addressResponse = await axios.put<{ data: void }>(
       `http://localhost:${backendPort}/api/user/job-seeker/auth/edit/address`,
-      { address: profileData.address },
+      { address: profileData.address, provinceAddress: "XD" },
       {
         headers: {
           "Content-Type": "application/json",
@@ -444,7 +452,10 @@ export const updateUserProfile = async (
         withCredentials: true,
       }
     );
-    await axios.post<{ data: void }>(
+    console.log("Address update response:", addressResponse);
+
+    console.log("Updating email...");
+    const emailResponse = await axios.put<{ data: void }>(
       `http://localhost:${backendPort}/api/user/job-seeker/auth/edit/email`,
       { email: profileData.email },
       {
@@ -454,7 +465,10 @@ export const updateUserProfile = async (
         withCredentials: true,
       }
     );
-    await axios.post<{ data: void }>(
+    console.log("Email update response:", emailResponse);
+
+    console.log("Updating contact...");
+    const contactResponse = await axios.put<{ data: void }>(
       `http://localhost:${backendPort}/api/user/job-seeker/auth/edit/contact`,
       { contact: profileData.contact },
       {
@@ -464,9 +478,90 @@ export const updateUserProfile = async (
         withCredentials: true,
       }
     );
+    console.log("Contact update response:", contactResponse);
+
     console.log("User profile updated successfully");
   } catch (error) {
     console.error("Failed to update user profile:", error);
+    throw error;
+  }
+};
+
+export const updateJobSeekerUsername = async (
+  username: string,
+  password: string
+): Promise<{ userId: string; username: string }> => {
+  try {
+    console.log("Updating job seeker's username with:", { username, password });
+    const { data } = await axios.put<{
+      data: { userId: string; username: string };
+    }>(
+      `http://localhost:${backendPort}/api/user/job-seeker/auth/edit/username`,
+      { username, password },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    console.log("Username update successful:", data);
+    return data.data;
+  } catch (error) {
+    console.error("Username update failed:", error);
+    throw error;
+  }
+};
+
+export const updateJobSeekerPassword = async (
+  password: string,
+  oldPassword: string
+): Promise<{ userId: string }> => {
+  try {
+    console.log("Updating job seeker's password with:", {
+      password,
+      oldPassword,
+    });
+    const { data } = await axios.put<{ data: { userId: string } }>(
+      `http://localhost:${backendPort}/api/user/job-seeker/auth/edit/password`,
+      { password, oldPassword },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    console.log("Password update successful:", data);
+    return data.data;
+  } catch (error) {
+    console.error("Password update failed:", error);
+    throw error;
+  }
+};
+
+export const uploadProfileImage = async (
+  formData: FormData
+): Promise<{ approvalId: number; url: string }> => {
+  try {
+    console.log("Uploading profile image...");
+
+    const { data } = await axios.post<{
+      data: { approvalId: number; url: string };
+    }>(
+      `http://localhost:${backendPort}/api/user/job-seeker/auth/profile-image`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
+      }
+    );
+    console.log("Profile image upload successful:", data);
+    return data.data;
+  } catch (error) {
+    console.error("Profile image upload failed:", error);
     throw error;
   }
 };

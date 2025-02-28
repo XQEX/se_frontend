@@ -16,6 +16,7 @@ import { MdWork } from "react-icons/md";
 import { RiUserFollowFill } from "react-icons/ri";
 import { FaHeart } from "react-icons/fa6";
 import { SkillCardGradient } from "../../components/SkillCardGradient";
+import { ToastContainer, toast } from "react-toastify";
 import { BsPostcardHeart } from "react-icons/bs";
 import { AiOutlineFileSearch } from "react-icons/ai";
 import { MdAutoGraph } from "react-icons/md";
@@ -23,8 +24,17 @@ import { ArticleCard } from "../../components/ArticleCard";
 import { MdWorkspacePremium } from "react-icons/md";
 import { getUserJobFindingPosts, updateUserProfile } from "../../api/JobSeeker";
 import { deleteJobFindingPost } from "../../api/JobSeeker";
+import { updateJobSeekerUsername } from "../../api/JobSeeker";
+import { updateJobSeekerPassword } from "../../api/JobSeeker";
+import { AxiosError } from "axios";
 
 function Profile() {
+  // Helper function for toast messages
+  const notifyError = (message: string) =>
+    toast.error(message, { position: "top-center" });
+  const notifySuccess = (message: string) =>
+    toast.success(message, { position: "top-center" });
+
   const {
     user,
     isLoading,
@@ -80,6 +90,13 @@ function Profile() {
   const [aboutMeError, setAboutMeError] = useState<string>("");
   const [addressError, setAddressError] = useState<string>("");
   const [userPosts, setUserPosts] = useState<any[]>([]);
+  const [userNameValue, setuserNameValue] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [confirmpassword, setConfirmPassword] = useState<string>("");
+
+  const [newPassword, setNewPassword] = useState<string>("");
+  const [password2, setPassword2] = useState<string>("");
+  const [confirmpassword2, setConfirmPassword2] = useState<string>("");
 
   useEffect(() => {
     const fetchUserPost = async () => {
@@ -96,8 +113,8 @@ function Profile() {
     setAboutMeValue(user.aboutMe);
     setAddressValue(user.address);
     setEmailValue(user.email);
-    const [_, phoneNumber] = user.contact.split("+66");
-    setPhoneNumberValue(phoneNumber);
+    setuserNameValue(user.username);
+    setPhoneNumberValue(user.contact);
 
     setFirstNameError("");
     setLastNameError("");
@@ -121,18 +138,21 @@ function Profile() {
     if (firstNameValue == "") {
       isValidateFirstName = false;
       setFirstNameError("Please enter your first name");
+      notifyError("Please enter your first name");
     }
 
     // last name validation
     if (lastNameValue == "") {
       isValidateLastName = false;
       setLastNameError("Please enter your last name");
+      notifyError("Please enter your last name");
     }
 
     // address validation
     if (addressValue == "") {
       isValidateAddress = false;
       setAddressError("Please enter your address");
+      notifyError("Please enter your address");
     }
 
     return (
@@ -156,10 +176,57 @@ function Profile() {
           contact: phoneNumberValue,
         };
         await updateUserProfile(updatedUser);
-        console.log("Profile updated successfully");
+        await updateJobSeekerUsername(userNameValue, password);
+        notifySuccess("Profile updated successfully");
         // Optionally, refetch user data here
+        refetchjobseeker();
       } catch (error) {
-        console.error("Failed to update profile:", error);
+        notifyError(error as string);
+      }
+    }
+  };
+
+  const onUserConfirmEditUsername = async () => {
+    if (password !== confirmpassword) {
+      notifyError("Passwords do not match");
+      return;
+    }
+    try {
+      const response = await updateJobSeekerUsername(userNameValue, password);
+      console.log("response:", response);
+      // if (response.data.error) {
+      //   notifyError(response.data.error);
+      //   return;
+      // }
+      notifySuccess("username updated successfully");
+
+      refetchjobseeker();
+      console.log("refetchjobseeker");
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        notifyError((error as AxiosError).response.data.msg);
+      } else {
+        notifyError(error as string);
+      }
+    }
+  };
+
+  const onUserConfirmEditPassword = async () => {
+    if (password2 !== confirmpassword2) {
+      notifyError("Passwords do not match");
+      return;
+    }
+    try {
+      await updateJobSeekerPassword(newPassword, password2);
+      notifySuccess("Passwords updated successfully");
+
+      refetchjobseeker();
+      console.log("refetchjobseeker");
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        notifyError((error as AxiosError).response.data.msg);
+      } else {
+        notifyError(error as string);
       }
     }
   };
@@ -176,6 +243,7 @@ function Profile() {
 
   return (
     <div>
+      <ToastContainer />
       <Navbar
         user={user}
         isLoading={isLoading}
@@ -355,6 +423,78 @@ function Profile() {
               >
                 <TextInput
                   mt="md"
+                  label="username"
+                  placeholder="your username"
+                  required
+                  inputWrapperOrder={["label", "input", "error"]}
+                  value={userNameValue}
+                  onChange={(event) => setuserNameValue(event.target.value)}
+                />
+
+                <TextInput
+                  mt="md"
+                  label="password"
+                  placeholder="password for changing username"
+                  required
+                  inputWrapperOrder={["label", "input", "error"]}
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                />
+
+                <TextInput
+                  mt="md"
+                  label="confirmpassword"
+                  placeholder="confirm your password"
+                  required
+                  inputWrapperOrder={["label", "input", "error"]}
+                  value={confirmpassword}
+                  onChange={(event) => setConfirmPassword(event.target.value)}
+                />
+                <button
+                  className="text-base bg-green-600 text-white px-3 py-1 rounded-sm hover:bg-green-500 transition"
+                  onClick={onUserConfirmEditUsername}
+                >
+                  update username
+                </button>
+
+                <TextInput
+                  mt="md"
+                  label="new password"
+                  placeholder="your new password"
+                  required
+                  inputWrapperOrder={["label", "input", "error"]}
+                  value={newPassword}
+                  onChange={(event) => setNewPassword(event.target.value)}
+                />
+
+                <TextInput
+                  mt="md"
+                  label="old password"
+                  placeholder="password for changing username"
+                  required
+                  inputWrapperOrder={["label", "input", "error"]}
+                  value={password2}
+                  onChange={(event) => setPassword2(event.target.value)}
+                />
+
+                <TextInput
+                  mt="md"
+                  label="confirm old password"
+                  placeholder="confirm your old password"
+                  required
+                  inputWrapperOrder={["label", "input", "error"]}
+                  value={confirmpassword2}
+                  onChange={(event) => setConfirmPassword2(event.target.value)}
+                />
+                <button
+                  className="text-base bg-green-600 text-white px-3 py-1 rounded-sm hover:bg-green-500 transition"
+                  onClick={onUserConfirmEditPassword}
+                >
+                  update password
+                </button>
+
+                <TextInput
+                  mt="md"
                   label="First Name"
                   placeholder="your first name"
                   required
@@ -394,6 +534,28 @@ function Profile() {
                   inputWrapperOrder={["label", "input", "error"]}
                   value={addressValue}
                   onChange={(event) => setAddressValue(event.target.value)}
+                />
+
+                <TextInput
+                  mt="md"
+                  label="Email"
+                  placeholder="your email"
+                  required
+                  error={""}
+                  inputWrapperOrder={["label", "input", "error"]}
+                  value={emailValue}
+                  onChange={(event) => setEmailValue(event.target.value)}
+                />
+
+                <TextInput
+                  mt="md"
+                  label="Contact"
+                  placeholder="your Contact"
+                  required
+                  error={""}
+                  inputWrapperOrder={["label", "input", "error"]}
+                  value={phoneNumberValue}
+                  onChange={(event) => setPhoneNumberValue(event.target.value)}
                 />
 
                 <div className="mt-6 w-full flex justify-end">
