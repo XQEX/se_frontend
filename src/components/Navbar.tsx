@@ -97,7 +97,6 @@ export const Navbar: React.FC<NavbarProps> = ({
 
     loadNotifications();
   }, [user]); // ให้ `user` เป็น dependency
-
   // Helper function for toast messages
   const notifyError = (message: string) =>
     toast.error(message, { position: "top-center" });
@@ -236,9 +235,35 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </button>
                 </Menu.Target>
                 <Menu.Dropdown>
-                  <div className="p-2">
+                  <div className="p-2 kanit-light">
                     <div className="kanit-regular text-center">
                       การแจ้งเตือน
+                    </div>
+                    <div className="flex justify-around my-2">
+                      <button
+                        onClick={() => setFilter("all")}
+                        className={`px-2 py-1 ${
+                          filter === "all" ? "bg-gray-200" : ""
+                        }`}
+                      >
+                        ทั้งหมด
+                      </button>
+                      <button
+                        onClick={() => setFilter("READ")}
+                        className={`px-2 py-1 ${
+                          filter === "READ" ? "bg-gray-200" : ""
+                        }`}
+                      >
+                        อ่านแล้ว
+                      </button>
+                      <button
+                        onClick={() => setFilter("UNREAD")}
+                        className={`px-2 py-1 ${
+                          filter === "UNREAD" ? "bg-gray-200" : ""
+                        }`}
+                      >
+                        ยังไม่อ่าน
+                      </button>
                     </div>
                   </div>
                   <Divider />
@@ -250,8 +275,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                     <Menu.Item className="kanit-light text-center text-red-500">
                       {error}
                     </Menu.Item>
-                  ) : notifications.length > 0 ? (
-                    notifications.map((notification, index) => (
+                  ) : filteredNotifications.length > 0 ? (
+                    filteredNotifications.map((notification, index) => (
                       <Menu.Item
                         key={index}
                         className="kanit-light"
