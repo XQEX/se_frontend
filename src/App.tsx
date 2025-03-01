@@ -27,6 +27,7 @@ import Admin from "./pages/Admin";
 import ExampleComponent from "./components/ExampleComponent";
 import Terms from "./pages/Term";
 import ForgotPassword from "./pages/ForgotPassword";
+import ViewPostJobseeker from "./pages/JobSeeker/ViewPostJobseeker";
 
 function App() {
   return (
@@ -37,7 +38,7 @@ function App() {
         <Route path="find" element={<Find />} />
         <Route path="signUp/job-seeker" element={<SignUpJobSeek />} />
         <Route path="signin" element={<SignIn />} />
-        <Route path="profile" element={<Profile/>} />
+        <Route path="profile" element={<Profile />} />
         <Route path="settings" element={<Settings />} />
         <Route path="contactus" element={<ContactUs />} />
         <Route path="application" element={<ApplicationForm />} />
@@ -46,7 +47,11 @@ function App() {
         <Route path="/trackJobseeker/:id" element={<TrackDetailsJobSeeker />} />
         <Route path="/postjob" element={<PostJob />} />
         <Route path="/jobseeker/details/:id" element={<JobDetail />} />
-        <Route path = "/terms" element={<Terms />} />
+        <Route path="/terms" element={<Terms />} />
+        <Route
+          path="/job-seeker/viewpost/:id"
+          element={<ViewPostJobseeker />}
+        />
 
         {/* Routes สำหรับ Employers */}
         <Route path="signUp/Employer" element={<SignUpEmp />} />
@@ -66,8 +71,7 @@ function App() {
         <Route path="admin" element={<Admin />} />
         <Route path="*" element={<NoPage />} />
 
-
-        <Route path ="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
       </Routes>
     </div>
   );
