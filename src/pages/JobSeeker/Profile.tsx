@@ -272,7 +272,11 @@ function Profile() {
           <div className="bg-white rounded-lg shadow-md p-4 md:p-6 -mt-20 flex flex-col md:flex-row items-center md:items-start">
             <div className="w-48 h-48 rounded-3xl overflow-hidden border-4 border-white shadow-md">
               <img
-                src="พิการ.jpg"
+                src={
+                  user.profilePicture !== "UNDEFINED"
+                    ? user.profilePicture
+                    : "พิการ.jpg"
+                }
                 alt="Profile photo"
                 className="object-cover w-full h-full"
               />
