@@ -1,20 +1,20 @@
-"use client"
+"use client";
 
-import { useEffect, useRef, useState } from "react"
-import { Navbar } from "../../components/Navbar"
-import { NavbarEmp } from "../../components/NavbarEmp"
-import Lottie from "lottie-react"
-import Animation from "../../Animation/Job.json"
-import { gsap } from "gsap"
-import { Link } from "react-router-dom"
+import { useEffect, useRef, useState } from "react";
+import { Navbar } from "../../components/Navbar";
+import { NavbarEmp } from "../../components/NavbarEmp";
+import Lottie from "lottie-react";
+import Animation from "../../Animation/Job.json";
+import { gsap } from "gsap";
+import { Link } from "react-router-dom";
 import { useUser } from "../../context/UserContext";
 
 function Home() {
-  const headingRef = useRef(null)
-  const subTextRef = useRef(null)
-  const link1Ref = useRef(null)
-  const link2Ref = useRef(null)
-  const lottieRef = useRef(null)
+  const headingRef = useRef(null);
+  const subTextRef = useRef(null);
+  const link1Ref = useRef(null);
+  const link2Ref = useRef(null);
+  const lottieRef = useRef(null);
 
   const {
     user,
@@ -46,8 +46,8 @@ function Home() {
         x: 0,
         duration: 2.5,
         ease: "power2.out",
-      },
-    )
+      }
+    );
 
     gsap.fromTo(
       [link1Ref.current, link2Ref.current],
@@ -58,8 +58,8 @@ function Home() {
         duration: 3.5,
         ease: "power2.out",
         stagger: 0.5,
-      },
-    )
+      }
+    );
 
     gsap.fromTo(
       headingRef.current,
@@ -69,8 +69,8 @@ function Home() {
         y: 0,
         duration: 2.5,
         ease: "power2.out",
-      },
-    )
+      }
+    );
 
     gsap.fromTo(
       lottieRef.current,
@@ -79,40 +79,49 @@ function Home() {
         opacity: 1,
         duration: 2.5,
         ease: "power2.out",
-      },
-    )
-  }, [])
+      }
+    );
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-green-50 to-white">
-      {user?.type== "JOBSEEKER" ||user?.type== null?
-      (<Navbar
-        user={user}
-        isLoading={isLoading}
-        isHaveUser={isHaveUser}
-        refetchjobseeker={refetchjobseeker}
-        refetchemployer={refetchemployer}
-        refetchCompany={refetchCompany}
-        isStale={isStale}
-        setUser={setUser}
-      />):
-      (<NavbarEmp
-        user={user}
-        isLoading={isLoading}
-        isHaveUser={isHaveUser}
-        refetchjobseeker={refetchjobseeker}
-        refetchemployer={refetchemployer}
-        refetchCompany={refetchCompany}
-        isStale={isStale}
-        setUser={setUser}
-      />)}
+      {user?.type == "JOBSEEKER" || user?.type == null ? (
+        <Navbar
+          user={user}
+          isLoading={isLoading}
+          isHaveUser={isHaveUser}
+          refetchjobseeker={refetchjobseeker}
+          refetchemployer={refetchemployer}
+          refetchCompany={refetchCompany}
+          isStale={isStale}
+          setUser={setUser}
+        />
+      ) : (
+        <NavbarEmp
+          user={user}
+          isLoading={isLoading}
+          isHaveUser={isHaveUser}
+          refetchjobseeker={refetchjobseeker}
+          refetchemployer={refetchemployer}
+          refetchCompany={refetchCompany}
+          isStale={isStale}
+          setUser={setUser}
+        />
+      )}
       <div className="kanit-regular flex-grow flex flex-col md:flex-row justify-center items-center p-6 md:p-16 gap-8 md:gap-16 ">
         <div className="flex flex-col items-center md:items-start text-center md:text-left max-w-2xl">
-          <h1 ref={headingRef} className="text-5xl md:text-7xl font-bold mb-6 text-green-700 leading-tight">
+          <h1
+            ref={headingRef}
+            className="text-5xl md:text-7xl font-bold mb-6 text-green-700 leading-tight"
+          >
             ยินดีต้อนรับสู่ <span className="text-seagreen">SkillBridge</span>
           </h1>
-          <p ref={subTextRef} className="text-xl md:text-2xl mb-8 text-gray-600 leading-relaxed kanit-regular">
-            แหล่งรวมงานสำหรับการหางานของบุคคลกลุ่มเฉพาะทาง ที่ช่วยเสริมสร้างความเท่าเทียมกันในสังคม
+          <p
+            ref={subTextRef}
+            className="text-xl md:text-2xl mb-8 text-gray-600 leading-relaxed kanit-regular"
+          >
+            แหล่งรวมงานสำหรับการหางานของบุคคลกลุ่มเฉพาะทาง
+            ที่ช่วยเสริมสร้างความเท่าเทียมกันในสังคม
           </p>
           <div className="flex flex-col gap-4 w-full md:w-auto">
             <Link
@@ -128,7 +137,9 @@ function Home() {
               >
                 <path d="M8 4l8 8-8 8V4z" />
               </svg>
-              <span className="border-b-2 border-green-500 pb-1 kanit-regular">เริ่มค้นหางานที่นี่</span>
+              <span className="border-b-2 border-green-500 pb-1 kanit-regular">
+                เริ่มค้นหางานที่นี่
+              </span>
             </Link>
             <Link
               to="/homeemp"
@@ -143,7 +154,9 @@ function Home() {
               >
                 <path d="M8 4l8 8-8 8V4z" />
               </svg>
-              <span className="border-b-2 border-green-500 pb-1 kanit-regular">เริ่มค้นหาพนักงาน</span>
+              <span className="border-b-2 border-green-500 pb-1 kanit-regular">
+                เริ่มค้นหาพนักงาน
+              </span>
             </Link>
           </div>
         </div>
@@ -152,8 +165,7 @@ function Home() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default Home
-
+export default Home;

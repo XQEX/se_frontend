@@ -50,7 +50,7 @@ function SignIn() {
         }
       }
     } catch (error) {
-      notifyError((error as any).response.data.msg);
+      notifyError("เข้าสู่ระบบไม่สำเร็จ กรุณาลองใหม่อีกครั้ง");
     } finally {
       setIsSubmitting(false);
     }
@@ -186,7 +186,7 @@ function SignIn() {
               onClick={LoginUser}
               className="bg-seagreen text-white kanit-semibold w-full py-3 rounded-lg"
             >
-              เข้าสู่ระบบ
+              {isSubmitting ? "กำลังเข้าสู่ระบบ..." : "เข้าสู่ระบบ"}
             </button>
           </div>
           <div className="flex flex-col justify-center  gap-2 items-center ">
