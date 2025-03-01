@@ -69,11 +69,12 @@ const ViewPostEmployers: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const job: Job | undefined =
-    location.state?.job ||
-    JSON.parse(localStorage.getItem("jobs_emp") || "[]").find(
-      (job: Job) => job.id.toString() === id
-    );
+  const job: Job | undefined = location.state?.job;
+
+  console.log(location.state?.job);
+
+  // The data in localStorage.getItem("jobs_emp") is likely set elsewhere in the application
+  // using localStorage.setItem("jobs_emp", JSON.stringify(jobsData)).
 
   const [isEditing, setIsEditing] = useState(false);
   const [editedJob, setEditedJob] = useState<Job | undefined>(job);

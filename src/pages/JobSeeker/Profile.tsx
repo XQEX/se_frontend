@@ -13,6 +13,7 @@ import { FaPhoneAlt } from "react-icons/fa";
 import { FaAddressBook } from "react-icons/fa6";
 import { TextInput } from "@mantine/core";
 import { MdWork } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 import { RiUserFollowFill } from "react-icons/ri";
 import { FaHeart } from "react-icons/fa6";
 import { SkillCardGradient } from "../../components/SkillCardGradient";
@@ -29,6 +30,7 @@ import { updateJobSeekerPassword } from "../../api/JobSeeker";
 import { AxiosError } from "axios";
 
 function Profile() {
+  const navigate = useNavigate();
   // Helper function for toast messages
   const notifyError = (message: string) =>
     toast.error(message, { position: "top-center" });
@@ -106,7 +108,6 @@ function Profile() {
       } catch (error) {}
     };
     fetchUserPost();
-    console.log("userPosts:", userPosts);
 
     setFirstNameValue(user.firstName);
     setLastNameValue(user.lastName);
@@ -731,6 +732,16 @@ function Profile() {
                         ))}
                       </ul>
                     </div>
+                    <button
+                      className="flex-1 bg-seagreen/80 hover:bg-seagreen text-white px-4 py-2 text-sm rounded-lg shadow-md transition"
+                      onClick={() =>
+                        navigate(`/jobseeker/viewpost/${String(post.id)}`, {
+                          state: { post },
+                        })
+                      }
+                    >
+                      view detail
+                    </button>
                     <button
                       className="text-base bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-500 transition mt-4"
                       onClick={() => handleDeletePost(post.id)}

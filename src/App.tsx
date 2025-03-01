@@ -48,10 +48,7 @@ function App() {
         <Route path="/postjob" element={<PostJob />} />
         <Route path="/jobseeker/details/:id" element={<JobDetail />} />
         <Route path="/terms" element={<Terms />} />
-        <Route
-          path="/job-seeker/viewpost/:id"
-          element={<ViewPostJobseeker />}
-        />
+        <Route path="/jobseeker/viewpost/:id" element={<ViewPostJobseeker />} />
 
         {/* Routes สำหรับ Employers */}
         <Route path="signUp/Employer" element={<SignUpEmp />} />

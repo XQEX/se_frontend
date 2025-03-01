@@ -29,6 +29,8 @@ export function ImageDropzoneButton({
       try {
         const formData = new FormData();
         formData.append("image", currentfile);
+
+        console.log("Uploading file:", currentfile);
         await uploadProfileImage(formData);
 
         console.log("File uploaded successfully");

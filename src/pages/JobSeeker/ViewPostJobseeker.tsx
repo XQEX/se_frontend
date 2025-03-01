@@ -13,7 +13,7 @@ interface Job {
   id: number;
   title: string;
   jobLocation: string;
-  salary: number;
+  expectedSalary: number;
   workDates: string;
   workHoursRange: string;
   description: string;
@@ -69,11 +69,7 @@ const ViewPostJobseeker: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const job: Job | undefined =
-    location.state?.job ||
-    JSON.parse(localStorage.getItem("jobs_emp") || "[]").find(
-      (job: Job) => job.id.toString() === id
-    );
+  const job: Job | undefined = location.state?.post;
 
   const [isEditing, setIsEditing] = useState(false);
   const [editedJob, setEditedJob] = useState<Job | undefined>(job);
@@ -153,11 +149,11 @@ const ViewPostJobseeker: React.FC = () => {
           title: editedJob.title,
           description: editedJob.description,
           jobLocation: editedJob.jobLocation,
-          salary: Number(editedJob.salary),
+          expectedSalary: editedJob.expectedSalary,
           workDates: editedJob.workDates,
           workHoursRange: `${startTime} - ${endTime}`,
-          hiredAmount: 1, // Assuming a default value
           jobPostType: "FULLTIME", // Assuming a default value
+          jobSeekerType: "NORMAL",
           skills: editedJob.skills.map((skill) => skill.id),
           jobCategories: editedJob.jobCategories.map((cat) => cat.id),
         });
@@ -244,18 +240,18 @@ const ViewPostJobseeker: React.FC = () => {
               )}
             </p>
             <p className="text-gray-700 text-base">
-              <strong>💰 เงินเดือน:</strong>{" "}
+              <strong>💰 เงินเดือนที่คาดหวัง:</strong>{" "}
               {isEditing ? (
                 <input
                   step={1000}
                   type="number"
                   name="salary"
-                  value={editedJob?.salary}
+                  value={editedJob?.expectedSalary}
                   onChange={handleInputChange}
                   className="w-full p-2 border rounded-md"
                 />
               ) : (
-                `฿${job.salary.toLocaleString()} บาท`
+                `฿${job.expectedSalary.toLocaleString()} บาท`
               )}
             </p>
             <p className="text-gray-700 text-base">

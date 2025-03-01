@@ -542,12 +542,12 @@ export const updateJobSeekerPassword = async (
 
 export const uploadProfileImage = async (
   formData: FormData
-): Promise<{ approvalId: number; url: string }> => {
+): Promise<{ approvalId: string; url: string }> => {
   try {
     console.log("Uploading profile image...");
 
     const { data } = await axios.post<{
-      data: { approvalId: number; url: string };
+      data: { approvalId: string; url: string };
     }>(
       `http://localhost:${backendPort}/api/user/job-seeker/auth/profile-image`,
       formData,

@@ -10,7 +10,6 @@ import {
 } from "react-icons/fa";
 import { MdPostAdd } from "react-icons/md";
 import { useDisclosure } from "@mantine/hooks";
-import { useUser } from "../context/UserContext";
 import { logoutJobSeeker } from "../api/JobSeeker";
 import { logoutEmployer } from "../api/Employer";
 import { logoutCompany } from "../api/Company";
@@ -226,40 +225,45 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </Link>
               </>
             ) : (
-                <Menu width={250} position="bottom-end" >
+              <Menu width={250} position="bottom-end">
                 <Menu.Target>
-                  <button 
-                  className="flex items-center space-x-2 bg-gray-200 text-black px-4 py-2 rounded-3xl hover:bg-white transition-all duration-300 shadow-sm hover:shadow-md"
-                  aria-label="User menu"
+                  <button
+                    className="flex items-center space-x-2 bg-gray-200 text-black px-4 py-2 rounded-3xl hover:bg-white transition-all duration-300 shadow-sm hover:shadow-md"
+                    aria-label="User menu"
                   >
-                  <div className="relative">
-                    {user?.profilePicture ? (
-                    <Avatar
-                      src={user.profilePicture}
-                      alt={user.username}
-                      radius="xl"
-                      size={30}
-                      className="border-2 border-seagreen"
-                    />
-                    ) : (
-                    <FaUserCircle size={24} className="text-seagreen" />
-                    )}
-                    {/* <span className="absolute -top-1 -right-1 h-3 w-3 bg-green-500 rounded-full border-2 border-white"></span> */} {/* in case you want the online status */}
-                  </div>
-                  <span className="kanit-regular font-medium truncate max-w-[150px]">
-                    {user?.username}
-                  </span>
+                    <div className="relative">
+                      {user?.profilePicture ? (
+                        <Avatar
+                          src={user.profilePicture}
+                          alt={user.username}
+                          radius="xl"
+                          size={30}
+                          className="border-2 border-seagreen"
+                        />
+                      ) : (
+                        <FaUserCircle size={24} className="text-seagreen" />
+                      )}
+                      {/* <span className="absolute -top-1 -right-1 h-3 w-3 bg-green-500 rounded-full border-2 border-white"></span> */}{" "}
+                      {/* in case you want the online status */}
+                    </div>
+                    <span className="kanit-regular font-medium truncate max-w-[150px]">
+                      {user?.username}
+                    </span>
                   </button>
                 </Menu.Target>
                 <Menu.Dropdown className="p-2 shadow-lg rounded-lg border border-gray-100">
                   <div className="p-3 text-center bg-gray-50 rounded-md">
-                  <div className="kanit-regular font-medium">{user?.username}</div>
-                  <div className="text-sm text-gray-500 truncate">{user?.email}</div>
+                    <div className="kanit-regular font-medium">
+                      {user?.username}
+                    </div>
+                    <div className="text-sm text-gray-500 truncate">
+                      {user?.email}
+                    </div>
                   </div>
                   <Divider className="my-2" />
                   {menuItems}
                 </Menu.Dropdown>
-                </Menu>
+              </Menu>
             )}
           </div>
         </div>
