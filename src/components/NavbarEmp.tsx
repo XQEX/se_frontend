@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Avatar, Menu, Divider } from "@mantine/core";
+import { Avatar, Menu, Divider, Modal, Button } from "@mantine/core";
 import { FaUserCircle, FaSearch, FaHome, FaBell } from "react-icons/fa";
 import { logoutJobSeeker } from "../api/JobSeeker";
 import { logoutEmployer } from "../api/Employer";
@@ -15,7 +15,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 interface Notification {
   id: string;
-  status: "READ" | "UNREAD";
+  status: "all" | "READ" | "UNREAD";
   title: string;
   description: string;
   userType: string;
@@ -53,46 +53,49 @@ export const NavbarEmp: React.FC<NavbarEmpProps> = ({
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState("all"); // เริ่มต้นด้วย "all"
-  const filteredNotifications = notifications.filter((notification) => {
-    if (filter === "all") return true;
-    return notification.status === filter;
-  });
-  useEffect(() => {
-    const loadNotifications = async () => {
-      if (!user) return; // ป้องกันการโหลดถ้าไม่มี user
-      try {
-        const data = await fetchNotifications();
-        if (Array.isArray(data)) {
-          const filteredData: Notification[] = data.map((item) => ({
-            ...item,
-            jobSeekerId: item.jobSeekerId || "",
-            oauthJobSeekerId: item.oauthJobSeekerId || "",
-            employerId: item.employerId || "",
-            oauthEmployerId: item.oauthEmployerId || "",
-            companyId: item.companyId || "",
-          }));
-          setNotifications(filteredData);
-          console.log(notifications);
-        } else {
-          throw new Error("Invalid notifications data");
-        }
-      } catch (err) {
-        console.error("Error loading notifications:", err); // 👉 เพิ่ม log
-        setError("Failed to load notifications");
-      } finally {
-        setLoading(false);
-      }
-    };
+  const [activeTab, setActiveTab] = useState("all");
+  const [modalOpened, setModalOpened] = useState(false);
+  const [selectedNotification, setSelectedNotification] =
+    useState<Notification | null>(null);
 
+  const loadNotifications = async (
+    status: "all" | "READ" | "UNREAD" = "all"
+  ) => {
+    if (!user) return; // Prevent loading if no user
+    try {
+      const data = await fetchNotifications(status);
+      setActiveTab(status);
+      if (Array.isArray(data)) {
+        const filteredData: Notification[] = data.map((item) => ({
+          ...item,
+          jobSeekerId: item.jobSeekerId || "",
+          oauthJobSeekerId: item.oauthJobSeekerId || "",
+          employerId: item.employerId || "",
+          oauthEmployerId: item.oauthEmployerId || "",
+          companyId: item.companyId || "",
+        }));
+        setNotifications(filteredData);
+        console.log(notifications);
+      } else {
+        throw new Error("Invalid notifications data");
+      }
+    } catch (err) {
+      console.error("Error loading notifications:", err); // 👉 Add log
+      setError("Failed to load notifications");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     loadNotifications();
-  }, [user]); // ให้ `user` เป็น dependency
+  }, [user]); // Add `user` as dependency
+
   // Helper function for toast messages
   const notifyError = (message: string) =>
     toast.error(message, { position: "top-center" });
 
   useEffect(() => {
-    // console.log("NavbarEmp: isSignedIn", isSignedIn);
     setIsSignedIn(isHaveUser);
 
     let lastScrollY = window.scrollY;
@@ -124,37 +127,37 @@ export const NavbarEmp: React.FC<NavbarEmpProps> = ({
     }
   };
 
-  // const FakeNotifications = ["คุณมีการแจ้งเตือนใหม่"];
   const handleNotificationClick = async (notification: Notification) => {
-    try {
-      // Mark the notification as read
-      const updatedNotification = await markNotificationAsRead(notification.id);
-      // Update the notification state
-      setNotifications((prevNotifications) =>
-        prevNotifications.map((notif) =>
-          notif.id === notification.id ? updatedNotification : notif
-        )
-      );
-      // Show the notification details
-      alert(
-        `Notification Details:\n\nTitle: ${notification.title}\nDescription: ${notification.description}`
-      );
-    } catch (error) {
-      console.error("Failed to mark notification as read:", error);
+    if (notification.status === "UNREAD") {
+      try {
+        await markNotificationAsRead(notification.id);
+        setNotifications((prevNotifications) =>
+          prevNotifications.map((notif) =>
+            notif.id === notification.id ? { ...notif, status: "READ" } : notif
+          )
+        );
+      } catch (error) {
+        console.error("Failed to mark notification as read:", error);
+      }
     }
+    setSelectedNotification(notification);
+    setModalOpened(true);
   };
 
   const handleMarkAllAsRead = async () => {
     try {
-      // Mark all notifications as read
-      const updatedNotifications = await markAllNotificationsAsRead();
-      // Update the notification state
-      setNotifications(updatedNotifications);
-      // Show a success message
-      alert("All notifications have been marked as read.");
+      await markAllNotificationsAsRead();
+      setNotifications((prevNotifications) =>
+        prevNotifications.map((notif) => ({ ...notif, status: "READ" }))
+      );
+      toast.success("ทำเครื่องหมายว่าอ่านแล้วทั้งหมด!", {
+        position: "top-center",
+      });
     } catch (error) {
       console.error("Failed to mark all notifications as read:", error);
-      alert("Failed to mark all notifications as read.");
+      toast.error("ไม่สามารถทำเครื่องหมายว่าอ่านทั้งหมดได้!", {
+        position: "top-center",
+      });
     }
   };
 
@@ -200,7 +203,9 @@ export const NavbarEmp: React.FC<NavbarEmpProps> = ({
               <Menu.Target>
                 <button className="text-gray-200 font-[Kanit] hover:text-white transition-colors duration-300 relative">
                   <FaBell size={20} />
-                  {notifications.length > 0 && (
+                  {notifications.some(
+                    (notification) => notification.status === "UNREAD"
+                  ) && (
                     <span className="absolute top-0 right-0 inline-block w-2 h-2 bg-red-500 rounded-full"></span>
                   )}
                 </button>
@@ -210,30 +215,25 @@ export const NavbarEmp: React.FC<NavbarEmpProps> = ({
                 <div className="p-2">
                   <div className="kanit-regular text-center">การแจ้งเตือน</div>
                   <div className="flex justify-around my-2">
-                    <button
-                      onClick={() => setFilter("all")}
-                      className={`px-2 py-1 ${
-                        filter === "all" ? "bg-gray-200" : ""
-                      }`}
-                    >
-                      ทั้งหมด
-                    </button>
-                    <button
-                      onClick={() => setFilter("READ")}
-                      className={`px-2 py-1 ${
-                        filter === "READ" ? "bg-gray-200" : ""
-                      }`}
-                    >
-                      อ่านแล้ว
-                    </button>
-                    <button
-                      onClick={() => setFilter("UNREAD")}
-                      className={`px-2 py-1 ${
-                        filter === "UNREAD" ? "bg-gray-200" : ""
-                      }`}
-                    >
-                      ยังไม่อ่าน
-                    </button>
+                    {[
+                      { type: "all" as "all", label: "ทั้งหมด" },
+                      { type: "READ" as "READ", label: "อ่านแล้ว" },
+                      { type: "UNREAD" as "UNREAD", label: "ยังไม่อ่าน" },
+                    ].map(({ type, label }) => (
+                      <button
+                        key={type}
+                        onClick={() => loadNotifications(type)}
+                        className={`px-2 py-1 rounded-xl transition-all duration-300 
+            ${
+              activeTab === type
+                ? "bg-seagreen text-white"
+                : "bg-gray-200 text-gray-700"
+            } 
+            hover:bg-seagreen hover:text-white`}
+                      >
+                        {label}
+                      </button>
+                    ))}
                   </div>
                 </div>
                 <Divider />
@@ -245,8 +245,8 @@ export const NavbarEmp: React.FC<NavbarEmpProps> = ({
                   <Menu.Item className="kanit-light text-center text-red-500">
                     {error}
                   </Menu.Item>
-                ) : filteredNotifications.length > 0 ? (
-                  filteredNotifications.map((notification, index) => (
+                ) : notifications.length > 0 ? (
+                  notifications.map((notification, index) => (
                     <Menu.Item
                       key={index}
                       className="kanit-light"
@@ -271,13 +271,11 @@ export const NavbarEmp: React.FC<NavbarEmpProps> = ({
                   </Menu.Item>
                 )}
                 <Divider />
-                <Menu.Item className="kanit-regular text-center bg-gray-200">
-                  <button
-                    className="text-seagreen"
-                    onClick={handleMarkAllAsRead} // Ensure this line is correct
-                  >
-                    อ่านทั้งหมด
-                  </button>
+                <Menu.Item
+                  className="kanit-regular text-center bg-gray-200"
+                  onClick={handleMarkAllAsRead}
+                >
+                  <button className="text-seagreen">อ่านทั้งหมด</button>
                 </Menu.Item>
               </Menu.Dropdown>
             </Menu>
@@ -352,6 +350,23 @@ export const NavbarEmp: React.FC<NavbarEmpProps> = ({
           )}
         </div>
       </nav>
+
+      <Modal
+        opened={modalOpened}
+        onClose={() => setModalOpened(false)}
+        title="Notification Details"
+        className="kanit-light"
+      >
+        {selectedNotification && (
+          <div>
+            <h2>หัวข้อเรื่อง : {selectedNotification.title}</h2>
+            <p>รายละเอียด :{selectedNotification.description}</p>
+            <Button className="mt-3" onClick={() => setModalOpened(false)}>
+              Close
+            </Button>
+          </div>
+        )}
+      </Modal>
     </>
   );
 };

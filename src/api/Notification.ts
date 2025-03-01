@@ -2,7 +2,7 @@ import axios from "axios";
 import { backendPort } from "./globalvariable";
 interface Notification {
   id: string;
-  status: "READ" | "UNREAD";
+  status: "all" | "READ" | "UNREAD";
   title: string;
   description: string;
   userType: string;
@@ -76,7 +76,9 @@ export const markAllNotificationsAsRead = async (): Promise<Notification[]> => {
       }
     );
     console.log("All notifications marked as read successfully:", data);
-    return data.data;
+    // Fetch the updated notifications after marking all as read
+    const updatedNotifications = await fetchNotifications();
+    return updatedNotifications;
   } catch (error) {
     console.error("Failed to mark all notifications as read:", error);
     throw error;
