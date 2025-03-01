@@ -27,12 +27,10 @@ import Admin from "./pages/Admin";
 import ExampleComponent from "./components/ExampleComponent";
 import Terms from "./pages/Term";
 import ForgotPassword from "./pages/ForgotPassword";
-import Notifications from "./components/Notifications";
 
 function App() {
   return (
     <div className="App">
-      <Notifications />
       <Routes>
         {/* หน้าหลัก */}
         <Route path="/" element={<Home />} />
