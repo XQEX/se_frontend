@@ -11,12 +11,12 @@ import {
 import { MdPostAdd } from "react-icons/md";
 import { useDisclosure } from "@mantine/hooks";
 import { useUser } from "../context/UserContext";
+import { logoutJobSeeker } from "../api/JobSeeker";
 import {
-  logoutJobSeeker,
   fetchNotifications,
   markNotificationAsRead,
   markAllNotificationsAsRead,
-} from "../api/JobSeeker";
+} from "../api/Notification";
 import { logoutEmployer } from "../api/Employer";
 import { logoutCompany } from "../api/Company";
 import { ToastContainer, toast } from "react-toastify";
