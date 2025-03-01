@@ -237,39 +237,41 @@ export const NavbarEmp: React.FC<NavbarEmpProps> = ({
                   </div>
                 </div>
                 <Divider />
-                {loading ? (
-                  <Menu.Item className="kanit-light text-center">
-                    กำลังโหลด...
-                  </Menu.Item>
-                ) : error ? (
-                  <Menu.Item className="kanit-light text-center text-red-500">
-                    {error}
-                  </Menu.Item>
-                ) : notifications.length > 0 ? (
-                  notifications.map((notification, index) => (
-                    <Menu.Item
-                      key={index}
-                      className="kanit-light"
-                      onClick={() => handleNotificationClick(notification)}
-                    >
-                      <div>
-                        <div>
-                          {notification.title}
-                          {notification.status === "UNREAD" && (
-                            <span className="text-red-500"> (NEW)</span>
-                          )}
-                        </div>
-                        <div className="text-xs text-gray-500">
-                          {notification.status}
-                        </div>
-                      </div>
+                <div className="max-h-60 overflow-y-auto">
+                  {loading ? (
+                    <Menu.Item className="kanit-light text-center">
+                      กำลังโหลด...
                     </Menu.Item>
-                  ))
-                ) : (
-                  <Menu.Item className="kanit-light text-center">
-                    ไม่มีการแจ้งเตือน
-                  </Menu.Item>
-                )}
+                  ) : error ? (
+                    <Menu.Item className="kanit-light text-center text-red-500">
+                      {error}
+                    </Menu.Item>
+                  ) : notifications.length > 0 ? (
+                    notifications.map((notification, index) => (
+                      <Menu.Item
+                        key={index}
+                        className="kanit-light"
+                        onClick={() => handleNotificationClick(notification)}
+                      >
+                        <div>
+                          <div>
+                            {notification.title}
+                            {notification.status === "UNREAD" && (
+                              <span className="text-red-500"> (NEW)</span>
+                            )}
+                          </div>
+                          <div className="text-xs text-gray-500">
+                            {notification.status}
+                          </div>
+                        </div>
+                      </Menu.Item>
+                    ))
+                  ) : (
+                    <Menu.Item className="kanit-light text-center">
+                      ไม่มีการแจ้งเตือน
+                    </Menu.Item>
+                  )}
+                </div>
                 <Divider />
                 <Menu.Item
                   className="kanit-regular text-center bg-gray-200"
