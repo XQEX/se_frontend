@@ -5,12 +5,47 @@ import Animation from "../../Animation/Job2.json"; // Lottie animation
 import { gsap } from "gsap"; // For animations
 import { Link } from "react-router-dom"; // For navigation
 import { useUser } from "../../context/UserContext";
+import { getUserMatchingStatus } from "../../api/Matching";
 
 interface JobApplication {
   id: number;
   companyName: string;
   status: string;
   date: string;
+}
+
+interface UserMatchingStatusResponse {
+  success: boolean;
+  msg: string;
+  data: {
+    hiringMatches: {
+      id: string;
+      jobHiringPostId: string;
+      toMatchSeekers: {
+        jobSeekerType: string;
+        jobSeekerId: string;
+        oauthJobSeekerId: string;
+        jobHiringPostMatchedId: string;
+        status: string;
+        createdAt: string;
+        approvedAt: string;
+        updatedAt: string;
+      }[];
+    }[];
+    findingMatches: {
+      id: string;
+      jobFindingPostId: string;
+      status: string;
+      jobHirerType: string;
+      employerId: string;
+      oauthEmployerId: string;
+      companyId: string;
+      createdAt: string;
+      approvedAt: string;
+      updatedAt: string;
+    }[];
+  };
+  status: number;
 }
 
 function TrackJobSeeker() {
@@ -114,6 +149,22 @@ function TrackJobSeeker() {
     (_, index) => index + 1
   );
 
+  const [matchingStatus, setMatchingStatus] =
+    useState<UserMatchingStatusResponse | null>(null);
+
+  useEffect(() => {
+    const fetchMatchingStatus = async () => {
+      try {
+        const status = await getUserMatchingStatus();
+        setMatchingStatus(status);
+      } catch (error) {
+        console.error("Error fetching matching status:", error);
+      }
+    };
+
+    fetchMatchingStatus();
+  }, []);
+
   useEffect(() => {
     refetchjobseeker();
     refetchCompany();
@@ -165,6 +216,14 @@ function TrackJobSeeker() {
           >
             ข้อมูลการสมัครงานทั้งหมดของคุณ
           </div>
+
+          {/* Display matching status */}
+          {matchingStatus && (
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold">สถานะการจับคู่</h2>
+              <pre>{JSON.stringify(matchingStatus, null, 2)}</pre>
+            </div>
+          )}
 
           <div ref={tableRef} className="w-full text-gray-600">
             <div className="overflow-x-auto max-h-[400px]">
