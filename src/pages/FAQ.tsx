@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Accordion,
   Tabs,
@@ -17,9 +17,31 @@ import { FiSearch, FiX } from "react-icons/fi";
 import { Navbar } from "../components/Navbar";
 import { motion } from "framer-motion";
 import Footer from "../components/Footer";
+import { useUser } from "../context/UserContext";
 
 export default function FAQSection() {
   const [searchQuery, setSearchQuery] = useState("");
+
+  const {
+      user,
+      isLoading,
+      refetchjobseeker,
+      refetchemployer,
+      refetchCompany,
+      isStale,
+      setUser,
+    } = useUser();
+    const [isHaveUser, setIsHaveUser] = useState(false);
+    useEffect(() => {
+      refetchjobseeker();
+      refetchCompany();
+      refetchemployer();
+      // console.log("current user:", user);
+      // console.log("isLoading:", isLoading);
+      // console.log("isHaveUser :", isHaveUser);
+      // console.log("isStale :", isStale);
+      setIsHaveUser(!!user);
+    }, [user, isLoading, isStale]);
 
 const faqCategories = [
     {
@@ -149,15 +171,16 @@ const faqCategories = [
 
   return (
     <div className="h-screen">
-        <Navbar user={undefined} isLoading={false} isHaveUser={false} refetchjobseeker={function (): void {
-              throw new Error("Function not implemented.");
-          } } refetchemployer={function (): void {
-              throw new Error("Function not implemented.");
-          } } refetchCompany={function (): void {
-              throw new Error("Function not implemented.");
-          } } isStale={false} setUser={function (value: any): void {
-              throw new Error("Function not implemented.");
-          } }/  >
+        <Navbar
+        user={user}
+        isLoading={isLoading}
+        isHaveUser={isHaveUser}
+        refetchjobseeker={refetchjobseeker}
+        refetchemployer={refetchemployer}
+        refetchCompany={refetchCompany}
+        isStale={isStale}
+        setUser={setUser}
+      />
             <div className="ml-6 mr-6">
     <div className="mt-4 kanit-bold text-2xl">
       คำถามที่พบบ่อย

@@ -110,19 +110,19 @@ function Home() {
       )}
       <div className="kanit-regular flex-grow flex flex-col md:flex-row justify-center items-center p-6 md:p-16 gap-8 md:gap-16 ">
         <div className="flex flex-col items-center md:items-start text-center md:text-left max-w-2xl">
-          <h1
+            <h1
             ref={headingRef}
-            className="text-5xl md:text-7xl font-bold mb-6 text-green-700 leading-tight"
-          >
+            className="text-5xl md:text-7xl font-bold mb-6 text-green-700 leading-tight select-none"
+            >
             ยินดีต้อนรับสู่ <span className="text-seagreen">SkillBridge</span>
-          </h1>
-          <p
+            </h1>
+            <p
             ref={subTextRef}
-            className="text-xl md:text-2xl mb-8 text-gray-600 leading-relaxed kanit-regular"
-          >
+            className="text-xl md:text-2xl mb-8 text-gray-600 leading-relaxed kanit-regular select-none"
+            >
             แหล่งรวมงานสำหรับการหางานของบุคคลกลุ่มเฉพาะทาง
             ที่ช่วยเสริมสร้างความเท่าเทียมกันในสังคม
-          </p>
+            </p>
           <div className="flex flex-col gap-4 w-full md:w-auto">
             <Link
               to="/find"
