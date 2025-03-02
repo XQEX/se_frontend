@@ -7,7 +7,8 @@ import Footer from "../../components/Footer";
 import { Avatar } from "@mantine/core";
 import { getJobPostById } from "../../api/EmployerAndCompany";
 import { useUser } from "../../context/UserContext";
-
+import { matchWithHiringPost } from "../../api/Matching";
+import { getMatchesForHiringPost } from "../../api/Matching";
 type Job = {
   id: string;
   title: string;
@@ -47,6 +48,35 @@ function JobDetail() {
     // console.log("isStale :", isStale);
     setIsHaveUser(!!user);
   }, [user, isLoading, isStale]);
+
+  useEffect(() => {
+    const fetchMatches = async () => {
+      try {
+        const matchedPost = await getMatchesForHiringPost(String(id));
+
+        const isCurrentUserFav = matchedPost.data.some((match) =>
+          match.toMatchSeekers.some((seeker) => seeker.jobSeekerId === user.id)
+        );
+        setIsStarred(isCurrentUserFav);
+      } catch (error) {
+        console.error("Error fetching matches:", error);
+      }
+    };
+
+    fetchMatches();
+  }, [id, user.id]);
+
+  const handleMatch = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      const response = await matchWithHiringPost(String(id));
+      console.log("Match response:", response);
+      setIsStarred(!isStarred);
+      // Handle the response as needed
+    } catch (error) {
+      console.error("Error matching with hiring post:", error);
+    }
+  };
 
   useEffect(() => {
     console.log("🔎 กำลังโหลดข้อมูลงาน...");
@@ -170,6 +200,7 @@ function JobDetail() {
                 สมัครงานตอนนี้
               </Link>
               <button
+                onClick={handleMatch}
                 className="flex items-center justify-center space-x-2 text-gray-600 hover:text-gray-800 
                          px-4 py-2 rounded-md border border-gray-200 transition-colors text-sm"
               >

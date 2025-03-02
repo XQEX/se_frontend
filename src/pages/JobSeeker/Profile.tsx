@@ -95,7 +95,6 @@ function Profile() {
   const [userNameValue, setuserNameValue] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmpassword, setConfirmPassword] = useState<string>("");
-
   const [newPassword, setNewPassword] = useState<string>("");
   const [password2, setPassword2] = useState<string>("");
   const [confirmpassword2, setConfirmPassword2] = useState<string>("");
@@ -177,7 +176,6 @@ function Profile() {
           contact: phoneNumberValue,
         };
         await updateUserProfile(updatedUser);
-        await updateJobSeekerUsername(userNameValue, password);
         notifySuccess("Profile updated successfully");
         // Optionally, refetch user data here
         refetchjobseeker();
@@ -307,12 +305,14 @@ function Profile() {
                     userId={user.id}
                     bucketName={"employer"}
                     prefixPath={"profile"}
+                    userType={user.type}
                   />
                 ) : (
                   <ImageDropzoneButton
                     userId={user.id}
                     bucketName={"job-seeker"}
                     prefixPath={"profile"}
+                    userType={user.type}
                   />
                 )
               ) : (

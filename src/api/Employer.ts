@@ -221,3 +221,82 @@ export const getEmployerJobPosts =
       throw error;
     }
   };
+
+export const updateEmployerUsername = async (
+  username: string,
+  password: string
+): Promise<{ userId: string; username: string }> => {
+  try {
+    console.log("Updating employer username with:", { username, password });
+    const { data } = await axios.put<{
+      data: { userId: string; username: string };
+    }>(
+      `http://localhost:${backendPort}/api/user/employer/auth/edit/username`,
+      { username, password },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    console.log("Username update successful:", data);
+    return data.data;
+  } catch (error) {
+    console.error("Username update failed:", error);
+    throw error;
+  }
+};
+
+export const updateEmployerPassword = async (
+  password: string,
+  oldPassword: string
+): Promise<{ userId: string }> => {
+  try {
+    console.log("Updating employer password with:", {
+      password,
+      oldPassword,
+    });
+    const { data } = await axios.put<{ data: { userId: string } }>(
+      `http://localhost:${backendPort}/api/user/employer/auth/edit/password`,
+      { password, oldPassword },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    console.log("Password update successful:", data);
+    return data.data;
+  } catch (error) {
+    console.error("Password update failed:", error);
+    throw error;
+  }
+};
+
+export const uploadEmployerProfileImage = async (
+  formData: FormData
+): Promise<{ approvalId: string; url: string }> => {
+  try {
+    console.log("Uploading profile image...");
+
+    const { data } = await axios.post<{
+      data: { approvalId: string; url: string };
+    }>(
+      `http://localhost:${backendPort}/api/user/employer/auth/profile-image`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
+      }
+    );
+    console.log("Profile image upload successful:", data);
+    return data.data;
+  } catch (error) {
+    console.error("Profile image upload failed:", error);
+    throw error;
+  }
+};

@@ -4,6 +4,8 @@ import { Button, Group, Text, useMantineTheme, Image } from "@mantine/core";
 import { IconCloudUpload, IconDownload, IconX } from "@tabler/icons-react";
 import classes from "./ImageDropzoneButton.module.css";
 import { uploadProfileImage } from "../api/JobSeeker";
+import { uploadCompanyProfileImage } from "../api/Company";
+import { uploadEmployerProfileImage } from "../api/Employer";
 
 type UUID = string; // Define UUID as a string or use a library
 
@@ -11,12 +13,14 @@ type ImageDropzoneButtonType = {
   userId: UUID;
   bucketName: string;
   prefixPath: string;
+  userType: "JOBSEEKER" | "COMPANY" | "EMPLOYER";
 };
 
 export function ImageDropzoneButton({
   userId,
   bucketName,
   prefixPath,
+  userType,
 }: ImageDropzoneButtonType) {
   const theme = useMantineTheme();
   const openRef = useRef<() => void>(null);
@@ -31,7 +35,10 @@ export function ImageDropzoneButton({
         formData.append("image", currentfile);
 
         console.log("Uploading file:", currentfile);
-        await uploadProfileImage(formData);
+
+        if (userType === "JOBSEEKER") await uploadProfileImage(formData);
+        if (userType === "COMPANY") await uploadCompanyProfileImage(formData);
+        if (userType === "EMPLOYER") await uploadEmployerProfileImage(formData);
 
         console.log("File uploaded successfully");
         console.log("userId: ", userId);

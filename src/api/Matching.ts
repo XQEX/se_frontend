@@ -72,7 +72,7 @@ interface CreateFindingPostMatchResponse {
 interface GetFindingPostMatchResponse {
   success: boolean;
   msg: string;
-  data?: {
+  data: {
     id: string;
     jobFindingPostId: string;
     status: string;

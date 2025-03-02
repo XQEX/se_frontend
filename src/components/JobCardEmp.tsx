@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaStar, FaArrowRight, FaMapPin, FaClock } from "react-icons/fa";
 import { TbCurrencyBaht } from "react-icons/tb";
 import { Link } from "react-router-dom";
@@ -15,24 +15,26 @@ type JobCardEmpProps = {
     name: string;
     description: string;
   }[];
+  currentUserID: string;
 };
 
-interface MatchResponse {
+interface CreateFindingPostMatchResponse {
   success: boolean;
   msg: string;
   data?: {
-    jobSeekerType: string;
-    jobSeekerId: string;
-    oauthJobSeekerId: string;
-    jobHiringPostMatchedId: string;
+    id: string;
+    jobFindingPostId: string;
     status: string;
+    jobHirerType: string;
+    employerId: string;
+    oauthEmployerId: string;
+    companyId: string;
     createdAt: string;
     approvedAt: string;
     updatedAt: string;
   };
   status: number;
 }
-
 interface GetMatchesResponse {
   success: boolean;
   msg: string;
@@ -55,6 +57,50 @@ interface GetMatchesResponse {
   status: number;
 }
 
+const createFindingPostMatch = async (
+  postId: string
+): Promise<CreateFindingPostMatchResponse> => {
+  try {
+    console.log("Creating match for finding post:", { postId });
+    const { data } = await axios.post<{ data: CreateFindingPostMatchResponse }>(
+      `http://localhost:6977/api/matching/finding/${postId}/match`,
+
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    console.log("Finding post match created successfully:", data);
+    return data.data;
+  } catch (error) {
+    console.error("Failed to create match for finding post:", error);
+    throw error;
+  }
+};
+const getMatchesForHiringPost = async (
+  postId: string
+): Promise<GetMatchesResponse> => {
+  try {
+    console.log("Fetching matches for hiring post:", { postId });
+    const { data } = await axios.get<GetMatchesResponse>(
+      `http://localhost:6977/api/matching/hiring/${postId}/match`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    console.log("Matches retrieved successfully:", data);
+    return data;
+  } catch (error) {
+    console.error("Failed to fetch matches for hiring post:", error);
+    throw error;
+  }
+};
+
 function JobCardEmp({
   id,
   title,
@@ -62,22 +108,56 @@ function JobCardEmp({
   workHours,
   location,
   salary,
+  currentUserID,
 }: // jobCategories,
 JobCardEmpProps) {
   const [isFav, setIsFav] = useState(false);
 
-  const handleFav = (e: React.MouseEvent) => {
+  useEffect(() => {
+    const fetchMatches = async () => {
+      try {
+        const matchedPost = await getMatchesForHiringPost(String(id));
+
+        const isCurrentUserFav = matchedPost.data.some((match) =>
+          match.toMatchSeekers.some(
+            (seeker) => seeker.jobSeekerId === currentUserID
+          )
+        );
+        setIsFav(isCurrentUserFav);
+      } catch (error) {
+        console.error("Error fetching matches:", error);
+      }
+    };
+
+    fetchMatches();
+  }, [id, currentUserID]);
+
+  const handleMatch = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    setIsFav(!isFav);
+    try {
+      const response = await createFindingPostMatch(String(id));
+      console.log("Match response:", response);
+      setIsFav(!isFav);
+      // Handle the response as needed
+    } catch (error) {
+      console.error("Error matching with hiring post:", error);
+    }
   };
 
   return (
     <div className="kanit-relative bg-white p-6 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 border border-gray-100 w-full">
       <button
-        onClick={handleFav}
-        className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-50"
+        onClick={handleMatch}
+        className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-50 transition-colors"
       >
-        <FaStar className={isFav ? "text-yellow-400" : "text-gray-300"} />
+        <FaStar
+          size={20}
+          className={`transition-colors ${
+            isFav
+              ? "fill-yellow-400 text-yellow-400"
+              : "text-gray-300 group-hover:text-gray-400"
+          }`}
+        />
       </button>
 
       <Link to={`/employer/details/${id}`} className="block space-y-4">

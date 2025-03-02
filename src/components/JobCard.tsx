@@ -74,7 +74,7 @@ const matchWithHiringPost = async (postId: string): Promise<MatchResponse> => {
   }
 };
 
-export const getMatchesForHiringPost = async (
+const getMatchesForHiringPost = async (
   postId: string
 ): Promise<GetMatchesResponse> => {
   try {
