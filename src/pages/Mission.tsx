@@ -18,21 +18,42 @@ import { FaArrowRight, FaBriefcase, FaHeart, FaUser } from "react-icons/fa";
 import Footer from "../components/Footer";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useUser } from "../context/UserContext";
 
 function Mission() {
+  const {
+    user,
+    isLoading,
+    refetchjobseeker,
+    refetchemployer,
+    refetchCompany,
+    isStale,
+    setUser,
+  } = useUser();
+  const [isHaveUser, setIsHaveUser] = useState(false);
+  useEffect(() => {
+    refetchjobseeker();
+    refetchCompany();
+    refetchemployer();
+    // console.log("current user:", user);
+    // console.log("isLoading:", isLoading);
+    // console.log("isHaveUser :", isHaveUser);
+    // console.log("isStale :", isStale);
+    setIsHaveUser(!!user);
+  }, [user, isLoading, isStale]);
   return (
     <AppShell>
       <Navbar
-        user={undefined}
-        isLoading={false}
-        isHaveUser={false}
-        refetchjobseeker={() => {}}
-        refetchemployer={() => {}}
-        refetchCompany={() => {}}
-        isStale={false}
-        setUser={() => {}}
+        user={user}
+        isLoading={isLoading}
+        isHaveUser={isHaveUser}
+        refetchjobseeker={refetchjobseeker}
+        refetchemployer={refetchemployer}
+        refetchCompany={refetchCompany}
+        isStale={isStale}
+        setUser={setUser}
       />
-
       <Container size="lg" py="xl">
         <Stack>
           <Box ta="center" mb="xl">
@@ -110,7 +131,7 @@ function Mission() {
           <Paper shadow="lg" p="xl" radius="md" withBorder>
             <Grid>
               <Grid.Col span={{ base: 12, md: 8 }}>
-                <div className="kanit-regular text-2xl" >
+                <div className="kanit-regular text-2xl">
                   ร่วมเป็นส่วนหนึ่งในภารกิจของเรา
                 </div>
                 <Text className="kanit-regular" c="dimmed" mb="lg">

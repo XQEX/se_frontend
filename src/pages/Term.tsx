@@ -1,27 +1,45 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Navbar } from "../components/Navbar";
+import { useUser } from "../context/UserContext";
+
+
+ 
 
 function Term() {
+
+ const {
+     user,
+     isLoading,
+     refetchjobseeker,
+     refetchemployer,
+     refetchCompany,
+     isStale,
+     setUser,
+   } = useUser();
+   const [isHaveUser, setIsHaveUser] = useState(false);
+   useEffect(() => {
+     refetchjobseeker();
+     refetchCompany();
+     refetchemployer();
+     // console.log("current user:", user);
+     // console.log("isLoading:", isLoading);
+     // console.log("isHaveUser :", isHaveUser);
+     // console.log("isStale :", isStale);
+     setIsHaveUser(!!user);
+   }, [user, isLoading, isStale]);
   return (
     <div className="h-screen kanit-regular">
       <Navbar
-        user={undefined}
-        isLoading={false}
-        isHaveUser={false}
-        refetchjobseeker={function (): void {
-          throw new Error("Function not implemented.");
-        }}
-        refetchemployer={function (): void {
-          throw new Error("Function not implemented.");
-        }}
-        refetchCompany={function (): void {
-          throw new Error("Function not implemented.");
-        }}
-        isStale={false}
-        setUser={function (value: any): void {
-          throw new Error("Function not implemented.");
-        }}
+        user={user}
+        isLoading={isLoading}
+        isHaveUser={isHaveUser}
+        refetchjobseeker={refetchjobseeker}
+        refetchemployer={refetchemployer}
+        refetchCompany={refetchCompany}
+        isStale={isStale}
+        setUser={setUser}
       />
+
       <div className="my-4">
         <h1 className="text-4xl font-bold mb-4 ml-4">ข้อกำหนดและเงื่อนไข</h1>
         <p className="ml-4">
