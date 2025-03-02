@@ -23,7 +23,55 @@ const mockApplications: JobApplication[] = [
     id: 2,
     companyName: "บริษัท B",
     status: "รอสัมภาษณ์",
-    date: "2025-01-15",
+    date: "2025-02-01",
+  },
+  {
+    id: 3,
+    companyName: "บริษัท C",
+    status: "ยืนยันการรับสมัคร",
+    date: "2025-02-10",
+  },
+  {
+    id: 4,
+    companyName: "บริษัท D",
+    status: "กำลังยื่นคำขอ",
+    date: "2025-02-15",
+  },
+  {
+    id: 5,
+    companyName: "บริษัท E",
+    status: "รอสัมภาษณ์",
+    date: "2025-02-20",
+  },
+  {
+    id: 6,
+    companyName: "บริษัท F",
+    status: "ยืนยันการรับสมัคร",
+    date: "2025-02-25",
+  },
+  {
+    id: 7,
+    companyName: "บริษัท G",
+    status: "กำลังยื่นคำขอ",
+    date: "2025-03-01",
+  },
+  {
+    id: 8,
+    companyName: "บริษัท H",
+    status: "รอสัมภาษณ์",
+    date: "2025-03-05",
+  },
+  {
+    id: 9,
+    companyName: "บริษัท I",
+    status: "ยืนยันการรับสมัคร",
+    date: "2025-03-10",
+  },
+  {
+    id: 10,
+    companyName: "บริษัท J",
+    status: "กำลังยื่นคำขอ",
+    date: "2025-03-15",
   },
 ];
 
