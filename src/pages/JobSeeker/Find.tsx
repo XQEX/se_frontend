@@ -382,6 +382,7 @@ function Find() {
                     salary={job.expectedSalary}
                     workDays={job.workDates}
                     workHours={job.workHoursRange}
+                    currentUserID={user?.id}
                     // jobCategories={job.jobCategories}
                     // skills={job.skills}
                   />

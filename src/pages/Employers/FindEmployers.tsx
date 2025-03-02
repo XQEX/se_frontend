@@ -19,6 +19,7 @@ import {
   RangeSlider,
 } from "@mantine/core";
 import { getAllJobFindingPosts } from "../../api/JobSeeker";
+import { createFindingPostMatch } from "../../api/Matching";
 
 interface Job {
   id: string;

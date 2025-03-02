@@ -20,13 +20,19 @@ interface GetMatchesResponse {
   success: boolean;
   msg: string;
   data: {
-    jobSeekerType: string;
-    jobSeekerId: string;
-    oauthJobSeekerId: string;
-    jobHiringPostMatchedId: string;
-    status: string;
+    id: string;
+    jobHiringPostId: string;
+    toMatchSeekers: {
+      jobSeekerType: string;
+      jobSeekerId: string;
+      oauthJobSeekerId: string;
+      jobHiringPostMatchedId: string;
+      status: string;
+      createdAt: string;
+      approvedAt: string;
+      updatedAt: string;
+    }[];
     createdAt: string;
-    approvedAt: string;
     updatedAt: string;
   }[];
   status: number;
@@ -186,6 +192,7 @@ export const matchWithHiringPost = async (
     throw error;
   }
 };
+
 export const getMatchesForHiringPost = async (
   postId: string
 ): Promise<GetMatchesResponse> => {

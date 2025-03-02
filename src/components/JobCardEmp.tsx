@@ -17,6 +17,44 @@ type JobCardEmpProps = {
   }[];
 };
 
+interface MatchResponse {
+  success: boolean;
+  msg: string;
+  data?: {
+    jobSeekerType: string;
+    jobSeekerId: string;
+    oauthJobSeekerId: string;
+    jobHiringPostMatchedId: string;
+    status: string;
+    createdAt: string;
+    approvedAt: string;
+    updatedAt: string;
+  };
+  status: number;
+}
+
+interface GetMatchesResponse {
+  success: boolean;
+  msg: string;
+  data: {
+    id: string;
+    jobHiringPostId: string;
+    toMatchSeekers: {
+      jobSeekerType: string;
+      jobSeekerId: string;
+      oauthJobSeekerId: string;
+      jobHiringPostMatchedId: string;
+      status: string;
+      createdAt: string;
+      approvedAt: string;
+      updatedAt: string;
+    }[];
+    createdAt: string;
+    updatedAt: string;
+  }[];
+  status: number;
+}
+
 function JobCardEmp({
   id,
   title,
@@ -24,8 +62,8 @@ function JobCardEmp({
   workHours,
   location,
   salary,
-  // jobCategories,
-}: JobCardEmpProps) {
+}: // jobCategories,
+JobCardEmpProps) {
   const [isFav, setIsFav] = useState(false);
 
   const handleFav = (e: React.MouseEvent) => {
@@ -43,7 +81,9 @@ function JobCardEmp({
       </button>
 
       <Link to={`/employer/details/${id}`} className="block space-y-4">
-        <h2 className="text-xl font-bold text-gray-900 mb-1 line-clamp-2">{title}</h2>
+        <h2 className="text-xl font-bold text-gray-900 mb-1 line-clamp-2">
+          {title}
+        </h2>
 
         <div className="flex flex-col space-y-1 text-gray-600">
           <div className="flex items-center">
