@@ -1,38 +1,155 @@
-import React from "react";
+import {
+  AppShell,
+  Container,
+  Title,
+  Text,
+  Grid,
+  Paper,
+  ThemeIcon,
+  Button,
+  Stack,
+  Divider,
+  Box,
+  Image,
+} from "@mantine/core";
+
 import { Navbar } from "../components/Navbar";
+import { FaArrowRight, FaBriefcase, FaHeart, FaUser } from "react-icons/fa";
+import Footer from "../components/Footer";
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 function Mission() {
   return (
-    <div>
+    <AppShell>
       <Navbar
         user={undefined}
         isLoading={false}
         isHaveUser={false}
-        refetchjobseeker={function (): void {
-          throw new Error("Function not implemented.");
-        }}
-        refetchemployer={function (): void {
-          throw new Error("Function not implemented.");
-        }}
-        refetchCompany={function (): void {
-          throw new Error("Function not implemented.");
-        }}
+        refetchjobseeker={() => {}}
+        refetchemployer={() => {}}
+        refetchCompany={() => {}}
         isStale={false}
-        setUser={function (value: any): void {
-          throw new Error("Function not implemented.");
-        }}
+        setUser={() => {}}
       />
-      <div className="kanit-regular  flex flex-col">
-        <div className="flex flex-col items-center justify-center flex-grow">
-          <h1 className="text-4xl font-bold mt-4">ภารกิจของเรา</h1>
-          <p className="text-lg text-center max-w-2xl">
-            ภารกิจของเราคือการสร้างแพลตฟอร์มการโพสต์งานที่ครอบคลุมซึ่งช่วยให้ผู้สูงอายุและผู้พิการสามารถเข้าถึงและมีโอกาสในการทำงานที่เหมาะสม
-            เรามุ่งมั่นที่จะเชื่อมโยงช่องว่างระหว่างนายจ้างและผู้หางาน
-            สร้างสรรค์แรงงานที่หลากหลายและสนับสนุนที่ทุกคนสามารถเติบโตได้
-          </p>
-        </div>
-      </div>
-    </div>
+
+      <Container size="lg" py="xl">
+        <Stack>
+          <Box ta="center" mb="xl">
+            <div className="kanit-bold text-2xl">ภารกิจของเรา</div>
+
+            <Text
+              size="lg"
+              className="kanit-regular"
+              c="dimmed"
+              maw={800}
+              mx="auto"
+            >
+              ภารกิจของเราคือการสร้างแพลตฟอร์มการโพสต์งานที่ครอบคลุมซึ่งช่วยให้ผู้สูงอายุและผู้พิการสามารถเข้าถึงและมีโอกาสในการทำงานที่เหมาะสม
+              เรามุ่งมั่นที่จะเชื่อมโยงช่องว่างระหว่างนายจ้างและผู้หางาน
+              สร้างสรรค์แรงงานที่หลากหลายและสนับสนุนที่ทุกคนสามารถเติบโตได้
+            </Text>
+          </Box>
+
+          <Grid mb="xl">
+            <Grid.Col span={{ base: 12, md: 4 }}>
+              <Paper shadow="md" p="lg" radius="md" withBorder h="100%">
+                <ThemeIcon
+                  size="xl"
+                  radius="xl"
+                  color="blue.1"
+                  c="green"
+                  mb="md"
+                >
+                  <FaUser />
+                </ThemeIcon>
+                <div className="kanit-regular text-2xl">การเข้าถึง</div>
+                <Text className="kanit-regular" c="dimmed">
+                  สร้างโอกาสการทำงานที่เท่าเทียมสำหรับผู้สูงอายุและผู้พิการ
+                </Text>
+              </Paper>
+            </Grid.Col>
+
+            <Grid.Col span={{ base: 12, md: 4 }}>
+              <Paper shadow="md" p="lg" radius="md" withBorder h="100%">
+                <ThemeIcon
+                  size="xl"
+                  radius="xl"
+                  color="blue.1"
+                  c="green"
+                  mb="md"
+                >
+                  <FaBriefcase />
+                </ThemeIcon>
+                <div className="kanit-regular text-2xl">การเชื่อมโยง</div>
+                <Text className="kanit-regular" c="dimmed">
+                  เชื่อมต่อนายจ้างกับผู้หางานที่มีความสามารถหลากหลาย
+                </Text>
+              </Paper>
+            </Grid.Col>
+
+            <Grid.Col span={{ base: 12, md: 4 }}>
+              <Paper shadow="md" p="lg" radius="md" withBorder h="100%">
+                <ThemeIcon
+                  size="xl"
+                  radius="xl"
+                  color="blue.1"
+                  c="green"
+                  mb="md"
+                >
+                  <FaHeart size={24} />
+                </ThemeIcon>
+                <div className="kanit-regular text-2xl">การสนับสนุน</div>
+                <Text className="kanit-regular" c="dimmed">
+                  สร้างสภาพแวดล้อมที่ทุกคนสามารถเติบโตและประสบความสำเร็จได้
+                </Text>
+              </Paper>
+            </Grid.Col>
+          </Grid>
+
+          <Paper shadow="lg" p="xl" radius="md" withBorder>
+            <Grid>
+              <Grid.Col span={{ base: 12, md: 8 }}>
+                <div className="kanit-regular text-2xl" >
+                  ร่วมเป็นส่วนหนึ่งในภารกิจของเรา
+                </div>
+                <Text className="kanit-regular" c="dimmed" mb="lg">
+                  ไม่ว่าคุณจะเป็นนายจ้างที่กำลังมองหาพนักงานที่มีความสามารถ
+                  หรือผู้หางานที่กำลังมองหาโอกาสใหม่ๆ เราพร้อมช่วยเหลือคุณ
+                </Text>
+                <motion.button
+                  className={`
+               
+               kanit-semibold py-2 px-4 rounded-lg border bg-seagreen text-white transition-colors duration-300 w-32`}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Link to="/select-user-type">เข้าร่วมที่นี่</Link>
+                </motion.button>
+              </Grid.Col>
+              <Grid.Col
+                span={{ base: 12, md: 4 }}
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Image
+                  src="/vite.svg"
+                  alt="Mission illustration"
+                  radius="md"
+                  h={200}
+                  w={200}
+                />
+              </Grid.Col>
+            </Grid>
+          </Paper>
+        </Stack>
+      </Container>
+
+      <Footer />
+    </AppShell>
   );
 }
 
