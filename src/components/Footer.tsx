@@ -9,14 +9,12 @@ export default function Footer() {
             <h4 className="text-lg font-semibold ">วิธีใช้</h4>
             <ul className="space-y-2">
               <li>
-                <Link to="/postemp" className="hover:underline">
-                  การโพสต์งาน
+                <Link to="/faq" className="hover:underline">
+                  คําถามที่พบบ่อย
                 </Link>
               </li>
               <li>
-                <Link to="/trackemp" className="hover:underline">
-                  การติดตามผลของผู้สมัคร
-                </Link>
+              
               </li>
             </ul>
           </div>
@@ -30,9 +28,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/faq" className="hover:underline">
-                  คำถามที่พบบ่อย
-                </Link>
+              
               </li>
             </ul>
           </div>
@@ -46,9 +42,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/team" className="hover:underline">
-                  ทีมของเรา
-                </Link>
+               
               </li>
             </ul>
           </div>

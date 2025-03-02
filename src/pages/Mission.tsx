@@ -110,9 +110,9 @@ function Mission() {
           <Paper shadow="lg" p="xl" radius="md" withBorder>
             <Grid>
               <Grid.Col span={{ base: 12, md: 8 }}>
-                <Title order={2} className="kanit-regular" mb="md">
+                <div className="kanit-regular text-2xl" >
                   ร่วมเป็นส่วนหนึ่งในภารกิจของเรา
-                </Title>
+                </div>
                 <Text className="kanit-regular" c="dimmed" mb="lg">
                   ไม่ว่าคุณจะเป็นนายจ้างที่กำลังมองหาพนักงานที่มีความสามารถ
                   หรือผู้หางานที่กำลังมองหาโอกาสใหม่ๆ เราพร้อมช่วยเหลือคุณ
