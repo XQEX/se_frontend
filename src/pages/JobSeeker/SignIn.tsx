@@ -50,7 +50,7 @@ function SignIn() {
         }
       }
     } catch (error) {
-      notifyError((error as any).response.data.msg);
+      notifyError("เข้าสู่ระบบไม่สำเร็จ กรุณาลองใหม่อีกครั้ง");
     } finally {
       setIsSubmitting(false);
     }
@@ -160,17 +160,17 @@ function SignIn() {
           {/* Password Input */}
           <div className="flex flex-col">
             <div className="flex flex-row justify-between items-center">
-            <label className="text-black text-sm mb-2 kanit-light flex items-center">
-              รหัสผ่าน
-              <Link
-              to="/forgot-password"
-              className="text-seagreen kanit-semibold underline ml-2"
-              >
-              ลืมรหัสผ่าน?
-              </Link>
-            </label>
+              <label className="text-black text-sm mb-2 kanit-light flex items-center">
+                รหัสผ่าน
+                <Link
+                  to="/forgot-password"
+                  className="text-seagreen kanit-semibold underline ml-2"
+                >
+                  ลืมรหัสผ่าน?
+                </Link>
+              </label>
             </div>
-            
+
             <input
               type="password"
               value={password}
@@ -178,7 +178,6 @@ function SignIn() {
               onChange={(e) => setPassword(e.target.value)}
               className="text-black placeholder-kanit rounded-lg border border-gray-300 p-3"
             />
-            
           </div>
 
           {/* Login Button */}
@@ -187,11 +186,14 @@ function SignIn() {
               onClick={LoginUser}
               className="bg-seagreen text-white kanit-semibold w-full py-3 rounded-lg"
             >
-              เข้าสู่ระบบ
+              {isSubmitting ? "กำลังเข้าสู่ระบบ..." : "เข้าสู่ระบบ"}
             </button>
           </div>
           <div className="flex flex-col justify-center  gap-2 items-center ">
-            <button onClick={handleGoogleOauth} className="w-60 flex items-center bg-white border border-gray-300 rounded-lg shadow-md max-w-xs px-6 py-2 text-sm font-medium text-gray-800 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+            <button
+              onClick={handleGoogleOauth}
+              className="w-60 flex items-center bg-white border border-gray-300 rounded-lg shadow-md max-w-xs px-6 py-2 text-sm font-medium text-gray-800 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+            >
               <svg
                 className="h-6 w-6 mr-2"
                 xmlns="http://www.w3.org/2000/svg"

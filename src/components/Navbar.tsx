@@ -19,7 +19,6 @@ import {
 } from "react-icons/fa";
 import { MdPostAdd } from "react-icons/md";
 import { useDisclosure } from "@mantine/hooks";
-import { useUser } from "../context/UserContext";
 import { logoutJobSeeker } from "../api/JobSeeker";
 import {
   fetchNotifications,
@@ -379,6 +378,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                       ) : (
                         <FaUserCircle size={24} className="text-seagreen" />
                       )}
+                      {/* <span className="absolute -top-1 -right-1 h-3 w-3 bg-green-500 rounded-full border-2 border-white"></span> */}{" "}
+                      {/* in case you want the online status */}
                     </div>
                     <span className="kanit-regular font-medium truncate max-w-[150px]">
                       {user?.username}
