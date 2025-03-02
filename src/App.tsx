@@ -32,6 +32,7 @@ import { useUser } from "./context/UserContext";
 import { Navigate, Outlet } from "react-router-dom";
 import AccessDenied from "./pages/AccessDenied";
 import Mission from "./pages/Mission";
+import FAQSection from "./pages/FAQ";
 
 const ProtectedRoute = ({
   allowedRoles,
@@ -230,6 +231,7 @@ function App() {
 
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/mission" element={<Mission />} />
+        <Route path = "/faq" element = {<FAQSection />} />
       </Routes>
     </div>
   );
