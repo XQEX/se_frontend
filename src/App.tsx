@@ -51,7 +51,7 @@ const ProtectedRoute = ({
 
 function App() {
   return (
-    <div className="App">
+    <div>
       <Routes>
         {/* หน้าหลัก */}
         {/* perrmission Guest: yes ,Jobseeker: yes ,employer: yes ,company: yes */}
@@ -221,9 +221,9 @@ function App() {
         <Route
           path="admin"
           element={
-            <ProtectedRoute allowedRoles={["ADMIN"]}>
-              <Admin />
-            </ProtectedRoute>
+            // <ProtectedRoute allowedRoles={["ADMIN"]}>
+            <Admin />
+            // </ProtectedRoute>
           }
         />
         <Route path="*" element={<NoPage />} />
