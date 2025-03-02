@@ -1,14 +1,32 @@
 import React, { useEffect, useState } from "react";
-
 import { Link } from "react-router-dom";
-import { Avatar, Menu, Divider } from "@mantine/core";
+import { Avatar, Menu, Divider, Modal, Button } from "@mantine/core";
 import { FaUserCircle, FaSearch, FaHome, FaBell } from "react-icons/fa";
 import { logoutJobSeeker } from "../api/JobSeeker";
 import { logoutEmployer } from "../api/Employer";
+import {
+  fetchNotifications,
+  markNotificationAsRead,
+  markAllNotificationsAsRead,
+} from "../api/Notification";
 import { logoutCompany } from "../api/Company";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+interface Notification {
+  id: string;
+  status: "all" | "READ" | "UNREAD";
+  title: string;
+  description: string;
+  userType: string;
+  jobSeekerId?: string;
+  oauthJobSeekerId?: string;
+  employerId?: string;
+  oauthEmployerId?: string;
+  companyId?: string;
+  createdAt: string;
+  updatedAt: string;
+}
 interface NavbarEmpProps {
   user: any;
   isLoading: boolean;
@@ -32,13 +50,52 @@ export const NavbarEmp: React.FC<NavbarEmpProps> = ({
 }) => {
   const [isSignedIn, setIsSignedIn] = useState(isHaveUser);
   const [scrollDirection, setScrollDirection] = useState("up");
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState("all");
+  const [modalOpened, setModalOpened] = useState(false);
+  const [selectedNotification, setSelectedNotification] =
+    useState<Notification | null>(null);
+
+  const loadNotifications = async (
+    status: "all" | "READ" | "UNREAD" = "all"
+  ) => {
+    if (!user) return; // Prevent loading if no user
+    try {
+      const data = await fetchNotifications(status);
+      setActiveTab(status);
+      if (Array.isArray(data)) {
+        const filteredData: Notification[] = data.map((item) => ({
+          ...item,
+          jobSeekerId: item.jobSeekerId || "",
+          oauthJobSeekerId: item.oauthJobSeekerId || "",
+          employerId: item.employerId || "",
+          oauthEmployerId: item.oauthEmployerId || "",
+          companyId: item.companyId || "",
+        }));
+        setNotifications(filteredData);
+        console.log(notifications);
+      } else {
+        throw new Error("Invalid notifications data");
+      }
+    } catch (err) {
+      console.error("Error loading notifications:", err); // 👉 Add log
+      setError("Failed to load notifications");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadNotifications();
+  }, [user]); // Add `user` as dependency
 
   // Helper function for toast messages
   const notifyError = (message: string) =>
     toast.error(message, { position: "top-center" });
 
   useEffect(() => {
-    // console.log("NavbarEmp: isSignedIn", isSignedIn);
     setIsSignedIn(isHaveUser);
 
     let lastScrollY = window.scrollY;
@@ -70,7 +127,39 @@ export const NavbarEmp: React.FC<NavbarEmpProps> = ({
     }
   };
 
-  const FakeNotifications = ["คุณมีการแจ้งเตือนใหม่"];
+  const handleNotificationClick = async (notification: Notification) => {
+    if (notification.status === "UNREAD") {
+      try {
+        await markNotificationAsRead(notification.id);
+        setNotifications((prevNotifications) =>
+          prevNotifications.map((notif) =>
+            notif.id === notification.id ? { ...notif, status: "READ" } : notif
+          )
+        );
+      } catch (error) {
+        console.error("Failed to mark notification as read:", error);
+      }
+    }
+    setSelectedNotification(notification);
+    setModalOpened(true);
+  };
+
+  const handleMarkAllAsRead = async () => {
+    try {
+      await markAllNotificationsAsRead();
+      setNotifications((prevNotifications) =>
+        prevNotifications.map((notif) => ({ ...notif, status: "READ" }))
+      );
+      toast.success("ทำเครื่องหมายว่าอ่านแล้วทั้งหมด!", {
+        position: "top-center",
+      });
+    } catch (error) {
+      console.error("Failed to mark all notifications as read:", error);
+      toast.error("ไม่สามารถทำเครื่องหมายว่าอ่านทั้งหมดได้!", {
+        position: "top-center",
+      });
+    }
+  };
 
   return (
     <>
@@ -100,7 +189,6 @@ export const NavbarEmp: React.FC<NavbarEmpProps> = ({
             <FaHome className="mr-2" />
             หน้าแรก
           </Link>
-
           {/* ✅ ค้นหางาน */}
           <Link
             to="/findemp"
@@ -109,36 +197,91 @@ export const NavbarEmp: React.FC<NavbarEmpProps> = ({
             <FaSearch className="mr-2" />
             ค้นหางาน
           </Link>
-
           {/* ✅ การแจ้งเตือน */}
           {isSignedIn && (
             <Menu width={250} position="bottom-end" shadow="md">
               <Menu.Target>
                 <button className="text-gray-200 font-[Kanit] hover:text-white transition-colors duration-300 relative">
                   <FaBell size={20} />
-                  {FakeNotifications.length > 0 && (
+                  {notifications.some(
+                    (notification) => notification.status === "UNREAD"
+                  ) && (
                     <span className="absolute top-0 right-0 inline-block w-2 h-2 bg-red-500 rounded-full"></span>
                   )}
                 </button>
               </Menu.Target>
+
               <Menu.Dropdown>
-                <div className="p-2 text-center font-[Kanit]">การแจ้งเตือน</div>
+                <div className="p-2">
+                  <div className="kanit-regular text-center">การแจ้งเตือน</div>
+                  <div className="flex justify-around my-2">
+                    {[
+                      { type: "all" as "all", label: "ทั้งหมด" },
+                      { type: "READ" as "READ", label: "อ่านแล้ว" },
+                      { type: "UNREAD" as "UNREAD", label: "ยังไม่อ่าน" },
+                    ].map(({ type, label }) => (
+                      <button
+                        key={type}
+                        onClick={() => loadNotifications(type)}
+                        className={`px-2 py-1 rounded-xl transition-all duration-300 
+            ${
+              activeTab === type
+                ? "bg-seagreen text-white"
+                : "bg-gray-200 text-gray-700"
+            } 
+            hover:bg-seagreen hover:text-white`}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
                 <Divider />
-                {FakeNotifications.map((message, index) => (
-                  <Menu.Item key={index} className="font-[Kanit]">
-                    {message}
-                  </Menu.Item>
-                ))}
+                <div className="max-h-60 overflow-y-auto">
+                  {loading ? (
+                    <Menu.Item className="kanit-light text-center">
+                      กำลังโหลด...
+                    </Menu.Item>
+                  ) : error ? (
+                    <Menu.Item className="kanit-light text-center text-red-500">
+                      {error}
+                    </Menu.Item>
+                  ) : notifications.length > 0 ? (
+                    notifications.map((notification, index) => (
+                      <Menu.Item
+                        key={index}
+                        className="kanit-light"
+                        onClick={() => handleNotificationClick(notification)}
+                      >
+                        <div>
+                          <div>
+                            {notification.title}
+                            {notification.status === "UNREAD" && (
+                              <span className="text-red-500"> (NEW)</span>
+                            )}
+                          </div>
+                          <div className="text-xs text-gray-500">
+                            {notification.status}
+                          </div>
+                        </div>
+                      </Menu.Item>
+                    ))
+                  ) : (
+                    <Menu.Item className="kanit-light text-center">
+                      ไม่มีการแจ้งเตือน
+                    </Menu.Item>
+                  )}
+                </div>
                 <Divider />
-                <Menu.Item className="font-[Kanit] text-center bg-gray-200">
-                  <Link to="/notifications" className="text-seagreen">
-                    ดูทั้งหมด
-                  </Link>
+                <Menu.Item
+                  className="kanit-regular text-center bg-gray-200"
+                  onClick={handleMarkAllAsRead}
+                >
+                  <button className="text-seagreen">อ่านทั้งหมด</button>
                 </Menu.Item>
               </Menu.Dropdown>
             </Menu>
           )}
-
           {/* ✅ ปุ่มเข้าสู่ระบบ & สมัครสมาชิก */}
           {!isSignedIn ? (
             <>
@@ -209,6 +352,23 @@ export const NavbarEmp: React.FC<NavbarEmpProps> = ({
           )}
         </div>
       </nav>
+
+      <Modal
+        opened={modalOpened}
+        onClose={() => setModalOpened(false)}
+        title="Notification Details"
+        className="kanit-light"
+      >
+        {selectedNotification && (
+          <div>
+            <h2>หัวข้อเรื่อง : {selectedNotification.title}</h2>
+            <p>รายละเอียด :{selectedNotification.description}</p>
+            <Button className="mt-3" onClick={() => setModalOpened(false)}>
+              Close
+            </Button>
+          </div>
+        )}
+      </Modal>
     </>
   );
 };
