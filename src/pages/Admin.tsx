@@ -29,7 +29,7 @@ interface ApprovalRequest {
   userType: string;
   status: string;
   adminId: string;
-  imageUrl: string; // Ensure this property is included
+  imageUrl?: string; // Add this line
 }
 
 const Admin: React.FC = () => {
@@ -37,6 +37,7 @@ const Admin: React.FC = () => {
   const [loginLoading, setLoginLoading] = useState<boolean>(false);
   const [logoutLoading, setLogoutLoading] = useState<boolean>(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const [skills, setSkills] = useState<any[]>([]);
   const [jobCategories, setJobCategories] = useState<any[]>([]);
@@ -209,6 +210,17 @@ const Admin: React.FC = () => {
         </div>
       )}
 
+      {selectedImage && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75 z-50">
+          <img
+            src={selectedImage}
+            alt="Full Screen"
+            className="max-w-full max-h-full"
+            onClick={() => setSelectedImage(null)}
+          />
+        </div>
+      )}
+
       <div className="mb-6 p-4 bg-white rounded shadow">
         <h2 className="text-2xl font-semibold mb-4">Generate Admin</h2>
         <button
@@ -294,8 +306,10 @@ const Admin: React.FC = () => {
                   <img
                     src={request.imageUrl}
                     alt="User"
-                    className="w-16 h-16 rounded-full"
+                    className="w-16 h-16 rounded-full cursor-pointer"
+                    onClick={() => setSelectedImage(request.imageUrl || "")}
                   ></img>
+                  <p>{request.imageUrl}</p>
                   <button
                     onClick={() => handleApproveUser(request.id, "APPROVED")}
                     className="ml-4 px-2 py-1 bg-green-500 text-white rounded"
