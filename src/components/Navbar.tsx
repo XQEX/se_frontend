@@ -215,7 +215,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         ค้นหางาน
       </Link>
       <Link
-        to="/application/JobPosition"
+        to="/application"
         className="text-gray-200 kanit-regular hover:text-white px-4 py-1 rounded-md transition-colors duration-300 flex items-center"
       >
         <FaEdit className="mr-2" />
