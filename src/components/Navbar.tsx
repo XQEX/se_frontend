@@ -258,7 +258,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     {notifications.some(
                       (notification) => notification.status === "UNREAD"
                     ) && (
-                      <span className="absolute top-0 right-0 inline-block w-2 h-2 bg-red-500 rounded-full"></span>
+                      <span className="absolute top-0 right-0 inline-block w-2 h-2 bg-seagreen rounded-full"></span>
                     )}
                   </button>
                 </Menu.Target>

@@ -3,7 +3,7 @@ import { Navbar } from "../components/Navbar";
 
 function Term() {
   return (
-    <div className="h-screen ">
+    <div className="h-screen kanit-regular">
       <Navbar
         user={undefined}
         isLoading={false}

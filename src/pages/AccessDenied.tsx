@@ -8,7 +8,9 @@ function AccessDenied() {
         <img src="/logo.png" className="h-auto w-20" />
       </div>
 
-      <h1 className="text-6xl font-bold text-seagreen mb-4">Access Denied</h1>
+      <h1 className="text-6xl font-bold text-seagreen mb-4">
+        Access Denied
+      </h1>
       <p className="text-xl text-gray-600 mb-8 kanit-medium">
         คุณไม่มีสิทธิ์เข้าถึงหน้านี้
       </p>
