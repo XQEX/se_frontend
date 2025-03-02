@@ -52,6 +52,23 @@ interface GetMatchesResponse {
   }[];
   status: number;
 }
+interface DeleteMatchResponse {
+  success: boolean;
+  msg: string;
+  status: number;
+}
+
+const deleteMatchHiringPost = async (postId) => {
+  // เปลี่ยนจาก matchId เป็น postId
+  try {
+    const response = await axios.delete(
+      `http://localhost:6977/api/matching/hiring/${postId}/match`
+    );
+    console.log("Delete success:", response.data);
+  } catch (error) {
+    console.error("Failed to delete match:", error);
+  }
+};
 
 const matchWithHiringPost = async (postId: string): Promise<MatchResponse> => {
   try {
@@ -74,7 +91,7 @@ const matchWithHiringPost = async (postId: string): Promise<MatchResponse> => {
   }
 };
 
-export const getMatchesForHiringPost = async (
+const getMatchesForHiringPost = async (
   postId: string
 ): Promise<GetMatchesResponse> => {
   try {
@@ -140,12 +157,39 @@ function JobCard({
   const handleMatch = async (e: React.MouseEvent) => {
     e.stopPropagation();
     try {
-      const response = await matchWithHiringPost(String(id));
-      console.log("Match response:", response);
+      if (isFav) {
+        // เมื่อ star แสดงอยู่ แสดงว่ามี match อยู่แล้ว
+        // จึงต้องดึงข้อมูล match เพื่อหา matchId ที่เกี่ยวข้องกับ current user
+        const matchedPost = await getMatchesForHiringPost(String(id));
+        console.log("Matched post data:", matchedPost);
+
+        // ค้นหาข้อมูลการจับคู่ที่ตรงกับ current user ทั้งในกรณี jobSeekerId หรือ oauthJobSeekerId
+        const matchToDelete = matchedPost.data
+          .flatMap((match) => match.toMatchSeekers)
+          .find(
+            (seeker) =>
+              seeker.jobSeekerId === currentUserID ||
+              seeker.oauthJobSeekerId === currentUserID
+          );
+
+        if (matchToDelete) {
+          console.log("Match to delete:", matchToDelete);
+          // เรียก API delete ด้วย matchId ที่ได้จาก matchToDelete.jobHiringPostMatchedId
+          const response = await deleteMatchHiringPost(
+            matchToDelete.jobHiringPostMatchedId
+          );
+          console.log("Delete match response:", response);
+        } else {
+          console.warn("No matching post found for current user");
+        }
+      } else {
+        // เมื่อยังไม่มี match ให้เรียก API match
+        const response = await matchWithHiringPost(String(id));
+        console.log("Match response:", response);
+      }
       setIsFav(!isFav);
-      // Handle the response as needed
     } catch (error) {
-      console.error("Error matching with hiring post:", error);
+      console.error("Error handling match:", error);
     }
   };
 

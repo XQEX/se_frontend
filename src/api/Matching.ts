@@ -169,6 +169,11 @@ interface AdminMatchingStatusResponse {
   };
   status: number;
 }
+interface DeleteMatchResponse {
+  success: boolean;
+  msg: string;
+  status: number;
+}
 
 export const matchWithHiringPost = async (
   postId: string
@@ -351,3 +356,25 @@ export const getAdminMatchingStatus =
       throw error;
     }
   };
+
+export const deleteMatchHiringPost = async (
+  matchId: string
+): Promise<DeleteMatchResponse> => {
+  try {
+    console.log("Deleting match for hiring post:", { matchId });
+    const { data } = await axios.delete<DeleteMatchResponse>(
+      `http://localhost:6977/api/matching/hiring/${matchId}/match`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    console.log("Match deleted successfully:", data);
+    return data;
+  } catch (error) {
+    console.error("Failed to delete match for hiring post:", error);
+    throw error;
+  }
+};
