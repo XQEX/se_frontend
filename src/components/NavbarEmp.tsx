@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Avatar, Menu, Divider, Modal, Button } from "@mantine/core";
 import { FaUserCircle, FaSearch, FaHome, FaBell } from "react-icons/fa";
 import { logoutJobSeeker } from "../api/JobSeeker";
@@ -12,6 +12,7 @@ import {
 import { logoutCompany } from "../api/Company";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { CurrentUserResponse } from "../api/auth";
 
 interface Notification {
   id: string;
@@ -28,25 +29,17 @@ interface Notification {
   updatedAt: string;
 }
 interface NavbarEmpProps {
-  user: any;
+  user: CurrentUserResponse['data'] | null;
   isLoading: boolean;
   isHaveUser: boolean;
-  refetchjobseeker: () => void;
-  refetchemployer: () => void;
-  refetchCompany: () => void;
-  isStale: boolean;
-  setUser: React.Dispatch<React.SetStateAction<any>>;
+  refetchUser: () => void;
 }
 
 export const NavbarEmp: React.FC<NavbarEmpProps> = ({
   user,
   isLoading,
   isHaveUser,
-  refetchjobseeker,
-  refetchemployer,
-  refetchCompany,
-  isStale,
-  setUser,
+  refetchUser,
 }) => {
   const [isSignedIn, setIsSignedIn] = useState(isHaveUser);
   const [scrollDirection, setScrollDirection] = useState("up");
@@ -57,6 +50,7 @@ export const NavbarEmp: React.FC<NavbarEmpProps> = ({
   const [modalOpened, setModalOpened] = useState(false);
   const [selectedNotification, setSelectedNotification] =
     useState<Notification | null>(null);
+  const navigate = useNavigate();
 
   const loadNotifications = async (
     status: "all" | "READ" | "UNREAD" = "all"
@@ -113,17 +107,20 @@ export const NavbarEmp: React.FC<NavbarEmpProps> = ({
 
   const handleLogout = async () => {
     try {
-      if (user?.type === "JOBSEEKER") {
+      if (user?.role === 'jobseeker') {
         await logoutJobSeeker();
-      } else if (user?.type === "EMPLOYER") {
+      } else if (user?.role === 'employer') {
         await logoutEmployer();
-      } else if (user?.type === "COMPANY") {
+      } else if (user?.role === 'company') {
         await logoutCompany();
       }
-      notifyError("คุณออกจากระบบ!"); // Show the notification after navigation
-      setIsSignedIn(false);
+      
+      refetchUser();
+      navigate("/");
+      toast.success("Logged out successfully!");
     } catch (error) {
-      console.error("Failed to logout:", error);
+      console.error("Logout failed:", error);
+      toast.error("Logout failed. Please try again.");
     }
   };
 
@@ -159,6 +156,18 @@ export const NavbarEmp: React.FC<NavbarEmpProps> = ({
         position: "top-center",
       });
     }
+  };
+
+  const getUserDisplayName = () => {
+    if (!user?.userData) return "User";
+    
+    if (user.role === 'company') {
+      return user.userData.officialName || user.userData.username || "Company";
+    }
+    
+    return user.userData.username || 
+           `${user.userData.firstName || ''} ${user.userData.lastName || ''}`.trim() || 
+           "User";
   };
 
   return (
@@ -286,13 +295,13 @@ export const NavbarEmp: React.FC<NavbarEmpProps> = ({
           {!isSignedIn ? (
             <>
               <Link
-                to="/signin"
+                to="/login"
                 className="text-gray-200 font-[Kanit] hover:text-white px-4 py-1 rounded-md transition-colors duration-300"
               >
                 เข้าสู่ระบบ
               </Link>
               <Link
-                to="/select-user-type"
+                to="/register"
                 className="text-gray-200 px-4 py-1 rounded-md border border-seagreen font-[Kanit] hover:text-white transition-colors duration-300"
               >
                 สมัครสมาชิก
@@ -302,17 +311,17 @@ export const NavbarEmp: React.FC<NavbarEmpProps> = ({
             <Menu width={250} position="bottom-end">
               <Menu.Target>
                 <button className="flex items-center space-x-2 bg-gray-200 text-black px-4 py-2 rounded-3xl hover:bg-white transition">
-                  {user?.profilePicture ? (
+                  {user?.userData.profileImageUrl ? (
                     <Avatar
-                      src={user.profilePicture}
-                      alt={user.name}
+                      src={user.userData.profileImageUrl}
+                      alt={getUserDisplayName()}
                       radius="xl"
                       size={30}
                     />
                   ) : (
                     <FaUserCircle size={24} />
                   )}
-                  <span className="font-[Kanit]">{user?.username}</span>
+                  <span className="font-[Kanit]">{getUserDisplayName()}</span>
                 </button>
               </Menu.Target>
               <Menu.Dropdown>
@@ -333,14 +342,14 @@ export const NavbarEmp: React.FC<NavbarEmpProps> = ({
                   <>
                     <Menu.Item
                       component={Link}
-                      to="/signin"
+                      to="/login"
                       className="kanit-regular"
                     >
                       เข้าสู่ระบบ
                     </Menu.Item>
                     <Menu.Item
                       component={Link}
-                      to="/signup"
+                      to="/register"
                       className="kanit-regular"
                     >
                       สมัครสมาชิก

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Avatar,
   Menu,
@@ -29,10 +29,11 @@ import { logoutEmployer } from "../api/Employer";
 import { logoutCompany } from "../api/Company";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { CurrentUserResponse } from "../api/auth";
 
-interface Notification {
+interface NotificationType {
   id: string;
-  status: "all" | "READ" | "UNREAD";
+  status: "READ" | "UNREAD" | "all";
   title: string;
   description: string;
   userType: string;
@@ -44,38 +45,35 @@ interface Notification {
   createdAt: string;
   updatedAt: string;
 }
+
 interface NavbarProps {
-  user: any;
+  user: CurrentUserResponse['data'] | null;
   isLoading: boolean;
   isHaveUser: boolean;
-  refetchjobseeker: () => void;
-  refetchemployer: () => void;
-  refetchCompany: () => void;
-  isStale: boolean;
-  setUser: React.Dispatch<React.SetStateAction<any>>;
+  refetchUser: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
   user,
   isLoading,
   isHaveUser,
-  refetchjobseeker,
-  refetchemployer,
-  refetchCompany,
-  isStale,
-  setUser,
+  refetchUser,
 }) => {
   const [isSignedIn, setIsSignedIn] = useState(isHaveUser);
   const [scrollDirection, setScrollDirection] = useState("up");
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [notifications, setNotifications] = useState<NotificationType[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("all");
   const [modalOpened, setModalOpened] = useState(false);
   const [selectedNotification, setSelectedNotification] =
-    useState<Notification | null>(null);
+    useState<NotificationType | null>(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const navigate = useNavigate();
+
   const loadNotifications = async (
     status: "all" | "READ" | "UNREAD" = "all"
   ) => {
@@ -84,7 +82,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       const data = await fetchNotifications(status);
       setActiveTab(status);
       if (Array.isArray(data)) {
-        const filteredData: Notification[] = data.map((item) => ({
+        const filteredData: NotificationType[] = data.map((item) => ({
           ...item,
           jobSeekerId: item.jobSeekerId || "",
           oauthJobSeekerId: item.oauthJobSeekerId || "",
@@ -132,23 +130,25 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const handleLogout = async () => {
     try {
-      if (user.type === "JOBSEEKER") {
+      if (user?.role === 'jobseeker') {
         await logoutJobSeeker();
-      } else if (user.type === "EMPLOYER") {
+      } else if (user?.role === 'employer') {
         await logoutEmployer();
-      } else if (user.type === "COMPANY") {
+      } else if (user?.role === 'company') {
         await logoutCompany();
       }
-      // Clear cookies or session data if necessary
-      notifyError("คุณออกจากระบบ!"); // Show the notification after navigation
-      setIsSignedIn(false);
+      
+      refetchUser();
+      navigate("/");
+      toast.success("Logged out successfully!");
     } catch (error) {
-      console.error("Failed to logout:", error);
+      console.error("Logout failed:", error);
+      toast.error("Logout failed. Please try again.");
     }
   };
 
-  const handleNotificationClick = async (notification: Notification) => {
-    if (notification.status === "UNREAD") {
+  const handleNotificationClick = async (notification: NotificationType) => {
+    if (notification.status !== "READ") {
       try {
         await markNotificationAsRead(notification.id);
         setNotifications((prevNotifications) =>
@@ -179,6 +179,14 @@ export const Navbar: React.FC<NavbarProps> = ({
         position: "top-center",
       });
     }
+  };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const toggleNotification = () => {
+    setIsNotificationOpen(!isNotificationOpen);
   };
 
   const menuItems = (
@@ -230,6 +238,18 @@ export const Navbar: React.FC<NavbarProps> = ({
       </Link>
     </div>
   );
+
+  const getUserDisplayName = () => {
+    if (!user?.userData) return "User";
+    
+    if (user.role === 'company') {
+      return user.userData.officialName || user.userData.username || "Company";
+    }
+    
+    return user.userData.username || 
+           `${user.userData.firstName || ''} ${user.userData.lastName || ''}`.trim() || 
+           "User";
+  };
 
   return (
     <>
@@ -309,12 +329,12 @@ export const Navbar: React.FC<NavbarProps> = ({
                           <div>
                             <div>
                               {notification.title}
-                              {notification.status === "UNREAD" && (
+                              {notification.status === "READ" && (
                                 <span className="text-red-500"> (NEW)</span>
                               )}
                             </div>
                             <div className="text-xs text-gray-500">
-                              {notification.status}
+                              {notification.status === "READ" ? "อ่านแล้ว" : "ยังไม่อ่าน"}
                             </div>
                           </div>
                         </Menu.Item>
@@ -367,10 +387,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                     aria-label="User menu"
                   >
                     <div className="relative">
-                      {user?.profilePicture ? (
+                      {user?.userData.profileImageUrl ? (
                         <Avatar
-                          src={user.profilePicture}
-                          alt={user.username}
+                          src={user.userData.profileImageUrl}
+                          alt={getUserDisplayName()}
                           radius="xl"
                           size={30}
                           className="border-2 border-seagreen"
@@ -378,21 +398,19 @@ export const Navbar: React.FC<NavbarProps> = ({
                       ) : (
                         <FaUserCircle size={24} className="text-seagreen" />
                       )}
-                      {/* <span className="absolute -top-1 -right-1 h-3 w-3 bg-green-500 rounded-full border-2 border-white"></span> */}{" "}
-                      {/* in case you want the online status */}
                     </div>
                     <span className="kanit-regular font-medium truncate max-w-[150px]">
-                      {user?.username}
+                      {getUserDisplayName()}
                     </span>
                   </button>
                 </Menu.Target>
                 <Menu.Dropdown className="p-2 shadow-lg rounded-lg border border-gray-100">
                   <div className="p-3 text-center bg-gray-50 rounded-md">
                     <div className="kanit-regular font-medium">
-                      {user?.username}
+                      {getUserDisplayName()}
                     </div>
                     <div className="text-sm text-gray-500 truncate">
-                      {user?.email}
+                      {user?.userData.email}
                     </div>
                   </div>
                   <Divider className="my-2" />
@@ -511,12 +529,12 @@ export const Navbar: React.FC<NavbarProps> = ({
                               <div>
                                 <div>
                                   {notification.title}
-                                  {notification.status === "UNREAD" && (
+                                  {notification.status === "READ" && (
                                     <span className="text-red-500"> (NEW)</span>
                                   )}
                                 </div>
                                 <div className="text-xs text-gray-500">
-                                  {notification.status}
+                                  {notification.status === "READ" ? "อ่านแล้ว" : "ยังไม่อ่าน"}
                                 </div>
                               </div>
                             </Menu.Item>
@@ -564,22 +582,22 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <Menu width={250} position="bottom-end">
                   <Menu.Target>
                     <button className="flex items-center space-x-2 bg-gray-200 text-black px-4 py-2 rounded-3xl hover:bg-white transition">
-                      {user?.profilePicture ? (
+                      {user?.userData.profileImageUrl ? (
                         <Avatar
-                          src={user.profilePicture}
-                          alt={user.username}
+                          src={user.userData.profileImageUrl}
+                          alt={getUserDisplayName()}
                           radius="xl"
                           size={30}
                         />
                       ) : (
                         <FaUserCircle size={24} />
                       )}
-                      <span className="kanit-regular">{user?.username}</span>
+                      <span className="kanit-regular">{getUserDisplayName()}</span>
                     </button>
                   </Menu.Target>
                   <Menu.Dropdown className="m-2">
                     <div className="p-3 text-center">
-                      <div className="kanit-regular">{user?.username}</div>
+                      <div className="kanit-regular">{getUserDisplayName()}</div>
                     </div>
                     <Divider />
                     {menuItems}

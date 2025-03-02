@@ -1,18 +1,17 @@
 import React, { createContext, useContext, useState } from "react";
 import { useQuery } from "react-query";
-import { fetchJobSeekerInfo } from "../api/JobSeeker";
-import { fetchEmployerInfo } from "../api/Employer";
-import { fetchCompanyInfo } from "../api/Company";
+import { getCurrentUser, CurrentUserResponse } from "../api/auth";
 
-interface UserContextType {
-  user: any;
+interface AuthState {
+  isAuthenticated: boolean;
   isLoading: boolean;
-  isHaveUser: boolean;
-  setUser: React.Dispatch<React.SetStateAction<any>>;
-  refetchjobseeker: () => void;
-  refetchemployer: () => void;
-  refetchCompany: () => void;
-  isStale: boolean;
+  user: CurrentUserResponse['data'] | null;
+  error: string | null;
+}
+
+interface UserContextType extends AuthState {
+  refetchUser: () => void;
+  setUser: React.Dispatch<React.SetStateAction<CurrentUserResponse['data'] | null>>;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -22,69 +21,40 @@ interface UserProviderProps {
 }
 
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<CurrentUserResponse['data'] | null>(null);
 
-  const handleError = (error: any) => {
-    console.error("Error fetching user info:", error);
-    if (error.queryKey === "currentJobSeeker" && isStaleJobseeker) {
-      setUser((prev: any) => (prev?.type === "jobseeker" ? null : prev));
-    } else if (error.queryKey === "currentEmployer" && isStaleEmployer) {
-      setUser((prev: any) => (prev?.type === "employer" ? null : prev));
-    } else if (error.queryKey === "currentCompany" && isStaleCompany) {
-      setUser((prev: any) => (prev?.type === "company" ? null : prev));
-    }
+  const {
+    isLoading,
+    error,
+    refetch: refetchUser
+  } = useQuery("currentUser", getCurrentUser, {
+    onSuccess: (data) => {
+      if (data.success && data.data) {
+        setUser(data.data);
+      } else {
+        setUser(null);
+      }
+    },
+    onError: (error) => {
+      console.error("Error fetching user info:", error);
+      setUser(null);
+    },
+    // Refresh every 3 minutes instead of 3 seconds for better performance
+    refetchInterval: 180000,
+    retry: 1,
+  });
+
+  const value = {
+    user,
+    setUser,
+    isLoading,
+    isAuthenticated: !!user,
+    error: error ? (error as Error).message : null,
+    refetchUser,
   };
 
-  const {
-    isLoading: isLoadingJobSeeker,
-    refetch: refetchjobseeker,
-    isStale: isStaleJobseeker,
-  } = useQuery("currentJobSeeker", fetchJobSeekerInfo, {
-    onSuccess: (data) => {
-      setUser((prev: any) => prev ?? data);
-    },
-    onError: handleError,
-  });
-
-  const {
-    isLoading: isLoadingEmployer,
-    refetch: refetchemployer,
-    isStale: isStaleEmployer,
-  } = useQuery("currentEmployer", fetchEmployerInfo, {
-    onSuccess: (data) => {
-      setUser((prev: any) => prev ?? data);
-    },
-    onError: handleError,
-  });
-
-  const {
-    isLoading: isLoadingCompany,
-    refetch: refetchCompany,
-    isStale: isStaleCompany,
-  } = useQuery("currentCompany", fetchCompanyInfo, {
-    onSuccess: (data) => {
-      setUser((prev: any) => prev ?? data);
-    },
-    onError: handleError,
-  });
-
-  const isLoading = isLoadingJobSeeker || isLoadingEmployer || isLoadingCompany;
-  const isStale = isStaleJobseeker || isStaleEmployer || isStaleCompany;
-  const isHaveUser = !!user;
-
   return (
-    <UserContext.Provider
-      value={{
-        user,
-        isLoading,
-        isHaveUser,
-        setUser,
-        refetchjobseeker,
-        refetchemployer,
-        refetchCompany,
-        isStale,
-      }}
-    >
+    <UserContext.Provider value={value}>
       {children}
     </UserContext.Provider>
   );

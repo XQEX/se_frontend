@@ -19,23 +19,13 @@ function Home() {
   const {
     user,
     isLoading,
-    refetchjobseeker,
-    refetchemployer,
-    refetchCompany,
-    isStale,
-    setUser,
+    refetchUser,
+    isAuthenticated
   } = useUser();
-  const [isHaveUser, setIsHaveUser] = useState(false);
+
   useEffect(() => {
-    refetchjobseeker();
-    refetchCompany();
-    refetchemployer();
-    // console.log("current user:", user);
-    // console.log("isLoading:", isLoading);
-    // console.log("isHaveUser :", isHaveUser);
-    // console.log("isStale :", isStale);
-    setIsHaveUser(!!user);
-  }, [user, isLoading, isStale]);
+    refetchUser();
+  }, []);
 
   useEffect(() => {
     gsap.fromTo(
@@ -85,27 +75,19 @@ function Home() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-green-50 to-white">
-      {user?.type == "JOBSEEKER" || user?.type == null ? (
+      {(!user?.role || user.role === 'jobseeker') ? (
         <Navbar
           user={user}
           isLoading={isLoading}
-          isHaveUser={isHaveUser}
-          refetchjobseeker={refetchjobseeker}
-          refetchemployer={refetchemployer}
-          refetchCompany={refetchCompany}
-          isStale={isStale}
-          setUser={setUser}
+          isHaveUser={isAuthenticated}
+          refetchUser={refetchUser}
         />
       ) : (
         <NavbarEmp
           user={user}
           isLoading={isLoading}
-          isHaveUser={isHaveUser}
-          refetchjobseeker={refetchjobseeker}
-          refetchemployer={refetchemployer}
-          refetchCompany={refetchCompany}
-          isStale={isStale}
-          setUser={setUser}
+          isHaveUser={isAuthenticated}
+          refetchUser={refetchUser}
         />
       )}
       <div className="kanit-regular flex-grow flex flex-col md:flex-row justify-center items-center p-6 md:p-16 gap-8 md:gap-16 ">
