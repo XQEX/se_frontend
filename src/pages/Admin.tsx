@@ -29,6 +29,7 @@ interface ApprovalRequest {
   userType: string;
   status: string;
   adminId: string;
+  imageUrl: string; // Ensure this property is included
 }
 
 const Admin: React.FC = () => {
@@ -290,6 +291,11 @@ const Admin: React.FC = () => {
                   <span className="font-medium">{request.userId}</span> -{" "}
                   <span className="text-gray-600">{request.userType}</span> -{" "}
                   <span className="text-gray-600">{request.status}</span>
+                  <img
+                    src={request.imageUrl}
+                    alt="User"
+                    className="w-16 h-16 rounded-full"
+                  ></img>
                   <button
                     onClick={() => handleApproveUser(request.id, "APPROVED")}
                     className="ml-4 px-2 py-1 bg-green-500 text-white rounded"

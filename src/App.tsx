@@ -6,6 +6,7 @@ import SignIn from "./pages/JobSeeker/SignIn";
 import ContactUs from "./pages/JobSeeker/ContactUs";
 import Profile from "./pages/JobSeeker/Profile";
 import Settings from "./pages/JobSeeker/Settings";
+import Awaitpls from "./pages/JobSeeker/Await";
 import Home from "./pages/JobSeeker/Home";
 import Find from "./pages/JobSeeker/Find";
 import ApplicationForm from "./pages/JobSeeker/Application";
@@ -129,6 +130,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/awaiting-approval" element={<Awaitpls />} />
         <Route path="/jobseeker/details/:id" element={<JobDetail />} />
         <Route path="/terms" element={<Terms />} />
         <Route
