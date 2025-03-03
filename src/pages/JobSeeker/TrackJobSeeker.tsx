@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Navbar } from "../../components/Navbar";
+import { NewNav } from "../../components/NewNav";
 import Lottie from "lottie-react"; // Lottie animation
 import Animation from "../../Animation/Job2.json"; // Lottie animation
 import { gsap } from "gsap"; // For animations
@@ -124,6 +124,7 @@ function TrackJobSeeker() {
     refetchCompany,
     isStale,
     setUser,
+    queryClient,
   } = useUser();
   const [isHaveUser, setIsHaveUser] = useState(false);
 
@@ -166,9 +167,6 @@ function TrackJobSeeker() {
   }, []);
 
   useEffect(() => {
-    refetchjobseeker();
-    refetchCompany();
-    refetchemployer();
     setIsHaveUser(!!user);
   }, [user, isLoading, isStale]);
 
@@ -198,7 +196,7 @@ function TrackJobSeeker() {
 
   return (
     <div>
-      <Navbar
+      <NewNav
         user={user}
         isLoading={isLoading}
         isHaveUser={isHaveUser}
@@ -207,6 +205,8 @@ function TrackJobSeeker() {
         refetchCompany={refetchCompany}
         isStale={isStale}
         setUser={setUser}
+        userType={user?.type}
+        queryClient={queryClient}
       />
       <div className="min-h-screen flex flex-col md:flex-row bg-white text-[#2e8b57] justify-center items-center p-4 md:p-8">
         <div className="flex flex-col items-center md:items-start py-6 text-center md:text-left kanit-light">

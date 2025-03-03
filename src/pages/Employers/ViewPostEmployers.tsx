@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { NavbarEmp } from "../../components/NavbarEmp";
+import { NewNav } from "../../components/NewNav";
 import Footer from "../../components/Footer";
 import { updateJobPostById } from "../../api/EmployerAndCompany";
 import { useUser } from "../../context/UserContext";
@@ -32,15 +32,13 @@ const ViewPostEmployers: React.FC = () => {
     refetchCompany,
     isStale,
     setUser,
+    queryClient,
   } = useUser();
   const [isHaveUser, setIsHaveUser] = useState(false);
   const [skills, setSkills] = useState<any[]>([]);
   const [jobCategories, setJobCategories] = useState<any[]>([]);
 
   useEffect(() => {
-    refetchjobseeker();
-    refetchCompany();
-    refetchemployer();
     setIsHaveUser(!!user);
     console.log(job);
   }, [user, isLoading, isStale]);
@@ -185,7 +183,7 @@ const ViewPostEmployers: React.FC = () => {
   if (!job) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 font-kanit">
-        <NavbarEmp
+        <NewNav
           user={user}
           isLoading={isLoading}
           isHaveUser={isHaveUser}
@@ -209,7 +207,7 @@ const ViewPostEmployers: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-100 font-kanit">
-      <NavbarEmp
+      <NewNav
         user={user}
         isLoading={isLoading}
         isHaveUser={isHaveUser}
@@ -218,6 +216,8 @@ const ViewPostEmployers: React.FC = () => {
         refetchCompany={refetchCompany}
         isStale={isStale}
         setUser={setUser}
+        userType={user?.type}
+        queryClient={queryClient}
       />
 
       <div className="max-w-1/2 mx-auto p-4 px-8 bg-white shadow-sm rounded-lg mt-6">

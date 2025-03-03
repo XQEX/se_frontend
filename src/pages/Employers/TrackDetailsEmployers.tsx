@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { NavbarEmp } from "../../components/NavbarEmp";
+import { NewNav } from "../../components/NewNav";
 import Footer from "../../components/Footer";
 import {
   FaUser,
@@ -57,16 +57,13 @@ const TrackEmployersDetails: React.FC = () => {
     refetchCompany,
     isStale,
     setUser,
+    queryClient,
   } = useUser();
   const [isHaveUser, setIsHaveUser] = useState(false);
   useEffect(() => {
     refetchjobseeker();
-    refetchCompany();
     refetchemployer();
-    // console.log("current user:", user);
-    // console.log("isLoading:", isLoading);
-    // console.log("isHaveUser :", isHaveUser);
-    // console.log("isStale :", isStale);
+    refetchCompany();
     setIsHaveUser(!!user);
   }, [user, isLoading, isStale]);
   const { id } = useParams<{ id: string }>();
@@ -75,7 +72,7 @@ const TrackEmployersDetails: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 font-kanit">
-      <NavbarEmp
+      <NewNav
         user={user}
         isLoading={isLoading}
         isHaveUser={isHaveUser}
@@ -84,6 +81,8 @@ const TrackEmployersDetails: React.FC = () => {
         refetchCompany={refetchCompany}
         isStale={isStale}
         setUser={setUser}
+        userType={user?.type}
+        queryClient={queryClient}
       />
 
       <div className="kanit-regular max-w-2xl mx-auto p-8 bg-white shadow-lg rounded-lg mt-10">
@@ -156,7 +155,7 @@ const TrackEmployersDetails: React.FC = () => {
 
         {/* ✅ ปุ่มกลับ */}
         <div className="flex justify-center mt-8">
-          <button 
+          <button
             className="px-8 py-3 bg-seagreen hover:bg-seagreen/90 text-white rounded-lg shadow-md hover:bg-seagreen transition text-lg flex items-center gap-2"
             onClick={() => navigate(-1)}
           >

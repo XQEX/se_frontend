@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { NavbarEmp } from "../../components/NavbarEmp";
+import { NewNav } from "../../components/NewNav";
 import Footer from "../../components/Footer";
 import { FaArrowLeft } from "react-icons/fa";
 import { useUser } from "../../context/UserContext";
@@ -32,16 +32,13 @@ const TrackEmployers: React.FC = () => {
     refetchCompany,
     isStale,
     setUser,
+    queryClient,
   } = useUser();
   const [isHaveUser, setIsHaveUser] = useState(false);
   useEffect(() => {
     refetchjobseeker();
-    refetchCompany();
     refetchemployer();
-    // console.log("current user:", user);
-    // console.log("isLoading:", isLoading);
-    // console.log("isHaveUser :", isHaveUser);
-    // console.log("isStale :", isStale);
+    refetchCompany();
     setIsHaveUser(!!user);
   }, [user, isLoading, isStale]);
   const [applications, setApplications] = useState<Application[]>([
@@ -87,8 +84,8 @@ const TrackEmployers: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-100 font-kanit">
-      {/* Navbar */}
-      <NavbarEmp
+      {/* NewNav */}
+      <NewNav
         user={user}
         isLoading={isLoading}
         isHaveUser={isHaveUser}
@@ -97,6 +94,8 @@ const TrackEmployers: React.FC = () => {
         refetchCompany={refetchCompany}
         isStale={isStale}
         setUser={setUser}
+        userType={user?.type}
+        queryClient={queryClient}
       />
 
       <div className="kanit-regular max-w-5xl mx-auto mt-8 p-6 bg-white shadow-lg rounded-lg relative">

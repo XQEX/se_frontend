@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-import { NavbarEmp } from "../../components/NavbarEmp";
+import { NewNav } from "../../components/NewNav";
 import Footer from "../../components/Footer";
 import { useUser } from "../../context/UserContext";
 import { createJobPostEmp } from "../../api/Employer";
@@ -28,12 +28,10 @@ const PostJobEmp: React.FC = () => {
     refetchCompany,
     isStale,
     setUser,
+    queryClient,
   } = useUser();
   const [isHaveUser, setIsHaveUser] = useState(false);
   useEffect(() => {
-    refetchjobseeker();
-    refetchCompany();
-    refetchemployer();
     setIsHaveUser(!!user);
   }, [user, isLoading, isStale]);
 
@@ -186,7 +184,7 @@ const PostJobEmp: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col justify-start bg-gray-50 font-kanit">
       <ToastContainer />
-      <NavbarEmp
+      <NewNav
         user={user}
         isLoading={isLoading}
         isHaveUser={isHaveUser}
@@ -195,6 +193,8 @@ const PostJobEmp: React.FC = () => {
         refetchCompany={refetchCompany}
         isStale={isStale}
         setUser={setUser}
+        userType={user?.type}
+        queryClient={queryClient}
       />
 
       {/* ทำให้ container อยู่ชิดด้านบน */}

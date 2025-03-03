@@ -13,7 +13,7 @@ import {
   Image,
 } from "@mantine/core";
 
-import { Navbar } from "../components/Navbar";
+import { NewNav } from "../components/NewNav";
 import { FaArrowRight, FaBriefcase, FaHeart, FaUser } from "react-icons/fa";
 import Footer from "../components/Footer";
 import { motion } from "framer-motion";
@@ -30,21 +30,18 @@ function Mission() {
     refetchCompany,
     isStale,
     setUser,
+    queryClient,
   } = useUser();
   const [isHaveUser, setIsHaveUser] = useState(false);
   useEffect(() => {
-    refetchjobseeker();
-    refetchCompany();
-    refetchemployer();
-    // console.log("current user:", user);
-    // console.log("isLoading:", isLoading);
-    // console.log("isHaveUser :", isHaveUser);
-    // console.log("isStale :", isStale);
+   refetchjobseeker();
+refetchemployer();
+refetchCompany();
     setIsHaveUser(!!user);
   }, [user, isLoading, isStale]);
   return (
     <AppShell>
-      <Navbar
+      <NewNav
         user={user}
         isLoading={isLoading}
         isHaveUser={isHaveUser}
@@ -53,6 +50,7 @@ function Mission() {
         refetchCompany={refetchCompany}
         isStale={isStale}
         setUser={setUser}
+        userType={user?.type}
       />
       <Container size="lg" py="xl">
         <Stack>

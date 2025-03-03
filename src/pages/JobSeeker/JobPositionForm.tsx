@@ -14,7 +14,7 @@ import {
 } from "@mantine/core";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import { showNotification } from "@mantine/notifications";
-import { Navbar } from "../../components/Navbar";
+import { NewNav } from "../../components/NewNav";
 import { fetchAllVulnerabilities } from "../../api/Vulnerability";
 import { useUser } from "../../context/UserContext";
 
@@ -39,16 +39,13 @@ const JobPositionForm = () => {
     refetchCompany,
     isStale,
     setUser,
+    queryClient,
   } = useUser();
   const [isHaveUser, setIsHaveUser] = useState(false);
   useEffect(() => {
     refetchjobseeker();
-    refetchCompany();
     refetchemployer();
-    // console.log("current user:", user);
-    // console.log("isLoading:", isLoading);
-    // console.log("isHaveUser :", isHaveUser);
-    // console.log("isStale :", isStale);
+    refetchCompany();
     setIsHaveUser(!!user);
   }, [user, isLoading, isStale]);
 
@@ -131,7 +128,7 @@ const JobPositionForm = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar
+      <NewNav
         user={user}
         isLoading={isLoading}
         isHaveUser={isHaveUser}
@@ -140,13 +137,12 @@ const JobPositionForm = () => {
         refetchCompany={refetchCompany}
         isStale={isStale}
         setUser={setUser}
+        userType={user?.type}
+        queryClient={queryClient}
       />
       <Container size="sm" className="mt-8 kanit-regular">
         <Paper shadow="md" radius="md" p="xl" className="bg-white">
-          <div
-            
-            className="kanit-bold text-2xl text-gray-800 mb-6 text-center kanit-light pb-8"
-          >
+          <div className="kanit-bold text-2xl text-gray-800 mb-6 text-center kanit-light pb-8">
             ระบุข้อมูลตำแหน่งงานที่สนใจ
           </div>
 
@@ -323,7 +319,6 @@ const JobPositionForm = () => {
                 <Group align="center" mt="lg">
                   <button
                     type="submit"
-                   
                     className="rounded-lg pt-2 pb-2 pl-4 pr-4 text-white bg-seagreen hover:bg-seagreen/90 transition flex"
                   >
                     ถัดไป
