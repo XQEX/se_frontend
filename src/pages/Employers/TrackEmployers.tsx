@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
-import { NavbarEmp } from "../../components/NavbarEmp"
-import Footer from "../../components/Footer"
+import type React from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { NewNav } from "../../components/NewNav";
+import Footer from "../../components/Footer";
 import {
   FaArrowLeft,
   FaUser,
@@ -13,19 +13,22 @@ import {
   FaTimesCircle,
   FaHourglassHalf,
   FaUserCheck,
-} from "react-icons/fa"
-import { useUser } from "../../context/UserContext"
+} from "react-icons/fa";
+import { useUser } from "../../context/UserContext";
 
 interface Application {
-  id: number
-  applicantName: string
-  jobTitle: string
-  status: string
+  id: number;
+  applicantName: string;
+  jobTitle: string;
+  status: string;
 }
 
 // ✅ ฟังก์ชันแปลงสถานะเป็นภาษาไทย + จัดสี
 const translateStatus = (status: string) => {
-  const statusMap: Record<string, { text: string; color: string; bgColor: string; icon: React.ReactNode }> = {
+  const statusMap: Record<
+    string,
+    { text: string; color: string; bgColor: string; icon: React.ReactNode }
+  > = {
     "Under Review": {
       text: "กำลังตรวจสอบ",
       color: "text-amber-700",
@@ -50,23 +53,35 @@ const translateStatus = (status: string) => {
       bgColor: "bg-blue-100",
       icon: <FaUserCheck className="inline mr-1.5" />,
     },
-  }
-  return statusMap[status] || { text: status, color: "text-gray-700", bgColor: "bg-gray-100", icon: null }
-}
+  };
+  return (
+    statusMap[status] || {
+      text: status,
+      color: "text-gray-700",
+      bgColor: "bg-gray-100",
+      icon: null,
+    }
+  );
+};
 
 const TrackEmployers: React.FC = () => {
-  const { user, isLoading, refetchjobseeker, refetchemployer, refetchCompany, isStale, setUser } = useUser()
-  const [isHaveUser, setIsHaveUser] = useState(false)
+  const {
+    user,
+    isLoading,
+    refetchjobseeker,
+    refetchemployer,
+    refetchCompany,
+    isStale,
+    setUser,
+    queryClient,
+  } = useUser();
+  const [isHaveUser, setIsHaveUser] = useState(false);
   useEffect(() => {
-    refetchjobseeker()
-    refetchCompany()
-    refetchemployer()
-    // console.log("current user:", user);
-    // console.log("isLoading:", isLoading);
-    // console.log("isHaveUser :", isHaveUser);
-    // console.log("isStale :", isStale);
-    setIsHaveUser(!!user)
-  }, [user, refetchjobseeker, refetchemployer, refetchCompany])
+    refetchjobseeker();
+    refetchemployer();
+    refetchCompany();
+    setIsHaveUser(!!user);
+  }, [user, isLoading, isStale]);
   const [applications, setApplications] = useState<Application[]>([
     {
       id: 1,
@@ -104,14 +119,14 @@ const TrackEmployers: React.FC = () => {
       jobTitle: "วิศวกร DevOps",
       status: "Shortlisted",
     },
-  ])
+  ]);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 font-kanit">
-      {/* Navbar */}
-      <NavbarEmp
+      {/* NewNav */}
+      <NewNav
         user={user}
         isLoading={isLoading}
         isHaveUser={isHaveUser}
@@ -120,6 +135,8 @@ const TrackEmployers: React.FC = () => {
         refetchCompany={refetchCompany}
         isStale={isStale}
         setUser={setUser}
+        userType={user?.type}
+        queryClient={queryClient}
       />
 
       <main className="flex-grow py-10 px-4 sm:px-6 lg:px-8">
@@ -133,7 +150,9 @@ const TrackEmployers: React.FC = () => {
             >
               <FaArrowLeft className="text-gray-700" />
             </button>
-            <h1 className="text-3xl font-bold text-gray-900 kanit-regular">ติดตามใบสมัคร</h1>
+            <h1 className="text-3xl font-bold text-gray-900 kanit-regular">
+              ติดตามใบสมัคร
+            </h1>
           </div>
 
           {/* Main content card */}
@@ -161,26 +180,34 @@ const TrackEmployers: React.FC = () => {
                 </thead>
                 <tbody>
                   {applications.map((application, index) => {
-                    const { text, color, bgColor, icon } = translateStatus(application.status)
+                    const { text, color, bgColor, icon } = translateStatus(
+                      application.status
+                    );
                     return (
-                        <tr
+                      <tr
                         key={application.id}
                         className="cursor-pointer pointer-events-auto border-b  last:border-b-0 bg-gray-100 hover:bg-gray-200 transition-colors duration-150 kanit-regular"
                         onClick={() => navigate(`/track/${application.id}`)}
-                        >
-                        <td className="py-4 px-6 text-center font-medium text-gray-700">{index + 1}</td>
-                        <td className="py-4 px-6 text-gray-800">{application.applicantName}</td>
-                        <td className="py-4 px-6 text-gray-800">{application.jobTitle}</td>
+                      >
+                        <td className="py-4 px-6 text-center font-medium text-gray-700">
+                          {index + 1}
+                        </td>
+                        <td className="py-4 px-6 text-gray-800">
+                          {application.applicantName}
+                        </td>
+                        <td className="py-4 px-6 text-gray-800">
+                          {application.jobTitle}
+                        </td>
                         <td className="py-4 px-6">
                           <span
-                          className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${color} ${bgColor}`}
+                            className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${color} ${bgColor}`}
                           >
-                          {icon}
-                          {text}
+                            {icon}
+                            {text}
                           </span>
                         </td>
-                        </tr>
-                    )
+                      </tr>
+                    );
                   })}
                 </tbody>
               </table>
@@ -189,7 +216,12 @@ const TrackEmployers: React.FC = () => {
           {applications.length === 0 && (
             <div className="text-center py-12 bg-white rounded-xl shadow-md mt-6">
               <div className="text-gray-500 mb-4">
-                <svg className="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg
+                  className="mx-auto h-12 w-12"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -198,7 +230,9 @@ const TrackEmployers: React.FC = () => {
                   />
                 </svg>
               </div>
-              <h3 className="text-lg font-medium text-gray-900">ไม่พบข้อมูลใบสมัคร</h3>
+              <h3 className="text-lg font-medium text-gray-900">
+                ไม่พบข้อมูลใบสมัคร
+              </h3>
               <p className="mt-1 text-gray-500">ยังไม่มีใบสมัครที่ต้องติดตาม</p>
             </div>
           )}
@@ -206,8 +240,7 @@ const TrackEmployers: React.FC = () => {
       </main>
       <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default TrackEmployers
-
+export default TrackEmployers;

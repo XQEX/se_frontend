@@ -2,7 +2,7 @@
 
 import type React from "react";
 import { useState } from "react";
-import { Navbar } from "../components/Navbar";
+import { NewNav } from "../components/NewNav";
 import {
   Container,
   Title,
@@ -61,7 +61,7 @@ function Support() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar
+      <NewNav
         user={undefined}
         isLoading={false}
         isHaveUser={false}
@@ -70,6 +70,7 @@ function Support() {
         refetchCompany={() => {}}
         isStale={false}
         setUser={() => {}}
+        queryClient={undefined}
       />
 
       <Container size="lg" py={40}>
@@ -141,7 +142,7 @@ function Support() {
           </Grid.Col>
         </Grid>
       </Container>
-      <Footer/>
+      <Footer />
     </div>
   );
 }

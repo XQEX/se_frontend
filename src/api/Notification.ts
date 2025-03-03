@@ -23,7 +23,7 @@ export const fetchNotifications = async (
   status: "all" | "READ" | "UNREAD" = "all"
 ): Promise<Notification[]> => {
   try {
-    console.log("Fetching notifications with status:", status);
+    // console.log("Fetching notifications with status:", status);
     const { data } = await axios.get<NotificationResponse>(
       `http://localhost:${backendPort}/api/notification`,
       {
@@ -31,7 +31,7 @@ export const fetchNotifications = async (
         withCredentials: true,
       }
     );
-    console.log("Notifications fetched successfully:", data);
+    // console.log("Notifications fetched successfully:", data);
     return data.data;
   } catch (error) {
     console.error("Failed to fetch notifications:", error);
@@ -43,7 +43,7 @@ export const markNotificationAsRead = async (
   id: string
 ): Promise<Notification> => {
   try {
-    console.log("Marking notification as read with ID:", id);
+    // console.log("Marking notification as read with ID:", id);
     const { data } = await axios.post<{ data: Notification }>(
       `http://localhost:${backendPort}/api/notification/${id}/read`,
       {},
@@ -54,7 +54,7 @@ export const markNotificationAsRead = async (
         withCredentials: true,
       }
     );
-    console.log("Notification marked as read successfully:", data);
+    // console.log("Notification marked as read successfully:", data);
     return data.data;
   } catch (error) {
     console.error("Failed to mark notification as read:", error);
@@ -64,7 +64,7 @@ export const markNotificationAsRead = async (
 
 export const markAllNotificationsAsRead = async (): Promise<Notification[]> => {
   try {
-    console.log("Marking all notifications as read...");
+    // console.log("Marking all notifications as read...");
     const { data } = await axios.post<{ data: Notification[] }>(
       `http://localhost:${backendPort}/api/notification/mark-all-read`,
       {},
@@ -75,7 +75,7 @@ export const markAllNotificationsAsRead = async (): Promise<Notification[]> => {
         withCredentials: true,
       }
     );
-    console.log("All notifications marked as read successfully:", data);
+    // console.log("All notifications marked as read successfully:", data);
     // Fetch the updated notifications after marking all as read
     const updatedNotifications = await fetchNotifications();
     return updatedNotifications;

@@ -16,6 +16,7 @@ import {
   FaEdit,
   FaBuilding,
   FaBell,
+  FaHome,
 } from "react-icons/fa";
 import { MdPostAdd } from "react-icons/md";
 import { useDisclosure } from "@mantine/hooks";
@@ -44,6 +45,7 @@ interface Notification {
   createdAt: string;
   updatedAt: string;
 }
+
 interface NavbarProps {
   user: any;
   isLoading: boolean;
@@ -53,9 +55,11 @@ interface NavbarProps {
   refetchCompany: () => void;
   isStale: boolean;
   setUser: React.Dispatch<React.SetStateAction<any>>;
+  userType: "JOBSEEKER" | "EMPLOYER" | "COMPANY";
+  queryClient: any;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({
+export const NewNav: React.FC<NavbarProps> = ({
   user,
   isLoading,
   isHaveUser,
@@ -64,6 +68,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   refetchCompany,
   isStale,
   setUser,
+  userType,
+  queryClient,
 }) => {
   const [isSignedIn, setIsSignedIn] = useState(isHaveUser);
   const [scrollDirection, setScrollDirection] = useState("up");
@@ -76,6 +82,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [modalOpened, setModalOpened] = useState(false);
   const [selectedNotification, setSelectedNotification] =
     useState<Notification | null>(null);
+
   const loadNotifications = async (
     status: "all" | "READ" | "UNREAD" = "all"
   ) => {
@@ -108,6 +115,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   useEffect(() => {
     loadNotifications();
   }, [user]); // Add `user` as dependency
+
   // Helper function for toast messages
   const notifyError = (message: string) =>
     toast.error(message, { position: "top-center" });
@@ -132,14 +140,24 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const handleLogout = async () => {
     try {
-      if (user.type === "JOBSEEKER") {
+      if (userType === "JOBSEEKER") {
         await logoutJobSeeker();
-      } else if (user.type === "EMPLOYER") {
+      } else if (userType === "EMPLOYER") {
         await logoutEmployer();
-      } else if (user.type === "COMPANY") {
+      } else if (userType === "COMPANY") {
         await logoutCompany();
       }
-      // Clear cookies or session data if necessary
+
+      queryClient.setQueryData(["currentJobSeeker"], null);
+      queryClient.setQueryData(["currentEmployer"], null);
+      queryClient.setQueryData(["currentCompany"], null);
+      queryClient.removeQueries(["currentJobSeeker"]);
+      queryClient.removeQueries(["currentEmployer"]);
+      queryClient.removeQueries(["currentCompany"]);
+      //   queryClient.invalidateQueries(["currentJobSeeker"]);
+      //   queryClient.invalidateQueries(["currentEmployer"]);
+      //   queryClient.invalidateQueries(["currentCompany"]);
+
       notifyError("คุณออกจากระบบ!"); // Show the notification after navigation
       setIsSignedIn(false);
     } catch (error) {
@@ -207,27 +225,55 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const navLinks = (
     <div className="flex space-x-4">
-      <Link
-        to="/find"
-        className="text-gray-200 kanit-regular hover:text-white px-4 py-1 rounded-md transition-colors duration-300 flex items-center"
-      >
-        <FaFind className="mr-2" />
-        ค้นหางาน
-      </Link>
-      <Link
-        to="/application"
-        className="text-gray-200 kanit-regular hover:text-white px-4 py-1 rounded-md transition-colors duration-300 flex items-center"
-      >
-        <FaEdit className="mr-2" />
-        แก้ไขประวัติ
-      </Link>
-      <Link
-        to="/postjob"
-        className="text-gray-200 kanit-regular hover:text-white px-4 py-1 rounded-md transition-colors duration-300 flex items-center"
-      >
-        <MdPostAdd className="mr-2" />
-        โพสต์หางาน
-      </Link>
+      {userType === "JOBSEEKER" ? (
+        <>
+          <Link
+            to="/find"
+            className="text-gray-200 kanit-regular hover:text-white px-4 py-1 rounded-md transition-colors duration-300 flex items-center"
+          >
+            <FaFind className="mr-2" />
+            ค้นหางาน
+          </Link>
+          <Link
+            to="/application"
+            className="text-gray-200 kanit-regular hover:text-white px-4 py-1 rounded-md transition-colors duration-300 flex items-center"
+          >
+            <FaEdit className="mr-2" />
+            แก้ไขประวัติ
+          </Link>
+          <Link
+            to="/postjob"
+            className="text-gray-200 kanit-regular hover:text-white px-4 py-1 rounded-md transition-colors duration-300 flex items-center"
+          >
+            <MdPostAdd className="mr-2" />
+            โพสต์หางาน
+          </Link>
+        </>
+      ) : (
+        <>
+          <Link
+            to="/homeemp"
+            className="text-gray-200 kanit-regular hover:text-white px-4 py-1 rounded-md transition-colors duration-300 flex items-center"
+          >
+            <FaHome className="mr-2" />
+            หน้าแรก
+          </Link>
+          <Link
+            to="/findemp"
+            className="text-gray-200 kanit-regular hover:text-white px-4 py-1 rounded-md transition-colors duration-300 flex items-center"
+          >
+            <FaFind className="mr-2" />
+            ค้นหางาน
+          </Link>
+          <Link
+            to="/postjobemp"
+            className="text-gray-200 kanit-regular hover:text-white px-4 py-1 rounded-md transition-colors duration-300 flex items-center"
+          >
+            <MdPostAdd className="mr-2" />
+            โพสต์หางาน
+          </Link>
+        </>
+      )}
     </div>
   );
 
@@ -378,11 +424,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                       ) : (
                         <FaUserCircle size={24} className="text-seagreen" />
                       )}
-                      {/* <span className="absolute -top-1 -right-1 h-3 w-3 bg-green-500 rounded-full border-2 border-white"></span> */}{" "}
-                      {/* in case you want the online status */}
                     </div>
                     <span className="kanit-regular font-medium truncate max-w-[150px]">
-                      {user?.username}
+                      {user?.username || user?.officialName + " company."}
                     </span>
                   </button>
                 </Menu.Target>
@@ -444,13 +488,15 @@ export const Navbar: React.FC<NavbarProps> = ({
                   <FaEdit className="mr-2" />
                   แก้ไขประวัติ
                 </Link>
+
                 <Link
-                  to="/postjob"
+                  to={userType === "JOBSEEKER" ? "/postjob" : "/postjobemp"}
                   className="text-gray-900 kanit-regular hover:text-black px-4 py-1 rounded-md transition-colors duration-300 flex items-center"
                 >
                   <MdPostAdd className="mr-2" />
                   โพสหางาน
                 </Link>
+
                 <div className="px-4 py-1">
                   <Menu width={250} position="bottom-start" shadow="md">
                     <Menu.Target>

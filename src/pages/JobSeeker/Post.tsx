@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { Navbar } from "../../components/Navbar";
+import { NewNav } from "../../components/NewNav";
 import Footer from "../../components/Footer";
 import { createJobFindingPost } from "../../api/JobSeeker";
 import { provinces } from "../../data/provinces";
@@ -67,16 +67,13 @@ const PostJob: React.FC = () => {
     refetchCompany,
     isStale,
     setUser,
+    queryClient,
   } = useUser();
   const [isHaveUser, setIsHaveUser] = useState(false);
   useEffect(() => {
     refetchjobseeker();
-    refetchCompany();
     refetchemployer();
-    // console.log("current user:", user);
-    // console.log("isLoading:", isLoading);
-    // console.log("isHaveUser :", isHaveUser);
-    // console.log("isStale :", isStale);
+    refetchCompany();
     setIsHaveUser(!!user);
   }, [user, isLoading, isStale]);
 
@@ -157,7 +154,7 @@ const PostJob: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col justify-start bg-gray-50 font-kanit">
       <ToastContainer />
-      <Navbar
+      <NewNav
         user={user}
         isLoading={isLoading}
         isHaveUser={isHaveUser}
@@ -166,6 +163,8 @@ const PostJob: React.FC = () => {
         refetchCompany={refetchCompany}
         isStale={isStale}
         setUser={setUser}
+        userType={user?.type}
+        queryClient={queryClient}
       />
 
       <div className="kanit-regular max-w-2xl mx-auto p-4 bg-white shadow-md rounded-lg w-full mt-5 pt-0">

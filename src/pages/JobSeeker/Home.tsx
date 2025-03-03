@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Navbar } from "../../components/Navbar";
-import { NavbarEmp } from "../../components/NavbarEmp";
+import { NewNav } from "../../components/NewNav";
 import Lottie from "lottie-react";
 import Animation from "../../Animation/Job.json";
 import { gsap } from "gsap";
@@ -24,16 +23,13 @@ function Home() {
     refetchCompany,
     isStale,
     setUser,
+    queryClient,
   } = useUser();
   const [isHaveUser, setIsHaveUser] = useState(false);
   useEffect(() => {
     refetchjobseeker();
-    refetchCompany();
     refetchemployer();
-    // console.log("current user:", user);
-    // console.log("isLoading:", isLoading);
-    // console.log("isHaveUser :", isHaveUser);
-    // console.log("isStale :", isStale);
+    refetchCompany();
     setIsHaveUser(!!user);
   }, [user, isLoading, isStale]);
 
@@ -85,44 +81,34 @@ function Home() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-green-50 to-white">
-      {user?.type == "JOBSEEKER" || user?.type == null ? (
-        <Navbar
-          user={user}
-          isLoading={isLoading}
-          isHaveUser={isHaveUser}
-          refetchjobseeker={refetchjobseeker}
-          refetchemployer={refetchemployer}
-          refetchCompany={refetchCompany}
-          isStale={isStale}
-          setUser={setUser}
-        />
-      ) : (
-        <NavbarEmp
-          user={user}
-          isLoading={isLoading}
-          isHaveUser={isHaveUser}
-          refetchjobseeker={refetchjobseeker}
-          refetchemployer={refetchemployer}
-          refetchCompany={refetchCompany}
-          isStale={isStale}
-          setUser={setUser}
-        />
-      )}
+      <NewNav
+        user={user}
+        isLoading={isLoading}
+        isHaveUser={isHaveUser}
+        refetchjobseeker={refetchjobseeker}
+        refetchemployer={refetchemployer}
+        refetchCompany={refetchCompany}
+        isStale={isStale}
+        setUser={setUser}
+        userType={user?.type}
+        queryClient={queryClient}
+      />
+
       <div className="kanit-regular flex-grow flex flex-col md:flex-row justify-center items-center p-6 md:p-16 gap-8 md:gap-16 ">
         <div className="flex flex-col items-center md:items-start text-center md:text-left max-w-2xl">
-            <h1
+          <h1
             ref={headingRef}
             className="text-5xl md:text-7xl font-bold mb-6 text-green-700 leading-tight select-none"
-            >
+          >
             ยินดีต้อนรับสู่ <span className="text-seagreen">SkillBridge</span>
-            </h1>
-            <p
+          </h1>
+          <p
             ref={subTextRef}
             className="text-xl md:text-2xl mb-8 text-gray-600 leading-relaxed kanit-regular select-none"
-            >
+          >
             แหล่งรวมงานสำหรับการหางานของบุคคลกลุ่มเฉพาะทาง
             ที่ช่วยเสริมสร้างความเท่าเทียมกันในสังคม
-            </p>
+          </p>
           <div className="flex flex-col gap-4 w-full md:w-auto">
             <Link
               to="/find"

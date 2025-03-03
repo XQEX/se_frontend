@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Navbar } from "../../components/Navbar";
+import { NewNav } from "../../components/NewNav";
 import { Link, useLocation } from "react-router-dom";
 
 // Import Toastify
@@ -30,6 +30,7 @@ function SignUpJobSeek() {
     refetchCompany,
     isStale,
     setUser,
+    queryClient,
   } = useUser();
   const [isHaveUser, setIsHaveUser] = useState(false);
   useEffect(() => {
@@ -149,8 +150,8 @@ function SignUpJobSeek() {
       {/* Toast Container for notifications */}
       <ToastContainer />
 
-      {/* Navbar */}
-      <Navbar
+      {/* NewNav */}
+      <NewNav
         user={user}
         isLoading={isLoading}
         isHaveUser={isHaveUser}
@@ -159,6 +160,8 @@ function SignUpJobSeek() {
         refetchCompany={refetchCompany}
         isStale={isStale}
         setUser={setUser}
+        userType={user?.type}
+        queryClient={queryClient}
       />
 
       {/* Main Content */}

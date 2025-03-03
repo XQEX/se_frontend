@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 "use client"
 
 import { useState, useEffect, useRef } from "react"
@@ -10,6 +11,16 @@ import { useUser } from "../../context/UserContext"
 import { getUserMatchingStatus } from "../../api/Matching"
 import { FaBuilding, FaSearch, FaTrash, FaInfoCircle, FaChevronLeft, FaChevronRight } from "react-icons/fa"
 import { MdPendingActions, MdOutlineSchedule, MdDoneAll } from "react-icons/md"
+=======
+import { useState, useEffect, useRef } from "react";
+import { NewNav } from "../../components/NewNav";
+import Lottie from "lottie-react"; // Lottie animation
+import Animation from "../../Animation/Job2.json"; // Lottie animation
+import { gsap } from "gsap"; // For animations
+import { Link } from "react-router-dom"; // For navigation
+import { useUser } from "../../context/UserContext";
+import { getUserMatchingStatus } from "../../api/Matching";
+>>>>>>> trying-merge-navbar-to-1-navbar-and-fixing-state-in-website
 
 interface JobApplication {
   id: number
@@ -120,8 +131,22 @@ function TrackJobSeeker() {
   const tableRef = useRef(null)
   const lottieRef = useRef(null)
 
+<<<<<<< HEAD
   const { user, isLoading, refetchjobseeker, refetchemployer, refetchCompany, isStale, setUser } = useUser()
   const [isHaveUser, setIsHaveUser] = useState(false)
+=======
+  const {
+    user,
+    isLoading,
+    refetchjobseeker,
+    refetchemployer,
+    refetchCompany,
+    isStale,
+    setUser,
+    queryClient,
+  } = useUser();
+  const [isHaveUser, setIsHaveUser] = useState(false);
+>>>>>>> trying-merge-navbar-to-1-navbar-and-fixing-state-in-website
 
   // Pagination State
   const [currentPage, setCurrentPage] = useState(1)
@@ -186,8 +211,13 @@ function TrackJobSeeker() {
   }
 
   return (
+<<<<<<< HEAD
     <div className="bg-gradient-to-b from-white to-green-50 min-h-screen">
       <Navbar
+=======
+    <div>
+      <NewNav
+>>>>>>> trying-merge-navbar-to-1-navbar-and-fixing-state-in-website
         user={user}
         isLoading={isLoading}
         isHaveUser={isHaveUser}
@@ -196,6 +226,8 @@ function TrackJobSeeker() {
         refetchCompany={refetchCompany}
         isStale={isStale}
         setUser={setUser}
+        userType={user?.type}
+        queryClient={queryClient}
       />
 
       <div className="container mx-auto px-4 py-8">

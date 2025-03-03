@@ -1,35 +1,28 @@
 import React, { useEffect, useState } from "react";
-import { Navbar } from "../components/Navbar";
+import { NewNav } from "../components/NewNav";
 import { useUser } from "../context/UserContext";
 
-
- 
-
 function Term() {
-
- const {
-     user,
-     isLoading,
-     refetchjobseeker,
-     refetchemployer,
-     refetchCompany,
-     isStale,
-     setUser,
-   } = useUser();
-   const [isHaveUser, setIsHaveUser] = useState(false);
-   useEffect(() => {
-     refetchjobseeker();
-     refetchCompany();
-     refetchemployer();
-     // console.log("current user:", user);
-     // console.log("isLoading:", isLoading);
-     // console.log("isHaveUser :", isHaveUser);
-     // console.log("isStale :", isStale);
-     setIsHaveUser(!!user);
-   }, [user, isLoading, isStale]);
+  const {
+    user,
+    isLoading,
+    refetchjobseeker,
+    refetchemployer,
+    refetchCompany,
+    isStale,
+    setUser,
+    queryClient,
+  } = useUser();
+  const [isHaveUser, setIsHaveUser] = useState(false);
+  useEffect(() => {
+    refetchjobseeker();
+    refetchemployer();
+    refetchCompany();
+    setIsHaveUser(!!user);
+  }, [user, isLoading, isStale]);
   return (
     <div className="h-screen kanit-regular">
-      <Navbar
+      <NewNav
         user={user}
         isLoading={isLoading}
         isHaveUser={isHaveUser}
@@ -38,6 +31,8 @@ function Term() {
         refetchCompany={refetchCompany}
         isStale={isStale}
         setUser={setUser}
+        userType={user?.type}
+        queryClient={queryClient}
       />
 
       <div className="my-4">

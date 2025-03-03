@@ -7,7 +7,7 @@ import {
   Text,
 } from "@mantine/core";
 import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
-import { Navbar } from "../../components/Navbar";
+import { NewNav } from "../../components/NewNav";
 import Footer from "../../components/Footer";
 import { useUser } from "../../context/UserContext";
 import { useEffect, useState } from "react";
@@ -21,22 +21,19 @@ function ContactUs() {
     refetchCompany,
     isStale,
     setUser,
+    queryClient,
   } = useUser();
   const [isHaveUser, setIsHaveUser] = useState(false);
   useEffect(() => {
     refetchjobseeker();
-    refetchCompany();
     refetchemployer();
-    // console.log("current user:", user);
-    // console.log("isLoading:", isLoading);
-    // console.log("isHaveUser :", isHaveUser);
-    // console.log("isStale :", isStale);
+    refetchCompany();
     setIsHaveUser(!!user);
   }, [user, isLoading, isStale]);
   return (
     <div className="min-h-screen flex flex-col justify-between">
-      {/* Navbar */}
-      <Navbar
+      {/* NewNav */}
+      <NewNav
         user={user}
         isLoading={isLoading}
         isHaveUser={isHaveUser}
@@ -45,10 +42,15 @@ function ContactUs() {
         refetchCompany={refetchCompany}
         isStale={isStale}
         setUser={setUser}
+        userType={user?.type}
+        queryClient={queryClient}
       />
 
       {/* Content Section */}
-      <Container size="md" className="kanit-regular flex flex-col items-center px-4 py-12">
+      <Container
+        size="md"
+        className="kanit-regular flex flex-col items-center px-4 py-12"
+      >
         {/* Header */}
         <div className="text-4xl font-bold text-seagreen mb-10 text-center">
           ติดต่อเรา
@@ -115,7 +117,6 @@ function ContactUs() {
             className="mb-6"
           />
           <button
-           
             className="w-full rounded-lg p-2 bg-seagreen text-white text-lg"
             type="submit"
           >

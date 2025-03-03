@@ -12,7 +12,7 @@ import {
   Switch,
   Checkbox,
 } from "@mantine/core";
-import { Navbar } from "../../components/Navbar";
+import { NewNav } from "../../components/NewNav";
 import { useUser } from "../../context/UserContext";
 
 // Interface สำหรับ InputProps
@@ -131,6 +131,7 @@ const JobSeekerProfile = () => {
     refetchCompany,
     isStale,
     setUser,
+    queryClient,
   } = useUser();
   const [isHaveUser, setIsHaveUser] = useState(false);
   useEffect(() => {
@@ -252,7 +253,7 @@ const JobSeekerProfile = () => {
 
   return (
     <>
-      <Navbar
+      <NewNav
         user={user}
         isLoading={isLoading}
         isHaveUser={isHaveUser}
@@ -261,6 +262,8 @@ const JobSeekerProfile = () => {
         refetchCompany={refetchCompany}
         isStale={isStale}
         setUser={setUser}
+        userType={user?.type}
+        queryClient={queryClient}
       />
       <Container
         size="md"

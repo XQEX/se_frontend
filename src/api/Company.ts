@@ -207,8 +207,8 @@ export const updateCompanyUsername = async (
     const { data } = await axios.put<{
       data: { userId: string; username: string };
     }>(
-      `http://localhost:${backendPort}/api/user/company/auth/edit/username`,
-      { username, password },
+      `http://localhost:${backendPort}/api/user/company/auth/edit/official-name`,
+      { officialName: username, password },
       {
         headers: {
           "Content-Type": "application/json",

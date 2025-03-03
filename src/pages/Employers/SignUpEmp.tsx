@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Navbar } from "../../components/Navbar";
+import { NewNav } from "../../components/NewNav";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 // Import Toastify
@@ -17,16 +17,13 @@ function SignUpEmp() {
     refetchCompany,
     isStale,
     setUser,
+    queryClient,
   } = useUser();
   const [isHaveUser, setIsHaveUser] = useState(false);
   useEffect(() => {
     refetchjobseeker();
-    refetchCompany();
     refetchemployer();
-    // console.log("current user:", user);
-    // console.log("isLoading:", isLoading);
-    // console.log("isHaveUser :", isHaveUser);
-    // console.log("isStale :", isStale);
+    refetchCompany();
     setIsHaveUser(!!user);
   }, [user, isLoading, isStale]);
   const navigate = useNavigate();
@@ -170,8 +167,8 @@ function SignUpEmp() {
       {/* Toast Container for notifications */}
       <ToastContainer />
 
-      {/* Navbar */}
-      <Navbar
+      {/* NewNav */}
+      <NewNav
         user={user}
         isLoading={isLoading}
         isHaveUser={isHaveUser}
@@ -180,6 +177,8 @@ function SignUpEmp() {
         refetchCompany={refetchCompany}
         isStale={isStale}
         setUser={setUser}
+        userType={user?.type}
+        queryClient={queryClient}
       />
 
       {/* Main Content */}
@@ -197,32 +196,30 @@ function SignUpEmp() {
 
         {/* Toggle Buttons */}
         <div className="flex space-x-4 mb-8">
-            <motion.button
+          <motion.button
             onClick={() => setUserType("employer")}
             className={`w-32 px-4 py-2 rounded-lg transition-colors duration-300 kanit-semibold ${
               userType === "employer"
-              ? "bg-seagreen text-white"
-              : "bg-gray-200 text-black"
+                ? "bg-seagreen text-white"
+                : "bg-gray-200 text-black"
             }`}
-
             whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
+            whileTap={{ scale: 0.95 }}
+          >
             นายจ้าง
-            </motion.button>
-            <motion.button
+          </motion.button>
+          <motion.button
             onClick={() => setUserType("company")}
             className={`w-32 px-4 py-2 rounded-lg transition-colors duration-300 kanit-semibold ${
               userType === "company"
-              ? "bg-seagreen text-white"
-              : "bg-gray-200 text-black"
+                ? "bg-seagreen text-white"
+                : "bg-gray-200 text-black"
             }`}
-
             whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
+            whileTap={{ scale: 0.95 }}
+          >
             บริษัท
-            </motion.button>
+          </motion.button>
         </div>
 
         {/* Form Section */}
@@ -282,24 +279,24 @@ function SignUpEmp() {
           </div>
 
           {/* Example Checkbox */}
-         <div className="flex flex-row items-center gap-2 text-left">
-                     <input
-                       type="checkbox"
-                       id="agree"
-                       checked={isChecked}
-                       onChange={(e) => setIsChecked(e.target.checked)}
-                     />
-                     <label htmlFor="agree" className="text-black kanit-light text-sm">
-                       ฉันยอมรับ
-                       <Link
-                         to="/terms"
-                         className="text-blue-500 hover:text-blue-400 text-bold"
-                       >
-                         {" "}
-                         เงื่อนไขในการใช้บริการ
-                       </Link>
-                     </label>
-                   </div>
+          <div className="flex flex-row items-center gap-2 text-left">
+            <input
+              type="checkbox"
+              id="agree"
+              checked={isChecked}
+              onChange={(e) => setIsChecked(e.target.checked)}
+            />
+            <label htmlFor="agree" className="text-black kanit-light text-sm">
+              ฉันยอมรับ
+              <Link
+                to="/terms"
+                className="text-blue-500 hover:text-blue-400 text-bold"
+              >
+                {" "}
+                เงื่อนไขในการใช้บริการ
+              </Link>
+            </label>
+          </div>
 
           {/* Sign Up Button */}
           <div className="flex justify-center">
