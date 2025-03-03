@@ -241,6 +241,13 @@ export const NewNav: React.FC<NavbarProps> = ({
             <FaEdit className="mr-2" />
             แก้ไขประวัติ
           </Link>
+          <Link
+            to="/postjob"
+            className="text-gray-200 kanit-regular hover:text-white px-4 py-1 rounded-md transition-colors duration-300 flex items-center"
+          >
+            <MdPostAdd className="mr-2" />
+            โพสต์หางาน
+          </Link>
         </>
       ) : (
         <>
@@ -258,15 +265,15 @@ export const NewNav: React.FC<NavbarProps> = ({
             <FaFind className="mr-2" />
             ค้นหางาน
           </Link>
+          <Link
+            to="/postjobemp"
+            className="text-gray-200 kanit-regular hover:text-white px-4 py-1 rounded-md transition-colors duration-300 flex items-center"
+          >
+            <MdPostAdd className="mr-2" />
+            โพสต์หางาน
+          </Link>
         </>
       )}
-      <Link
-        to="/postjob"
-        className="text-gray-200 kanit-regular hover:text-white px-4 py-1 rounded-md transition-colors duration-300 flex items-center"
-      >
-        <MdPostAdd className="mr-2" />
-        โพสต์หางาน
-      </Link>
     </div>
   );
 
@@ -481,13 +488,15 @@ export const NewNav: React.FC<NavbarProps> = ({
                   <FaEdit className="mr-2" />
                   แก้ไขประวัติ
                 </Link>
+
                 <Link
-                  to="/postjob"
+                  to={userType === "JOBSEEKER" ? "/postjob" : "/postjobemp"}
                   className="text-gray-900 kanit-regular hover:text-black px-4 py-1 rounded-md transition-colors duration-300 flex items-center"
                 >
                   <MdPostAdd className="mr-2" />
                   โพสหางาน
                 </Link>
+
                 <div className="px-4 py-1">
                   <Menu width={250} position="bottom-start" shadow="md">
                     <Menu.Target>
