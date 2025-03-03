@@ -184,26 +184,30 @@ const ViewPostEmployers: React.FC = () => {
 
   if (!job) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 font-kanit">
-        <NavbarEmp
-          user={user}
-          isLoading={isLoading}
-          isHaveUser={isHaveUser}
-          refetchjobseeker={refetchjobseeker}
-          refetchemployer={refetchemployer}
-          refetchCompany={refetchCompany}
-          isStale={isStale}
-          setUser={setUser}
-        />
-        <h1 className="text-2xl font-bold text-red-500">❌ ไม่พบข้อมูลงาน</h1>
-        <button
-          className="mt-6 px-6 py-2 bg-seagreen text-white rounded-md shadow-sm hover:bg-[#246e4a] transition text-base"
-          onClick={() => navigate("/homeemp")}
-        >
-          กลับไปหน้าหลัก
-        </button>
-        <Footer />
-      </div>
+      <div className="bg-white min-h-screen kanit-regular flex flex-col justify-between">
+  <div>
+    <NavbarEmp
+      user={user}
+      isLoading={isLoading}
+      isHaveUser={isHaveUser}
+      refetchjobseeker={refetchjobseeker}
+      refetchemployer={refetchemployer}
+      refetchCompany={refetchCompany}
+      isStale={isStale}
+      setUser={setUser}
+    />
+    <div className="flex flex-col items-center">
+      <h1 className="mt-12  text-2xl font-bold text-red-500">❌ ไม่พบข้อมูลงาน</h1>
+      <button
+        className="mt-6 px-6 py-2 bg-seagreen text-white rounded-md shadow-sm hover:bg-[#246e4a] transition text-base"
+        onClick={() => navigate("/homeemp")}
+      >
+        กลับไปหน้าหลัก
+      </button>
+    </div>
+  </div>
+  <Footer />
+</div>
     );
   }
 
