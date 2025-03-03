@@ -13,13 +13,12 @@ import ApplicationForm from "./pages/JobSeeker/Application";
 import HomepageEmployers from "./pages/Employers/HomepageEmployers";
 import PostJobEmp from "./pages/Employers/PostEmployers";
 import TrackEmployers from "./pages/Employers/TrackEmployers";
-import TrackDetailsEmployers from "./pages/Employers/TrackDetailsEmployers";
 import FindEmployers from "./pages/Employers/FindEmployers";
 import ViewPostEmployers from "./pages/Employers/ViewPostEmployers";
 import ProfileEmployers from "./pages/Employers/ProfileEmployers";
 import JobPositionForm from "./pages/JobSeeker/JobPositionForm";
 import TrackJobSeeker from "./pages/JobSeeker/TrackJobSeeker";
-import TrackDetailsJobSeeker from "./pages/JobSeeker/TrackDetailsJobSeeker";
+// import TrackDetailsJobSeeker from "./pages/JobSeeker/TrackDetailsJobSeeker";
 import PostJob from "./pages/JobSeeker/Post";
 import JobDetail from "./pages/JobSeeker/JobDetail";
 import JobDetailEmp from "./pages/Employers/๋JobDetailsEmp";
@@ -114,14 +113,14 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route
+        {/* <Route
           path="/trackJobseeker/:id"
           element={
             <ProtectedRoute allowedRoles={["JOBSEEKER"]}>
               <TrackDetailsJobSeeker />
             </ProtectedRoute>
           }
-        />
+        /> */}
         <Route
           path="/postjob"
           element={
@@ -168,14 +167,7 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="track/:id"
-          element={
-            <ProtectedRoute allowedRoles={["EMPLOYER", "COMPANY"]}>
-              <TrackDetailsEmployers />
-            </ProtectedRoute>
-          }
-        />
+
         <Route
           path="findemp"
           element={
