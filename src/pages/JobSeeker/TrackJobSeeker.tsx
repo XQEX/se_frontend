@@ -1,66 +1,62 @@
-<<<<<<< HEAD
-"use client"
+"use client";
 
-import { useState, useEffect, useRef } from "react"
-import { Navbar } from "../../components/Navbar"
-import Lottie from "lottie-react"
-import Animation from "../../Animation/Job2.json"
-import { gsap } from "gsap"
-import { Link } from "react-router-dom"
-import { useUser } from "../../context/UserContext"
-import { getUserMatchingStatus } from "../../api/Matching"
-import { FaBuilding, FaSearch, FaTrash, FaInfoCircle, FaChevronLeft, FaChevronRight } from "react-icons/fa"
-import { MdPendingActions, MdOutlineSchedule, MdDoneAll } from "react-icons/md"
-=======
 import { useState, useEffect, useRef } from "react";
 import { NewNav } from "../../components/NewNav";
-import Lottie from "lottie-react"; // Lottie animation
-import Animation from "../../Animation/Job2.json"; // Lottie animation
-import { gsap } from "gsap"; // For animations
-import { Link } from "react-router-dom"; // For navigation
+import Lottie from "lottie-react";
+import Animation from "../../Animation/Job2.json";
+import { gsap } from "gsap";
+import { Link } from "react-router-dom";
 import { useUser } from "../../context/UserContext";
 import { getUserMatchingStatus } from "../../api/Matching";
->>>>>>> trying-merge-navbar-to-1-navbar-and-fixing-state-in-website
+import {
+  FaBuilding,
+  FaSearch,
+  FaTrash,
+  FaInfoCircle,
+  FaChevronLeft,
+  FaChevronRight,
+} from "react-icons/fa";
+import { MdPendingActions, MdOutlineSchedule, MdDoneAll } from "react-icons/md";
 
 interface JobApplication {
-  id: number
-  companyName: string
-  status: string
-  date: string
+  id: number;
+  companyName: string;
+  status: string;
+  date: string;
 }
 
 interface UserMatchingStatusResponse {
-  success: boolean
-  msg: string
+  success: boolean;
+  msg: string;
   data: {
     hiringMatches: {
-      id: string
-      jobHiringPostId: string
+      id: string;
+      jobHiringPostId: string;
       toMatchSeekers: {
-        jobSeekerType: string
-        jobSeekerId: string
-        oauthJobSeekerId: string
-        jobHiringPostMatchedId: string
-        status: string
-        createdAt: string
-        approvedAt: string
-        updatedAt: string
-      }[]
-    }[]
+        jobSeekerType: string;
+        jobSeekerId: string;
+        oauthJobSeekerId: string;
+        jobHiringPostMatchedId: string;
+        status: string;
+        createdAt: string;
+        approvedAt: string;
+        updatedAt: string;
+      }[];
+    }[];
     findingMatches: {
-      id: string
-      jobFindingPostId: string
-      status: string
-      jobHirerType: string
-      employerId: string
-      oauthEmployerId: string
-      companyId: string
-      createdAt: string
-      approvedAt: string
-      updatedAt: string
-    }[]
-  }
-  status: number
+      id: string;
+      jobFindingPostId: string;
+      status: string;
+      jobHirerType: string;
+      employerId: string;
+      oauthEmployerId: string;
+      companyId: string;
+      createdAt: string;
+      approvedAt: string;
+      updatedAt: string;
+    }[];
+  };
+  status: number;
 }
 
 function TrackJobSeeker() {
@@ -125,16 +121,12 @@ function TrackJobSeeker() {
       status: "กำลังยื่นคำขอ",
       date: "2025-03-15",
     },
-  ])
+  ]);
 
-  const headingRef = useRef(null)
-  const tableRef = useRef(null)
-  const lottieRef = useRef(null)
+  const headingRef = useRef(null);
+  const tableRef = useRef(null);
+  const lottieRef = useRef(null);
 
-<<<<<<< HEAD
-  const { user, isLoading, refetchjobseeker, refetchemployer, refetchCompany, isStale, setUser } = useUser()
-  const [isHaveUser, setIsHaveUser] = useState(false)
-=======
   const {
     user,
     isLoading,
@@ -146,38 +138,44 @@ function TrackJobSeeker() {
     queryClient,
   } = useUser();
   const [isHaveUser, setIsHaveUser] = useState(false);
->>>>>>> trying-merge-navbar-to-1-navbar-and-fixing-state-in-website
 
   // Pagination State
-  const [currentPage, setCurrentPage] = useState(1)
-  const itemsPerPage = 5
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
   // Calculate the current applications to display
-  const indexOfLastItem = currentPage * itemsPerPage
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage
-  const currentApplications = applications.slice(indexOfFirstItem, indexOfLastItem)
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentApplications = applications.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
 
   // Pagination function
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber)
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   // Calculate total pages
-  const totalPages = Math.ceil(applications.length / itemsPerPage)
-  const pageNumbers = Array.from({ length: totalPages }, (_, index) => index + 1)
+  const totalPages = Math.ceil(applications.length / itemsPerPage);
+  const pageNumbers = Array.from(
+    { length: totalPages },
+    (_, index) => index + 1
+  );
 
-  const [matchingStatus, setMatchingStatus] = useState<UserMatchingStatusResponse | null>(null)
+  const [matchingStatus, setMatchingStatus] =
+    useState<UserMatchingStatusResponse | null>(null);
 
   useEffect(() => {
     const fetchMatchingStatus = async () => {
       try {
-        const status = await getUserMatchingStatus()
-        setMatchingStatus(status)
+        const status = await getUserMatchingStatus();
+        setMatchingStatus(status);
       } catch (error) {
-        console.error("Error fetching matching status:", error)
+        console.error("Error fetching matching status:", error);
       }
-    }
+    };
 
-    fetchMatchingStatus()
-  }, [])
+    fetchMatchingStatus();
+  }, []);
 
   useEffect(() => {
     refetchjobseeker();
@@ -187,37 +185,46 @@ function TrackJobSeeker() {
   }, [user, isLoading, isStale]);
 
   useEffect(() => {
-    gsap.fromTo(headingRef.current, { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 2.5, ease: "power2.out" })
-    gsap.fromTo(tableRef.current, { opacity: 0, x: -50 }, { opacity: 1, x: 0, duration: 2.5, ease: "power2.out" })
-    gsap.fromTo(lottieRef.current, { opacity: 0 }, { opacity: 1, duration: 2.5, ease: "power2.out" })
-  }, [])
+    gsap.fromTo(
+      headingRef.current,
+      { opacity: 0, y: 50 },
+      { opacity: 1, y: 0, duration: 2.5, ease: "power2.out" }
+    );
+    gsap.fromTo(
+      tableRef.current,
+      { opacity: 0, x: -50 },
+      { opacity: 1, x: 0, duration: 2.5, ease: "power2.out" }
+    );
+    gsap.fromTo(
+      lottieRef.current,
+      { opacity: 0 },
+      { opacity: 1, duration: 2.5, ease: "power2.out" }
+    );
+  }, []);
 
   function handleDelete(id: number): void {
-    setApplications((prevApplications) => prevApplications.filter((app) => app.id !== id))
+    setApplications((prevApplications) =>
+      prevApplications.filter((app) => app.id !== id)
+    );
   }
 
   // Function to get status icon
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "กำลังยื่นคำขอ":
-        return <MdPendingActions className="text-yellow-500 inline mr-2" />
+        return <MdPendingActions className="text-yellow-500 inline mr-2" />;
       case "รอสัมภาษณ์":
-        return <MdOutlineSchedule className="text-blue-500 inline mr-2" />
+        return <MdOutlineSchedule className="text-blue-500 inline mr-2" />;
       case "ยืนยันการรับสมัคร":
-        return <MdDoneAll className="text-green-600 inline mr-2" />
+        return <MdDoneAll className="text-green-600 inline mr-2" />;
       default:
-        return null
+        return null;
     }
-  }
+  };
 
   return (
-<<<<<<< HEAD
     <div className="bg-gradient-to-b from-white to-green-50 min-h-screen">
-      <Navbar
-=======
-    <div>
       <NewNav
->>>>>>> trying-merge-navbar-to-1-navbar-and-fixing-state-in-website
         user={user}
         isLoading={isLoading}
         isHaveUser={isHaveUser}
@@ -238,7 +245,9 @@ function TrackJobSeeker() {
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-emerald-700 mb-2">
                 ข้อมูลการสมัครงานทั้งหมดของคุณ
               </h1>
-              <p className="text-emerald-600 text-lg">ติดตามความคืบหน้าในการสมัครงานของคุณได้ที่นี่</p>
+              <p className="text-emerald-600 text-lg">
+                ติดตามความคืบหน้าในการสมัครงานของคุณได้ที่นี่
+              </p>
             </div>
 
             {/* Applications Table */}
@@ -268,22 +277,26 @@ function TrackJobSeeker() {
                             index % 2 === 0 ? "bg-gray-50" : "bg-white"
                           }`}
                         >
-                          <td className="py-3 px-4 font-medium">{app.companyName}</td>
+                          <td className="py-3 px-4 font-medium">
+                            {app.companyName}
+                          </td>
                           <td className="py-3 px-4">
                             <span
                               className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium ${
                                 app.status === "กำลังยื่นคำขอ"
                                   ? "bg-yellow-100 text-yellow-800"
                                   : app.status === "รอสัมภาษณ์"
-                                    ? "bg-blue-100 text-blue-800"
-                                    : "bg-green-100 text-green-800"
+                                  ? "bg-blue-100 text-blue-800"
+                                  : "bg-green-100 text-green-800"
                               }`}
                             >
                               {getStatusIcon(app.status)}
                               {app.status}
                             </span>
                           </td>
-                          <td className="py-3 px-4 text-gray-600">{app.date}</td>
+                          <td className="py-3 px-4 text-gray-600">
+                            {app.date}
+                          </td>
                           <td className="py-3 px-4 text-center">
                             <Link
                               to={`/trackJobseeker/${app.id}`}
@@ -313,13 +326,21 @@ function TrackJobSeeker() {
                 {/* Pagination */}
                 <div className="flex items-center justify-between px-4 py-3 bg-gray-50 border-t border-gray-200">
                   <div className="text-sm text-gray-700">
-                    แสดง <span className="font-medium">{indexOfFirstItem + 1}</span> ถึง{" "}
-                    <span className="font-medium">{Math.min(indexOfLastItem, applications.length)}</span> จากทั้งหมด{" "}
-                    <span className="font-medium">{applications.length}</span> รายการ
+                    แสดง{" "}
+                    <span className="font-medium">{indexOfFirstItem + 1}</span>{" "}
+                    ถึง{" "}
+                    <span className="font-medium">
+                      {Math.min(indexOfLastItem, applications.length)}
+                    </span>{" "}
+                    จากทั้งหมด{" "}
+                    <span className="font-medium">{applications.length}</span>{" "}
+                    รายการ
                   </div>
                   <div className="flex space-x-1">
                     <button
-                      onClick={() => currentPage > 1 && paginate(currentPage - 1)}
+                      onClick={() =>
+                        currentPage > 1 && paginate(currentPage - 1)
+                      }
                       disabled={currentPage === 1}
                       className={`relative inline-flex items-center px-3 py-2 rounded-md ${
                         currentPage === 1
@@ -343,7 +364,9 @@ function TrackJobSeeker() {
                       </button>
                     ))}
                     <button
-                      onClick={() => currentPage < totalPages && paginate(currentPage + 1)}
+                      onClick={() =>
+                        currentPage < totalPages && paginate(currentPage + 1)
+                      }
                       disabled={currentPage === totalPages}
                       className={`relative inline-flex items-center px-3 py-2 rounded-md ${
                         currentPage === totalPages
@@ -398,7 +421,9 @@ function TrackJobSeeker() {
                 <FaSearch className="mr-2" />
                 ค้นหางานเพิ่มเติม
               </h2>
-              <p className="mb-6">ค้นหาโอกาสใหม่ๆ ที่เหมาะกับคุณและเริ่มต้นเส้นทางอาชีพที่ดีกว่า</p>
+              <p className="mb-6">
+                ค้นหาโอกาสใหม่ๆ ที่เหมาะกับคุณและเริ่มต้นเส้นทางอาชีพที่ดีกว่า
+              </p>
               <div className="flex justify-center">
                 <Link
                   to="/find"
@@ -420,8 +445,7 @@ function TrackJobSeeker() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default TrackJobSeeker
-
+export default TrackJobSeeker;
