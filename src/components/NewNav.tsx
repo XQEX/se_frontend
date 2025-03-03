@@ -426,7 +426,7 @@ export const NewNav: React.FC<NavbarProps> = ({
                       )}
                     </div>
                     <span className="kanit-regular font-medium truncate max-w-[150px]">
-                      {user?.username}
+                      {user?.username || user?.officialName + " company."}
                     </span>
                   </button>
                 </Menu.Target>

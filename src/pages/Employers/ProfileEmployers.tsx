@@ -176,6 +176,8 @@ function Profile() {
           email: emailValue,
           contact: phoneNumberValue,
           userType: user.type,
+          aboutUs: user.aboutUs,
+          officialName: user.officialName,
         };
 
         if (user.type === "COMPANY") {
