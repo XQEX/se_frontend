@@ -265,13 +265,34 @@ function TrackEmployers() {
                                 {match.toMatchSeekers.map(
                                   (seeker: any, index: number) => (
                                     <div key={seeker.jobHiringPostMatchedId}>
-                                      <div>
+                                      <div className="flex flex-col border-b border-emerald-400 p-3 text-center">
                                         {index + 1}. ID:{" "}
                                         {seeker.jobSeekerId ||
                                           seeker.oauthJobSeekerId}
-                                      </div>
-                                      <div>
                                         <StatusBadge status={seeker.status} />
+                                        <button>
+                                          แก้ไขสถานะขอผู้สมัคร :
+                                          {/* {seeker.jobSeekerId ?? 
+                                          seeker.oauthJobSeekerId}  ใช้ id พวกนี้ยิง api update สถานะ การสมัคร*/}
+                                          <select
+                                            name="updatejobseekstatus"
+                                            id="updatejobseekstatus"
+                                            className="text-center"
+                                          >
+                                            <option value="UNMATCHED">
+                                              รอดำเนินการ
+                                            </option>
+                                            <option value="INPROGRESS">
+                                              กำลังตรวจสอบ
+                                            </option>
+                                            <option value="ACCEPTED">
+                                              รับแล้ว
+                                            </option>
+                                            <option value="DENIED">
+                                              ปฏิเสธแล้ว
+                                            </option>
+                                          </select>
+                                        </button>
                                       </div>
                                     </div>
                                   )

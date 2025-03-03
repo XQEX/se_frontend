@@ -208,6 +208,12 @@ function TrackJobSeeker() {
                           {/* รอฝั่ง emp  อัพเดตสถานะให้เราเอง */}
                           <td className="p-3 border border-amber-100">
                             <StatusBadge status={match.status} />
+                            <div className="flex justify-center mt-8">
+                              <select>
+                                <option value="Accept">ยืนยัน</option>
+                                <option value="Reject">ปฏิเสธ</option>
+                              </select>
+                            </div>
                           </td>
                           <td className="p-3 border border-amber-100">
                             {new Date(match.createdAt).toLocaleDateString(
