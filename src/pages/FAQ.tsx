@@ -34,10 +34,9 @@ export default function FAQSection() {
   } = useUser();
   const [isHaveUser, setIsHaveUser] = useState(false);
   useEffect(() => {
-    // console.log("current user:", user);
-    // console.log("isLoading:", isLoading);
-    // console.log("isHaveUser :", isHaveUser);
-    // console.log("isStale :", isStale);
+    refetchjobseeker();
+    refetchCompany();
+    refetchemployer();
     setIsHaveUser(!!user);
   }, [user, isLoading, isStale]);
 

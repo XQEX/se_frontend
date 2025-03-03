@@ -167,6 +167,9 @@ function TrackJobSeeker() {
   }, []);
 
   useEffect(() => {
+    refetchjobseeker();
+    refetchCompany();
+    refetchemployer();
     setIsHaveUser(!!user);
   }, [user, isLoading, isStale]);
 

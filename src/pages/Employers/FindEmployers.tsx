@@ -117,13 +117,6 @@ function FindEmp() {
     setIsHaveUser(!!user);
   }, [user, isLoading, isStale]);
 
-  useEffect(() => {
-    refetchjobseeker();
-    refetchemployer();
-    refetchCompany();
-    setIsHaveUser(!!user);
-  }, [user, isLoading, isStale]);
-
   const handleMultiSelectChange = useCallback(
     (field: keyof Filters) => (values: string[]) => {
       setFilters((prev) => ({

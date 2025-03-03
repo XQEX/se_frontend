@@ -70,6 +70,7 @@ function Support() {
         refetchCompany={() => {}}
         isStale={false}
         setUser={() => {}}
+        queryClient={undefined}
       />
 
       <Container size="lg" py={40}>

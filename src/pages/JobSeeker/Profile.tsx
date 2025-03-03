@@ -49,6 +49,9 @@ function Profile() {
   } = useUser();
   const [isHaveUser, setIsHaveUser] = useState(false);
   useEffect(() => {
+    refetchjobseeker();
+    refetchCompany();
+    refetchemployer();
     setIsHaveUser(!!user);
   }, [user, isLoading, isStale]);
   // Track which tab is active; default is "work"

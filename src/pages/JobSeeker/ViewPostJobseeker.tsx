@@ -39,6 +39,9 @@ const ViewPostJobseeker: React.FC = () => {
   const [jobCategories, setJobCategories] = useState<any[]>([]);
 
   useEffect(() => {
+    refetchjobseeker();
+    refetchCompany();
+    refetchemployer();
     setIsHaveUser(!!user);
     console.log(job);
   }, [user, isLoading, isStale]);

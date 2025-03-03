@@ -34,6 +34,9 @@ function SignUpJobSeek() {
   } = useUser();
   const [isHaveUser, setIsHaveUser] = useState(false);
   useEffect(() => {
+    refetchjobseeker();
+    refetchCompany();
+    refetchemployer();
     setIsHaveUser(!!user);
   }, [user, isLoading, isStale]);
 

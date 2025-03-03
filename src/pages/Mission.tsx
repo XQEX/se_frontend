@@ -34,9 +34,9 @@ function Mission() {
   } = useUser();
   const [isHaveUser, setIsHaveUser] = useState(false);
   useEffect(() => {
-   refetchjobseeker();
-refetchemployer();
-refetchCompany();
+    refetchjobseeker();
+    refetchemployer();
+    refetchCompany();
     setIsHaveUser(!!user);
   }, [user, isLoading, isStale]);
   return (
@@ -51,6 +51,7 @@ refetchCompany();
         isStale={isStale}
         setUser={setUser}
         userType={user?.type}
+        queryClient={queryClient}
       />
       <Container size="lg" py="xl">
         <Stack>
