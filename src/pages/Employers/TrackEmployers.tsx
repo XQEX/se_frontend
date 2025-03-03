@@ -126,92 +126,78 @@ function TrackEmployers() {
             ) : (
               <div>
                 <h2 className="text-2xl font-bold mb-4 mt-8">
-                  พนักงานที่คุณสนใจ
+                  พนักงานที่คุณกดสนใจ
                 </h2>
                 <div className=" overflow-x-auto max-h-[400px] mt-8 ">
                   <table className="w-full text-left ">
                     <thead className="bg-amber-200">
                       <tr>
+                        <th className="p-3 border border-amber-100">พนักงาน</th>
                         <th className="p-3 border border-amber-100">
-                          ตำแหน่งที่ค้นหา
+                          ข้อมูลในโพสหางาน
                         </th>
                         <th className="p-3 border border-amber-100">
-                          ข้อมูลในการยื่นสมัคร
+                          รายได้ที่เรียกร้อง
                         </th>
                         <th className="p-3 border border-amber-100">
-                          ผู้ว่าจ้าง (นายจ้าง , บริษัท)
+                          สถานะการยืนยันเข้าทำงาน
                         </th>
+
                         <th className="p-3 border border-amber-100">
-                          เงินเดือนที่คาดหวัง
-                        </th>
-                        <th className="p-3 border border-amber-100">สถานะ</th>
-                        <th className="p-3 border border-amber-100">
-                          วันที่สมัคร
+                          วันที่โพสหางาน
                         </th>
                       </tr>
                     </thead>
                     <tbody>
                       {findingMatches.map((match) => (
                         <tr key={match.id} className="hover:bg-amber-50">
-                          {/* ตำแหน่งที่สมัคร */}
                           <td className="p-3 border border-amber-100">
                             <div className="text-xl text-gray-500 font-bold">
-                              ตำแหน่งงาน :
+                              พนักงาน :
                             </div>
-                            <div className="text-lg">{match.title}</div>
+                            <div className="text-lg">
+                              {match.toPost.jobSeekerId}
+                            </div>
                           </td>
                           {/* รายละเอียด */}
                           <td className="p-3 border border-amber-100">
                             <div className="text-sm text-gray-500">
                               <div className=" px-3">
-                                <div className="font-bold">
-                                  คำอธิบายเพิ่มเติม:{" "}
+                                <div>
+                                  ตำแหน่งงานที่หา : {match.toPost.title}
                                 </div>
-                                <div>{match.description}</div>
-                                <div className="font-bold">สถานที่: </div>
-                                <div>{match.jobLocation}</div>
-                                <div className="font-bold">ช่วงเวลาทำงาน: </div>
-                                <div>{match.workHoursRange}</div>
-                                <div className="font-bold">ประเภทงาน: </div>
-                                <div>{match.jobPostType}</div>
-                                <div className="font-bold">วันที่ทำงาน: </div>
-                                <div>{match.workDates}</div>
+                                <div>
+                                  ประสบกาณ์ : {match.toPost.description}
+                                </div>
+                                <div>
+                                  สถานที่ที่สะดวก : {match.toPost.jobLocation}
+                                </div>
+                                <div>
+                                  ช่วงวันทำงาน : {match.toPost.workDates}
+                                </div>
+                                <div>
+                                  ช่วงเวลาเข้างาน :{" "}
+                                  {match.toPost.workHoursRange}
+                                </div>
+                                <div>
+                                  ประเภทงาน : {match.toPost.jobPostType}
+                                </div>
                               </div>
                             </div>
                           </td>
-                          {/* บริษัท */}
+
                           <td className="p-3 border border-amber-100">
-                            {match.postMatched &&
-                            match.postMatched.length > 0 ? (
-                              <div>
-                                <div>มีบริษัทสนใจคุณ</div>
-                                {match.postMatched.map(
-                                  (post: any, index: number) => (
-                                    <div key={index}>
-                                      {post.employerId ??
-                                        post.oauthEmployerId ??
-                                        post.companyId}
-                                    </div>
-                                  )
-                                )}
-                              </div>
-                            ) : (
-                              <div>กำลังรอคนที่มาสนใจคุณ</div>
-                            )}
+                            ฿{match.toPost.expectedSalary.toLocaleString()}
                           </td>
-                          {/* เงินเดือน */}
+
                           <td className="p-3 border border-amber-100">
-                            ฿{match.expectedSalary?.toLocaleString()}
+                            <StatusBadge status={match.toPost.status} />
                           </td>
-                          {/* สถานะ  */}
-                          {/* รอฝั่ง emp  อัพเดตสถานะให้เราเอง */}
+
                           <td className="p-3 border border-amber-100">
-                            <StatusBadge status={match.status} />
-                          </td>
-                          <td className="p-3 border border-amber-100">
-                            {new Date(match.createdAt).toLocaleDateString(
-                              "th-TH"
-                            )}
+                            {new Date(
+                              match.toPost.createdAt
+                            ).toLocaleDateString("th-TH")}
                           </td>
                         </tr>
                       ))}
@@ -226,89 +212,76 @@ function TrackEmployers() {
             ) : (
               <div>
                 <h2 className="text-2xl font-bold mb-4 mt-8">
-                  โพสรับสมัครงานที่คุณกดสนใจ
+                  โพสรับสมัครงานที่คุณที่มีคนกดสนใจ
                 </h2>
                 <div className="overflow-x-auto max-h-[400px] mt-8">
                   <table className="w-full text-left border-collapse">
                     <thead className="bg-emerald-200">
                       <tr>
                         <th className="p-3 border border-emerald-100">
-                          โพสของ
+                          โพสของคุณ
                         </th>
                         <th className="p-3 border border-emerald-100">
-                          ความสามารถที่นายจ้างต้องการ
-                        </th>
-                        <th className="p-3 border border-emerald-100">
-                          เงินเดือน และ สวัสดิการ
-                        </th>
-                        <th className="p-3 border border-emerald-100">สถานะ</th>
-                        <th className="p-3 border border-emerald-100">
-                          วันเวลาที่โพส
+                          คนที่สมัครเข้ามาทำงาน
                         </th>
                       </tr>
                     </thead>
                     <tbody>
-                      {/*{hiringMatches.map((post) => (
+                      {hiringMatches.map((post) => (
                         <tr key={post.id} className="hover:bg-emerald-50">
+                          {/* ข้อมูลในโพสหาคน */}
                           <td className="p-3 border border-emerald-100">
-                            <div className="font-semibold">
-                              {post.toPostMatched.toPost.employerId ??
-                                post.toPostMatched.toPost.oauthEmployerId ??
-                                post.toPostMatched.toPost.companyId}
+                            {/* ไอดี Post */}
+                            {/* {post.id} */}
+                            <div>
+                              <strong>Title:</strong> {post.title}
+                            </div>
+                            <div>
+                              <strong>Description:</strong> {post.description}
+                            </div>
+                            <div>
+                              <strong>Job Location:</strong> {post.jobLocation}
+                            </div>
+                            <div>
+                              <strong>Work Dates:</strong> {post.workDates}
+                            </div>
+                            <div>
+                              <strong>Work Hours Range:</strong>{" "}
+                              {post.workHoursRange}
+                            </div>
+                            <div>
+                              <strong>Status:</strong> {post.status}
+                            </div>
+                            <div>
+                              <strong>Hired Amount:</strong> {post.hiredAmount}
+                            </div>
+                            <div>
+                              <strong>Job Post Type:</strong> {post.jobPostType}
                             </div>
                           </td>
-                          <td>
-                            <div className="text-sm text-gray-500"> 
-                              <div>
-                                <strong>Title:</strong>
-                                {post.toPostMatched.toPost.title}
-                              </div>
-                              <div>
-                                <strong>Description:</strong>{" "}
-                                {post.toPostMatched.toPost.description}
-                              </div>
-                              <div>
-                                <strong>Job Location:</strong>{" "}
-                                {post.toPostMatched.toPost.jobLocation}
-                              </div>
-
-                              <div>
-                                <strong>Work Dates:</strong>{" "}
-                                {post.toPostMatched.toPost.workDates}
-                              </div>
-                              <div>
-                                <strong>Work Hours Range:</strong>{" "}
-                                {post.toPostMatched.toPost.workHoursRange}
-                              </div>
-                              <div>
-                                <strong>Status:</strong>{" "}
-                                {post.toPostMatched.toPost.status}
-                              </div>
-                              <div>
-                                <strong>Hired Amount:</strong> 1
-                              </div>
-                              <div>
-                                <strong>Job Post Type:</strong> FULLTIME
-                              </div>
-                            </div>
-                          </td>
-
                           <td className="p-3 border border-emerald-100">
-                            ฿{post.toPostMatched.toPost.salary.toLocaleString()}
-                          </td>
-                          <td className="p-3 border border-emerald-100">
-                            <StatusBadge
-                              status={post.toPostMatched.toPost.status}
-                            />
-                          </td>
-
-                          <td className="p-3 border border-emerald-100">
-                            {new Date(
-                              post.toPostMatched.toPost.updatedAt
-                            ).toLocaleDateString("th-TH")}
+                            {post.postMatched.map((match: any) => (
+                              <div key={match.id}>
+                                {match.toMatchSeekers.map(
+                                  (seeker: any, index: number) => (
+                                    <div key={seeker.jobHiringPostMatchedId}>
+                                      <div>
+                                        {index + 1}. ID:{" "}
+                                        {seeker.jobSeekerId ||
+                                          seeker.oauthJobSeekerId}
+                                      </div>
+                                      <div>
+                                        <StatusBadge status={seeker.status} />
+                                      </div>
+                                    </div>
+                                  )
+                                )}
+                              </div>
+                            ))}
                           </td>
                         </tr>
-                      ))}   */}
+                      ))}
+                      {/* asdasd */}
                     </tbody>
                   </table>
                 </div>
