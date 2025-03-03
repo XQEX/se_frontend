@@ -153,7 +153,7 @@ export const NewNav: React.FC<NavbarProps> = ({
       queryClient.setQueryData(["currentCompany"], null);
       queryClient.removeQueries(["currentJobSeeker"]);
       queryClient.removeQueries(["currentEmployer"]);
-      //   queryClient.invalidateQueries(["currentCompany"]);
+      queryClient.removeQueries(["currentCompany"]);
       //   queryClient.invalidateQueries(["currentJobSeeker"]);
       //   queryClient.invalidateQueries(["currentEmployer"]);
       //   queryClient.invalidateQueries(["currentCompany"]);
