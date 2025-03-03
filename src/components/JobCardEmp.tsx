@@ -251,10 +251,6 @@ JobCardEmpProps) {
           }`}
         />
       </button>
-      {/* ฟหกฟหาฟหวกนแฟนทปรมหทกร ฟิแืหปทวากม */}
-      <div className="absolute top-4 left-4 p-2 rounded-full bg-gray-100 text-gray-700">
-        {isFav ? "Matched" : "Not Matched"}
-      </div>
 
       <Link to={`/employer/details/${id}`} className="block space-y-4">
         <h2 className="text-xl font-bold text-gray-900 mb-1 line-clamp-2">
