@@ -22,7 +22,7 @@ function TrackEmployers() {
       UNMATCHED: { color: "bg-gray-100 text-gray-800", text: "รอดำเนินการ" },
       INPROGRESS: {
         color: "bg-blue-100 text-blue-800",
-        text: "รอการตอบกลับข้อเสนอของคุณ",
+        text: "รอการตอบกลับ",
       },
       ACCEPTED: {
         color: "bg-green-100 text-green-800",
@@ -78,8 +78,54 @@ function TrackEmployers() {
   };
 
   const NoDataMessage = ({ type }: { type: "hiring" | "finding" }) => (
-    <div className="p-4 text-center text-gray-500">
-      {type === "hiring" ? "ยังไม่มีประกาศงานของคุณ" : "ยังไม่มีการสมัครงาน"}
+    <div className="p-6 text-center text-gray-500 bg-white rounded-lg shadow-md">
+      <p className="text-lg font-semibold">
+        {type === "hiring"
+          ? "โพสรับสมัครงานทของคุณที่มีคนกดสนใจ"
+          : "พนักงานที่คุณกดสนใจ"}
+      </p>
+      {type === "hiring" ? (
+        // ตารางโพสของตัวเอง
+        <table className="w-full text-left border-collapse mt-4">
+          <thead className="bg-gray-200 text-center">
+            <tr>
+              <th className="p-3 border border-gray-100">โพสของคุณ</th>
+              <th className="p-3 border border-gray-100">
+                คนที่สมัครเข้ามาทำงาน
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td className="p-3 border border-gray-100" colSpan={5}>
+                ยังไม่มีข้อมูล
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      ) : (
+        // ตารางข้อมูลพนักงาน  ที่ไปกดสนใจ
+        <table className="w-full text-left border-collapse mt-4">
+          <thead className="bg-gray-200 text-center">
+            <tr>
+              <th className="p-3 border border-gray-100">พนักงาน</th>
+              <th className="p-3 border border-gray-100">ข้อมูลในโพสหางาน</th>
+              <th className="p-3 border border-gray-100">รายได้ที่เรียกร้อง</th>
+              <th className="p-3 border border-gray-100">
+                สถานะการยืนยันเข้าทำงาน
+              </th>
+              <th className="p-3 border border-gray-100">วันที่โพสหางาน</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td className="p-3 border border-gray-100" colSpan={5}>
+                ยังไม่มีข้อมูล
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      )}
     </div>
   );
 
@@ -176,49 +222,48 @@ function TrackEmployers() {
         userType={user?.type}
         queryClient={queryClient}
       />
-      <div className="min-h-screen flex flex-col md:flex-row bg-white text-[#2e8b57] justify-center items-center p-4 md:p-8">
-        <div className="flex flex-col items-center md:items-start text-center md:text-left kanit-light">
-          <div className="flex flex-row justify-end gap-auto">
+      <div className="min-h-screen flex flex-col md:flex-row bg-gray-50 text-gray-800 justify-center items-center p-4 md:p-8">
+        <div className="flex flex-col items-center md:items-start text-center md:text-left kanit-light w-full max-w-6xl">
+          <div className="flex flex-row justify-end gap-auto w-full">
             <div
               ref={headingRef}
-              className="text-3xl md:text-5xl font-bold mb-4 md:mb-6 text start"
+              className="text-3xl md:text-5xl font-bold mb-4 md:mb-6 text-start text-green-700"
             >
               ติดตามการรับสมัครพนักงานของคุณ
             </div>
           </div>
 
-          <div ref={tableRef} className="w-full text-gray-600 py-6 ">
+          <div ref={tableRef} className="w-full text-gray-600 py-6">
             {findingMatches.length === 0 ? (
               <NoDataMessage type="finding" />
             ) : (
               <div>
-                <h2 className="text-2xl font-bold mb-4 mt-8">
+                <h2 className="text-2xl font-bold mb-4 mt-8 text-green-700">
                   พนักงานที่คุณกดสนใจ
                 </h2>
-                <div className=" overflow-x-auto max-h-[400px] mt-8 ">
-                  <table className="w-full text-left ">
-                    <thead className="bg-amber-200">
+                <div className="overflow-x-auto max-h-[400px] mt-8 shadow-lg rounded-lg">
+                  <table className="w-full text-left border-collapse">
+                    <thead className="bg-green-200 text-center">
                       <tr>
-                        <th className="p-3 border border-amber-100">พนักงาน</th>
-                        <th className="p-3 border border-amber-100">
+                        <th className="p-3 border border-green-100">พนักงาน</th>
+                        <th className="p-3 border border-green-100">
                           ข้อมูลในโพสหางาน
                         </th>
-                        <th className="p-3 border border-amber-100">
+                        <th className="p-3 border border-green-100">
                           รายได้ที่เรียกร้อง
                         </th>
-                        <th className="p-3 border border-amber-100">
+                        <th className="p-3 border border-green-100">
                           สถานะการยืนยันเข้าทำงาน
                         </th>
-
-                        <th className="p-3 border border-amber-100">
+                        <th className="p-3 border border-green-100">
                           วันที่โพสหางาน
                         </th>
                       </tr>
                     </thead>
                     <tbody>
                       {findingMatches.map((match) => (
-                        <tr key={match.id} className="hover:bg-amber-50">
-                          <td className="p-3 border border-amber-100">
+                        <tr key={match.id} className="hover:bg-green-50">
+                          <td className="p-3 border border-green-100">
                             <div className="text-xl text-gray-500 font-bold">
                               พนักงาน :
                             </div>
@@ -227,9 +272,9 @@ function TrackEmployers() {
                             </div>
                           </td>
                           {/* รายละเอียด */}
-                          <td className="p-3 border border-amber-100">
+                          <td className="p-3 border border-green-100">
                             <div className="text-sm text-gray-500">
-                              <div className=" px-3">
+                              <div className="px-3">
                                 <div>
                                   ตำแหน่งงานที่หา : {match.toPost.title}
                                 </div>
@@ -253,15 +298,15 @@ function TrackEmployers() {
                             </div>
                           </td>
 
-                          <td className="p-3 border border-amber-100">
+                          <td className="p-3 border border-green-100">
                             ฿{match.toPost.expectedSalary.toLocaleString()}
                           </td>
 
-                          <td className="p-3 border border-amber-100">
+                          <td className="p-3 border border-green-100 text-center">
                             <StatusBadge status={match.status} />
                           </td>
 
-                          <td className="p-3 border border-amber-100">
+                          <td className="p-3 border border-green-100">
                             {new Date(
                               match.toPost.createdAt
                             ).toLocaleDateString("th-TH")}
@@ -278,12 +323,12 @@ function TrackEmployers() {
               <NoDataMessage type="hiring" />
             ) : (
               <div>
-                <h2 className="text-2xl font-bold mb-4 mt-8">
-                  โพสรับสมัครงานที่คุณที่มีคนกดสนใจ
+                <h2 className="text-2xl font-bold mb-4 mt-8 text-green-700">
+                  โพสรับสมัครงานของคุณที่มีคนกดสนใจ
                 </h2>
-                <div className="overflow-x-auto max-h-[400px] mt-8">
+                <div className="overflow-x-auto max-h-[400px] mt-8 shadow-lg rounded-lg">
                   <table className="w-full text-left border-collapse">
-                    <thead className="bg-emerald-200">
+                    <thead className="bg-emerald-200 text-center">
                       <tr>
                         <th className="p-3 border border-emerald-100">
                           โพสของคุณ
@@ -327,6 +372,13 @@ function TrackEmployers() {
                             </div>
                           </td>
                           <td className="p-3 border border-emerald-100">
+                            {post.postMatched.length === 0 && (
+                              <div className="flex items-center justify-center p-4 ">
+                                <span className="text-gray-600 dark:text-gray-500 text-lg italic">
+                                  ยังไม่มีผู้ใช้คนใดสนใจงานในขณะนี้
+                                </span>
+                              </div>
+                            )}
                             {post.postMatched.map((match: any) => (
                               <div key={match.id}>
                                 {match.toMatchSeekers.map(
