@@ -1133,43 +1133,6 @@ function Profile() {
             </section>
           )}
 
-           {/* Add Quick Action Buttons */}
-           <div className="bg-white rounded-lg shadow-md p-4 mt-6 flex justify-center space-x-4">
-            <Link
-              to="/my-posts"
-              className="flex-1 bg-seagreen/80 text-white px-4 py-3 rounded-lg hover:bg-seagreen transition text-center font-medium"
-            >
-              <div className="flex justify-center items-center">
-                <span className="mr-2 text-xl">
-                  <BsPostcardHeart />
-                </span>{" "}
-                โพสต์งานของฉัน
-              </div>
-            </Link>
-            <Link
-              to="/find"
-              className="flex-1 bg-seagreen/80 text-white px-4 py-3 rounded-lg hover:bg-seagreen transition text-center font-medium"
-            >
-              <div className="flex justify-center items-center">
-                <span className="mr-2 text-xl">
-                  <AiOutlineFileSearch />
-                </span>{" "}
-                ค้นหางาน
-              </div>
-            </Link>
-            <Link
-              to="/trackjobseeker"
-              className="flex-1 bg-seagreen/80 text-white px-4 py-3 rounded-lg hover:bg-seagreen transition text-center font-medium"
-            >
-              <div className="flex justify-center items-center">
-                <span className="mr-2 text-xl">
-                  <MdAutoGraph />
-                </span>{" "}
-                ติดตามงาน
-              </div>
-            </Link>
-          </div>
-
           <div className="mt-8 flex items-center space-x-4 border-b border-gray-200 pb-2">
             <button
               className={
