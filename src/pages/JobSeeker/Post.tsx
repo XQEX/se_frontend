@@ -225,16 +225,6 @@ const PostJob: React.FC = () => {
           </div>
 
           <div className="flex flex-col w-4/5 mx-auto">
-            <label className="font-kanit text-gray-700">
-              จำนวนที่เปิดรับสมัคร
-            </label>
-            <input
-              type="number"
-              placeholder="..."
-              className="border border-gray-300 p-2 rounded-md text-sm"
-            />
-          </div>
-          <div className="flex flex-col w-4/5 mx-auto">
             <label className="font-kanit text-gray-700">ประเภทงาน</label>
             <select
               value={jobPostType}
