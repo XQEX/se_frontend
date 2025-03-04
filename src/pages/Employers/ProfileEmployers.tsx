@@ -31,7 +31,7 @@ import {
   updateEmployerPassword,
   updateEmployerUsername,
 } from "../../api/Employer";
-import { AxiosError } from "axios";
+import axios from "axios";
 
 function Profile() {
   const navigate = useNavigate();
@@ -100,6 +100,10 @@ function Profile() {
   const [newPassword, setNewPassword] = useState<string>("");
   const [password2, setPassword2] = useState<string>("");
   const [confirmpassword2, setConfirmPassword2] = useState<string>("");
+
+  const [newCompanyName, setNewCompanyName] = useState("");
+  const [newCompanyDescription, setNewCompanyDescription] = useState("");
+  const [oldPassword, setOldPassword] = useState("");
 
   useEffect(() => {
     if (user.type === "COMPANY") {
@@ -204,21 +208,12 @@ function Profile() {
       return;
     }
     try {
-      const response = await updateEmployerUsername(userNameValue, password);
-      console.log("response:", response);
-      // if (response.data.error) {
-      //   notifyError(response.data.error);
-      //   return;
-      // }
-      notifySuccess("username updated successfully");
-
+      await updateEmployerUsername(userNameValue, password);
+      notifySuccess("Username updated successfully");
       refetchemployer();
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        notifyError((error as AxiosError).response.data.msg);
-      } else {
-        notifyError(error as string);
-      }
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { msg?: string } } };
+      notifyError(err.response?.data?.msg || 'An unexpected error occurred');
     }
   };
 
@@ -229,39 +224,22 @@ function Profile() {
     }
     try {
       await updateEmployerPassword(newPassword, password2);
-      notifySuccess("Passwords updated successfully");
-
+      notifySuccess("Password updated successfully");
       refetchemployer();
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        notifyError((error as AxiosError).response.data.msg);
-      } else {
-        notifyError(error as string);
-      }
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { msg?: string } } };
+      notifyError(err.response?.data?.msg || 'An unexpected error occurred');
     }
   };
 
   const onUserConfirmEditUsernameCom = async () => {
-    if (password !== confirmpassword) {
-      notifyError("Passwords do not match");
-      return;
-    }
     try {
-      const response = await updateCompanyUsername(userNameValue, password);
-      console.log("response:", response);
-      // if (response.data.error) {
-      //   notifyError(response.data.error);
-      //   return;
-      // }
-      notifySuccess("username updated successfully");
-
+      await updateCompanyUsername(userNameValue, password);
+      notifySuccess("Username updated successfully");
       refetchCompany();
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        notifyError((error as AxiosError).response.data.msg);
-      } else {
-        notifyError(error as string);
-      }
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { msg?: string } } };
+      notifyError(err.response?.data?.msg || 'An unexpected error occurred');
     }
   };
 
@@ -271,16 +249,44 @@ function Profile() {
       return;
     }
     try {
-      await updateCompanyPassword(newPassword, password2);
-      notifySuccess("Passwords updated successfully");
-
+      await updateCompanyPassword(password2, oldPassword);
+      notifySuccess("Password updated successfully");
       refetchCompany();
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        notifyError((error as AxiosError).response.data.msg);
-      } else {
-        notifyError(error as string);
-      }
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { msg?: string } } };
+      notifyError(err.response?.data?.msg || 'An unexpected error occurred');
+    }
+  };
+
+  const handleCompanyNameUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newCompanyName.trim() === "") {
+      notifyError("Company name cannot be empty");
+      return;
+    }
+    try {
+      await updateCompanyUsername(newCompanyName, "");
+      notifySuccess("Company name updated successfully");
+      refetchCompany();
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { msg?: string } } };
+      notifyError(err.response?.data?.msg || 'An unexpected error occurred');
+    }
+  };
+
+  const handleCompanyDescriptionUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newCompanyDescription.trim() === "") {
+      notifyError("Company description cannot be empty");
+      return;
+    }
+    try {
+      await updateCompanyUsername(newCompanyDescription, "");
+      notifySuccess("Company description updated successfully");
+      refetchCompany();
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { msg?: string } } };
+      notifyError(err.response?.data?.msg || 'An unexpected error occurred');
     }
   };
 
@@ -690,65 +696,6 @@ function Profile() {
 
         <div className="mb-8">
           {activeTab === "work" && (
-            // <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
-            //   <div className="grid md:grid-cols-3 gap-6">
-            //     <div className="bg-white rounded-lg shadow hover:shadow-lg transition p-4">
-            //       <img
-            //         src="https://via.placeholder.com/400x250?text=VPN+Mobile+App"
-            //         alt="VPN Mobile App"
-            //         className="w-full rounded-md"
-            //       />
-            //       <h3 className="mt-4 text-lg font-semibold">VPN Mobile App</h3>
-            //       <p className="text-gray-500 text-sm">Mobile UI, Research</p>
-            //       <div className="flex items-center justify-between mt-3 text-gray-400 text-xs">
-            //         <div>
-            //           <span className="font-medium">517</span>
-            //           <span className="ml-1">❤️</span>
-            //         </div>
-            //         <span className="font-medium">9.3k</span>
-            //       </div>
-            //     </div>
-
-            //     <div className="bg-white rounded-lg shadow hover:shadow-lg transition p-4">
-            //       <img
-            //         src="https://via.placeholder.com/400x250?text=Property+Dashboard"
-            //         alt="Property Dashboard"
-            //         className="w-full rounded-md"
-            //       />
-            //       <h3 className="mt-4 text-lg font-semibold">
-            //         Property Dashboard
-            //       </h3>
-            //       <p className="text-gray-500 text-sm">Web interface</p>
-            //       <div className="flex items-center justify-between mt-3 text-gray-400 text-xs">
-            //         <div>
-            //           <span className="font-medium">983</span>
-            //           <span className="ml-1">❤️</span>
-            //         </div>
-            //         <span className="font-medium">14k</span>
-            //       </div>
-            //     </div>
-
-            //     <div className="bg-white rounded-lg shadow hover:shadow-lg transition p-4">
-            //       <img
-            //         src="https://via.placeholder.com/400x250?text=Healthcare+Mobile+App"
-            //         alt="Healthcare Mobile App"
-            //         className="w-full rounded-md"
-            //       />
-            //       <h3 className="mt-4 text-lg font-semibold">
-            //         Healthcare Mobile App
-            //       </h3>
-            //       <p className="text-gray-500 text-sm">Mobile UI, Branding</p>
-            //       <div className="flex items-center justify-between mt-3 text-gray-400 text-xs">
-            //         <div>
-            //           <span className="font-medium">875</span>
-            //           <span className="ml-1">❤️</span>
-            //         </div>
-            //         <span className="font-medium">13.5k</span>
-            //       </div>
-            //     </div>
-            //   </div>
-            // </section>
-
             <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
               <div className="grid md:grid-cols-3 gap-6">
                 <ArticleCard

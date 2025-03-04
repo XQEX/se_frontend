@@ -180,13 +180,14 @@ export const createJobPostCom = async (
   }
 };
 
-export const getCompanyJobPosts =
-  async (): Promise<CompanyJobPostsResponse> => {
+export const getCompanyJobPosts = async (): Promise<CompanyJobPostsResponse> => {
     try {
-      console.log("Fetching company job posts...");
-      const { data } = await axios.get<{ data: CompanyJobPostsResponse }>(
-        `http://localhost:${backendPort}/api/post/company/job-posts`,
+      const { data } = await axios.get<CompanyJobPostsResponse>(
+        "http://localhost:6977/api/company/job-posts",
         {
+          headers: {
+            "Content-Type": "application/json",
+          },
           withCredentials: true,
         }
       );

@@ -1,6 +1,6 @@
 "use client";
 
-import type React from "react";
+import React from "react";
 import { useState } from "react";
 import { NewNav } from "../components/NewNav";
 import {
@@ -30,8 +30,21 @@ import {
 } from "react-icons/fa";
 import { motion } from "framer-motion";
 import Footer from "../components/Footer";
+import { useUser } from "../context/UserContext";
 
 function Support() {
+  const {
+    user,
+    isLoading,
+    isHaveUser,
+    refetchjobseeker,
+    refetchemployer,
+    refetchCompany,
+    isStale,
+    setUser,
+    queryClient
+  } = useUser();
+
   const [contactForm, setContactForm] = useState({
     name: "",
     email: "",
@@ -62,15 +75,16 @@ function Support() {
   return (
     <div className="min-h-screen bg-gray-50">
       <NewNav
-        user={undefined}
-        isLoading={false}
-        isHaveUser={false}
-        refetchjobseeker={() => {}}
-        refetchemployer={() => {}}
-        refetchCompany={() => {}}
-        isStale={false}
-        setUser={() => {}}
-        queryClient={undefined}
+        user={user}
+        isLoading={isLoading}
+        isHaveUser={isHaveUser}
+        refetchjobseeker={refetchjobseeker}
+        refetchemployer={refetchemployer}
+        refetchCompany={refetchCompany}
+        isStale={isStale}
+        setUser={setUser}
+        userType={user?.type || "JOBSEEKER"}
+        queryClient={queryClient}
       />
 
       <Container size="lg" py={40}>

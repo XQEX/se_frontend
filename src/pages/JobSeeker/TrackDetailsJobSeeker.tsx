@@ -111,6 +111,8 @@ function TrackDetailsJobSeeker() {
           refetchCompany={refetchCompany}
           isStale={isStale}
           setUser={setUser}
+          userType={user?.type || "JOBSEEKER"}
+          queryClient={queryClient}
         />
         <div className="min-h-screen flex flex-col items-center justify-center">
           <h1 className="text-2xl font-bold text-red-600">ไม่พบข้อมูล</h1>
@@ -136,7 +138,7 @@ function TrackDetailsJobSeeker() {
         refetchCompany={refetchCompany}
         isStale={isStale}
         setUser={setUser}
-        userType={user?.type}
+        userType={user?.type || "JOBSEEKER"}
         queryClient={queryClient}
       />
       <div className="min-h-screen flex flex-col items-center bg-white text-[#2e8b57] p-4">

@@ -8,6 +8,12 @@ import { Avatar } from "@mantine/core";
 import { getJobFindingPostById } from "../../api/JobSeeker";
 import { useUser } from "../../context/UserContext";
 
+interface Skill {
+  id: string;
+  name: string;
+  description: string;
+}
+
 type Job = {
   id: string;
   title: string;
@@ -69,7 +75,7 @@ function JobDetailEmp() {
           workHours: jobData.workHoursRange,
           salary: jobData.expectedSalary.toString(),
           description: jobData.description,
-          requirements: jobData.skills.map((skill) => skill.name).join(", "),
+          requirements: jobData.skills.map((skill: Skill) => skill.name).join(", "),
           workDays: jobData.workDates,
           postedAt: jobData.createdAt,
         };

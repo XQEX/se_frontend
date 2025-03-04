@@ -27,7 +27,7 @@ import { getUserJobFindingPosts, updateUserProfile } from "../../api/JobSeeker";
 import { deleteJobFindingPost } from "../../api/JobSeeker";
 import { updateJobSeekerUsername } from "../../api/JobSeeker";
 import { updateJobSeekerPassword } from "../../api/JobSeeker";
-import { AxiosError } from "axios";
+import axios from "axios";
 
 function Profile() {
   const navigate = useNavigate();
@@ -188,42 +188,28 @@ function Profile() {
       return;
     }
     try {
-      const response = await updateJobSeekerUsername(userNameValue, password);
-      console.log("response:", response);
-      // if (response.data.error) {
-      //   notifyError(response.data.error);
-      //   return;
-      // }
-      notifySuccess("username updated successfully");
-
+      await updateJobSeekerUsername(userNameValue, password);
+      notifySuccess("Username updated successfully");
       refetchjobseeker();
-      console.log("refetchjobseeker");
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        notifyError((error as AxiosError).response.data.msg);
-      } else {
-        notifyError(error as string);
-      }
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { msg?: string } } };
+      notifyError(err.response?.data?.msg || 'An unexpected error occurred');
     }
   };
 
-  const onUserConfirmEditPassword = async () => {
-    if (password2 !== confirmpassword2) {
+  const handlePasswordUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newPassword !== password2) {
       notifyError("Passwords do not match");
       return;
     }
     try {
-      await updateJobSeekerPassword(newPassword, password2);
-      notifySuccess("Passwords updated successfully");
-
+      await updateJobSeekerPassword(password2, newPassword);
+      notifySuccess("Password updated successfully");
       refetchjobseeker();
-      console.log("refetchjobseeker");
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        notifyError((error as AxiosError).response.data.msg);
-      } else {
-        notifyError(error as string);
-      }
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { msg?: string } } };
+      notifyError(err.response?.data?.msg || 'An unexpected error occurred');
     }
   };
 
@@ -492,7 +478,7 @@ function Profile() {
                 />
                 <button
                   className="text-base bg-green-600 text-white px-3 py-1 rounded-sm hover:bg-green-500 transition"
-                  onClick={onUserConfirmEditPassword}
+                  onClick={handlePasswordUpdate}
                 >
                   update password
                 </button>

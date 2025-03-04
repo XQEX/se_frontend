@@ -263,10 +263,11 @@ function FindEmp() {
     );
   };
 
-  const filteredJobs = sortJobs(filterJobs(jobs));
-  const indexOfLastJob = currentPage * itemsPerPage;
-  const indexOfFirstJob = indexOfLastJob - itemsPerPage;
-  const currentJobs = filteredJobs.slice(indexOfFirstJob, indexOfLastJob);
+  const filteredAndSortedJobs = sortJobs(filterJobs(jobs));
+  const currentJobs = filteredAndSortedJobs.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   return (
     <div className="min-h-screen flex flex-col font-kanit">
@@ -279,7 +280,7 @@ function FindEmp() {
         refetchCompany={refetchCompany}
         isStale={isStale}
         setUser={setUser}
-        userType={user?.type}
+        userType={user?.type || "EMPLOYER"}
         queryClient={queryClient}
       />
       <div className="flex flex-row flex-grow">
@@ -316,15 +317,16 @@ function FindEmp() {
                     workDays={job.workDates}
                     workHours={job.workHoursRange}
                     jobCategories={job.jobCategories}
+                    currentUserID={user?.id || ""}
                   />
                 </motion.div>
               ))
             )}
           </div>
-          {filteredJobs.length > itemsPerPage && (
+          {filteredAndSortedJobs.length > itemsPerPage && (
             <div className="flex items-center justify-center mt-6">
               <Pagination
-                total={Math.ceil(filteredJobs.length / itemsPerPage)}
+                total={Math.ceil(filteredAndSortedJobs.length / itemsPerPage)}
                 value={currentPage}
                 onChange={setCurrentPage}
                 classNames={{
