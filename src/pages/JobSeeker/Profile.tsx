@@ -21,7 +21,8 @@ import { AiOutlineFileSearch } from "react-icons/ai";
 import { MdAutoGraph } from "react-icons/md";
 import { ArticleCard } from "../../components/ArticleCard";
 import { MdWorkspacePremium } from "react-icons/md";
-import { getUserJobFindingPosts, updateUserProfile } from "../../api/JobSeeker";
+import { getUserJobFindingPosts, updateUserProfile } from "../../api/JobSeeker";;
+import { IconSearch, IconChartLine, IconPencil } from "@tabler/icons-react";
 
 function Profile() {
     const {
@@ -322,16 +323,38 @@ function Profile() {
                   </div>
                 </div>
               </div>
+              
 
-              <div className="mt-28 w-full flex justify-end">
-                <button 
-                  className="text-base bg-gray-600 text-white px-3 py-1 rounded-md hover:bg-gray-500 transition"
-                  onClick={editProfileToggle}
-                >
-                  Edit
-                </button>
-              </div>
 
+          <div className="mt-28 w-full flex justify-end space-x-4">
+            {/* ปุ่ม ค้นหางาน */}
+            <Link 
+              to="/find" 
+              className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition flex items-center space-x-2"
+            >
+              <IconSearch className="text-xl" />
+              <span>ค้นหางาน</span>
+            </Link>
+
+            {/* ปุ่ม ติดตามงาน */}
+            <Link 
+              to="/trackjobseeker" 
+              className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition flex items-center space-x-2"
+            >
+              <IconChartLine className="text-xl" />
+              <span>ติดตามงาน</span>
+            </Link>
+
+            {/* ปุ่ม Edit - */}
+            <button 
+              className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition flex items-center space-x-2 order-last"
+              onClick={editProfileToggle}
+            >
+              <IconPencil className="text-xl" />
+              <span>แก้ไข</span>
+            </button>
+          </div>
+          
               <Modal 
                 opened={editProfileOpened} 
                 onClose={editProfileClose} 
@@ -441,43 +464,6 @@ function Profile() {
             </section>
           )}
 
-          {/* Add Quick Action Buttons */}
-          <div className="bg-white rounded-lg shadow-md p-4 mt-6 flex justify-center space-x-4">
-            <Link 
-              to="/my-posts" 
-              className="flex-1 bg-seagreen/80 text-white px-4 py-3 rounded-lg hover:bg-seagreen transition text-center font-medium"
-            >
-              <div className="flex justify-center items-center">
-                <span className="mr-2 text-xl">
-                  <BsPostcardHeart />
-                </span>{" "}
-                โพสต์งานของฉัน
-              </div>
-            </Link>
-            <Link 
-              to="/find" 
-              className="flex-1 bg-seagreen/80 text-white px-4 py-3 rounded-lg hover:bg-seagreen transition text-center font-medium"
-            >
-              <div className="flex justify-center items-center">
-                <span className="mr-2 text-xl">
-                  <AiOutlineFileSearch />
-                </span>{" "}
-                ค้นหางาน
-              </div>
-            </Link>
-            <Link 
-              to="/trackjobseeker" 
-              className="flex-1 bg-seagreen/80 text-white px-4 py-3 rounded-lg hover:bg-seagreen transition text-center font-medium"
-            >
-              <div className="flex justify-center items-center">
-                <span className="mr-2 text-xl">
-                  <MdAutoGraph />
-                </span>{" "}
-                ติดตามงาน
-              </div>
-            </Link>
-          </div>
-
           <div className="mt-8 flex items-center space-x-4 border-b border-gray-200 pb-2">
             <button
               className={
@@ -538,6 +524,7 @@ function Profile() {
                     <p className="text-gray-700 mt-2">
                       Updated At: {new Date(post.updatedAt).toLocaleString()}
                     </p>
+                    
                     <div className="mt-4">
                       <h3 className="text-lg font-semibold">Skills</h3>
                       <ul className="list-disc list-inside">
@@ -575,7 +562,7 @@ function Profile() {
                     " Lorem ipsum dolor sit, amet consectetur adipisicing elit. Asperiores assumenda omnis sequi eveniet debitis autem at, a iure non beatae molestiae nobis in unde delectus quis reiciendis. Dicta, quidem deleniti!"
                   }
                   profileImage={"พิการ.jpg"}
-                  postOwner={"พิการ คุง"}
+                  postOwner={"John"}
                   postedTime={"3 minutes ago"}
                   liked={14}
                 />
