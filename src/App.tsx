@@ -5,7 +5,7 @@ import SignUpEmp from "./pages/Employers/SignUpEmp";
 import SignIn from "./pages/JobSeeker/SignIn";
 import ContactUs from "./pages/JobSeeker/ContactUs";
 import Profile from "./pages/JobSeeker/Profile";
-import Settings from "./pages/JobSeeker/Settings";
+
 import Awaitpls from "./pages/JobSeeker/Await";
 import Home from "./pages/JobSeeker/Home";
 import Find from "./pages/JobSeeker/Find";
@@ -30,7 +30,6 @@ import Terms from "./pages/Term";
 import ForgotPassword from "./pages/ForgotPassword";
 import ViewPostJobseeker from "./pages/JobSeeker/ViewPostJobseeker";
 import { useUser } from "./context/UserContext";
-import { Navigate, Outlet } from "react-router-dom";
 import AccessDenied from "./pages/AccessDenied";
 import Mission from "./pages/Mission";
 import FAQSection from "./pages/FAQ";

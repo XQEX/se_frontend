@@ -38,7 +38,6 @@ const sortOptions = [
   { value: "date_desc", label: "วันที่ลงประกาศ(ใหม่ไปเก่า)" },
 ];
 
-const experienceLevels = ["Entry", "Mid", "Senior"];
 
 // Interface Definitions
 interface JobCategory {
@@ -62,7 +61,6 @@ interface Job {
   jobPostType: string;
   skills: Skill[];
   createdAt: string;
-  experienceLevel: string;
 }
 
 interface Filters {
@@ -77,7 +75,6 @@ interface Filters {
   selectedWorkDays: string[];
   sortBy: string | null;
   sortOrder: "asc" | "desc";
-  selectedExperienceLevels: string[];
 }
 
 function Find() {
@@ -98,7 +95,6 @@ function Find() {
     selectedWorkDays: [],
     sortBy: null,
     sortOrder: "asc",
-    selectedExperienceLevels: [],
   });
 
   const {
@@ -136,7 +132,6 @@ function Find() {
           jobPostType: jobPost.jobPostType || "FULLTIME",
           skills: jobPost.skills || [],
           createdAt: jobPost.createdAt || new Date().toISOString(),
-          experienceLevel: jobPost.experienceLevel || "Entry",
         }));
         setJobs(jobPosts);
       } catch (error) {
@@ -217,9 +212,6 @@ function Find() {
         return selectedDays.some((day) => jobWorkDates === day);
       };
 
-      const matchesExperienceLevels =
-        filters.selectedExperienceLevels.length === 0 ||
-        filters.selectedExperienceLevels.includes(job.experienceLevel);
 
       console.log({
         jobId: job.id,
@@ -244,8 +236,7 @@ function Find() {
         matchesSalary &&
         matchesWorkHours() &&
         matchesLocations &&
-        matchesWorkDays() &&
-        matchesExperienceLevels
+        matchesWorkDays() 
       );
     });
   };
@@ -636,19 +627,7 @@ function Find() {
               className="kanit-regular"
             />
 
-            <Divider label="ประสบการณ์ทำงาน" labelPosition="center" my={4} />
-            <MultiSelect
-              data={experienceLevels}
-              label="ระดับประสบการณ์"
-              placeholder="เลือกระดับประสบการณ์"
-              value={filters.selectedExperienceLevels}
-              onChange={handleMultiSelectChange("selectedExperienceLevels")}
-              clearable
-              searchable
-              className="kanit-regular"
-            />
 
-            <Divider my={4} />
 
             <Group grow>
               <Select
