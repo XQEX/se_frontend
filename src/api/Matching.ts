@@ -52,6 +52,23 @@ interface UpdateMatchStatusResponse {
   };
   status: number;
 }
+interface UpdateFindingMatchStatusResponse {
+  success: boolean;
+  msg: string;
+  data?: {
+    id: string;
+    jobFindingPostId: string;
+    status: string;
+    jobHirerType: string;
+    employerId: string;
+    oauthEmployerId: string;
+    companyId: string;
+    createdAt: string;
+    approvedAt: string;
+    updatedAt: string;
+  };
+  status: number;
+}
 interface CreateFindingPostMatchResponse {
   success: boolean;
   msg: string;
@@ -86,39 +103,40 @@ interface GetFindingPostMatchResponse {
   };
   status: number;
 }
-interface UpdateFindingMatchStatusResponse {
-  success: boolean;
-  msg: string;
-  data?: {
-    id: string;
-    jobFindingPostId: string;
-    status: string;
-    jobHirerType: string;
-    employerId: string;
-    oauthEmployerId: string;
-    companyId: string;
-    createdAt: string;
-    approvedAt: string;
-    updatedAt: string;
-  };
-  status: number;
-}
 interface UserMatchingStatusResponse {
   success: boolean;
   msg: string;
   data: {
     hiringMatches: {
       id: string;
-      jobHiringPostId: string;
-      toMatchSeekers: {
-        jobSeekerType: string;
-        jobSeekerId: string;
-        oauthJobSeekerId: string;
-        jobHiringPostMatchedId: string;
-        status: string;
+      title: string;
+      description: string;
+      jobLocation: string;
+      salary: number; // เปลี่ยนเป็น number
+      workDates: string;
+      workHoursRange: string;
+      status: string;
+      hiredAmount: number;
+      jobPostType: string;
+      jobHirerType: string;
+      employerId: string;
+      createdAt: string;
+      updatedAt: string;
+      postMatched: {
+        id: string;
+        jobHiringPostId: string;
         createdAt: string;
-        approvedAt: string;
         updatedAt: string;
+        toMatchSeekers: {
+          jobSeekerType: string;
+          jobSeekerId: string;
+          oauthJobSeekerId: string | null;
+          jobHiringPostMatchedId: string;
+          status: string;
+          createdAt: string;
+          approvedAt: string | null;
+          updatedAt: string;
+        }[];
       }[];
     }[];
     findingMatches: {
@@ -127,14 +145,29 @@ interface UserMatchingStatusResponse {
       status: string;
       jobHirerType: string;
       employerId: string;
-      oauthEmployerId: string;
-      companyId: string;
+      oauthEmployerId: string | null;
+      companyId: string | null;
       createdAt: string;
-      approvedAt: string;
+      approvedAt: string | null;
       updatedAt: string;
+      toPost: {
+        id: string;
+        title: string;
+        description: string;
+        jobLocation: string;
+        expectedSalary: number;
+        workDates: string;
+        workHoursRange: string;
+        status: string;
+        jobPostType: string;
+        jobSeekerType: string;
+        jobSeekerId: string;
+        oauthJobSeekerId: string | null;
+        createdAt: string;
+        updatedAt: string;
+      };
     }[];
   };
-  status: number;
 }
 interface AdminMatchingStatusResponse {
   success: boolean;

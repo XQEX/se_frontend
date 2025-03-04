@@ -1,127 +1,83 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { NewNav } from "../../components/NewNav";
-import Lottie from "lottie-react";
-import Animation from "../../Animation/Job2.json";
+import { Navbar } from "../../components/Navbar";
 import { gsap } from "gsap";
 import { Link } from "react-router-dom";
 import { useUser } from "../../context/UserContext";
-import { getUserMatchingStatus } from "../../api/Matching";
 import {
-  FaBuilding,
-  FaSearch,
-  FaTrash,
-  FaInfoCircle,
-  FaChevronLeft,
-  FaChevronRight,
-} from "react-icons/fa";
-import { MdPendingActions, MdOutlineSchedule, MdDoneAll } from "react-icons/md";
+  getUserMatchingStatus,
+  updateFindingMatchStatus,
+} from "../../api/Matching";
 
-interface JobApplication {
-  id: number;
-  companyName: string;
-  status: string;
-  date: string;
-}
-
-interface UserMatchingStatusResponse {
-  success: boolean;
-  msg: string;
-  data: {
-    hiringMatches: {
-      id: string;
-      jobHiringPostId: string;
-      toMatchSeekers: {
-        jobSeekerType: string;
-        jobSeekerId: string;
-        oauthJobSeekerId: string;
-        jobHiringPostMatchedId: string;
-        status: string;
-        createdAt: string;
-        approvedAt: string;
-        updatedAt: string;
-      }[];
-    }[];
-    findingMatches: {
-      id: string;
-      jobFindingPostId: string;
-      status: string;
-      jobHirerType: string;
-      employerId: string;
-      oauthEmployerId: string;
-      companyId: string;
-      createdAt: string;
-      approvedAt: string;
-      updatedAt: string;
-    }[];
-  };
-  status: number;
-}
+type Status = "UNMATCHED" | "INPROGRESS" | "ACCEPTED" | "DENIED";
 
 function TrackJobSeeker() {
-  const [applications, setApplications] = useState<JobApplication[]>([
-    {
-      id: 1,
-      companyName: "บริษัท A",
-      status: "กำลังยื่นคำขอ",
-      date: "2025-01-14",
-    },
-    {
-      id: 2,
-      companyName: "บริษัท B",
-      status: "รอสัมภาษณ์",
-      date: "2025-02-01",
-    },
-    {
-      id: 3,
-      companyName: "บริษัท C",
-      status: "ยืนยันการรับสมัคร",
-      date: "2025-02-10",
-    },
-    {
-      id: 4,
-      companyName: "บริษัท D",
-      status: "กำลังยื่นคำขอ",
-      date: "2025-02-15",
-    },
-    {
-      id: 5,
-      companyName: "บริษัท E",
-      status: "รอสัมภาษณ์",
-      date: "2025-02-20",
-    },
-    {
-      id: 6,
-      companyName: "บริษัท F",
-      status: "ยืนยันการรับสมัคร",
-      date: "2025-02-25",
-    },
-    {
-      id: 7,
-      companyName: "บริษัท G",
-      status: "กำลังยื่นคำขอ",
-      date: "2025-03-01",
-    },
-    {
-      id: 8,
-      companyName: "บริษัท H",
-      status: "รอสัมภาษณ์",
-      date: "2025-03-05",
-    },
-    {
-      id: 9,
-      companyName: "บริษัท I",
-      status: "ยืนยันการรับสมัคร",
-      date: "2025-03-10",
-    },
-    {
-      id: 10,
-      companyName: "บริษัท J",
-      status: "กำลังยื่นคำขอ",
-      date: "2025-03-15",
-    },
-  ]);
+  const [hiringMatches, setHiringMatches] = useState<any[]>([]);
+  const [findingMatches, setFindingMatches] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const StatusBadge = ({
+    status,
+    small = false,
+  }: {
+    status: Status;
+    small?: boolean;
+  }) => {
+    const statusConfig = {
+      UNMATCHED: { color: "bg-gray-100 text-gray-800", text: "รอดำเนินการ" },
+      INPROGRESS: { color: "bg-blue-100 text-blue-800", text: "กำลังตรวจสอบ" },
+      ACCEPTED: { color: "bg-green-100 text-green-800", text: "รับแล้ว" },
+      DENIED: { color: "bg-red-100 text-red-800", text: "ปฏิเสธแล้ว" },
+    };
+
+    return (
+      <span
+        className={`${small ? "px-2 py-1 text-xs" : "px-3 py-1 text-sm"} 
+          rounded-full ${statusConfig[status].color}`}
+      >
+        {statusConfig[status].text}
+      </span>
+    );
+  };
+  const JobseekStatusBadge = ({
+    status,
+    small = false,
+  }: {
+    status: Status;
+    small?: boolean;
+  }) => {
+    const statusConfig = {
+      UNMATCHED: { color: "bg-gray-100 text-gray-800", text: "ยังไม่มีคนสนใจ" },
+      INPROGRESS: {
+        color: "bg-blue-100 text-blue-800",
+        text: "รอคุณดำเนินการ",
+      },
+      ACCEPTED: {
+        color: "bg-green-100 text-green-800",
+        text: "ยอมรับการยื่นขอรับเข้าทำงาน",
+      },
+      DENIED: {
+        color: "bg-red-100 text-red-800",
+        text: "ปฏิเสธการยื่นขอรับเข้าทำงานแล้ว",
+      },
+    };
+
+    return (
+      <span
+        className={`${small ? "px-2 py-1 text-xs" : "px-3 py-1 text-sm"} 
+          rounded-full ${statusConfig[status].color}`}
+      >
+        {statusConfig[status].text}
+      </span>
+    );
+  };
+
+  const NoDataMessage = ({ type }: { type: "hiring" | "finding" }) => (
+    <div className="p-4 text-center text-gray-500">
+      {type === "hiring" ? "ยังไม่มีประกาศงานของคุณ" : "ยังไม่มีการสมัครงาน"}
+    </div>
+  );
 
   const headingRef = useRef(null);
   const tableRef = useRef(null);
@@ -129,7 +85,7 @@ function TrackJobSeeker() {
 
   const {
     user,
-    isLoading,
+    isLoading: isUserLoading,
     refetchjobseeker,
     refetchemployer,
     refetchCompany,
@@ -139,50 +95,45 @@ function TrackJobSeeker() {
   } = useUser();
   const [isHaveUser, setIsHaveUser] = useState(false);
 
-  // Pagination State
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
-
-  // Calculate the current applications to display
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentApplications = applications.slice(
-    indexOfFirstItem,
-    indexOfLastItem
-  );
-
-  // Pagination function
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
-
-  // Calculate total pages
-  const totalPages = Math.ceil(applications.length / itemsPerPage);
-  const pageNumbers = Array.from(
-    { length: totalPages },
-    (_, index) => index + 1
-  );
-
-  const [matchingStatus, setMatchingStatus] =
-    useState<UserMatchingStatusResponse | null>(null);
-
   useEffect(() => {
     const fetchMatchingStatus = async () => {
       try {
         const status = await getUserMatchingStatus();
-        setMatchingStatus(status);
+        setHiringMatches(status.data.hiringMatches);
+        setFindingMatches(status.data.findingMatches);
       } catch (error) {
         console.error("Error fetching matching status:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchMatchingStatus();
   }, []);
 
+  const handleStatusChange = async (matchId: string, newStatus: string) => {
+    try {
+      await updateFindingMatchStatus(matchId, newStatus);
+      const updatedStatus = await getUserMatchingStatus();
+      setHiringMatches(updatedStatus.data.hiringMatches);
+      setFindingMatches(updatedStatus.data.findingMatches);
+    } catch (error) {
+      console.error("Error updating match status:", error);
+    }
+  };
+
+  const hasAcceptedMatch = findingMatches.some((match) =>
+    match.postMatched.some(
+      (post: { status: Status }) => post.status === "ACCEPTED"
+    )
+  );
+
   useEffect(() => {
     refetchjobseeker();
     refetchCompany();
     refetchemployer();
     setIsHaveUser(!!user);
-  }, [user, isLoading, isStale]);
+  }, [user, isUserLoading, isStale]);
 
   useEffect(() => {
     gsap.fromTo(
@@ -202,31 +153,11 @@ function TrackJobSeeker() {
     );
   }, []);
 
-  function handleDelete(id: number): void {
-    setApplications((prevApplications) =>
-      prevApplications.filter((app) => app.id !== id)
-    );
-  }
-
-  // Function to get status icon
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "กำลังยื่นคำขอ":
-        return <MdPendingActions className="text-yellow-500 inline mr-2" />;
-      case "รอสัมภาษณ์":
-        return <MdOutlineSchedule className="text-blue-500 inline mr-2" />;
-      case "ยืนยันการรับสมัคร":
-        return <MdDoneAll className="text-green-600 inline mr-2" />;
-      default:
-        return null;
-    }
-  };
-
   return (
     <div className="bg-gradient-to-b from-white to-green-50 min-h-screen">
       <NewNav
         user={user}
-        isLoading={isLoading}
+        isLoading={isUserLoading}
         isHaveUser={isHaveUser}
         refetchjobseeker={refetchjobseeker}
         refetchemployer={refetchemployer}
@@ -236,211 +167,264 @@ function TrackJobSeeker() {
         userType={user?.type}
         queryClient={queryClient}
       />
-
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex flex-col lg:flex-row gap-8 items-center kanit-regular">
-          {/* Left Content */}
-          <div className="w-full lg:w-2/3 space-y-8">
-            <div ref={headingRef} className="text-center lg:text-left">
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-emerald-700 mb-2">
-                ข้อมูลการสมัครงานทั้งหมดของคุณ
-              </h1>
-              <p className="text-emerald-600 text-lg">
-                ติดตามความคืบหน้าในการสมัครงานของคุณได้ที่นี่
-              </p>
+      <div className="min-h-screen flex flex-col md:flex-row bg-white text-[#2e8b57] justify-center items-center p-4 md:p-8">
+        <div className="flex flex-col items-center md:items-start text-center md:text-left kanit-light">
+          <div className="flex flex-row justify-end gap-auto">
+            <div
+              ref={headingRef}
+              className="text-3xl md:text-5xl font-bold mb-4 md:mb-6 text start"
+            >
+              ข้อมูลการสมัครงานทั้งหมดของคุณ
             </div>
+          </div>
 
-            {/* Applications Table */}
-            <div ref={tableRef} className="w-full">
-              <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="bg-emerald-700 text-white">
-                        <th className="py-3 px-4 text-left">
-                          <div className="flex items-center">
-                            <FaBuilding className="mr-2" />
-                            ชื่อบริษัท
-                          </div>
+          <div ref={tableRef} className="w-full text-gray-600 py-6 ">
+            {findingMatches.length === 0 ? (
+              <NoDataMessage type="finding" />
+            ) : (
+              <div>
+                <h2 className="text-2xl font-bold mb-4 mt-8">
+                  งานที่คุณกำลังค้นหา
+                </h2>
+                <div className=" overflow-x-auto max-h-[400px] mt-8 ">
+                  <table className="w-full text-left ">
+                    <thead className="bg-amber-200">
+                      <tr>
+                        <th className="p-3 border border-amber-100">
+                          ตำแหน่งที่ค้นหา
                         </th>
-                        <th className="py-3 px-4 text-left">สถานะการสมัคร</th>
-                        <th className="py-3 px-4 text-left">วันเวลา</th>
-                        <th className="py-3 px-4 text-center">รายละเอียด</th>
-                        <th className="py-3 px-4 text-center">ดำเนินการ</th>
+                        <th className="p-3 border border-amber-100">
+                          ข้อมูลในการยื่นสมัคร
+                        </th>
+                        <th className="p-3 border border-amber-100">
+                          เงินเดือนที่คาดหวัง
+                        </th>
+                        <th className="p-3 border border-amber-100">
+                          ผู้ว่าจ้าง (นายจ้าง , บริษัท)
+                        </th>
+
+                        <th className="p-3 border border-amber-100">
+                          วันที่สมัคร
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
-                      {currentApplications.map((app, index) => (
-                        <tr
-                          key={app.id}
-                          className={`border-b border-gray-200 hover:bg-emerald-50 transition-colors ${
-                            index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                          }`}
-                        >
-                          <td className="py-3 px-4 font-medium">
-                            {app.companyName}
+                      {findingMatches.map((match) => (
+                        <tr key={match.id} className="hover:bg-amber-50">
+                          {/* ตำแหน่งที่สมัคร */}
+                          <td className="p-3 border border-amber-100">
+                            <div className="text-xl text-gray-500 font-bold">
+                              ตำแหน่งงาน :
+                            </div>
+                            <div className="text-lg">{match.title}</div>
                           </td>
-                          <td className="py-3 px-4">
-                            <span
-                              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium ${
-                                app.status === "กำลังยื่นคำขอ"
-                                  ? "bg-yellow-100 text-yellow-800"
-                                  : app.status === "รอสัมภาษณ์"
-                                  ? "bg-blue-100 text-blue-800"
-                                  : "bg-green-100 text-green-800"
-                              }`}
-                            >
-                              {getStatusIcon(app.status)}
-                              {app.status}
-                            </span>
+                          {/* รายละเอียด */}
+                          <td className="p-3 border border-amber-100">
+                            <div className="text-sm text-gray-500">
+                              <div className=" px-3">
+                                <div className="font-bold">
+                                  คำอธิบายเพิ่มเติม:
+                                </div>
+                                <div>{match.description}</div>
+                                <div className="font-bold">สถานที่: </div>
+                                <div>{match.jobLocation}</div>
+                                <div className="font-bold">ช่วงเวลาทำงาน: </div>
+                                <div>{match.workHoursRange}</div>
+                                <div className="font-bold">ประเภทงาน: </div>
+                                <div>{match.jobPostType}</div>
+                                <div className="font-bold">วันที่ทำงาน: </div>
+                                <div>{match.workDates}</div>
+                              </div>
+                            </div>
                           </td>
-                          <td className="py-3 px-4 text-gray-600">
-                            {app.date}
+                          {/* เงินเดือน */}
+                          <td className="p-3 border border-amber-100">
+                            ฿{match.expectedSalary?.toLocaleString()}
                           </td>
-                          <td className="py-3 px-4 text-center">
-                            <Link
-                              to={`/trackJobseeker/${app.id}`}
-                              className="inline-flex items-center justify-center p-2 rounded-full bg-emerald-100 text-emerald-700 hover:bg-emerald-200 transition-colors"
-                              title="ดูรายละเอียด"
-                            >
-                              <FaInfoCircle />
-                              <span className="sr-only">รายละเอียด</span>
-                            </Link>
+                          {/* บริษัท */}
+                          <td className="p-3 border border-amber-100">
+                            {match.postMatched &&
+                            match.postMatched.length > 0 ? (
+                              <div>
+                                <div className="font-bold">
+                                  มีบริษัทดังต่อไปนี้กำลังสนใจคุณ
+                                </div>
+                                {match.postMatched.map(
+                                  (post: any, index: number) => (
+                                    <div
+                                      key={index}
+                                      className="flex flex-col items-center justify-center border border-gray-300 p-2 rounded-md mb-2"
+                                    >
+                                      <div className="font-bold">
+                                        ID ผู้ว่าจ้าง :
+                                      </div>
+
+                                      {post.employerId ??
+                                        post.oauthEmployerId ??
+                                        post.companyId}
+                                      <div className="font-bold">
+                                        Match Id :
+                                      </div>
+                                      <div>
+                                        {post.id}
+                                        <div>
+                                          <div className="font-bold">
+                                            สถานะ :
+                                          </div>
+                                          <JobseekStatusBadge
+                                            status={post.status}
+                                          />
+                                          {post.status === "INPROGRESS" && (
+                                            <div className="flex gap-2 mt-2">
+                                              {!hasAcceptedMatch && (
+                                                <div>
+                                                  <button
+                                                    className="bg-green-500 text-white px-3 py-1 rounded"
+                                                    onClick={() =>
+                                                      handleStatusChange(
+                                                        post.id,
+                                                        "ACCEPTED"
+                                                      )
+                                                    }
+                                                    disabled={hasAcceptedMatch}
+                                                    //  ลบอันนี้ถ้าอยากให้สามารถกดปุ่มซ้ำได้ ไม่ต้องมี hasAcceptanceMatch
+                                                  >
+                                                    Accept
+                                                  </button>
+                                                  <button
+                                                    className="bg-red-500 text-white px-3 py-1 rounded"
+                                                    onClick={() =>
+                                                      handleStatusChange(
+                                                        post.id,
+                                                        "DENIED"
+                                                      )
+                                                    }
+                                                    disabled={hasAcceptedMatch}
+                                                  >
+                                                    Reject
+                                                  </button>
+                                                </div>
+                                              )}
+                                            </div>
+                                          )}
+                                          <div></div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  )
+                                )}
+                              </div>
+                            ) : (
+                              <div>กำลังรอคนที่มาสนใจคุณ</div>
+                            )}
                           </td>
-                          <td className="py-3 px-4 text-center">
-                            <button
-                              onClick={() => handleDelete(app.id)}
-                              className="inline-flex items-center justify-center p-2 rounded-full bg-red-100 text-red-700 hover:bg-red-200 transition-colors"
-                              title="ลบรายการ"
-                            >
-                              <FaTrash />
-                              <span className="sr-only">ลบ</span>
-                            </button>
+
+                          <td className="p-3 border border-amber-100">
+                            {new Date(match.createdAt).toLocaleDateString(
+                              "th-TH"
+                            )}
                           </td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
-
-                {/* Pagination */}
-                <div className="flex items-center justify-between px-4 py-3 bg-gray-50 border-t border-gray-200">
-                  <div className="text-sm text-gray-700">
-                    แสดง{" "}
-                    <span className="font-medium">{indexOfFirstItem + 1}</span>{" "}
-                    ถึง{" "}
-                    <span className="font-medium">
-                      {Math.min(indexOfLastItem, applications.length)}
-                    </span>{" "}
-                    จากทั้งหมด{" "}
-                    <span className="font-medium">{applications.length}</span>{" "}
-                    รายการ
-                  </div>
-                  <div className="flex space-x-1">
-                    <button
-                      onClick={() =>
-                        currentPage > 1 && paginate(currentPage - 1)
-                      }
-                      disabled={currentPage === 1}
-                      className={`relative inline-flex items-center px-3 py-2 rounded-md ${
-                        currentPage === 1
-                          ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                          : "bg-white text-gray-700 hover:bg-emerald-50"
-                      } border border-gray-300`}
-                    >
-                      <FaChevronLeft className="h-4 w-4" />
-                    </button>
-                    {pageNumbers.map((number) => (
-                      <button
-                        key={number}
-                        onClick={() => paginate(number)}
-                        className={`relative inline-flex items-center px-4 py-2 border ${
-                          currentPage === number
-                            ? "bg-emerald-600 text-white border-emerald-600"
-                            : "bg-white text-gray-700 border-gray-300 hover:bg-emerald-50"
-                        } rounded-md`}
-                      >
-                        {number}
-                      </button>
-                    ))}
-                    <button
-                      onClick={() =>
-                        currentPage < totalPages && paginate(currentPage + 1)
-                      }
-                      disabled={currentPage === totalPages}
-                      className={`relative inline-flex items-center px-3 py-2 rounded-md ${
-                        currentPage === totalPages
-                          ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                          : "bg-white text-gray-700 hover:bg-emerald-50"
-                      } border border-gray-300`}
-                    >
-                      <FaChevronRight className="h-4 w-4" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Matching Status Section - Collapsible */}
-            {matchingStatus && (
-              <div className="bg-white rounded-xl shadow-lg p-6 overflow-hidden">
-                <details className="group">
-                  <summary className="flex justify-between items-center font-medium cursor-pointer list-none">
-                    <h2 className="text-xl font-bold text-emerald-700 flex items-center">
-                      <MdOutlineSchedule className="mr-2" />
-                      สถานะการจับคู่
-                    </h2>
-                    <span className="transition group-open:rotate-180">
-                      <svg
-                        fill="none"
-                        height="24"
-                        shapeRendering="geometricPrecision"
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="1.5"
-                        viewBox="0 0 24 24"
-                        width="24"
-                      >
-                        <path d="M6 9l6 6 6-6"></path>
-                      </svg>
-                    </span>
-                  </summary>
-                  <div className="mt-3 group-open:animate-fadeIn">
-                    <pre className="bg-gray-50 p-4 rounded-lg overflow-x-auto text-sm">
-                      {JSON.stringify(matchingStatus, null, 2)}
-                    </pre>
-                  </div>
-                </details>
               </div>
             )}
+            {hiringMatches.length === 0 ? (
+              <NoDataMessage type="hiring" />
+            ) : (
+              <div>
+                <h2 className="text-2xl font-bold mb-4 mt-8">
+                  โพสรับสมัครงานที่คุณกดสนใจ
+                </h2>
+                <div className="overflow-x-auto max-h-[400px] mt-8">
+                  <table className="w-full text-left border-collapse">
+                    <thead className="bg-emerald-200">
+                      <tr>
+                        <th className="p-3 border border-emerald-100">
+                          โพสของ
+                        </th>
+                        <th className="p-3 border border-emerald-100">
+                          ความสามารถที่นายจ้างต้องการ
+                        </th>
+                        <th className="p-3 border border-emerald-100">
+                          เงินเดือน และ สวัสดิการ
+                        </th>
+                        <th className="p-3 border border-emerald-100">สถานะ</th>
+                        <th className="p-3 border border-emerald-100">
+                          วันเวลาที่โพส
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {hiringMatches.map((post) => (
+                        <tr key={post.id} className="hover:bg-emerald-50">
+                          <td className="p-3 border border-emerald-100">
+                            <div className="font-semibold">
+                              {post.toPostMatched.toPost.employerId ??
+                                post.toPostMatched.toPost.oauthEmployerId ??
+                                post.toPostMatched.toPost.companyId}
+                            </div>
+                          </td>
+                          <td>
+                            <div className="text-sm text-gray-500">
+                              {/* คำอธิบายความสามารถที่บริษัทต้องการ */}
+                              <div>
+                                <strong>Title:</strong>
+                                {post.toPostMatched.toPost.title}
+                              </div>
+                              <div>
+                                <strong>Description:</strong>{" "}
+                                {post.toPostMatched.toPost.description}
+                              </div>
+                              <div>
+                                <strong>Job Location:</strong>{" "}
+                                {post.toPostMatched.toPost.jobLocation}
+                              </div>
 
-            {/* Find More Jobs Section */}
-            <div className="bg-gradient-to-r from-emerald-500 to-green-600 rounded-xl shadow-lg p-6 text-white">
-              <h2 className="text-2xl font-bold mb-4 flex items-center">
-                <FaSearch className="mr-2" />
-                ค้นหางานเพิ่มเติม
-              </h2>
-              <p className="mb-6">
-                ค้นหาโอกาสใหม่ๆ ที่เหมาะกับคุณและเริ่มต้นเส้นทางอาชีพที่ดีกว่า
-              </p>
-              <div className="flex justify-center">
-                <Link
-                  to="/find"
-                  className="inline-flex items-center px-6 py-3 bg-white text-emerald-700 font-semibold rounded-lg shadow-md hover:bg-emerald-50 transform hover:scale-105 transition-all duration-300"
-                >
-                  <FaSearch className="mr-2" />
-                  ไปยังหน้าค้นหางาน
-                </Link>
+                              <div>
+                                <strong>Work Dates:</strong>{" "}
+                                {post.toPostMatched.toPost.workDates}
+                              </div>
+                              <div>
+                                <strong>Work Hours Range:</strong>{" "}
+                                {post.toPostMatched.toPost.workHoursRange}
+                              </div>
+                              <div>
+                                <strong>Status:</strong>{" "}
+                                {post.toPostMatched.toPost.status}
+                              </div>
+                              <div>
+                                <strong>Hired Amount:</strong> 1
+                              </div>
+                              <div>
+                                <strong>Job Post Type:</strong> FULLTIME
+                              </div>
+                            </div>
+                          </td>
+
+                          <td className="p-3 border border-emerald-100">
+                            ฿{post.toPostMatched.toPost.salary.toLocaleString()}
+                          </td>
+                          <td className="p-3 border border-emerald-100">
+                            <StatusBadge
+                              status={post.toPostMatched.toPost.status}
+                            />
+                          </td>
+
+                          <td className="p-3 border border-emerald-100">
+                            {new Date(
+                              post.toPostMatched.toPost.updatedAt
+                            ).toLocaleDateString("th-TH")}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
-            </div>
-          </div>
-
-          {/* Right Content - Animation */}
-          <div ref={lottieRef} className="w-full lg:w-1/3 flex justify-center">
-            <div className="max-w-md">
-              <Lottie animationData={Animation} />
-            </div>
+            )}
           </div>
         </div>
       </div>
