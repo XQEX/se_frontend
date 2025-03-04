@@ -52,6 +52,23 @@ interface UpdateMatchStatusResponse {
   };
   status: number;
 }
+interface UpdateFindingMatchStatusResponse {
+  success: boolean;
+  msg: string;
+  data?: {
+    id: string;
+    jobFindingPostId: string;
+    status: string;
+    jobHirerType: string;
+    employerId: string;
+    oauthEmployerId: string;
+    companyId: string;
+    createdAt: string;
+    approvedAt: string;
+    updatedAt: string;
+  };
+  status: number;
+}
 interface CreateFindingPostMatchResponse {
   success: boolean;
   msg: string;
@@ -73,23 +90,6 @@ interface GetFindingPostMatchResponse {
   success: boolean;
   msg: string;
   data: {
-    id: string;
-    jobFindingPostId: string;
-    status: string;
-    jobHirerType: string;
-    employerId: string;
-    oauthEmployerId: string;
-    companyId: string;
-    createdAt: string;
-    approvedAt: string;
-    updatedAt: string;
-  };
-  status: number;
-}
-interface UpdateFindingMatchStatusResponse {
-  success: boolean;
-  msg: string;
-  data?: {
     id: string;
     jobFindingPostId: string;
     status: string;

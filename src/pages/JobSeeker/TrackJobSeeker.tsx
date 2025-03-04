@@ -3,7 +3,10 @@ import { Navbar } from "../../components/Navbar";
 import { gsap } from "gsap";
 import { Link } from "react-router-dom";
 import { useUser } from "../../context/UserContext";
-import { getUserMatchingStatus } from "../../api/Matching";
+import {
+  getUserMatchingStatus,
+  updateFindingMatchStatus,
+} from "../../api/Matching";
 
 type Status = "UNMATCHED" | "INPROGRESS" | "ACCEPTED" | "DENIED";
 
@@ -24,6 +27,38 @@ function TrackJobSeeker() {
       INPROGRESS: { color: "bg-blue-100 text-blue-800", text: "กำลังตรวจสอบ" },
       ACCEPTED: { color: "bg-green-100 text-green-800", text: "รับแล้ว" },
       DENIED: { color: "bg-red-100 text-red-800", text: "ปฏิเสธแล้ว" },
+    };
+
+    return (
+      <span
+        className={`${small ? "px-2 py-1 text-xs" : "px-3 py-1 text-sm"} 
+          rounded-full ${statusConfig[status].color}`}
+      >
+        {statusConfig[status].text}
+      </span>
+    );
+  };
+  const JobseekStatusBadge = ({
+    status,
+    small = false,
+  }: {
+    status: Status;
+    small?: boolean;
+  }) => {
+    const statusConfig = {
+      UNMATCHED: { color: "bg-gray-100 text-gray-800", text: "ยังไม่มีคนสนใจ" },
+      INPROGRESS: {
+        color: "bg-blue-100 text-blue-800",
+        text: "รอคุณดำเนินการ",
+      },
+      ACCEPTED: {
+        color: "bg-green-100 text-green-800",
+        text: "ยอมรับการยื่นขอรับเข้าทำงาน",
+      },
+      DENIED: {
+        color: "bg-red-100 text-red-800",
+        text: "ปฏิเสธการยื่นขอรับเข้าทำงานแล้ว",
+      },
     };
 
     return (
@@ -72,6 +107,23 @@ function TrackJobSeeker() {
 
     fetchMatchingStatus();
   }, []);
+
+  const handleStatusChange = async (matchId: string, newStatus: string) => {
+    try {
+      await updateFindingMatchStatus(matchId, newStatus);
+      const updatedStatus = await getUserMatchingStatus();
+      setHiringMatches(updatedStatus.data.hiringMatches);
+      setFindingMatches(updatedStatus.data.findingMatches);
+    } catch (error) {
+      console.error("Error updating match status:", error);
+    }
+  };
+
+  const hasAcceptedMatch = findingMatches.some((match) =>
+    match.postMatched.some(
+      (post: { status: Status }) => post.status === "ACCEPTED"
+    )
+  );
 
   useEffect(() => {
     refetchjobseeker();
@@ -140,12 +192,12 @@ function TrackJobSeeker() {
                           ข้อมูลในการยื่นสมัคร
                         </th>
                         <th className="p-3 border border-amber-100">
-                          ผู้ว่าจ้าง (นายจ้าง , บริษัท)
-                        </th>
-                        <th className="p-3 border border-amber-100">
                           เงินเดือนที่คาดหวัง
                         </th>
-                        <th className="p-3 border border-amber-100">สถานะ</th>
+                        <th className="p-3 border border-amber-100">
+                          ผู้ว่าจ้าง (นายจ้าง , บริษัท)
+                        </th>
+
                         <th className="p-3 border border-amber-100">
                           วันที่สมัคร
                         </th>
@@ -166,7 +218,7 @@ function TrackJobSeeker() {
                             <div className="text-sm text-gray-500">
                               <div className=" px-3">
                                 <div className="font-bold">
-                                  คำอธิบายเพิ่มเติม:{" "}
+                                  คำอธิบายเพิ่มเติม:
                                 </div>
                                 <div>{match.description}</div>
                                 <div className="font-bold">สถานที่: </div>
@@ -180,18 +232,79 @@ function TrackJobSeeker() {
                               </div>
                             </div>
                           </td>
+                          {/* เงินเดือน */}
+                          <td className="p-3 border border-amber-100">
+                            ฿{match.expectedSalary?.toLocaleString()}
+                          </td>
                           {/* บริษัท */}
                           <td className="p-3 border border-amber-100">
                             {match.postMatched &&
                             match.postMatched.length > 0 ? (
                               <div>
-                                <div>มีบริษัทสนใจคุณ</div>
+                                <div className="font-bold">
+                                  มีบริษัทดังต่อไปนี้กำลังสนใจคุณ
+                                </div>
                                 {match.postMatched.map(
                                   (post: any, index: number) => (
-                                    <div key={index}>
+                                    <div
+                                      key={index}
+                                      className="flex flex-col items-center justify-center border border-gray-300 p-2 rounded-md mb-2"
+                                    >
+                                      <div className="font-bold">
+                                        ID ผู้ว่าจ้าง :
+                                      </div>
+
                                       {post.employerId ??
                                         post.oauthEmployerId ??
                                         post.companyId}
+                                      <div className="font-bold">
+                                        Match Id :
+                                      </div>
+                                      <div>
+                                        {post.id}
+                                        <div>
+                                          <div className="font-bold">
+                                            สถานะ :
+                                          </div>
+                                          <JobseekStatusBadge
+                                            status={post.status}
+                                          />
+                                          {post.status === "INPROGRESS" && (
+                                            <div className="flex gap-2 mt-2">
+                                              {!hasAcceptedMatch && (
+                                                <div>
+                                                  <button
+                                                    className="bg-green-500 text-white px-3 py-1 rounded"
+                                                    onClick={() =>
+                                                      handleStatusChange(
+                                                        post.id,
+                                                        "ACCEPTED"
+                                                      )
+                                                    }
+                                                    disabled={hasAcceptedMatch}
+                                                    //  ลบอันนี้ถ้าอยากให้สามารถกดปุ่มซ้ำได้ ไม่ต้องมี hasAcceptanceMatch
+                                                  >
+                                                    Accept
+                                                  </button>
+                                                  <button
+                                                    className="bg-red-500 text-white px-3 py-1 rounded"
+                                                    onClick={() =>
+                                                      handleStatusChange(
+                                                        post.id,
+                                                        "DENIED"
+                                                      )
+                                                    }
+                                                    disabled={hasAcceptedMatch}
+                                                  >
+                                                    Reject
+                                                  </button>
+                                                </div>
+                                              )}
+                                            </div>
+                                          )}
+                                          <div></div>
+                                        </div>
+                                      </div>
                                     </div>
                                   )
                                 )}
@@ -200,21 +313,7 @@ function TrackJobSeeker() {
                               <div>กำลังรอคนที่มาสนใจคุณ</div>
                             )}
                           </td>
-                          {/* เงินเดือน */}
-                          <td className="p-3 border border-amber-100">
-                            ฿{match.expectedSalary?.toLocaleString()}
-                          </td>
-                          {/* สถานะ  */}
-                          {/* รอฝั่ง emp  อัพเดตสถานะให้เราเอง */}
-                          <td className="p-3 border border-amber-100">
-                            <StatusBadge status={match.status} />
-                            <div className="flex justify-center mt-8">
-                              <select>
-                                <option value="Accept">ยืนยัน</option>
-                                <option value="Reject">ปฏิเสธ</option>
-                              </select>
-                            </div>
-                          </td>
+
                           <td className="p-3 border border-amber-100">
                             {new Date(match.createdAt).toLocaleDateString(
                               "th-TH"

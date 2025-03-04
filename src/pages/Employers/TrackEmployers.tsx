@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Navbar } from "../../components/Navbar";
 import { gsap } from "gsap";
 import { useUser } from "../../context/UserContext";
-import { getUserMatchingStatus } from "../../api/Matching";
+import { getUserMatchingStatus, updateMatchStatus } from "../../api/Matching";
 
 type Status = "UNMATCHED" | "INPROGRESS" | "ACCEPTED" | "DENIED";
 
@@ -20,9 +20,50 @@ function TrackEmployers() {
   }) => {
     const statusConfig = {
       UNMATCHED: { color: "bg-gray-100 text-gray-800", text: "รอดำเนินการ" },
-      INPROGRESS: { color: "bg-blue-100 text-blue-800", text: "กำลังตรวจสอบ" },
-      ACCEPTED: { color: "bg-green-100 text-green-800", text: "รับแล้ว" },
-      DENIED: { color: "bg-red-100 text-red-800", text: "ปฏิเสธแล้ว" },
+      INPROGRESS: {
+        color: "bg-blue-100 text-blue-800",
+        text: "รอการตอบกลับข้อเสนอของคุณ",
+      },
+      ACCEPTED: {
+        color: "bg-green-100 text-green-800",
+        text: "พนักงานตอบรับคำเชิญของคุณ",
+      },
+      DENIED: {
+        color: "bg-red-100 text-red-800",
+        text: "ปฏิเสธการยื่นรับสมัคร",
+      },
+    };
+
+    return (
+      <span
+        className={`${small ? "px-2 py-1 text-xs" : "px-3 py-1 text-sm"} 
+          rounded-full ${statusConfig[status].color}`}
+      >
+        {statusConfig[status].text}
+      </span>
+    );
+  };
+  const EmpStatusBadge = ({
+    status,
+    small = false,
+  }: {
+    status: Status;
+    small?: boolean;
+  }) => {
+    const statusConfig = {
+      UNMATCHED: { color: "bg-gray-100 text-gray-800", text: "รอดำเนินการ" },
+      INPROGRESS: {
+        color: "bg-blue-100 text-blue-800",
+        text: "รอการตอบกลับข้อเสนอของคุasdasdasdณ",
+      },
+      ACCEPTED: {
+        color: "bg-green-100 text-green-800",
+        text: "พนักงานตอบรับคำเชิญของคุณ",
+      },
+      DENIED: {
+        color: "bg-red-100 text-red-800",
+        text: "ปฏิเสธการยื่นรับสมัคร",
+      },
     };
 
     return (
@@ -71,6 +112,17 @@ function TrackEmployers() {
 
     fetchMatchingStatus();
   }, []);
+
+  const handleStatusChange = async (matchId: string, newStatus: string) => {
+    try {
+      await updateMatchStatus(matchId, newStatus);
+      const updatedStatus = await getUserMatchingStatus();
+      setHiringMatches(updatedStatus.data.hiringMatches);
+      setFindingMatches(updatedStatus.data.findingMatches);
+    } catch (error) {
+      console.error("Error updating match status:", error);
+    }
+  };
 
   useEffect(() => {
     refetchjobseeker();
@@ -191,7 +243,7 @@ function TrackEmployers() {
                           </td>
 
                           <td className="p-3 border border-amber-100">
-                            <StatusBadge status={match.toPost.status} />
+                            <StatusBadge status={match.status} />
                           </td>
 
                           <td className="p-3 border border-amber-100">
@@ -266,32 +318,42 @@ function TrackEmployers() {
                                   (seeker: any, index: number) => (
                                     <div key={seeker.jobHiringPostMatchedId}>
                                       <div className="flex flex-col border-b border-emerald-400 p-3 text-center">
-                                        {index + 1}. ID:{" "}
+                                        {index + 1}. ID พนักงานที่สมัครเข้ามา:{" "}
                                         {seeker.jobSeekerId ||
                                           seeker.oauthJobSeekerId}
-                                        <StatusBadge status={seeker.status} />
+                                        <EmpStatusBadge
+                                          status={seeker.status}
+                                        />
                                         <button>
                                           แก้ไขสถานะขอผู้สมัคร :
-                                          {/* {seeker.jobSeekerId ?? 
-                                          seeker.oauthJobSeekerId}  ใช้ id พวกนี้ยิง api update สถานะ การสมัคร*/}
-                                          <select
-                                            name="updatejobseekstatus"
-                                            id="updatejobseekstatus"
-                                            className="text-center"
-                                          >
-                                            <option value="UNMATCHED">
-                                              รอดำเนินการ
-                                            </option>
-                                            <option value="INPROGRESS">
-                                              กำลังตรวจสอบ
-                                            </option>
-                                            <option value="ACCEPTED">
-                                              รับแล้ว
-                                            </option>
-                                            <option value="DENIED">
-                                              ปฏิเสธแล้ว
-                                            </option>
-                                          </select>
+                                          <div className="text-center">
+                                            <div className="gap-3">
+                                              <div className="flex justify-center gap-2 mt-2">
+                                                <button
+                                                  className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
+                                                  onClick={() =>
+                                                    handleStatusChange(
+                                                      seeker.jobHiringPostMatchedId,
+                                                      "ACCEPTED"
+                                                    )
+                                                  }
+                                                >
+                                                  ยอมรับ
+                                                </button>
+                                                <button
+                                                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                                                  onClick={() =>
+                                                    handleStatusChange(
+                                                      seeker.jobHiringPostMatchedId,
+                                                      "DENIED"
+                                                    )
+                                                  }
+                                                >
+                                                  ปฏิเสธ
+                                                </button>
+                                              </div>
+                                            </div>
+                                          </div>
                                         </button>
                                       </div>
                                     </div>
