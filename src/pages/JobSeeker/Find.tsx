@@ -3,7 +3,6 @@ import { useState, useEffect, useMemo, useCallback } from "react";
 import { motion } from "framer-motion";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { NewNav } from "../../components/NewNav";
-import Sidebar from "../../components/Sidebar";
 import JobCard from "../../components/JobCard";
 import Footer from "../../components/Footer";
 import {
@@ -24,6 +23,13 @@ import { useUser } from "../../context/UserContext";
 import { provinces } from "../../data/provinces";
 
 const jobTypes = ["FULLTIME", "PARTTIME", "FREELANCE"];
+const workDayOptions = [
+  "จันทร์ - ศุกร์",
+  "จันทร์ - เสาร์",
+  "จันทร์ - อาทิตย์",
+  "เสาร์ - อาทิตย์",
+  "อื่นๆ",
+];
 
 const sortOptions = [
   { value: "salary_asc", label: "เงินเดือน(น้อยไปมาก)" },
@@ -31,6 +37,7 @@ const sortOptions = [
   { value: "date_asc", label: "วันที่ลงประกาศ(เก่าไปใหม่)" },
   { value: "date_desc", label: "วันที่ลงประกาศ(ใหม่ไปเก่า)" },
 ];
+
 
 // Interface Definitions
 interface JobCategory {
@@ -66,7 +73,7 @@ interface Filters {
   endTime: string | null;
   selectedLocations: string[];
   selectedWorkDays: string[];
-  sortBy: string | null; // ❌ อาจไม่ตรงกับ Sidebar
+  sortBy: string | null;
   sortOrder: "asc" | "desc";
 }
 
@@ -74,6 +81,7 @@ function Find() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(9);
   const [jobs, setJobs] = useState<Job[]>([]);
+  const [opened, setOpened] = useState(false);
 
   const [filters, setFilters] = useState<Filters>({
     searchTerm: "",
@@ -100,7 +108,7 @@ function Find() {
     queryClient,
   } = useUser();
   const [isHaveUser, setIsHaveUser] = useState(false);
-  const [opened, setOpened] = useState(false);
+
   useEffect(() => {
     refetchjobseeker();
     refetchemployer();
@@ -108,11 +116,11 @@ function Find() {
     setIsHaveUser(!!user);
   }, [user, isLoading, isStale]);
 
-  // Fetch Jobs
   useEffect(() => {
     const fetchJobs = async () => {
       try {
         const response = await getAllJobPosts();
+        console.log("API Response:", response);
         const jobPosts = response.data.jobPosts.map((jobPost: any) => ({
           id: jobPost.id,
           title: jobPost.title,
@@ -121,7 +129,7 @@ function Find() {
           workDates: jobPost.workDates || "ไม่ระบุวันทำงาน",
           workHoursRange: jobPost.workHoursRange || "ไม่ระบุเวลา",
           jobCategories: jobPost.jobCategories || [],
-          jobPostType: jobPost.jobPostType || "Full-time",
+          jobPostType: jobPost.jobPostType || "FULLTIME",
           skills: jobPost.skills || [],
           createdAt: jobPost.createdAt || new Date().toISOString(),
         }));
@@ -148,9 +156,11 @@ function Find() {
           filters.selectedJobCategories.includes(cat.name)
         );
 
+      const normalizedJobType = job.jobPostType.toUpperCase().replace("_", "");
       const matchesJobTypes =
         filters.selectedJobTypes.length === 0 ||
-        filters.selectedJobTypes.includes(job.jobPostType);
+        filters.selectedJobTypes.length === jobTypes.length ||
+        filters.selectedJobTypes.includes(normalizedJobType);
 
       const matchesSkills =
         filters.selectedSkills.length === 0 ||
@@ -161,11 +171,12 @@ function Find() {
         job.expectedSalary <= filters.salaryRange[1];
 
       const matchesWorkHours = () => {
-        if (!filters.startTime || !filters.endTime) return true;
+        if (!filters.startTime || !filters.endTime || !job.workHoursRange)
+          return true;
 
         const parseTime = (timeStr: string) => {
           const [hours, minutes] = timeStr.split(":").map(Number);
-          return hours * 100 + minutes;
+          return hours * 60 + minutes;
         };
 
         try {
@@ -181,21 +192,41 @@ function Find() {
         }
       };
 
+      const normalizedLocation = job.jobLocation.includes("Bangkok")
+        ? "กรุงเทพมหานคร"
+        : job.jobLocation.replace("กรุงเทพ", "กรุงเทพมหานคร");
       const matchesLocations =
         filters.selectedLocations.length === 0 ||
-        filters.selectedLocations.includes(job.jobLocation);
+        filters.selectedLocations.some((location) =>
+          normalizedLocation.includes(location)
+        );
 
       const matchesWorkDays = () => {
         if (filters.selectedWorkDays.length === 0) return true;
 
-        const jobDays = job.workDates
-          .split("-")
-          .map((day) => day.trim())
-          .filter((day) => day !== "");
-        return filters.selectedWorkDays.every((selectedDay) =>
-          jobDays.includes(selectedDay)
-        );
+        const selectedDays = filters.selectedWorkDays;
+        if (selectedDays.includes("ทั้งหมด") || selectedDays.length === workDayOptions.length) return true;
+
+        const jobWorkDates = job.workDates.trim();
+
+        return selectedDays.some((day) => jobWorkDates === day);
       };
+
+
+      console.log({
+        jobId: job.id,
+        jobPostType: job.jobPostType,
+        normalizedJobType,
+        selectedJobTypes: filters.selectedJobTypes,
+        matchesJobTypes,
+        jobLocation: job.jobLocation,
+        normalizedLocation,
+        selectedLocations: filters.selectedLocations,
+        matchesLocations,
+        jobWorkDates: job.workDates,
+        selectedWorkDays: filters.selectedWorkDays,
+        matchesWorkDays: matchesWorkDays(),
+      });
 
       return (
         matchesSearch &&
@@ -205,12 +236,11 @@ function Find() {
         matchesSalary &&
         matchesWorkHours() &&
         matchesLocations &&
-        matchesWorkDays
+        matchesWorkDays() 
       );
     });
   };
 
-  // Sorting Logic
   const sortJobs = (jobs: Job[]): Job[] => {
     if (!filters.sortBy) return jobs;
 
@@ -220,46 +250,19 @@ function Find() {
           return filters.sortOrder === "asc"
             ? a.expectedSalary - b.expectedSalary
             : b.expectedSalary - a.expectedSalary;
-        // case 'date':
-        //   const dateA = new Date(a.createdAt).getTime();
-        //   const dateB = new Date(b.createdAt).getTime();
-        //   return filters.sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+        case "date": {
+          const dateA = new Date(a.createdAt).getTime();
+          const dateB = new Date(b.createdAt).getTime();
+          return filters.sortOrder === "asc" ? dateA - dateB : dateB - dateA;
+        }
         default:
           return 0;
       }
     });
   };
 
-  // Memoized Calculations
-  const filteredJobs = useMemo(
-    () => sortJobs(filterJobs(jobs)),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [jobs, filters]
-  );
+  const filteredJobs = useMemo(() => sortJobs(filterJobs(jobs)), [jobs, filters]);
 
-  // const jobCategories = useMemo(() =>
-  //   Array.from(
-  //     new Set(
-  //       jobs.flatMap(job =>
-  //         job.jobCategories.map(cat => cat.name)
-  //       )
-  //     ) // ปิด new Set และ Array.from
-  //   , // ใส่ comma ก่อน dependencies array
-  //   [jobs]
-  // );
-
-  // const skills = useMemo(() =>
-  //   Array.from(
-  //     new Set(
-  //       jobs.flatMap(job =>
-  //         job.skills.map(skill => skill.name)
-  //       )
-  //     ) // ปิด new Set และ Array.from
-  //   , // ใส่ comma ก่อน dependencies array
-  //   [jobs]
-  // );
-
-  // Pagination
   const indexOfLastJob = currentPage * itemsPerPage;
   const indexOfFirstJob = indexOfLastJob - itemsPerPage;
   const currentJobs = filteredJobs.slice(indexOfFirstJob, indexOfLastJob);
@@ -271,9 +274,16 @@ function Find() {
 
   const handleMultiSelectChange = useCallback(
     (field: keyof Filters) => (values: string[]) => {
+      console.log(`Field: ${field}, Values:`, values);
+      let newValues = values;
+      if (field === "selectedJobTypes" && values.includes("ทั้งหมด")) {
+        newValues = [...jobTypes];
+      } else if (field === "selectedWorkDays" && values.includes("ทั้งหมด")) {
+        newValues = [...workDayOptions];
+      }
       setFilters((prev) => ({
         ...prev,
-        [field]: values.includes("ทั้งหมด") ? [] : values,
+        [field]: newValues,
       }));
     },
     [setFilters]
@@ -311,14 +321,14 @@ function Find() {
             background: "linear-gradient(to right,#A7F3D0,seagreen",
           },
           thumb: {
-            backgroundColor: "#10B981", // สีหัวเลื่อน
+            backgroundColor: "#10B981",
             border: "3px solid white",
             width: "18px",
             height: "18px",
-            boxShadow: "0px 0px 5px rgba(0, 0, 0, 0.5)", // เพิ่มเงาให้ดูเด่น
+            boxShadow: "0px 0px 5px rgba(0, 0, 0, 0.5)",
           },
           markLabel: {
-            color: "black", // สีตัวเลขใกล้เคียงกับธีม,
+            color: "black",
             fontSize: "m",
           },
         }}
@@ -342,12 +352,130 @@ function Find() {
       />
 
       <div className="flex flex-row flex-grow">
-        <Sidebar
-          filters={filters}
-          setFilters={setFilters}
-          // jobCategories={jobCategories}
-          // skills={skills}
-        />
+        <Box className="bg-white shadow-md rounded-lg p-6 w-full max-w-sm hidden md:block">
+          <Stack>
+            <TextInput
+              className="kanit-regular"
+              placeholder="ค้นหาด้วยคำที่ใกล้เคียง..."
+              label="ค้นหา"
+              value={filters.searchTerm}
+              onChange={(e) =>
+                setFilters((prev) => ({ ...prev, searchTerm: e.target.value }))
+              }
+            />
+
+            <Divider label="ข้อมูลงาน" labelPosition="center" my={4} />
+
+            <MultiSelect
+              data={jobTypes}
+              label="ชนิดงาน"
+              placeholder="เลือกประเภทงาน"
+              value={filters.selectedJobTypes}
+              onChange={handleMultiSelectChange("selectedJobTypes")}
+              clearable
+              searchable
+              className="kanit-regular"
+            />
+
+            <Box>
+              <Text size="sm" className="kanit-regular">
+                เงินเดือน: ฿{filters.salaryRange[0].toLocaleString()} - ฿
+                {filters.salaryRange[1].toLocaleString()}
+              </Text>
+              <GreenSlider
+                value={filters.salaryRange}
+                onChange={(value) =>
+                  setFilters((prev) => ({ ...prev, salaryRange: value }))
+                }
+              />
+            </Box>
+
+            <Divider label="เวลาทำงาน" labelPosition="center" my={8} mt={16} />
+
+            <MultiSelect
+              data={workDayOptions}
+              label="วันทำงาน"
+              placeholder="เลือกวันทำงาน"
+              value={filters.selectedWorkDays}
+              onChange={handleMultiSelectChange("selectedWorkDays")}
+              clearable
+              searchable
+              className="kanit-regular"
+            />
+
+            <Group grow>
+              <Select
+                label="เวลาเริ่มงาน"
+                placeholder="เลือกเวลา"
+                data={workHours}
+                value={filters.startTime}
+                onChange={(value) =>
+                  setFilters((prev) => ({ ...prev, startTime: value }))
+                }
+                clearable
+                className="kanit-regular"
+              />
+              <Select
+                label="เวลาเลิกงาน"
+                placeholder="เลือกเวลา"
+                data={workHours}
+                value={filters.endTime}
+                onChange={(value) =>
+                  setFilters((prev) => ({ ...prev, endTime: value }))
+                }
+                clearable
+                className="kanit-regular"
+              />
+            </Group>
+
+
+
+            <Divider label="สถานที่ทำงาน" labelPosition="center" my={4} />
+
+            <MultiSelect
+              data={provinces}
+              label="สถานที่ทำงาน"
+              placeholder="เลือกสถานที่"
+              value={filters.selectedLocations}
+              onChange={handleMultiSelectChange("selectedLocations")}
+              clearable
+              searchable
+              className="kanit-regular"
+            />
+
+            <Divider my={4} />
+
+            <Group grow>
+              <Select
+                label="เรียงตาม"
+                placeholder="เลือกการเรียงลำดับ"
+                value={`${filters.sortBy}_${filters.sortOrder}`}
+                onChange={(value) => {
+                  if (value) {
+                    const [sortBy, sortOrder] = value.split("_") as [
+                      string,
+                      "asc" | "desc"
+                    ];
+                    setFilters((prev) => ({
+                      ...prev,
+                      sortBy,
+                      sortOrder,
+                    }));
+                  }
+                }}
+                data={sortOptions}
+                rightSection={
+                  filters.sortBy && (
+                    <span className="text-sm">
+                      {filters.sortOrder === "asc" ? "↑" : "↓"}
+                    </span>
+                  )
+                }
+                className="kanit-regular"
+              />
+            </Group>
+          </Stack>
+        </Box>
 
         <div className="w-full md:w-3/4 p-6">
           <div className="flex items-center justify-between mb-4">
@@ -381,9 +509,7 @@ function Find() {
                     salary={job.expectedSalary}
                     workDays={job.workDates}
                     workHours={job.workHoursRange}
-                    currentUserID={user?.id}
-                    // jobCategories={job.jobCategories}
-                    // skills={job.skills}
+                    currentUserID={user?.id || ""}
                   />
                 </motion.div>
               ))
@@ -428,7 +554,7 @@ function Find() {
             <Divider label="ข้อมูลงาน" labelPosition="center" my={4} />
 
             <MultiSelect
-              data={["ทั้งหมด", ...jobTypes]}
+              data={jobTypes}
               label="ชนิดงาน"
               placeholder="เลือกประเภทงาน"
               value={filters.selectedJobTypes}
@@ -452,6 +578,17 @@ function Find() {
             </Box>
 
             <Divider label="เวลาทำงาน" labelPosition="center" my={4} />
+
+            <MultiSelect
+              label="วันทำงาน"
+              placeholder="เลือกวันทำงาน"
+              data={workDayOptions}
+              value={filters.selectedWorkDays}
+              onChange={handleMultiSelectChange("selectedWorkDays")}
+              clearable
+              searchable
+              className="kanit-regular"
+            />
 
             <Group grow>
               <Select
@@ -478,19 +615,7 @@ function Find() {
               />
             </Group>
 
-            {/* <MultiSelect
-                  data={["ทั้งหมด", ...workDays]}
-                  label="วันทำงาน"
-                  placeholder="เลือกวันทำงาน"
-                  value={filters.selectedWorkDays}
-                  onChange={handleMultiSelectChange("selectedWorkDays")}
-                  clearable
-                  searchable
-                  className="kanit-regular"
-                /> */}
-
             <Divider label="สถานที่ทำงาน" labelPosition="center" my={4} />
-
             <MultiSelect
               data={provinces}
               label="สถานที่ทำงาน"
@@ -502,7 +627,7 @@ function Find() {
               className="kanit-regular"
             />
 
-            <Divider my={4} />
+
 
             <Group grow>
               <Select

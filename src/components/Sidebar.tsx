@@ -14,14 +14,10 @@ import {
 import { provinces } from "../data/provinces";
 
 const jobTypes = ["FULLTIME", "PARTTIME", "FREELANCE"];
-
-// const workDays = [
-//   "จันทร์-ศุกร์",
-//   "จันทร์-เสาร์",
-//   "จันทร์-อาทิตย์",
-//   "เสาร์-อาทิตย์",
-//   "อื่นๆ",
-// ];
+const workDays = [
+  { value: "จันทร์-ศุกร์", label: "จันทร์-ศุกร์" },
+  { value: "จันทร์-เสาร์", label: "จันทร์-เสาร์" },
+];
 
 const workHours = Array.from({ length: 48 }, (_, i) => ({
   value: `${Math.floor(i / 2)}:${i % 2 === 0 ? "00" : "30"}`,
@@ -47,7 +43,6 @@ interface SidebarProps {
   setFilters: React.Dispatch<React.SetStateAction<Filters>>;
 }
 
-// ฟังก์ชัน RangeSlider ที่มีสีเขียวแบบ Gradient
 const GreenSlider = ({
   value,
   onChange,
@@ -80,15 +75,15 @@ const GreenSlider = ({
           background: "linear-gradient(to right,#A7F3D0,seagreen",
         },
         thumb: {
-          backgroundColor: "#10B981", // สีหัวเลื่อน
+          backgroundColor: "#10B981",
           border: "3px solid white",
           width: "18px",
           height: "18px",
-          boxShadow: "0px 0px 5px rgba(0, 0, 0, 0.5)", // เพิ่มเงาให้ดูเด่น
+          boxShadow: "0px 0px 5px rgba(0, 0, 0, 0.5)",
         },
         markLabel: {
-          color: "black", // สีตัวเลขใกล้เคียงกับธีม,
-          fontSize:"m",
+          color: "black",
+          fontSize: "m",
         },
       }}
     />
@@ -129,7 +124,7 @@ function Sidebar({ filters, setFilters }: SidebarProps) {
         <Divider label="ข้อมูลงาน" labelPosition="center" my={4} />
 
         <MultiSelect
-          data={["ทั้งหมด", ...jobTypes]}
+          data={jobTypes}
           label="ชนิดงาน"
           placeholder="เลือกประเภทงาน"
           value={filters.selectedJobTypes}
@@ -160,7 +155,9 @@ function Sidebar({ filters, setFilters }: SidebarProps) {
             placeholder="เลือกเวลา"
             data={workHours}
             value={filters.startTime}
-            onChange={(value) => setFilters((prev) => ({ ...prev, startTime: value }))}
+            onChange={(value) =>
+              setFilters((prev) => ({ ...prev, startTime: value }))
+            }
             clearable
             className="kanit-regular"
           />
@@ -169,14 +166,16 @@ function Sidebar({ filters, setFilters }: SidebarProps) {
             placeholder="เลือกเวลา"
             data={workHours}
             value={filters.endTime}
-            onChange={(value) => setFilters((prev) => ({ ...prev, endTime: value }))}
+            onChange={(value) =>
+              setFilters((prev) => ({ ...prev, endTime: value }))
+            }
             clearable
             className="kanit-regular"
           />
         </Group>
 
-        {/* <MultiSelect
-          data={["ทั้งหมด", ...workDays]}
+        <MultiSelect
+          data={workDays}
           label="วันทำงาน"
           placeholder="เลือกวันทำงาน"
           value={filters.selectedWorkDays}
@@ -184,7 +183,7 @@ function Sidebar({ filters, setFilters }: SidebarProps) {
           clearable
           searchable
           className="kanit-regular"
-        /> */}
+        />
 
         <Divider label="สถานที่ทำงาน" labelPosition="center" my={4} />
 
@@ -208,7 +207,10 @@ function Sidebar({ filters, setFilters }: SidebarProps) {
             value={`${filters.sortBy}_${filters.sortOrder}`}
             onChange={(value) => {
               if (value) {
-                const [sortBy, sortOrder] = value.split("_") as [string, "asc" | "desc"];
+                const [sortBy, sortOrder] = value.split("_") as [
+                  string,
+                  "asc" | "desc"
+                ];
                 setFilters((prev) => ({
                   ...prev,
                   sortBy,
@@ -218,7 +220,11 @@ function Sidebar({ filters, setFilters }: SidebarProps) {
             }}
             data={sortOptions}
             rightSection={
-              filters.sortBy && <span className="text-sm">{filters.sortOrder === "asc" ? "↑" : "↓"}</span>
+              filters.sortBy && (
+                <span className="text-sm">
+                  {filters.sortOrder === "asc" ? "↑" : "↓"}
+                </span>
+              )
             }
             className="kanit-regular"
           />
