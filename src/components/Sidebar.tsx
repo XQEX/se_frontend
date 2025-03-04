@@ -15,7 +15,6 @@ import { provinces } from "../data/provinces";
 
 const jobTypes = ["FULLTIME", "PARTTIME", "FREELANCE"];
 const workDays = [
-  { value: "ทั้งหมด", label: "ทั้งหมด" },
   { value: "จันทร์-ศุกร์", label: "จันทร์-ศุกร์" },
   { value: "จันทร์-เสาร์", label: "จันทร์-เสาร์" },
 ];
@@ -125,7 +124,7 @@ function Sidebar({ filters, setFilters }: SidebarProps) {
         <Divider label="ข้อมูลงาน" labelPosition="center" my={4} />
 
         <MultiSelect
-          data={["ทั้งหมด", ...jobTypes]}
+          data={jobTypes}
           label="ชนิดงาน"
           placeholder="เลือกประเภทงาน"
           value={filters.selectedJobTypes}
@@ -175,17 +174,12 @@ function Sidebar({ filters, setFilters }: SidebarProps) {
           />
         </Group>
 
-        <Select
+        <MultiSelect
+          data={workDays}
           label="วันทำงาน"
           placeholder="เลือกวันทำงาน"
-          data={workDays}
-          value={filters.selectedWorkDays[0] || "ทั้งหมด"}
-          onChange={(value) =>
-            setFilters((prev) => ({
-              ...prev,
-              selectedWorkDays: value ? [value] : [],
-            }))
-          }
+          value={filters.selectedWorkDays}
+          onChange={handleMultiSelectChange("selectedWorkDays")}
           clearable
           searchable
           className="kanit-regular"
