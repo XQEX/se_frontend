@@ -116,6 +116,14 @@ export const NewNav: React.FC<NavbarProps> = ({
     loadNotifications();
   }, [user]); // Add `user` as dependency
 
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      loadNotifications();
+    }, 3000); // Fetch notifications every 3 seconds
+
+    return () => clearInterval(intervalId); // Cleanup interval on component unmount
+  }, [user]); // Add `user` as dependency
+
   // Helper function for toast messages
   const notifyError = (message: string) =>
     toast.error(message, { position: "top-center" });
