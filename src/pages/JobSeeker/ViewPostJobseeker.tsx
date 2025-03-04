@@ -2,18 +2,18 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { NewNav } from "../../components/NewNav";
 import Footer from "../../components/Footer";
-import { updateJobPostById } from "../../api/EmployerAndCompany";
 import { useUser } from "../../context/UserContext";
 import { MultiSelect } from "@mantine/core";
 import { provinces } from "../../data/provinces";
 import { getAllSkills } from "../../api/Skills";
 import { getAllCategories } from "../../api/JobCategories";
+import { updateJobFindingPost } from "../../api/JobSeeker";
 
 interface Job {
   id: number;
   title: string;
   jobLocation: string;
-  salary: number;
+  expectedSalary: number;
   workDates: string;
   workHoursRange: string;
   description: string;
@@ -23,7 +23,7 @@ interface Job {
   jobCategories: { id: string; name: string; description: string }[];
 }
 
-const ViewPostEmployers: React.FC = () => {
+const ViewPostJobseeker: React.FC = () => {
   const {
     user,
     isLoading,
@@ -39,6 +39,9 @@ const ViewPostEmployers: React.FC = () => {
   const [jobCategories, setJobCategories] = useState<any[]>([]);
 
   useEffect(() => {
+    refetchjobseeker();
+    refetchCompany();
+    refetchemployer();
     setIsHaveUser(!!user);
     console.log(job);
   }, [user, isLoading, isStale]);
@@ -67,12 +70,7 @@ const ViewPostEmployers: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const job: Job | undefined = location.state?.job;
-
-  console.log(location.state?.job);
-
-  // The data in localStorage.getItem("jobs_emp") is likely set elsewhere in the application
-  // using localStorage.setItem("jobs_emp", JSON.stringify(jobsData)).
+  const job: Job | undefined = location.state?.post;
 
   const [isEditing, setIsEditing] = useState(false);
   const [editedJob, setEditedJob] = useState<Job | undefined>(job);
@@ -148,15 +146,15 @@ const ViewPostEmployers: React.FC = () => {
   const handleConfirmClick = async () => {
     if (editedJob) {
       try {
-        await updateJobPostById(id as any, {
+        await updateJobFindingPost(id as any, {
           title: editedJob.title,
           description: editedJob.description,
           jobLocation: editedJob.jobLocation,
-          salary: Number(editedJob.salary),
+          expectedSalary: editedJob.expectedSalary,
           workDates: editedJob.workDates,
           workHoursRange: `${startTime} - ${endTime}`,
-          hiredAmount: 1, // Assuming a default value
           jobPostType: "FULLTIME", // Assuming a default value
+          jobSeekerType: "NORMAL",
           skills: editedJob.skills.map((skill) => skill.id),
           jobCategories: editedJob.jobCategories.map((cat) => cat.id),
         });
@@ -182,32 +180,24 @@ const ViewPostEmployers: React.FC = () => {
 
   if (!job) {
     return (
-      <div className="bg-white min-h-screen kanit-regular flex flex-col justify-between">
-        <div>
-          <NewNav
-            user={user}
-            isLoading={isLoading}
-            isHaveUser={isHaveUser}
-            refetchjobseeker={refetchjobseeker}
-            refetchemployer={refetchemployer}
-            refetchCompany={refetchCompany}
-            isStale={isStale}
-            setUser={setUser}
-            userType={user?.type}
-            queryClient={queryClient}
-          />
-          <div className="flex flex-col items-center">
-            <h1 className="mt-12  text-2xl font-bold text-red-500">
-              ❌ ไม่พบข้อมูลงาน
-            </h1>
-            <button
-              className="mt-6 px-6 py-2 bg-seagreen text-white rounded-md shadow-sm hover:bg-[#246e4a] transition text-base"
-              onClick={() => navigate("/homeemp")}
-            >
-              กลับไปหน้าหลัก
-            </button>
-          </div>
-        </div>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 font-kanit">
+        <NewNav
+          user={user}
+          isLoading={isLoading}
+          isHaveUser={isHaveUser}
+          refetchjobseeker={refetchjobseeker}
+          refetchemployer={refetchemployer}
+          refetchCompany={refetchCompany}
+          isStale={isStale}
+          setUser={setUser}
+        />
+        <h1 className="text-2xl font-bold text-red-500">❌ ไม่พบข้อมูลงาน</h1>
+        <button
+          className="mt-6 px-6 py-2 bg-seagreen text-white rounded-md shadow-sm hover:bg-[#246e4a] transition text-base"
+          onClick={() => navigate("/homeemp")}
+        >
+          กลับไปหน้าหลัก
+        </button>
         <Footer />
       </div>
     );
@@ -253,18 +243,18 @@ const ViewPostEmployers: React.FC = () => {
               )}
             </p>
             <p className="text-gray-700 text-base">
-              <strong>💰 เงินเดือน:</strong>{" "}
+              <strong>💰 เงินเดือนที่คาดหวัง:</strong>{" "}
               {isEditing ? (
                 <input
                   step={1000}
                   type="number"
                   name="salary"
-                  value={editedJob?.salary}
+                  value={editedJob?.expectedSalary}
                   onChange={handleInputChange}
                   className="w-full p-2 border rounded-md"
                 />
               ) : (
-                `฿${job.salary.toLocaleString()} บาท`
+                `฿${job.expectedSalary.toLocaleString()} บาท`
               )}
             </p>
             <p className="text-gray-700 text-base">
@@ -418,4 +408,4 @@ const ViewPostEmployers: React.FC = () => {
   );
 };
 
-export default ViewPostEmployers;
+export default ViewPostJobseeker;

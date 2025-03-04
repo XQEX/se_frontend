@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Navbar } from "../../components/Navbar";
+import { NewNav } from "../../components/NewNav";
 import { motion } from "framer-motion";
 import { useUser } from "../../context/UserContext";
 import { Link } from "react-router-dom";
@@ -13,38 +13,43 @@ import { FaPhoneAlt } from "react-icons/fa";
 import { FaAddressBook } from "react-icons/fa6";
 import { TextInput } from "@mantine/core";
 import { MdWork } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 import { RiUserFollowFill } from "react-icons/ri";
 import { FaHeart } from "react-icons/fa6";
 import { SkillCardGradient } from "../../components/SkillCardGradient";
+import { ToastContainer, toast } from "react-toastify";
 import { BsPostcardHeart } from "react-icons/bs";
 import { AiOutlineFileSearch } from "react-icons/ai";
 import { MdAutoGraph } from "react-icons/md";
 import { ArticleCard } from "../../components/ArticleCard";
 import { MdWorkspacePremium } from "react-icons/md";
-import { getUserJobFindingPosts, updateUserProfile } from "../../api/JobSeeker";;
-import { IconSearch, IconChartLine, IconPencil } from "@tabler/icons-react";
+import { getUserJobFindingPosts, updateUserProfile } from "../../api/JobSeeker";
 
 function Profile() {
-    const {
-       user,
-       isLoading,
-       refetchjobseeker,
-       refetchemployer,
-       refetchCompany,
-       isStale,
-       setUser,
-     } = useUser();
-     const [isHaveUser, setIsHaveUser] = useState(false);
-     useEffect(() => {
-       refetchjobseeker();
-       refetchCompany();
-       refetchemployer();
-       // console.log("current user:", user);
-       // console.log("isLoading:", isLoading);
-       // console.log("isHaveUser :", isHaveUser);
-       // console.log("isStale :", isStale);
-       setIsHaveUser(!!user);
-     }, [user, isLoading, isStale]);
+  const navigate = useNavigate();
+  // Helper function for toast messages
+  const notifyError = (message: string) =>
+    toast.error(message, { position: "top-center" });
+  const notifySuccess = (message: string) =>
+    toast.success(message, { position: "top-center" });
+
+  const {
+    user,
+    isLoading,
+    refetchjobseeker,
+    refetchemployer,
+    refetchCompany,
+    isStale,
+    setUser,
+    queryClient,
+  } = useUser();
+  const [isHaveUser, setIsHaveUser] = useState(false);
+  useEffect(() => {
+    refetchjobseeker();
+    refetchCompany();
+    refetchemployer();
+    setIsHaveUser(!!user);
+  }, [user, isLoading, isStale]);
   // Track which tab is active; default is "work"
   const [activeTab, setActiveTab] = React.useState("work");
 
@@ -80,6 +85,12 @@ function Profile() {
   const [aboutMeError, setAboutMeError] = useState<string>("");
   const [addressError, setAddressError] = useState<string>("");
   const [userPosts, setUserPosts] = useState<any[]>([]);
+  const [userNameValue, setuserNameValue] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [confirmpassword, setConfirmPassword] = useState<string>("");
+  const [newPassword, setNewPassword] = useState<string>("");
+  const [password2, setPassword2] = useState<string>("");
+  const [confirmpassword2, setConfirmPassword2] = useState<string>("");
 
   useEffect(() => {
     const fetchUserPost = async () => {
@@ -89,15 +100,14 @@ function Profile() {
       } catch (error) {}
     };
     fetchUserPost();
-    console.log("userPosts:", userPosts);
 
     setFirstNameValue(user.firstName);
     setLastNameValue(user.lastName);
     setAboutMeValue(user.aboutMe);
     setAddressValue(user.address);
     setEmailValue(user.email);
-    const [_, phoneNumber] = user.contact.split("+66");
-    setPhoneNumberValue(phoneNumber);
+    setuserNameValue(user.username);
+    setPhoneNumberValue(user.contact);
 
     setFirstNameError("");
     setLastNameError("");
@@ -121,18 +131,21 @@ function Profile() {
     if (firstNameValue == "") {
       isValidateFirstName = false;
       setFirstNameError("Please enter your first name");
+      notifyError("Please enter your first name");
     }
 
     // last name validation
     if (lastNameValue == "") {
       isValidateLastName = false;
       setLastNameError("Please enter your last name");
+      notifyError("Please enter your last name");
     }
 
     // address validation
     if (addressValue == "") {
       isValidateAddress = false;
       setAddressError("Please enter your address");
+      notifyError("Please enter your address");
     }
 
     return (
@@ -156,17 +169,74 @@ function Profile() {
           contact: phoneNumberValue,
         };
         await updateUserProfile(updatedUser);
-        console.log("Profile updated successfully");
+        notifySuccess("Profile updated successfully");
         // Optionally, refetch user data here
+        refetchjobseeker();
       } catch (error) {
-        console.error("Failed to update profile:", error);
+        notifyError(error as string);
       }
+    }
+  };
+
+  const onUserConfirmEditUsername = async () => {
+    if (password !== confirmpassword) {
+      notifyError("Passwords do not match");
+      return;
+    }
+    try {
+      const response = await updateJobSeekerUsername(userNameValue, password);
+      console.log("response:", response);
+      // if (response.data.error) {
+      //   notifyError(response.data.error);
+      //   return;
+      // }
+      notifySuccess("username updated successfully");
+
+      refetchjobseeker();
+      console.log("refetchjobseeker");
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        notifyError((error as AxiosError).response.data.msg);
+      } else {
+        notifyError(error as string);
+      }
+    }
+  };
+
+  const onUserConfirmEditPassword = async () => {
+    if (password2 !== confirmpassword2) {
+      notifyError("Passwords do not match");
+      return;
+    }
+    try {
+      await updateJobSeekerPassword(newPassword, password2);
+      notifySuccess("Passwords updated successfully");
+
+      refetchjobseeker();
+      console.log("refetchjobseeker");
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        notifyError((error as AxiosError).response.data.msg);
+      } else {
+        notifyError(error as string);
+      }
+    }
+  };
+
+  const handleDeletePost = async (postId: string) => {
+    try {
+      await deleteJobFindingPost(postId);
+      setUserPosts(userPosts.filter((post) => post.id !== postId));
+      console.log("Post deleted successfully");
+    } catch (error) {
+      console.error("Failed to delete post:", error);
     }
   };
 
   return (
     <div>
-      <Navbar
+      <ToastContainer />
+      <NewNav
         user={user}
         isLoading={isLoading}
         isHaveUser={isHaveUser}
@@ -175,6 +245,8 @@ function Profile() {
         refetchCompany={refetchCompany}
         isStale={isStale}
         setUser={setUser}
+        userType={user?.type}
+        queryClient={queryClient}
       />
 
       {user?.type === "JOBSEEKER" ? (
@@ -193,22 +265,26 @@ function Profile() {
           <div className="bg-white rounded-lg shadow-md p-4 md:p-6 -mt-20 flex flex-col md:flex-row items-center md:items-start">
             <div className="w-48 h-48 rounded-3xl overflow-hidden border-4 border-white shadow-md">
               <img
-                src="พิการ.jpg"
+                src={
+                  user.profilePicture !== "UNDEFINED"
+                    ? user.profilePicture
+                    : "พิการ.jpg"
+                }
                 alt="Profile photo"
                 className="object-cover w-full h-full"
               />
 
-              <div 
+              <div
                 className="absolute top-7 left-[202px] rounded-3xl p-[6px] z-10 cursor-pointer"
                 onClick={profileDropzoneToggle}
               >
                 <div className="absolute text-base rounded-3xl p-[6px] z-10">
                   <span className="absolute left-0 top-0 w-full h-full bg-white rounded-3xl opacity-70"></span>
-                  <RiPencilFill className="opacity-0"/>
+                  <RiPencilFill className="opacity-0" />
                 </div>
 
                 <div className="absolute text-lg rounded-3xl p-[6px] z-30">
-                  <RiPencilFill/>
+                  <RiPencilFill />
                 </div>
               </div>
             </div>
@@ -224,12 +300,14 @@ function Profile() {
                     userId={user.id}
                     bucketName={"employer"}
                     prefixPath={"profile"}
+                    userType={user.type}
                   />
                 ) : (
                   <ImageDropzoneButton
                     userId={user.id}
                     bucketName={"job-seeker"}
                     prefixPath={"profile"}
+                    userType={user.type}
                   />
                 )
               ) : (
@@ -238,16 +316,16 @@ function Profile() {
             </Modal>
 
             <div className="mt-4 md:mt-0 md:ml-6 md:mr-3 flex-1">
-              <div 
-                  className={`
+              <div
+                className={`
                     flex items-center rounded-lg
                     ${style["jobseeker-name-container"]}
                   `}
-                >
+              >
                 <h1 className="text-xl md:text-2xl font-semibold mr-2 pl-3">
                   {user.firstName} {user.lastName}
                 </h1>
-                
+
                 <p className="text-gray-600 mt-1 text-sm md:text-base">
                   ({user.aboutMe})
                 </p>
@@ -283,7 +361,7 @@ function Profile() {
                   </span>
                   : {user.email}
                 </div>
-                
+
                 <div className="flex items-center text-sm md:text-base mt-2 text-gray-700">
                   <span className="mr-2">
                     <FaPhoneAlt color="#4a5568" />
@@ -323,38 +401,16 @@ function Profile() {
                   </div>
                 </div>
               </div>
-              
 
+              <div className="mt-28 w-full flex justify-end">
+                <button 
+                  className="text-base bg-gray-600 text-white px-3 py-1 rounded-md hover:bg-gray-500 transition"
+                  onClick={editProfileToggle}
+                >
+                  Edit
+                </button>
+              </div>
 
-          <div className="mt-28 w-full flex justify-end space-x-4">
-            {/* ปุ่ม ค้นหางาน */}
-            <Link 
-              to="/find" 
-              className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition flex items-center space-x-2"
-            >
-              <IconSearch className="text-xl" />
-              <span>ค้นหางาน</span>
-            </Link>
-
-            {/* ปุ่ม ติดตามงาน */}
-            <Link 
-              to="/trackjobseeker" 
-              className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition flex items-center space-x-2"
-            >
-              <IconChartLine className="text-xl" />
-              <span>ติดตามงาน</span>
-            </Link>
-
-            {/* ปุ่ม Edit - */}
-            <button 
-              className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition flex items-center space-x-2 order-last"
-              onClick={editProfileToggle}
-            >
-              <IconPencil className="text-xl" />
-              <span>แก้ไข</span>
-            </button>
-          </div>
-          
               <Modal 
                 opened={editProfileOpened} 
                 onClose={editProfileClose} 
@@ -365,6 +421,78 @@ function Profile() {
                   },
                 }}
               >
+                <TextInput
+                  mt="md"
+                  label="username"
+                  placeholder="your username"
+                  required
+                  inputWrapperOrder={["label", "input", "error"]}
+                  value={userNameValue}
+                  onChange={(event) => setuserNameValue(event.target.value)}
+                />
+
+                <TextInput
+                  mt="md"
+                  label="password"
+                  placeholder="password for changing username"
+                  required
+                  inputWrapperOrder={["label", "input", "error"]}
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                />
+
+                <TextInput
+                  mt="md"
+                  label="confirmpassword"
+                  placeholder="confirm your password"
+                  required
+                  inputWrapperOrder={["label", "input", "error"]}
+                  value={confirmpassword}
+                  onChange={(event) => setConfirmPassword(event.target.value)}
+                />
+                <button
+                  className="text-base bg-green-600 text-white px-3 py-1 rounded-sm hover:bg-green-500 transition"
+                  onClick={onUserConfirmEditUsername}
+                >
+                  update username
+                </button>
+
+                <TextInput
+                  mt="md"
+                  label="new password"
+                  placeholder="your new password"
+                  required
+                  inputWrapperOrder={["label", "input", "error"]}
+                  value={newPassword}
+                  onChange={(event) => setNewPassword(event.target.value)}
+                />
+
+                <TextInput
+                  mt="md"
+                  label="old password"
+                  placeholder="password for changing username"
+                  required
+                  inputWrapperOrder={["label", "input", "error"]}
+                  value={password2}
+                  onChange={(event) => setPassword2(event.target.value)}
+                />
+
+                <TextInput
+                  mt="md"
+                  label="confirm old password"
+                  placeholder="confirm your old password"
+                  required
+                  inputWrapperOrder={["label", "input", "error"]}
+                  value={confirmpassword2}
+                  onChange={(event) => setConfirmPassword2(event.target.value)}
+                />
+                <button
+                  className="text-base bg-green-600 text-white px-3 py-1 rounded-sm hover:bg-green-500 transition"
+                  onClick={onUserConfirmEditPassword}
+                >
+                  update password
+                </button>
+
                 <TextInput
                   mt="md"
                   label="First Name"
@@ -408,15 +536,37 @@ function Profile() {
                   onChange={(event) => setAddressValue(event.target.value)}
                 />
 
+                <TextInput
+                  mt="md"
+                  label="Email"
+                  placeholder="your email"
+                  required
+                  error={""}
+                  inputWrapperOrder={["label", "input", "error"]}
+                  value={emailValue}
+                  onChange={(event) => setEmailValue(event.target.value)}
+                />
+
+                <TextInput
+                  mt="md"
+                  label="Contact"
+                  placeholder="your Contact"
+                  required
+                  error={""}
+                  inputWrapperOrder={["label", "input", "error"]}
+                  value={phoneNumberValue}
+                  onChange={(event) => setPhoneNumberValue(event.target.value)}
+                />
+
                 <div className="mt-6 w-full flex justify-end">
-                  <button 
+                  <button
                     className="text-base bg-green-600 text-white px-3 py-1 rounded-sm hover:bg-green-500 transition"
                     onClick={onUserConfirmEdit}
                   >
                     Confirm
                   </button>
 
-                  <button 
+                  <button
                     className="text-base bg-gray-500 text-white px-3 py-1 ml-2 rounded-sm hover:bg-gray-400 transition"
                     onClick={editProfileToggle}
                   >
@@ -464,6 +614,43 @@ function Profile() {
             </section>
           )}
 
+          {/* Add Quick Action Buttons */}
+          <div className="bg-white rounded-lg shadow-md p-4 mt-6 flex justify-center space-x-4">
+            <Link 
+              to="/my-posts" 
+              className="flex-1 bg-seagreen/80 text-white px-4 py-3 rounded-lg hover:bg-seagreen transition text-center font-medium"
+            >
+              <div className="flex justify-center items-center">
+                <span className="mr-2 text-xl">
+                  <BsPostcardHeart />
+                </span>{" "}
+                โพสต์งานของฉัน
+              </div>
+            </Link>
+            <Link 
+              to="/find" 
+              className="flex-1 bg-seagreen/80 text-white px-4 py-3 rounded-lg hover:bg-seagreen transition text-center font-medium"
+            >
+              <div className="flex justify-center items-center">
+                <span className="mr-2 text-xl">
+                  <AiOutlineFileSearch />
+                </span>{" "}
+                ค้นหางาน
+              </div>
+            </Link>
+            <Link 
+              to="/trackjobseeker" 
+              className="flex-1 bg-seagreen/80 text-white px-4 py-3 rounded-lg hover:bg-seagreen transition text-center font-medium"
+            >
+              <div className="flex justify-center items-center">
+                <span className="mr-2 text-xl">
+                  <MdAutoGraph />
+                </span>{" "}
+                ติดตามงาน
+              </div>
+            </Link>
+          </div>
+
           <div className="mt-8 flex items-center space-x-4 border-b border-gray-200 pb-2">
             <button
               className={
@@ -494,7 +681,7 @@ function Profile() {
               <div className="grid md:grid-cols-3 gap-6">
                 {userPosts.map((post) => (
                   <div
-                    key={post.title}
+                    key={post.id}
                     className="bg-white rounded-lg shadow-md p-4"
                   >
                     <h2 className="text-xl font-semibold">{post.title}</h2>
@@ -529,7 +716,7 @@ function Profile() {
                       <h3 className="text-lg font-semibold">Skills</h3>
                       <ul className="list-disc list-inside">
                         {post.skills.map((skill: any) => (
-                          <li key={skill.name}>
+                          <li key={skill.id}>
                             {skill.name}: {skill.description}
                           </li>
                         ))}
@@ -539,12 +726,28 @@ function Profile() {
                       <h3 className="text-lg font-semibold">Job Categories</h3>
                       <ul className="list-disc list-inside">
                         {post.jobCategories.map((category: any) => (
-                          <li key={category.name}>
+                          <li key={category.id}>
                             {category.name}: {category.description}
                           </li>
                         ))}
                       </ul>
                     </div>
+                    <button
+                      className="flex-1 bg-seagreen/80 hover:bg-seagreen text-white px-4 py-2 text-sm rounded-lg shadow-md transition"
+                      onClick={() =>
+                        navigate(`/jobseeker/viewpost/${String(post.id)}`, {
+                          state: { post },
+                        })
+                      }
+                    >
+                      view detail
+                    </button>
+                    <button
+                      className="text-base bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-500 transition mt-4"
+                      onClick={() => handleDeletePost(post.id)}
+                    >
+                      Delete
+                    </button>
                   </div>
                 ))}
               </div>

@@ -2,7 +2,7 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { motion } from "framer-motion";
 import { FaMagnifyingGlass } from "react-icons/fa6";
-import { Navbar } from "../../components/Navbar";
+import { NewNav } from "../../components/NewNav";
 import Sidebar from "../../components/Sidebar";
 import JobCard from "../../components/JobCard";
 import Footer from "../../components/Footer";
@@ -97,17 +97,14 @@ function Find() {
     refetchCompany,
     isStale,
     setUser,
+    queryClient,
   } = useUser();
   const [isHaveUser, setIsHaveUser] = useState(false);
   const [opened, setOpened] = useState(false);
   useEffect(() => {
     refetchjobseeker();
-    refetchCompany();
     refetchemployer();
-    // console.log("current user:", user);
-    // console.log("isLoading:", isLoading);
-    // console.log("isHaveUser :", isHaveUser);
-    // console.log("isStale :", isStale);
+    refetchCompany();
     setIsHaveUser(!!user);
   }, [user, isLoading, isStale]);
 
@@ -331,7 +328,7 @@ function Find() {
 
   return (
     <div className="min-h-screen flex flex-col font-kanit">
-      <Navbar
+      <NewNav
         user={user}
         isLoading={isLoading}
         isHaveUser={isHaveUser}
@@ -340,6 +337,8 @@ function Find() {
         refetchCompany={refetchCompany}
         isStale={isStale}
         setUser={setUser}
+        userType={user?.type}
+        queryClient={queryClient}
       />
 
       <div className="flex flex-row flex-grow">
@@ -382,6 +381,7 @@ function Find() {
                     salary={job.expectedSalary}
                     workDays={job.workDates}
                     workHours={job.workHoursRange}
+                    currentUserID={user?.id}
                     // jobCategories={job.jobCategories}
                     // skills={job.skills}
                   />

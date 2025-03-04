@@ -15,7 +15,6 @@ interface ApprovalRequest {
 
 export const fetchAdminInfo = async (): Promise<AdminInfo> => {
   try {
-    console.log("Fetching admin info...");
     const { data } = await axios.get<{ data: AdminInfo }>(
       `http://localhost:${backendPort}/api/admin/auth`,
       {
@@ -32,7 +31,6 @@ export const fetchAdminInfo = async (): Promise<AdminInfo> => {
 
 export const fetchApprovalRequests = async (): Promise<ApprovalRequest[]> => {
   try {
-    console.log("Fetching approval requests...");
     const { data } = await axios.get<{ data: ApprovalRequest[] }>(
       `http://localhost:${backendPort}/api/admin/approve`,
       {
@@ -49,7 +47,6 @@ export const fetchApprovalRequests = async (): Promise<ApprovalRequest[]> => {
 
 export const generateAdmin = async (): Promise<AdminInfo> => {
   try {
-    console.log("Generating admin...");
     const { data } = await axios.post<{ data: AdminInfo }>(
       `http://localhost:${backendPort}/api/admin`,
       {},
@@ -74,7 +71,6 @@ export const loginAdmin = async (
   password: string
 ): Promise<AdminInfo> => {
   try {
-    console.log("Attempting to login admin with:", { name, password });
     const { data } = await axios.post<{ data: AdminInfo }>(
       `http://localhost:${backendPort}/api/admin/auth`,
       {
@@ -98,7 +94,6 @@ export const loginAdmin = async (
 
 export const logoutAdmin = async (): Promise<void> => {
   try {
-    console.log("Logging out admin...");
     const { data } = await axios.delete<{ data: void }>(
       `http://localhost:${backendPort}/api/admin/auth`,
       {
@@ -118,7 +113,6 @@ export const approveUser = async (
   status: string
 ): Promise<ApprovalRequest> => {
   try {
-    console.log("Approving user with:", { userId, status });
     const { data } = await axios.post<{ data: ApprovalRequest }>(
       `http://localhost:${backendPort}/api/admin/approve`,
       { id: userId, status },

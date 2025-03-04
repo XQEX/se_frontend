@@ -21,11 +21,13 @@ const api = axios.create({
   headers: {
     Accept: "application/json",
   },
+  withCredentials: true,
 });
 
 export const getAllCategories = async (): Promise<JobCategoryResponse> => {
   try {
     const { data } = await api.get<JobCategoryResponse>("/");
+    console.log("Fetched categories:", data);
     return data;
   } catch (error) {
     console.error("Failed to fetch categories:", error);
@@ -39,6 +41,7 @@ export const createCategory = async (category: {
 }): Promise<JobCategoryResponse> => {
   try {
     const { data } = await api.post<JobCategoryResponse>("/", category);
+    console.log("Created category:", data);
     return data;
   } catch (error) {
     console.error("Failed to create category:", error);
@@ -51,6 +54,7 @@ export const getCategoryById = async (
 ): Promise<JobCategoryResponse> => {
   try {
     const { data } = await api.get<JobCategoryResponse>(`/${id}`);
+    console.log("Fetched category:", data);
     return data;
   } catch (error) {
     console.error("Failed to fetch category:", error);
@@ -64,6 +68,7 @@ export const updateCategory = async (
 ): Promise<JobCategoryResponse> => {
   try {
     const { data } = await api.put<JobCategoryResponse>(`/${id}`, category);
+    console.log("Updated category:", data);
     return data;
   } catch (error) {
     console.error("Failed to update category:", error);
@@ -76,6 +81,7 @@ export const deleteCategory = async (
 ): Promise<JobCategoryResponse> => {
   try {
     const { data } = await api.delete<JobCategoryResponse>(`/${id}`);
+    console.log("Deleted category:", data);
     return data;
   } catch (error) {
     console.error("Failed to delete category:", error);

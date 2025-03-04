@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { fetchJobSeekerInfo } from "../api/JobSeeker";
 import { fetchEmployerInfo } from "../api/Employer";
 import { fetchCompanyInfo } from "../api/Company";
@@ -13,6 +13,7 @@ interface UserContextType {
   refetchemployer: () => void;
   refetchCompany: () => void;
   isStale: boolean;
+  queryClient: any;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -23,6 +24,7 @@ interface UserProviderProps {
 
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const [user, setUser] = useState<any>(null);
+  const queryClient = useQueryClient();
 
   const handleError = (error: any) => {
     console.error("Error fetching user info:", error);
@@ -83,6 +85,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
         refetchemployer,
         refetchCompany,
         isStale,
+        queryClient,
       }}
     >
       {children}

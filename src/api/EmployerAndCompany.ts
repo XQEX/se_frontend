@@ -83,6 +83,16 @@ interface JobPostUpdateResponse {
   data: JobPostDetailResponse["data"];
 }
 
+interface UpdateUserProfileRequest {
+  firstName: string;
+  lastName: string;
+  aboutMe: string;
+  address: string;
+  email: string;
+  contact: string;
+  userType: "EMPLOYER" | "COMPANY";
+}
+
 export const getAllJobPosts = async (
   filters: {
     title?: string;
@@ -165,4 +175,81 @@ export const updateJobPostById = async (
     console.error("Failed to update job post:", error);
     throw error;
   }
+};
+
+export const updateUserProfile = async (
+  profileData: UpdateUserProfileRequest
+): Promise<void> => {
+  console.log("Updating user profile with:", profileData);
+
+  const userType = profileData.userType === "EMPLOYER" ? "employer" : "company";
+
+  if (userType === "employer") {
+    console.log("Updating full name...");
+    const fullNameResponse = await axios.put<{ data: void }>(
+      `http://localhost:${backendPort}/api/user/${userType}/auth/edit/full-name`,
+      { firstName: profileData.firstName, lastName: profileData.lastName },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    console.log("Full name update response:", fullNameResponse);
+  }
+
+  console.log("Updating about me...");
+  const aboutResponse = await axios.put<{ data: void }>(
+    `http://localhost:${backendPort}/api/user/${userType}/auth/edit/about`,
+    { about: profileData.aboutMe },
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+    }
+  );
+  console.log("About me update response:", aboutResponse);
+
+  console.log("Updating address...");
+  const addressResponse = await axios.put<{ data: void }>(
+    `http://localhost:${backendPort}/api/user/${userType}/auth/edit/address`,
+    { address: profileData.address, provinceAddress: "XD" },
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+    }
+  );
+  console.log("Address update response:", addressResponse);
+
+  console.log("Updating email...");
+  const emailResponse = await axios.put<{ data: void }>(
+    `http://localhost:${backendPort}/api/user/${userType}/auth/edit/email`,
+    { email: profileData.email },
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+    }
+  );
+  console.log("Email update response:", emailResponse);
+
+  console.log("Updating contact...");
+  const contactResponse = await axios.put<{ data: void }>(
+    `http://localhost:${backendPort}/api/user/${userType}/auth/edit/contact`,
+    { contact: profileData.contact },
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+    }
+  );
+  console.log("Contact update response:", contactResponse);
+
+  console.log("User profile updated successfully");
 };

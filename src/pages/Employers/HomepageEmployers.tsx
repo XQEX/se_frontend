@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { NavbarEmp } from "../../components/NavbarEmp";
+import { NewNav } from "../../components/NewNav";
 import Footer from "../../components/Footer";
 import {
   FaMapMarkerAlt,
@@ -72,17 +72,14 @@ const HomepageEmployers: React.FC = () => {
     refetchCompany,
     isStale,
     setUser,
+    queryClient,
   } = useUser();
   const [isHaveUser, setIsHaveUser] = useState(false);
 
   useEffect(() => {
     refetchjobseeker();
-    refetchCompany();
     refetchemployer();
-    // console.log("current user:", user);
-    // console.log("isLoading:", isLoading);
-    // console.log("isHaveUser :", isHaveUser);
-    // console.log("isStale :", isStale);
+    refetchCompany();
     setIsHaveUser(!!user);
   }, [user, isLoading, isStale]);
 
@@ -149,7 +146,7 @@ const HomepageEmployers: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      <NavbarEmp
+      <NewNav
         user={user}
         isLoading={isLoading}
         isHaveUser={isHaveUser}
@@ -158,30 +155,55 @@ const HomepageEmployers: React.FC = () => {
         refetchCompany={refetchCompany}
         isStale={isStale}
         setUser={setUser}
+        userType={user?.type}
+        queryClient={queryClient}
       />
 
       <div className="kanit-regular max-w-5xl xl:max-w-6xl mx-auto px-12 sm:px-16 lg:px-24 py-12 grid grid-cols-1 lg:grid-cols-3 gap-10">
         {/* Left Sidebar (Quick Actions) */}
-        <div className="bg-[#f9f9f9] p-6 rounded-xl shadow-lg border border-gray-300 lg:col-span-1">
+
+        <div className="bg-[#f9f9f9]/80 backdrop-blur p-6 rounded-xl shadow-lg border border-gray-300 lg:col-span-1">
           <h2 className="text-lg font-semibold text-gray-700 mb-5 text-center">
             ตัวเลือกด่วน
           </h2>
           <div className="space-y-4 mb-6 font-kanit">
             <button
-              className="flex items-center justify-center w-full bg-seagreen/80 hover:bg-seagreen text-white px-6 py-3 text-base rounded-lg shadow-md transition font-kanit"
-              onClick={() => navigate("/postjobemp")}
+              className={`flex items-center justify-center w-full px-6 py-3 text-base rounded-lg shadow-md transition font-kanit ${
+                user && (user.type === "EMPLOYER" || user.type === "COMPANY")
+                  ? "bg-seagreen/80 hover:bg-seagreen text-white"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              }`}
+              onClick={() =>
+                user &&
+                (user.type === "EMPLOYER" || user.type === "COMPANY") &&
+                navigate("/postjobemp")
+              }
+              disabled={
+                !user || (user.type !== "EMPLOYER" && user.type !== "COMPANY")
+              }
             >
               <FaPlus className="mr-2" size={16} /> โพสต์งานใหม่
             </button>
             <button
-              className="flex items-center justify-center w-full bg-seagreen/80 hover:bg-seagreen text-white px-6 py-3 text-base rounded-lg shadow-md transition font-kanit "
+              className="flex items-center justify-center w-full px-6 py-3 text-base rounded-lg shadow-md transition font-kanit bg-seagreen/80 hover:bg-seagreen text-white"
               onClick={() => navigate("/findemp")}
             >
               <FaSearch className="mr-2" size={16} /> ค้นหาผู้สมัคร
             </button>
             <button
-              className="flex items-center justify-center w-full bg-seagreen/80 hover:bg-seagreen text-white px-6 py-3 text-base rounded-lg shadow-md transition font-kanit"
-              onClick={() => navigate("/trackemp")}
+              className={`flex items-center justify-center w-full px-6 py-3 text-base rounded-lg shadow-md transition font-kanit ${
+                user && (user.type === "EMPLOYER" || user.type === "COMPANY")
+                  ? "bg-seagreen/80 hover:bg-seagreen text-white"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              }`}
+              onClick={() =>
+                user &&
+                (user.type === "EMPLOYER" || user.type === "COMPANY") &&
+                navigate("/trackemp")
+              }
+              disabled={
+                !user || (user.type !== "EMPLOYER" && user.type !== "COMPANY")
+              }
             >
               <FaEye className="mr-2" size={16} /> ติดตามการรับสมัคร
             </button>
@@ -237,8 +259,21 @@ const HomepageEmployers: React.FC = () => {
                   เริ่มต้นโดยการโพสต์งานเพื่อดึงดูดผู้สมัคร!
                 </p>
                 <button
-                  className="mt-5 bg-seagreen/80 hover:bg-seagreen text-white px-6 py-3 text-base rounded-lg shadow-md transition"
-                  onClick={() => navigate("/postjobemp")}
+                  className={`mt-5 px-6 py-3 text-base rounded-lg shadow-md transition ${
+                    user &&
+                    (user.type === "EMPLOYER" || user.type === "COMPANY")
+                      ? "bg-seagreen/80 hover:bg-seagreen text-white"
+                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  }`}
+                  onClick={() =>
+                    user &&
+                    (user.type === "EMPLOYER" || user.type === "COMPANY") &&
+                    navigate("/postjobemp")
+                  }
+                  disabled={
+                    !user ||
+                    (user.type !== "EMPLOYER" && user.type !== "COMPANY")
+                  }
                 >
                   + โพสต์งานใหม่
                 </button>
@@ -333,7 +368,7 @@ const HomepageEmployers: React.FC = () => {
                           </button>
                           {user && job.userId === user.id && (
                             <button
-                              className="bg-black/80 hover:bg-black text-white px-4 py-2 text-sm rounded-lg shadow-md transition"
+                              className="bg-red-500 hover:bg-red-500/90 text-white px-4 py-2 text-sm rounded-lg shadow-md transition"
                               onClick={() => handleDeleteJob(job.id)}
                             >
                               <FaTrash size={16} />

@@ -1,6 +1,6 @@
 //TrackDetailsJobSeeker.tsx
 import { useParams, useNavigate } from "react-router-dom";
-import { Navbar } from "../../components/Navbar";
+import { NewNav } from "../../components/NewNav";
 import { useUser } from "../../context/UserContext";
 import { useEffect, useState } from "react";
 // Define the JobApplication interface
@@ -23,7 +23,55 @@ const mockApplications: JobApplication[] = [
     id: 2,
     companyName: "บริษัท B",
     status: "รอสัมภาษณ์",
-    date: "2025-01-15",
+    date: "2025-02-01",
+  },
+  {
+    id: 3,
+    companyName: "บริษัท C",
+    status: "ยืนยันการรับสมัคร",
+    date: "2025-02-10",
+  },
+  {
+    id: 4,
+    companyName: "บริษัท D",
+    status: "กำลังยื่นคำขอ",
+    date: "2025-02-15",
+  },
+  {
+    id: 5,
+    companyName: "บริษัท E",
+    status: "รอสัมภาษณ์",
+    date: "2025-02-20",
+  },
+  {
+    id: 6,
+    companyName: "บริษัท F",
+    status: "ยืนยันการรับสมัคร",
+    date: "2025-02-25",
+  },
+  {
+    id: 7,
+    companyName: "บริษัท G",
+    status: "กำลังยื่นคำขอ",
+    date: "2025-03-01",
+  },
+  {
+    id: 8,
+    companyName: "บริษัท H",
+    status: "รอสัมภาษณ์",
+    date: "2025-03-05",
+  },
+  {
+    id: 9,
+    companyName: "บริษัท I",
+    status: "ยืนยันการรับสมัคร",
+    date: "2025-03-10",
+  },
+  {
+    id: 10,
+    companyName: "บริษัท J",
+    status: "กำลังยื่นคำขอ",
+    date: "2025-03-15",
   },
 ];
 
@@ -38,16 +86,13 @@ function TrackDetailsJobSeeker() {
     refetchCompany,
     isStale,
     setUser,
+    queryClient,
   } = useUser();
   const [isHaveUser, setIsHaveUser] = useState(false);
   useEffect(() => {
     refetchjobseeker();
-    refetchCompany();
     refetchemployer();
-    // console.log("current user:", user);
-    // console.log("isLoading:", isLoading);
-    // console.log("isHaveUser :", isHaveUser);
-    // console.log("isStale :", isStale);
+    refetchCompany();
     setIsHaveUser(!!user);
   }, [user, isLoading, isStale]);
 
@@ -57,7 +102,7 @@ function TrackDetailsJobSeeker() {
   if (!application) {
     return (
       <div>
-        <Navbar
+        <NewNav
           user={user}
           isLoading={isLoading}
           isHaveUser={isHaveUser}
@@ -82,7 +127,7 @@ function TrackDetailsJobSeeker() {
 
   return (
     <div>
-      <Navbar
+      <NewNav
         user={user}
         isLoading={isLoading}
         isHaveUser={isHaveUser}
@@ -91,6 +136,8 @@ function TrackDetailsJobSeeker() {
         refetchCompany={refetchCompany}
         isStale={isStale}
         setUser={setUser}
+        userType={user?.type}
+        queryClient={queryClient}
       />
       <div className="min-h-screen flex flex-col items-center bg-white text-[#2e8b57] p-4">
         <h1 className="text-4xl font-bold mb-6">

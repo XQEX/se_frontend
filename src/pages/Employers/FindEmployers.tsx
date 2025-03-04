@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
-import { NavbarEmp } from "../../components/NavbarEmp";
+import { NewNav } from "../../components/NewNav";
 import Sidebar from "../../components/SidebarEmp";
 import JobCardEmp from "../../components/JobCardEmp";
 import Footer from "../../components/Footer";
@@ -19,6 +19,7 @@ import {
   RangeSlider,
 } from "@mantine/core";
 import { getAllJobFindingPosts } from "../../api/JobSeeker";
+import { createFindingPostMatch } from "../../api/Matching";
 
 interface Job {
   id: string;
@@ -76,6 +77,7 @@ function FindEmp() {
     refetchCompany,
     isStale,
     setUser,
+    queryClient,
   } = useUser();
   const [isHaveUser, setIsHaveUser] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -110,23 +112,8 @@ function FindEmp() {
 
   useEffect(() => {
     refetchjobseeker();
-    refetchCompany();
     refetchemployer();
-    // console.log("current user:", user);
-    // console.log("isLoading:", isLoading);
-    // console.log("isHaveUser :", isHaveUser);
-    // console.log("isStale :", isStale);
-    setIsHaveUser(!!user);
-  }, [user, isLoading, isStale]);
-
-  useEffect(() => {
-    refetchjobseeker();
     refetchCompany();
-    refetchemployer();
-    // console.log("current user:", user);
-    // console.log("isLoading:", isLoading);
-    // console.log("isHaveUser :", isHaveUser);
-    // console.log("isStale :", isStale);
     setIsHaveUser(!!user);
   }, [user, isLoading, isStale]);
 
@@ -283,7 +270,7 @@ function FindEmp() {
 
   return (
     <div className="min-h-screen flex flex-col font-kanit">
-      <NavbarEmp
+      <NewNav
         user={user}
         isLoading={isLoading}
         isHaveUser={isHaveUser}
@@ -292,6 +279,8 @@ function FindEmp() {
         refetchCompany={refetchCompany}
         isStale={isStale}
         setUser={setUser}
+        userType={user?.type}
+        queryClient={queryClient}
       />
       <div className="flex flex-row flex-grow">
         <Sidebar filters={filters} setFilters={setFilters} />

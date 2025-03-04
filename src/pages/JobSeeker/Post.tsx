@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { Navbar } from "../../components/Navbar";
+import { NewNav } from "../../components/NewNav";
 import Footer from "../../components/Footer";
 import { createJobFindingPost } from "../../api/JobSeeker";
 import { provinces } from "../../data/provinces";
@@ -10,6 +11,12 @@ import { getAllSkills } from "../../api/Skills";
 import { getAllCategories } from "../../api/JobCategories";
 
 const PostJob: React.FC = () => {
+  // Helper function for toast messages
+  const notifyError = (message: string) =>
+    toast.error(message, { position: "top-center" });
+  const notifySuccess = (message: string) =>
+    toast.success(message, { position: "top-center" });
+
   const navigate = useNavigate();
 
   const [jobTitle, setJobTitle] = useState("");
@@ -60,16 +67,13 @@ const PostJob: React.FC = () => {
     refetchCompany,
     isStale,
     setUser,
+    queryClient,
   } = useUser();
   const [isHaveUser, setIsHaveUser] = useState(false);
   useEffect(() => {
     refetchjobseeker();
-    refetchCompany();
     refetchemployer();
-    // console.log("current user:", user);
-    // console.log("isLoading:", isLoading);
-    // console.log("isHaveUser :", isHaveUser);
-    // console.log("isStale :", isStale);
+    refetchCompany();
     setIsHaveUser(!!user);
   }, [user, isLoading, isStale]);
 
@@ -103,15 +107,15 @@ const PostJob: React.FC = () => {
       !requirements.trim() ||
       !salary.trim()
     ) {
-      alert("⚠️ กรุณากรอกข้อมูลให้ครบทุกช่อง!");
+      notifyError("⚠️ กรุณากรอกข้อมูลให้ครบทุกช่อง!");
       return false;
     }
     if (isNaN(Number(salary)) || Number(salary) <= 0) {
-      alert("⚠️ กรุณากรอกเงินเดือนเป็นตัวเลขที่มากกว่า 0!");
+      notifyError("⚠️ กรุณากรอกเงินเดือนเป็นตัวเลขที่มากกว่า 0!");
       return false;
     }
     if (startTime >= endTime) {
-      alert("⚠️ เวลาเริ่มงานต้องน้อยกว่าเวลาเลิกงาน!");
+      notifyError("⚠️ เวลาเริ่มงานต้องน้อยกว่าเวลาเลิกงาน!");
       return false;
     }
     return true;
@@ -135,21 +139,22 @@ const PostJob: React.FC = () => {
 
     try {
       const response = await createJobFindingPost(newJob as any);
-      if (response.success) {
-        setSuccessMessage("🎉 ประกาศงานสำเร็จแล้ว!");
-        setTimeout(() => navigate("/find"), 300);
-      } else {
-        alert(`⚠️ ${response.msg}`);
-      }
+      console.log("Job post created:", response.data);
+      setSuccessMessage("🎉 ประกาศงานสำเร็จแล้ว!");
+      notifySuccess("🎉 ประกาศงานสำเร็จแล้ว!"); // Show the notification after navigation
+      setTimeout(() => {
+        navigate("/find");
+      }, 2000);
     } catch (error) {
       console.error("Error creating job post:", error);
-      alert("⚠️ เกิดข้อผิดพลาดในการประกาศงาน!");
+      notifyError("⚠️ เกิดข้อผิดพลาดในการประกาศงาน!");
     }
   };
 
   return (
     <div className="min-h-screen flex flex-col justify-start bg-gray-50 font-kanit">
-      <Navbar
+      <ToastContainer />
+      <NewNav
         user={user}
         isLoading={isLoading}
         isHaveUser={isHaveUser}
@@ -158,6 +163,8 @@ const PostJob: React.FC = () => {
         refetchCompany={refetchCompany}
         isStale={isStale}
         setUser={setUser}
+        userType={user?.type}
+        queryClient={queryClient}
       />
 
       <div className="kanit-regular max-w-2xl mx-auto p-4 bg-white shadow-md rounded-lg w-full mt-5 pt-0">

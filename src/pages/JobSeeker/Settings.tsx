@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Navbar } from "../../components/Navbar";
+import { NewNav } from "../../components/NewNav";
 import { useUser } from "../../context/UserContext";
 
 function Settings() {
@@ -11,21 +11,18 @@ function Settings() {
     refetchCompany,
     isStale,
     setUser,
+    queryClient,
   } = useUser();
   const [isHaveUser, setIsHaveUser] = useState(false);
   useEffect(() => {
     refetchjobseeker();
-    refetchCompany();
     refetchemployer();
-    // console.log("current user:", user);
-    // console.log("isLoading:", isLoading);
-    // console.log("isHaveUser :", isHaveUser);
-    // console.log("isStale :", isStale);
+    refetchCompany();
     setIsHaveUser(!!user);
   }, [user, isLoading, isStale]);
   return (
     <div>
-      <Navbar
+      <NewNav
         user={user}
         isLoading={isLoading}
         isHaveUser={isHaveUser}
@@ -34,6 +31,8 @@ function Settings() {
         refetchCompany={refetchCompany}
         isStale={isStale}
         setUser={setUser}
+        userType={user?.type}
+        queryClient={queryClient}
       />
     </div>
   );

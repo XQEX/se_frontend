@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { Navbar } from "../../components/Navbar";
+import { NewNav } from "../../components/NewNav";
 import { FaBuilding, FaClock, FaStar, FaArrowLeft } from "react-icons/fa";
 import { CiMoneyBill } from "react-icons/ci";
 import Footer from "../../components/Footer";
 import { Avatar } from "@mantine/core";
 import { getJobPostById } from "../../api/EmployerAndCompany";
 import { useUser } from "../../context/UserContext";
-
+import { matchWithHiringPost } from "../../api/Matching";
+import { getMatchesForHiringPost } from "../../api/Matching";
 type Job = {
   id: string;
   title: string;
@@ -35,18 +36,44 @@ function JobDetail() {
     refetchCompany,
     isStale,
     setUser,
+    queryClient,
   } = useUser();
   const [isHaveUser, setIsHaveUser] = useState(false);
   useEffect(() => {
     refetchjobseeker();
-    refetchCompany();
     refetchemployer();
-    // console.log("current user:", user);
-    // console.log("isLoading:", isLoading);
-    // console.log("isHaveUser :", isHaveUser);
-    // console.log("isStale :", isStale);
+    refetchCompany();
     setIsHaveUser(!!user);
   }, [user, isLoading, isStale]);
+
+  useEffect(() => {
+    const fetchMatches = async () => {
+      try {
+        const matchedPost = await getMatchesForHiringPost(String(id));
+
+        const isCurrentUserFav = matchedPost.data.some((match) =>
+          match.toMatchSeekers.some((seeker) => seeker.jobSeekerId === user.id)
+        );
+        setIsStarred(isCurrentUserFav);
+      } catch (error) {
+        console.error("Error fetching matches:", error);
+      }
+    };
+
+    fetchMatches();
+  }, [id, user.id]);
+
+  const handleMatch = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      const response = await matchWithHiringPost(String(id));
+      console.log("Match response:", response);
+      setIsStarred(!isStarred);
+      // Handle the response as needed
+    } catch (error) {
+      console.error("Error matching with hiring post:", error);
+    }
+  };
 
   useEffect(() => {
     console.log("🔎 กำลังโหลดข้อมูลงาน...");
@@ -106,7 +133,7 @@ function JobDetail() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 font-kanit">
-      <Navbar
+      <NewNav
         user={user}
         isLoading={isLoading}
         isHaveUser={isHaveUser}
@@ -115,6 +142,8 @@ function JobDetail() {
         refetchCompany={refetchCompany}
         isStale={isStale}
         setUser={setUser}
+        userType={user?.type}
+        queryClient={queryClient}
       />
 
       {/* Main Content */}
@@ -170,6 +199,7 @@ function JobDetail() {
                 สมัครงานตอนนี้
               </Link>
               <button
+                onClick={handleMatch}
                 className="flex items-center justify-center space-x-2 text-gray-600 hover:text-gray-800 
                          px-4 py-2 rounded-md border border-gray-200 transition-colors text-sm"
               >
