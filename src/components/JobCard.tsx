@@ -52,6 +52,7 @@ interface GetMatchesResponse {
   }[];
   status: number;
 }
+
 interface DeleteMatchResponse {
   success: boolean;
   msg: string;
@@ -75,23 +76,7 @@ const deleteMatchHiringPost = async (
     console.log("Match deleted successfully:", data);
     return data;
   } catch (error) {
-    if (error instanceof Error) {
-      if (error.message.includes("403")) {
-        console.error(
-          "Forbidden - Only job seekers can delete their own matches:",
-          error
-        );
-      } else if (error.message.includes("404")) {
-        console.error(
-          "Match not found or user doesn't have permission:",
-          error
-        );
-      } else {
-        console.error("Failed to delete match for hiring post:", error);
-      }
-    } else {
-      console.error("Failed to delete match for hiring post:", error);
-    }
+    console.error("Failed to delete match for hiring post:", error);
     throw error;
   }
 };
@@ -154,8 +139,6 @@ function JobCard({
     const fetchMatches = async () => {
       try {
         const matchedPost = await getMatchesForHiringPost(String(id));
-        console.log("Matches for hiring post:", matchedPost);
-
         const isCurrentUserFav = matchedPost.data.some((match) =>
           match.toMatchSeekers.some(
             (seeker) => seeker.jobSeekerId === currentUserID
@@ -167,7 +150,9 @@ function JobCard({
       }
     };
 
-    fetchMatches();
+    if (currentUserID) {
+      fetchMatches();
+    }
   }, [id, currentUserID]);
 
   const formatSalary = () => {
@@ -180,16 +165,11 @@ function JobCard({
     return salary;
   };
 
-  const handleMatch = async (e: React.MouseEvent) => {
+  const handleMatch = async (e: React.MouseEffect) => {
     e.stopPropagation();
     try {
       if (isFav) {
-        // เมื่อ star แสดงอยู่ แสดงว่ามี match อยู่แล้ว
-        // จึงต้องดึงข้อมูล match เพื่อหา matchId ที่เกี่ยวข้องกับ current user
         const matchedPost = await getMatchesForHiringPost(String(id));
-        console.log("Matched post data:", matchedPost);
-
-        // ค้นหาข้อมูลการจับคู่ที่ตรงกับ current user ทั้งในกรณี jobSeekerId หรือ oauthJobSeekerId
         const matchToDelete = matchedPost.data
           .flatMap((match) => match.toMatchSeekers)
           .find(
@@ -199,19 +179,10 @@ function JobCard({
           );
 
         if (matchToDelete) {
-          console.log("Match to delete:", matchToDelete);
-          // เรียก API delete ด้วย matchId ที่ได้จาก matchToDelete.jobHiringPostMatchedId
-          const response = await deleteMatchHiringPost(
-            matchToDelete.jobHiringPostMatchedId
-          );
-          console.log("Delete match response:", response);
-        } else {
-          console.warn("No matching post found for current user");
+          await deleteMatchHiringPost(matchToDelete.jobHiringPostMatchedId);
         }
       } else {
-        // เมื่อยังไม่มี match ให้เรียก API match
-        const response = await matchWithHiringPost(String(id));
-        console.log("Match response:", response);
+        await matchWithHiringPost(String(id));
       }
       setIsFav(!isFav);
     } catch (error) {
@@ -254,17 +225,17 @@ function JobCard({
 
           <div className="flex items-center">
             <FaMapPin size={16} className="mr-1.5 text-seagreen" />
-            <span className="line-clamp-1">{location}</span>
+            <span className="line-clamp-1">{location || "ไม่ระบุสถานที่"}</span>
           </div>
 
           <div className="flex items-center">
             <FaClock size={16} className="mr-1.5 text-seagreen" />
             <div className="flex flex-col sm:flex-row sm:gap-1 line-clamp-1">
-              <span>{workDays}</span>
+              <span>{workDays || "ไม่ระบุวันทำงาน"}</span>
               {workDays && workHours && (
                 <span className="hidden sm:inline">|</span>
               )}
-              <span>{workHours}</span>
+              <span>{workHours || "ไม่ระบุเวลา"}</span>
             </div>
           </div>
         </div>
