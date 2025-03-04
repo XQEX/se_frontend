@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Navbar } from "../../components/Navbar";
+import { NewNav } from "../../components/NewNav";
 import { gsap } from "gsap";
 import { useUser } from "../../context/UserContext";
 import { getUserMatchingStatus, updateMatchStatus } from "../../api/Matching";
@@ -151,15 +151,18 @@ function TrackEmployers() {
 
   return (
     <div>
-      <Navbar
+        {/* NewNav */}
+        <NewNav
         user={user}
-        isLoading={isUserLoading}
+        isLoading={isLoading}
         isHaveUser={isHaveUser}
         refetchjobseeker={refetchjobseeker}
         refetchemployer={refetchemployer}
         refetchCompany={refetchCompany}
         isStale={isStale}
         setUser={setUser}
+        userType={user?.type}
+        queryClient={queryClient}
       />
       <div className="min-h-screen flex flex-col md:flex-row bg-white text-[#2e8b57] justify-center items-center p-4 md:p-8">
         <div className="flex flex-col items-center md:items-start text-center md:text-left kanit-light">

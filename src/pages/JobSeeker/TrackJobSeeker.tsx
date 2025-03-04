@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Navbar } from "../../components/Navbar";
+import { NewNav } from "../../components/NewNav";
 import { gsap } from "gsap";
 import { Link } from "react-router-dom";
 import { useUser } from "../../context/UserContext";
