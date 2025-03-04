@@ -143,7 +143,7 @@ const PostJob: React.FC = () => {
       setSuccessMessage("🎉 ประกาศงานสำเร็จแล้ว!");
       notifySuccess("🎉 ประกาศงานสำเร็จแล้ว!"); // Show the notification after navigation
       setTimeout(() => {
-        navigate("/find");
+        navigate("/trackjobseeker");
       }, 2000);
     } catch (error) {
       console.error("Error creating job post:", error);
@@ -169,7 +169,7 @@ const PostJob: React.FC = () => {
 
       <div className="kanit-regular max-w-2xl mx-auto p-4 bg-white shadow-md rounded-lg w-full mt-5 pt-0">
         <h1 className="text-2xl font-bold text-center text-gray-800 mt-5">
-          โพสต์งาน
+          โพสต์สมัครงาน
         </h1>
 
         {successMessage && (
@@ -291,7 +291,7 @@ const PostJob: React.FC = () => {
           </div>
 
           <div className="flex flex-col w-4/5 mx-auto">
-            <label className="font-kanit text-gray-700">ทักษะที่ต้องการ</label>
+            <label className="font-kanit text-gray-700">ความสามารถที่มี</label>
             <MultiSelect
               placeholder="เลือกทักษะ"
               data={skills.map((skill) => ({
@@ -304,7 +304,9 @@ const PostJob: React.FC = () => {
           </div>
 
           <div className="flex flex-col w-4/5 mx-auto">
-            <label className="font-kanit text-gray-700">หมวดหมู่งาน</label>
+            <label className="font-kanit text-gray-700">
+              หมวดหมู่งานที่ต้องการสมัคร
+            </label>
             <MultiSelect
               placeholder="เลือกหมวดหมู่งาน"
               data={jobCategories.map((category) => ({
@@ -318,12 +320,12 @@ const PostJob: React.FC = () => {
 
           {[
             {
-              label: "รายละเอียดงาน",
+              label: "รายละเอียดงานที่ต้องการเพิ่มเติม",
               value: jobDescription,
               setValue: setJobDescription,
             },
             {
-              label: "คุณสมบัติที่ต้องการ",
+              label: "คุณสมบัติที่มี",
               value: requirements,
               setValue: setRequirements,
             },
@@ -345,7 +347,7 @@ const PostJob: React.FC = () => {
               onClick={handlePostJob}
               className="w-64 bg-seagreen hover:bg-seagreen/90 text-white py-2 px-4 rounded-lg font-kanit transition text-base text-center"
             >
-              โพสต์งาน
+              โพสต์สมัครงาน
             </button>
           </div>
         </form>

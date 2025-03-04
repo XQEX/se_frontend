@@ -170,16 +170,6 @@ function JobCard({
     fetchMatches();
   }, [id, currentUserID]);
 
-  const formatSalary = () => {
-    if (typeof salary === "number") {
-      return salary.toLocaleString("th-TH");
-    }
-    if (!isNaN(Number(salary))) {
-      return Number(salary).toLocaleString("th-TH");
-    }
-    return salary;
-  };
-
   const handleMatch = async (e: React.MouseEvent) => {
     e.stopPropagation();
     try {
@@ -217,6 +207,15 @@ function JobCard({
     } catch (error) {
       console.error("Error handling match:", error);
     }
+  };
+  const formatSalary = () => {
+    if (typeof salary === "number") {
+      return salary.toLocaleString("th-TH");
+    }
+    if (!isNaN(Number(salary))) {
+      return Number(salary).toLocaleString("th-TH");
+    }
+    return salary;
   };
 
   return (
