@@ -73,11 +73,30 @@ function TrackJobSeeker() {
     );
   };
 
-  const NoDataMessage = ({ type }: { type: "hiring" | "finding" }) => (
-    <div className="p-4 text-center text-gray-500">
-      {type === "hiring" ? "ยังไม่มีประกาศงานของคุณ" : "ยังไม่มีการสมัครงาน"}
-    </div>
-  );
+  const NoDataMessage = ({ type }: { type: "hiring" | "finding" }) => {
+    return (
+      <div className="flex flex-col mt-10 items-center justify-center p-6 bg-white shadow-md rounded-2xl border border-gray-200 max-w-md mx-auto">
+        <p className="text-lg font-semibold text-gray-700 ">
+          {type === "hiring"
+            ? "ยังไม่มีประกาศงานของคุณ"
+            : "ยังไม่มีการสมัครงาน"}
+        </p>
+        <p className="text-sm text-gray-500 mt-2 text-center">
+          {type === "hiring"
+            ? 'คุณสามารถสร้างประกาศงานใหม่ได้โดยไปที่หน้า "สร้างประกาศงาน"'
+            : 'คุณสามารถค้นหางานที่สนใจและสมัครได้โดยไปที่หน้า "ค้นหางาน"'}
+        </p>
+        <Link
+          to={type === "hiring" ? "/postjob" : "/find"}
+          className="mt-4 px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg shadow-md transition duration-300 hover:bg-blue-600 hover:shadow-lg"
+        >
+          {type === "hiring"
+            ? "คลิกที่นี่เพื่อสร้างประกาศงานใหม่"
+            : "คลิกที่นี่เพื่อค้นหางาน"}
+        </Link>
+      </div>
+    );
+  };
 
   const headingRef = useRef(null);
   const tableRef = useRef(null);
@@ -107,7 +126,7 @@ function TrackJobSeeker() {
         setIsLoading(false);
       }
     };
-
+    fetchMatchingStatus();
     const intervalId = setInterval(() => {
       fetchMatchingStatus();
     }, 10000); // Fetch notifications every 10 seconds
