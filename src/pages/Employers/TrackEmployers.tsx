@@ -43,6 +43,7 @@ function TrackEmployers() {
       </span>
     );
   };
+
   const EmpStatusBadge = ({
     status,
     small = false,
@@ -54,7 +55,7 @@ function TrackEmployers() {
       UNMATCHED: { color: "bg-gray-100 text-gray-800", text: "รอดำเนินการ" },
       INPROGRESS: {
         color: "bg-blue-100 text-blue-800",
-        text: "รอการตอบกลับข้อเสนอของคุasdasdasdณ",
+        text: "รอการตอบกลับข้อเสนอของคุณ",
       },
       ACCEPTED: {
         color: "bg-green-100 text-green-800",
@@ -111,6 +112,8 @@ function TrackEmployers() {
       }
     };
 
+    fetchMatchingStatus(); // Fetch immediately on component mount
+
     const intervalId = setInterval(() => {
       fetchMatchingStatus();
     }, 10000); // Fetch notifications every 10 seconds
@@ -118,9 +121,13 @@ function TrackEmployers() {
     return () => clearInterval(intervalId); // Cleanup interval on component unmount
   }, [user]);
 
-  const handleStatusChange = async (matchId: string, newStatus: string) => {
+  const handleStatusChange = async (
+    matchId: string,
+    newStatus: string,
+    seekerId: string
+  ) => {
     try {
-      await updateMatchStatus(matchId, newStatus);
+      await updateMatchStatus(matchId, newStatus, seekerId);
       const updatedStatus = await getUserMatchingStatus();
       setHiringMatches(updatedStatus.data.hiringMatches);
       setFindingMatches(updatedStatus.data.findingMatches);
@@ -131,6 +138,7 @@ function TrackEmployers() {
 
   useEffect(() => {
     refetchjobseeker();
+    refetchCompany();
     refetchemployer();
     setIsHaveUser(!!user);
   }, [user, isUserLoading, isStale]);
@@ -331,37 +339,58 @@ function TrackEmployers() {
                                         <EmpStatusBadge
                                           status={seeker.status}
                                         />
-                                        <button>
-                                          แก้ไขสถานะขอผู้สมัคร :
-                                          <div className="text-center">
-                                            <div className="gap-3">
-                                              <div className="flex justify-center gap-2 mt-2">
-                                                <button
-                                                  className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
-                                                  onClick={() =>
-                                                    handleStatusChange(
-                                                      seeker.jobHiringPostMatchedId,
-                                                      "ACCEPTED"
-                                                    )
-                                                  }
-                                                >
-                                                  ยอมรับ
-                                                </button>
-                                                <button
-                                                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-                                                  onClick={() =>
-                                                    handleStatusChange(
-                                                      seeker.jobHiringPostMatchedId,
-                                                      "DENIED"
-                                                    )
-                                                  }
-                                                >
-                                                  ปฏิเสธ
-                                                </button>
+                                        {seeker.status === "INPROGRESS" && (
+                                          <button>
+                                            แก้ไขสถานะขอผู้สมัคร :
+                                            <div className="text-center">
+                                              <div className="gap-3">
+                                                <div className="flex justify-center gap-2 mt-2">
+                                                  <button
+                                                    className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
+                                                    onClick={() => {
+                                                      const acceptedCount =
+                                                        match.toMatchSeekers.filter(
+                                                          (s: any) =>
+                                                            s.status ===
+                                                            "ACCEPTED"
+                                                        ).length;
+                                                      if (
+                                                        acceptedCount <
+                                                        post.hiredAmount
+                                                      ) {
+                                                        handleStatusChange(
+                                                          seeker.jobHiringPostMatchedId,
+                                                          "ACCEPTED",
+                                                          seeker.jobSeekerId ??
+                                                            seeker.oauthJobSeekerId
+                                                        );
+                                                      } else {
+                                                        alert(
+                                                          "จำนวนผู้ที่รับเข้าทำงานเต็มแล้ว"
+                                                        );
+                                                      }
+                                                    }}
+                                                  >
+                                                    ยอมรับ
+                                                  </button>
+                                                  <button
+                                                    className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                                                    onClick={() =>
+                                                      handleStatusChange(
+                                                        seeker.jobHiringPostMatchedId,
+                                                        "DENIED",
+                                                        seeker.jobSeekerId ??
+                                                          seeker.oauthJobSeekerId
+                                                      )
+                                                    }
+                                                  >
+                                                    ปฏิเสธ
+                                                  </button>
+                                                </div>
                                               </div>
                                             </div>
-                                          </div>
-                                        </button>
+                                          </button>
+                                        )}
                                       </div>
                                     </div>
                                   )

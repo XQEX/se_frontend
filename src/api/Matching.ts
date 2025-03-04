@@ -249,13 +249,14 @@ export const getMatchesForHiringPost = async (
 };
 export const updateMatchStatus = async (
   matchId: string,
-  status: string
+  status: string,
+  seekerId: string
 ): Promise<UpdateMatchStatusResponse> => {
   try {
-    console.log("Updating match status:", { matchId, status });
+    console.log("Updating match status:", { matchId, status, seekerId });
     const { data } = await axios.put<{ data: UpdateMatchStatusResponse }>(
       `http://localhost:${backendPort}/api/matching/hiring/match/${matchId}/status`,
-      { status },
+      { status, seekerId },
       {
         headers: {
           "Content-Type": "application/json",
