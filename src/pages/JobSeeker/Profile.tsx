@@ -24,6 +24,7 @@ import { ArticleCard } from "../../components/ArticleCard";
 import { MdWorkspacePremium } from "react-icons/md";
 import { getUserJobFindingPosts, updateUserProfile } from "../../api/JobSeeker";
 import { useForm, UseFormReturnType } from "@mantine/form";
+import { IconSearch, IconChartLine, IconPencil } from "@tabler/icons-react";
 
 import {
   TextInput,
@@ -733,14 +734,34 @@ function Profile() {
                 </div>
               </div>
 
-              <div className="mt-28 w-full flex justify-end">
-                <button 
-                  className="text-base bg-gray-600 text-white px-3 py-1 rounded-md hover:bg-gray-500 transition"
-                  onClick={editProfileToggle}
-                >
-                  Edit
-                </button>
-              </div>
+              <div className="mt-28 w-full flex justify-end space-x-4">
+            {/* ปุ่ม ค้นหางาน */}
+            <Link 
+              to="/find" 
+              className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition flex items-center space-x-2"
+            >
+              <IconSearch className="text-xl" />
+              <span>ค้นหางาน</span>
+            </Link>
+
+            {/* ปุ่ม ติดตามงาน */}
+            <Link 
+              to="/trackjobseeker" 
+              className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition flex items-center space-x-2"
+            >
+              <IconChartLine className="text-xl" />
+              <span>ติดตามงาน</span>
+            </Link>
+
+            {/* ปุ่ม Edit - */}
+            <button 
+              className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition flex items-center space-x-2 order-last"
+              onClick={editProfileToggle}
+            >
+              <IconPencil className="text-xl" />
+              <span>แก้ไข</span>
+            </button>
+          </div>
 
               <Modal 
                 opened={editProfileOpened} 
