@@ -1133,10 +1133,10 @@ function Profile() {
             </section>
           )}
 
-          {/* Add Quick Action Buttons */}
-          <div className="bg-white rounded-lg shadow-md p-4 mt-6 flex justify-center space-x-4">
-            <Link 
-              to="/my-posts" 
+           {/* Add Quick Action Buttons */}
+           <div className="bg-white rounded-lg shadow-md p-4 mt-6 flex justify-center space-x-4">
+            <Link
+              to="/my-posts"
               className="flex-1 bg-seagreen/80 text-white px-4 py-3 rounded-lg hover:bg-seagreen transition text-center font-medium"
             >
               <div className="flex justify-center items-center">
@@ -1146,8 +1146,8 @@ function Profile() {
                 โพสต์งานของฉัน
               </div>
             </Link>
-            <Link 
-              to="/find" 
+            <Link
+              to="/find"
               className="flex-1 bg-seagreen/80 text-white px-4 py-3 rounded-lg hover:bg-seagreen transition text-center font-medium"
             >
               <div className="flex justify-center items-center">
@@ -1157,8 +1157,8 @@ function Profile() {
                 ค้นหางาน
               </div>
             </Link>
-            <Link 
-              to="/trackjobseeker" 
+            <Link
+              to="/trackjobseeker"
               className="flex-1 bg-seagreen/80 text-white px-4 py-3 rounded-lg hover:bg-seagreen transition text-center font-medium"
             >
               <div className="flex justify-center items-center">
