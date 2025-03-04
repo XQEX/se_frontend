@@ -111,8 +111,12 @@ function TrackEmployers() {
       }
     };
 
-    fetchMatchingStatus();
-  }, []);
+    const intervalId = setInterval(() => {
+      fetchMatchingStatus();
+    }, 10000); // Fetch notifications every 10 seconds
+
+    return () => clearInterval(intervalId); // Cleanup interval on component unmount
+  }, [user]);
 
   const handleStatusChange = async (matchId: string, newStatus: string) => {
     try {
@@ -151,8 +155,8 @@ function TrackEmployers() {
 
   return (
     <div>
-        {/* NewNav */}
-        <NewNav
+      {/* NewNav */}
+      <NewNav
         user={user}
         isLoading={isLoading}
         isHaveUser={isHaveUser}

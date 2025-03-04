@@ -652,7 +652,7 @@ function Profile() {
               </div>
             </Link>
             <Link
-              to="/trackjobseeker"
+              to="/trackemp"
               className="flex-1 bg-seagreen/80 text-white px-4 py-3 rounded-lg hover:bg-seagreen transition text-center font-medium"
             >
               <div className="flex justify-center items-center">

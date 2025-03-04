@@ -156,6 +156,7 @@ export const NewNav: React.FC<NavbarProps> = ({
         await logoutCompany();
       }
 
+      setUser(null);
       queryClient.setQueryData(["currentJobSeeker"], null);
       queryClient.setQueryData(["currentEmployer"], null);
       queryClient.setQueryData(["currentCompany"], null);
@@ -166,7 +167,6 @@ export const NewNav: React.FC<NavbarProps> = ({
       //   queryClient.invalidateQueries(["currentEmployer"]);
       //   queryClient.invalidateQueries(["currentCompany"]);
 
-      notifyError("คุณออกจากระบบ!"); // Show the notification after navigation
       setIsSignedIn(false);
     } catch (error) {
       console.error("Failed to logout:", error);
@@ -211,7 +211,11 @@ export const NewNav: React.FC<NavbarProps> = ({
     <div>
       {isSignedIn ? (
         <>
-          <Menu.Item component={Link} to="/profile" className="kanit-regular">
+          <Menu.Item
+            component={Link}
+            to={userType == "JOBSEEKER" ? "/profile" : "/profileemp"}
+            className="kanit-regular"
+          >
             โปรไฟล์
           </Menu.Item>
           <Menu.Item onClick={handleLogout} className="kanit-regular">

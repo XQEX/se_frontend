@@ -41,7 +41,7 @@ interface InputProps {
   placeholder: string;
   inputProps: ReturnType<UseFormReturnType<any>["getInputProps"]>;
   size: "short" | "medium" | "long";
-  required?: boolean
+  required?: boolean;
 }
 
 // Interface สำหรับ Select Props
@@ -139,7 +139,9 @@ const subCategories = {
 };
 
 const currentYear = new Date().getFullYear();
-const years = Array.from({ length: 20 }, (_, i) => (currentYear - i).toString()); 
+const years = Array.from({ length: 20 }, (_, i) =>
+  (currentYear - i).toString()
+);
 
 function Profile() {
   const navigate = useNavigate();
@@ -172,10 +174,21 @@ function Profile() {
     validate: {
       startMonth: (value) => (value ? null : "Please select a start month"),
       startYear: (value) => (value ? null : "Please select an end month"),
-      endMonth: (value, values) => values.currentlyWorking ? null : value ? null : "Please select a end month",
-      endYear: (value, values) => values.currentlyWorking ? null : value ? null : "Please select a end year",
+      endMonth: (value, values) =>
+        values.currentlyWorking
+          ? null
+          : value
+          ? null
+          : "Please select a end month",
+      endYear: (value, values) =>
+        values.currentlyWorking
+          ? null
+          : value
+          ? null
+          : "Please select a end year",
       categorieWork: (value) => (value ? null : "Please select a job category"),
-      subCategorieWork: (value) => (value ? null : "Please select a subcategory"),
+      subCategorieWork: (value) =>
+        value ? null : "Please select a subcategory",
     },
   });
 
@@ -200,6 +213,19 @@ function Profile() {
     // console.log("isStale :", isStale);
     setIsHaveUser(!!user);
   }, [user, isLoading, isStale]);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      queryClient.setQueryData(["currentJobSeeker"], null);
+      queryClient.setQueryData(["currentEmployer"], null);
+      queryClient.setQueryData(["currentCompany"], null);
+      queryClient.removeQueries(["currentJobSeeker"]);
+      queryClient.removeQueries(["currentEmployer"]);
+      queryClient.removeQueries(["currentCompany"]);
+    }, 3000); // Fetch notifications every 3 seconds
+
+    return () => clearInterval(intervalId); // Cleanup interval on component unmount
+  }, [user]); // Add user as dependency
   // Track which tab is active; default is "work"
   const [activeTab, setActiveTab] = React.useState("work");
 
@@ -239,12 +265,14 @@ function Profile() {
   // const [password, setPassword] = useState<string>("");
   // const [confirmpassword, setConfirmPassword] = useState<string>("");
   const [hasExperience, setHasExperience] = useState<boolean>(true);
-  const [hasDesiredJobCategory, setHasDesiredJobCategory] = useState<boolean>(true);
+  const [hasDesiredJobCategory, setHasDesiredJobCategory] =
+    useState<boolean>(true);
 
   // const [newPassword, setNewPassword] = useState<string>("");
   // const [password2, setPassword2] = useState<string>("");
   const [confirmPassword2, setConfirmPassword2] = useState<string>("");
-  const [confirmPassword2Error, setConfirmPassword2Error] = useState<string>("");
+  const [confirmPassword2Error, setConfirmPassword2Error] =
+    useState<string>("");
 
   useEffect(() => {
     const fetchUserPost = async () => {
@@ -255,8 +283,8 @@ function Profile() {
     };
     fetchUserPost();
 
-    setHasExperience(true)
-    setHasDesiredJobCategory(true)
+    setHasExperience(true);
+    setHasDesiredJobCategory(true);
 
     form.setValues({
       username: user.username,
@@ -275,84 +303,83 @@ function Profile() {
       currentlyWorking: false,
       categorieWork: "",
       subCategorieWork: "",
-    })
-
+    });
   }, [editProfileOpened]);
 
   const validateEditData = () => {
     // username validation
     if (form.values.username == "") {
       notifyError("Please enter your username");
-      return false
+      return false;
     }
 
     // first name validation
     if (form.values.firstName == "") {
       notifyError("Please enter your first name");
-      return false
+      return false;
     }
 
     // last name validation
     if (form.values.lastName == "") {
       notifyError("Please enter your last name");
-      return false
+      return false;
     }
 
     // address validation
     if (form.values.location == "") {
       notifyError("Please enter your address");
-      return false
+      return false;
     }
 
     // about me validation
     if (form.values.aboutMe == "") {
       notifyError("Please enter your about me");
-      return false
+      return false;
     }
 
     // email validation
     if (form.values.email == "") {
       notifyError("Please enter your email");
-      return false
+      return false;
     }
 
     // contact validation
     if (form.values.contact == "") {
       notifyError("Please enter your contact");
-      return false
+      return false;
     }
 
     // experience validation
-    if (hasExperience) { 
+    if (hasExperience) {
       if (form.values.jobTitle == "") {
         notifyError("Please enter your job title");
-        return false
+        return false;
       }
 
       if (form.values.company == "") {
         notifyError("Please enter your company");
-        return false
+        return false;
       }
 
       if (form.values.startMonth == "") {
         notifyError("Please choose your start month");
-        return false
+        return false;
       }
 
       if (form.values.startYear == "") {
         notifyError("Please choose your start year");
-        return false
+        return false;
       }
 
       if (!form.values.currentlyWorking) {
         if (form.values.endMonth == "") {
           notifyError("Please choose your end month");
-          return false
+          return false;
         }
 
         if (form.values.endYear == "") {
           notifyError("Please choose your end year");
-          return false
+          return false;
         }
       }
     }
@@ -361,34 +388,34 @@ function Profile() {
     if (hasDesiredJobCategory) {
       if (form.values.categorieWork == "") {
         notifyError("Please choose your category of work");
-        return false
+        return false;
       } else {
         if (form.values.endYear == "") {
           notifyError("Please choose your sub category of work");
-          return false
+          return false;
         }
       }
     }
 
-    return true
+    return true;
   };
 
   const onUserConfirmEdit = async () => {
     if (validateEditData()) {
-      confirmPasswordToggle()
-      setConfirmPassword2("")
+      confirmPasswordToggle();
+      setConfirmPassword2("");
     }
   };
 
   useEffect(() => {
-    setConfirmPassword2("")
-  }, [confirmPasswordOpened])
+    setConfirmPassword2("");
+  }, [confirmPasswordOpened]);
 
   const onUserConfirmByPassword = async () => {
-    if (confirmPassword2 === '') {
-      setConfirmPassword2Error("Please enter your password")
+    if (confirmPassword2 === "") {
+      setConfirmPassword2Error("Please enter your password");
       notifyError("Please enter your password");
-      return
+      return;
     }
 
     try {
@@ -405,8 +432,8 @@ function Profile() {
       notifySuccess("Profile updated successfully");
       // Optionally, refetch user data here
       // refetchjobseeker();
-      confirmPasswordToggle()
-      editProfileToggle()
+      confirmPasswordToggle();
+      editProfileToggle();
     } catch (error) {
       notifyError(error as string);
     }
@@ -471,7 +498,13 @@ function Profile() {
     }
   };
 
-  const renderTextInput = ({ label, placeholder, inputProps, size, required = false }: InputProps) => (
+  const renderTextInput = ({
+    label,
+    placeholder,
+    inputProps,
+    size,
+    required = false,
+  }: InputProps) => (
     <TextInput
       label={label}
       placeholder={placeholder}
@@ -479,8 +512,10 @@ function Profile() {
       required={required}
       styles={{
         root: {
-          width: size === "short" ? "100px" : size === "medium" ? "180px" : "400px",
-          maxWidth: size === "short" ? "120px" : size === "medium" ? "200px" : "540px", 
+          width:
+            size === "short" ? "100px" : size === "medium" ? "180px" : "400px",
+          maxWidth:
+            size === "short" ? "120px" : size === "medium" ? "200px" : "540px",
         },
         label: { color: "#2d3748", fontWeight: 500 },
         input: {
@@ -495,7 +530,11 @@ function Profile() {
   );
 
   // ฟังก์ชันสร้าง Select (เดือนและปี) → ขนาดเท่ากันสำหรับ "ตั้งแต่" และ "ถึง"
-  const renderDateGroup = ({ monthProp, yearProp, disabled = false }: SelectProps) => (
+  const renderDateGroup = ({
+    monthProp,
+    yearProp,
+    disabled = false,
+  }: SelectProps) => (
     <Grid grow className="w-full">
       <Grid.Col span={3}>
         <Select
@@ -512,7 +551,7 @@ function Profile() {
             "กันยายน",
             "ตุลาคม",
             "พฤศจิกายน",
-            "ธันวาคม"
+            "ธันวาคม",
           ]}
           disabled={disabled}
           error={form.errors.categorieWork}
@@ -547,7 +586,7 @@ function Profile() {
   );
 
   const onUserSwitchHasExperience = (check: boolean) => {
-    setHasExperience(check)
+    setHasExperience(check);
     form.setValues({
       jobTitle: "",
       company: "",
@@ -556,16 +595,16 @@ function Profile() {
       endMonth: "",
       endYear: "",
       currentlyWorking: false,
-    })
-  }
+    });
+  };
 
   const onUserSwitchJobCategory = (check: boolean) => {
-    setHasDesiredJobCategory(check)
+    setHasDesiredJobCategory(check);
     form.setValues({
       categorieWork: "",
       subCategorieWork: "",
-    })
-  }
+    });
+  };
 
   return (
     <div>
@@ -735,37 +774,37 @@ function Profile() {
               </div>
 
               <div className="mt-28 w-full flex justify-end space-x-4">
-            {/* ปุ่ม ค้นหางาน */}
-            <Link 
-              to="/find" 
-              className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition flex items-center space-x-2"
-            >
-              <IconSearch className="text-xl" />
-              <span>ค้นหางาน</span>
-            </Link>
+                {/* ปุ่ม ค้นหางาน */}
+                <Link
+                  to="/find"
+                  className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition flex items-center space-x-2"
+                >
+                  <IconSearch className="text-xl" />
+                  <span>ค้นหางาน</span>
+                </Link>
 
-            {/* ปุ่ม ติดตามงาน */}
-            <Link 
-              to="/trackjobseeker" 
-              className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition flex items-center space-x-2"
-            >
-              <IconChartLine className="text-xl" />
-              <span>ติดตามงาน</span>
-            </Link>
+                {/* ปุ่ม ติดตามงาน */}
+                <Link
+                  to="/trackjobseeker"
+                  className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition flex items-center space-x-2"
+                >
+                  <IconChartLine className="text-xl" />
+                  <span>ติดตามงาน</span>
+                </Link>
 
-            {/* ปุ่ม Edit - */}
-            <button 
-              className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition flex items-center space-x-2 order-last"
-              onClick={editProfileToggle}
-            >
-              <IconPencil className="text-xl" />
-              <span>แก้ไข</span>
-            </button>
-          </div>
+                {/* ปุ่ม Edit - */}
+                <button
+                  className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition flex items-center space-x-2 order-last"
+                  onClick={editProfileToggle}
+                >
+                  <IconPencil className="text-xl" />
+                  <span>แก้ไข</span>
+                </button>
+              </div>
 
-              <Modal 
-                opened={editProfileOpened} 
-                onClose={editProfileClose} 
+              <Modal
+                opened={editProfileOpened}
+                onClose={editProfileClose}
                 title="Edit Profile"
                 size="lg"
                 styles={{
@@ -882,7 +921,7 @@ function Profile() {
                         })}
                       </Grid.Col>
                     </Grid>
-        
+
                     {/* ที่อยู่ปัจจุบัน (ยาวมากขึ้น) */}
                     <Grid grow>
                       <Grid.Col span={8}>
@@ -934,20 +973,25 @@ function Profile() {
                         })}
                       </Grid.Col>
                     </Grid>
-        
+
                     <div className="space-y-4 mt-6">
-                      <Title order={4} className="text-gray-800 text-lg font-semibold">
+                      <Title
+                        order={4}
+                        className="text-gray-800 text-lg font-semibold"
+                      >
                         ประสบการณ์ล่าสุด
                       </Title>
                       <Switch
                         label="ฉันมีประสบการณ์"
                         checked={hasExperience}
-                        onChange={(e) => onUserSwitchHasExperience(e.currentTarget.checked)}
+                        onChange={(e) =>
+                          onUserSwitchHasExperience(e.currentTarget.checked)
+                        }
                         color="green"
                         classNames={{ label: "text-gray-700 font-kanit" }}
                       />
                     </div>
-        
+
                     {hasExperience && (
                       <div className="space-y-4">
                         {/* ตำแหน่งงาน และ บริษัท (ยาวมากขึ้น) */}
@@ -965,27 +1009,41 @@ function Profile() {
                           size: "long",
                           required: true,
                         })}
-        
+
                         <Grid grow>
                           <Grid.Col span={4}>
                             <label className="text-gray-700 font-kanit font-medium text-md">
                               ตั้งแต่
-                              <span className="m_78a94662 mantine-InputWrapper-required mantine-TextInput-required font-normal" aria-hidden="true"> *</span>
+                              <span
+                                className="m_78a94662 mantine-InputWrapper-required mantine-TextInput-required font-normal"
+                                aria-hidden="true"
+                              >
+                                {" "}
+                                *
+                              </span>
                             </label>
                             {renderDateGroup({
                               monthProp: form.getInputProps("startMonth"),
-                              yearProp: form.getInputProps("startYear")
+                              yearProp: form.getInputProps("startYear"),
                             })}
                           </Grid.Col>
-                          <Grid.Col span={5} className="flex items-center">
-                              </Grid.Col>
+                          <Grid.Col
+                            span={5}
+                            className="flex items-center"
+                          ></Grid.Col>
                         </Grid>
-        
+
                         <Grid grow>
                           <Grid.Col>
                             <label className="text-gray-700 font-kanit font-medium text-md">
                               ถึง
-                              <span className="m_78a94662 mantine-InputWrapper-required mantine-TextInput-required font-normal" aria-hidden="true"> *</span>
+                              <span
+                                className="m_78a94662 mantine-InputWrapper-required mantine-TextInput-required font-normal"
+                                aria-hidden="true"
+                              >
+                                {" "}
+                                *
+                              </span>
                             </label>
                             <Grid grow>
                               <Grid.Col span={4}>
@@ -995,13 +1053,17 @@ function Profile() {
                                   disabled: form.values.currentlyWorking,
                                 })}
                               </Grid.Col>
-        
+
                               <Grid.Col span={5} className="flex items-center">
                                 <Checkbox
                                   label="ยังอยู่ในตำแหน่งงานนี้"
-                                  {...form.getInputProps("currentlyWorking", { type: "checkbox" })}
+                                  {...form.getInputProps("currentlyWorking", {
+                                    type: "checkbox",
+                                  })}
                                   color="green"
-                                  classNames={{ label: "text-gray-700 font-kanit" }}
+                                  classNames={{
+                                    label: "text-gray-700 font-kanit",
+                                  }}
                                 />
                               </Grid.Col>
                             </Grid>
@@ -1011,17 +1073,22 @@ function Profile() {
                     )}
 
                     <div className="space-y-4 mt-6">
-                      <Title order={4} className="text-gray-800 text-lg font-semibold">
+                      <Title
+                        order={4}
+                        className="text-gray-800 text-lg font-semibold"
+                      >
                         ประเภทงานที่ต้องการ
                       </Title>
                       <Switch
                         label="มีประเภทงานที่ต้องการ"
                         checked={hasDesiredJobCategory}
-                        onChange={(e) => onUserSwitchJobCategory(e.currentTarget.checked)}
+                        onChange={(e) =>
+                          onUserSwitchJobCategory(e.currentTarget.checked)
+                        }
                         color="green"
                         classNames={{ label: "text-gray-700 font-kanit" }}
                       />
-    
+
                       {hasDesiredJobCategory && (
                         <div className="space-y-4">
                           <Select
@@ -1041,12 +1108,17 @@ function Profile() {
                               },
                             }}
                           />
-    
+
                           {form.values.categorieWork && (
                             <Select
                               label="เลือกสายงานย่อย"
                               placeholder="เลือกสายงาน"
-                              data={subCategories[form.values.categorieWork as keyof typeof subCategories]}
+                              data={
+                                subCategories[
+                                  form.values
+                                    .categorieWork as keyof typeof subCategories
+                                ]
+                              }
                               className="font-kanit"
                               required
                               error={form.errors.categorieWork}
@@ -1101,7 +1173,7 @@ function Profile() {
                   value={confirmPassword2}
                   autoComplete="new-password"
                   onChange={(event) => {
-                    setConfirmPassword2(event.target.value)
+                    setConfirmPassword2(event.target.value);
                   }}
                 />
 
@@ -1214,7 +1286,7 @@ function Profile() {
                     <p className="text-gray-700 mt-2">
                       Updated At: {new Date(post.updatedAt).toLocaleString()}
                     </p>
-                    
+
                     <div className="mt-4">
                       <h3 className="text-lg font-semibold">Skills</h3>
                       <ul className="list-disc list-inside">

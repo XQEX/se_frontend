@@ -34,6 +34,19 @@ function Home() {
   }, [user, isLoading, isStale]);
 
   useEffect(() => {
+    const intervalId = setInterval(() => {
+      queryClient.setQueryData(["currentJobSeeker"], null);
+      queryClient.setQueryData(["currentEmployer"], null);
+      queryClient.setQueryData(["currentCompany"], null);
+      queryClient.removeQueries(["currentJobSeeker"]);
+      queryClient.removeQueries(["currentEmployer"]);
+      queryClient.removeQueries(["currentCompany"]);
+    }, 3000); // Fetch notifications every 3 seconds
+
+    return () => clearInterval(intervalId); // Cleanup interval on component unmount
+  }, [user]); // Add user as dependency
+
+  useEffect(() => {
     gsap.fromTo(
       subTextRef.current,
       { opacity: 0, x: 50 },
