@@ -396,7 +396,7 @@ const ViewPostJobseeker: React.FC = () => {
           )}
           <button
             className="px-5 py-2 bg-seagreen/80 text-white rounded-md shadow-sm hover:bg-seagreen transition text-base"
-            onClick={() => navigate("/homeemp")}
+            onClick={() => navigate("/profile")}
           >
             กลับไปหน้าหลัก
           </button>
