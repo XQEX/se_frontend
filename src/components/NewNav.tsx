@@ -102,7 +102,7 @@ export const NewNav: React.FC<NavbarProps> = ({
           companyId: item.companyId || "",
         }));
         setNotifications(filteredData);
-        // console.log(notifications);
+        console.log(notifications);
       } else {
         throw new Error("Invalid notifications data");
       }
@@ -116,6 +116,14 @@ export const NewNav: React.FC<NavbarProps> = ({
 
   useEffect(() => {
     loadNotifications();
+  }, [user]); // Add `user` as dependency
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      loadNotifications();
+    }, 3000); // Fetch notifications every 3 seconds
+
+    return () => clearInterval(intervalId); // Cleanup interval on component unmount
   }, [user]); // Add `user` as dependency
 
   // Helper function for toast messages
@@ -162,8 +170,7 @@ export const NewNav: React.FC<NavbarProps> = ({
       //   queryClient.invalidateQueries(["currentJobSeeker"]);
       //   queryClient.invalidateQueries(["currentEmployer"]);
       //   queryClient.invalidateQueries(["currentCompany"]);
-
-      notifyError("คุณออกจากระบบ!"); // Show the notification after navigation
+      notifySuccess("ออกจากระบบเรียบร้อยแล้ว!");
       setIsSignedIn(false);
       navigate("/");
     } catch (error) {
@@ -209,7 +216,11 @@ export const NewNav: React.FC<NavbarProps> = ({
     <div>
       {isSignedIn ? (
         <>
-          <Menu.Item component={Link} to="/profile" className="kanit-regular">
+          <Menu.Item
+            component={Link}
+            to={userType == "JOBSEEKER" ? "/profile" : "/profileemp"}
+            className="kanit-regular"
+          >
             โปรไฟล์
           </Menu.Item>
           <Menu.Item onClick={handleLogout} className="kanit-regular">
