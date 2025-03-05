@@ -11,7 +11,7 @@ import axios from "axios";
 type Job = {
   id: string;
   title: string;
-  username: string | null;
+  username: string;
   location: string;
   workHours: string;
   salary: string;
@@ -283,7 +283,11 @@ function JobDetailEmp() {
         const job: Job = {
           id: jobData.id,
           title: jobData.title,
-          username: jobData.jobSeekerId || jobData.oauthJobSeekerId, // Assuming username is jobSeekerId
+          username: jobData.postByNormal
+            ? `${jobData.postByNormal.firstName} ${jobData.postByNormal.lastName}`
+            : jobData.postByOauth
+            ? `${jobData.postByOauth.firstName} ${jobData.postByOauth.lastName}`
+            : "Unknown User",
           location: jobData.jobLocation,
           workHours: jobData.workHoursRange,
           salary: jobData.expectedSalary.toString(),
