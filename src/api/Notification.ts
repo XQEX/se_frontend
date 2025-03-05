@@ -1,5 +1,5 @@
 import axios from "axios";
-import { API_BASE_URL, API_ENDPOINTS } from "./globalvariable";
+import { baseURL } from "./globalvariable";
 
 interface Notification {
   id: string;
@@ -25,18 +25,18 @@ export const fetchNotifications = async (
   status: "all" | "READ" | "UNREAD" = "all"
 ): Promise<Notification[]> => {
   try {
-    const response = await axios.get<NotificationResponse>(
-      `${API_BASE_URL}${API_ENDPOINTS.NOTIFICATION.LIST}`,
+    // console.log("Fetching notifications with status:", status);
+    const { data } = await axios.get<NotificationResponse>(
+      `${baseURL}/api/notification`,
       {
         params: { status },
-        headers: {
-          "Content-Type": "application/json",
-        },
         withCredentials: true,
       }
     );
-    return response.data.data;
+    // console.log("Notifications fetched successfully:", data);
+    return data.data;
   } catch (error) {
+    console.error("Failed to fetch notifications:", error);
     throw error;
   }
 };
@@ -45,8 +45,9 @@ export const markNotificationAsRead = async (
   id: string
 ): Promise<Notification> => {
   try {
-    const response = await axios.put<{ data: Notification }>(
-      `${API_BASE_URL}${API_ENDPOINTS.NOTIFICATION.READ}/${id}`,
+    // console.log("Marking notification as read with ID:", id);
+    const { data } = await axios.post<{ data: Notification }>(
+      `${baseURL}/api/notification/${id}/read`,
       {},
       {
         headers: {
@@ -55,16 +56,19 @@ export const markNotificationAsRead = async (
         withCredentials: true,
       }
     );
-    return response.data.data;
+    // console.log("Notification marked as read successfully:", data);
+    return data.data;
   } catch (error) {
+    console.error("Failed to mark notification as read:", error);
     throw error;
   }
 };
 
 export const markAllNotificationsAsRead = async (): Promise<Notification[]> => {
   try {
-    const response = await axios.put<NotificationResponse>(
-      `${API_BASE_URL}${API_ENDPOINTS.NOTIFICATION.READ_ALL}`,
+    // console.log("Marking all notifications as read...");
+    const { data } = await axios.post<{ data: Notification[] }>(
+      `${baseURL}/api/notification/mark-all-read`,
       {},
       {
         headers: {
@@ -73,8 +77,12 @@ export const markAllNotificationsAsRead = async (): Promise<Notification[]> => {
         withCredentials: true,
       }
     );
-    return response.data.data;
+    // console.log("All notifications marked as read successfully:", data);
+    // Fetch the updated notifications after marking all as read
+    const updatedNotifications = await fetchNotifications();
+    return updatedNotifications;
   } catch (error) {
+    console.error("Failed to mark all notifications as read:", error);
     throw error;
   }
 };

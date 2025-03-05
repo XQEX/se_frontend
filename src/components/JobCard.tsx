@@ -4,7 +4,7 @@ import { FaStar, FaArrowRight, FaMapPin, FaClock } from "react-icons/fa";
 import { TbCurrencyBaht } from "react-icons/tb";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { API_CONFIG } from '../config/api';
+import { baseURL } from "../api/globalvariable";
 
 type JobCardProps = {
   id: string | number;
@@ -65,7 +65,7 @@ const deleteMatchHiringPost = async (
   try {
     console.log("Deleting match for hiring post:", { matchId });
     const { data } = await axios.delete<DeleteMatchResponse>(
-      `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.MATCHING.HIRING.MATCH}/${matchId}`,
+      `${baseURL}/api/matching/hiring/match/${matchId}`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -101,7 +101,7 @@ const matchWithHiringPost = async (postId: string): Promise<MatchResponse> => {
   try {
     console.log("Attempting to match with hiring post:", { postId });
     const { data } = await axios.post<{ data: MatchResponse }>(
-      `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.MATCHING.HIRING.MATCH}/${postId}/match`,
+      `${baseURL}/api/matching/hiring/${postId}/match`,
       {},
       {
         headers: {
@@ -124,7 +124,7 @@ const getMatchesForHiringPost = async (
   try {
     console.log("Fetching matches for hiring post:", { postId });
     const { data } = await axios.get<GetMatchesResponse>(
-      `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.MATCHING.HIRING.MATCH}/${postId}/match`,
+      `${baseURL}/api/matching/hiring/${postId}/match`,
       {
         headers: {
           "Content-Type": "application/json",

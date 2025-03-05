@@ -1,5 +1,5 @@
 import axios from "axios";
-import { API_BASE_URL, API_ENDPOINTS } from "./globalvariable";
+import { baseURL } from "./globalvariable";
 
 interface JobCategory {
   id: string;
@@ -16,19 +16,21 @@ interface JobCategoryResponse {
   data: JobCategory[];
 }
 
+const api = axios.create({
+  baseURL: `${baseURL}/api/category`,
+  headers: {
+    Accept: "application/json",
+  },
+  withCredentials: true,
+});
+
 export const getAllCategories = async (): Promise<JobCategoryResponse> => {
   try {
-    const response = await axios.get<JobCategoryResponse>(
-      `${API_BASE_URL}${API_ENDPOINTS.JOB_CATEGORIES.LIST}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      }
-    );
-    return response.data;
+    const { data } = await api.get<JobCategoryResponse>("/");
+    console.log("Fetched categories:", data);
+    return data;
   } catch (error) {
+    console.error("Failed to fetch categories:", error);
     throw error;
   }
 };
@@ -38,18 +40,11 @@ export const createCategory = async (category: {
   description: string;
 }): Promise<JobCategoryResponse> => {
   try {
-    const response = await axios.post<JobCategoryResponse>(
-      `${API_BASE_URL}${API_ENDPOINTS.JOB_CATEGORIES.CREATE}`,
-      category,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      }
-    );
-    return response.data;
+    const { data } = await api.post<JobCategoryResponse>("/", category);
+    console.log("Created category:", data);
+    return data;
   } catch (error) {
+    console.error("Failed to create category:", error);
     throw error;
   }
 };
@@ -58,17 +53,11 @@ export const getCategoryById = async (
   id: string
 ): Promise<JobCategoryResponse> => {
   try {
-    const response = await axios.get<JobCategoryResponse>(
-      `${API_BASE_URL}${API_ENDPOINTS.JOB_CATEGORIES.GET}/${id}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      }
-    );
-    return response.data;
+    const { data } = await api.get<JobCategoryResponse>(`/${id}`);
+    console.log("Fetched category:", data);
+    return data;
   } catch (error) {
+    console.error("Failed to fetch category:", error);
     throw error;
   }
 };
@@ -78,18 +67,11 @@ export const updateCategory = async (
   category: { name: string; description: string }
 ): Promise<JobCategoryResponse> => {
   try {
-    const response = await axios.put<JobCategoryResponse>(
-      `${API_BASE_URL}${API_ENDPOINTS.JOB_CATEGORIES.UPDATE}/${id}`,
-      category,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      }
-    );
-    return response.data;
+    const { data } = await api.put<JobCategoryResponse>(`/${id}`, category);
+    console.log("Updated category:", data);
+    return data;
   } catch (error) {
+    console.error("Failed to update category:", error);
     throw error;
   }
 };
@@ -98,17 +80,11 @@ export const deleteCategory = async (
   id: string
 ): Promise<JobCategoryResponse> => {
   try {
-    const response = await axios.delete<JobCategoryResponse>(
-      `${API_BASE_URL}${API_ENDPOINTS.JOB_CATEGORIES.DELETE}/${id}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      }
-    );
-    return response.data;
+    const { data } = await api.delete<JobCategoryResponse>(`/${id}`);
+    console.log("Deleted category:", data);
+    return data;
   } catch (error) {
+    console.error("Failed to delete category:", error);
     throw error;
   }
 };

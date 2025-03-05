@@ -1,6 +1,5 @@
 import axios from "axios";
-import { API_BASE_URL, API_ENDPOINTS } from "./globalvariable";
-
+import { backendPort, baseURL } from "./globalvariable";
 interface AdminInfo {
   id: string;
   username: string;
@@ -16,52 +15,53 @@ interface ApprovalRequest {
 
 export const fetchAdminInfo = async (): Promise<AdminInfo> => {
   try {
-    const response = await axios.get<{ data: AdminInfo }>(
-      `${API_BASE_URL}${API_ENDPOINTS.ADMIN.INFO}`,
+    const { data } = await axios.get<{ data: AdminInfo }>(
+      `${baseURL}/api/admin/auth`,
       {
-        headers: {
-          "Content-Type": "application/json",
-        },
         withCredentials: true,
       }
     );
-    return response.data.data;
+    console.log("Fetch admin info successful:", data);
+    return data.data;
   } catch (error) {
+    console.error("Fetch admin info failed:", error);
     throw error;
   }
 };
 
 export const fetchApprovalRequests = async (): Promise<ApprovalRequest[]> => {
   try {
-    const response = await axios.get<{ data: ApprovalRequest[] }>(
-      `${API_BASE_URL}${API_ENDPOINTS.ADMIN.APPROVALS}`,
+    const { data } = await axios.get<{ data: ApprovalRequest[] }>(
+      `${baseURL}/api/admin/approve`,
       {
-        headers: {
-          "Content-Type": "application/json",
-        },
         withCredentials: true,
       }
     );
-    return response.data.data;
+    console.log("Fetch approval requests successful:", data);
+    return data.data;
   } catch (error) {
+    console.error("Fetch approval requests failed:", error);
     throw error;
   }
 };
 
 export const generateAdmin = async (): Promise<AdminInfo> => {
   try {
-    const response = await axios.post<{ data: AdminInfo }>(
-      `${API_BASE_URL}${API_ENDPOINTS.ADMIN.GENERATE}`,
+    const { data } = await axios.post<{ data: AdminInfo }>(
+      `${baseURL}/api/admin`,
       {},
       {
         headers: {
           "Content-Type": "application/json",
+          permission_key: "69duangjun69",
         },
         withCredentials: true,
       }
     );
-    return response.data.data;
+    console.log("Generate admin successful:", data);
+    return data.data;
   } catch (error) {
+    console.error("Generate admin failed:", error);
     throw error;
   }
 };
@@ -71,9 +71,12 @@ export const loginAdmin = async (
   password: string
 ): Promise<AdminInfo> => {
   try {
-    const response = await axios.post<{ data: AdminInfo }>(
-      `${API_BASE_URL}${API_ENDPOINTS.ADMIN.LOGIN}`,
-      { name, password },
+    const { data } = await axios.post<{ data: AdminInfo }>(
+      `${baseURL}/api/admin/auth`,
+      {
+        nameEmail: name,
+        password,
+      },
       {
         headers: {
           "Content-Type": "application/json",
@@ -81,25 +84,26 @@ export const loginAdmin = async (
         withCredentials: true,
       }
     );
-    return response.data.data;
+    console.log("Login successful:", data);
+    return data.data;
   } catch (error) {
+    console.error("Login failed:", (error as any).response.data.msg);
     throw error;
   }
 };
 
 export const logoutAdmin = async (): Promise<void> => {
   try {
-    await axios.post(
-      `${API_BASE_URL}${API_ENDPOINTS.ADMIN.LOGOUT}`,
-      {},
+    const { data } = await axios.delete<{ data: void }>(
+      `${baseURL}/api/admin/auth`,
       {
-        headers: {
-          "Content-Type": "application/json",
-        },
         withCredentials: true,
       }
     );
+    console.log("Logout successful:", data);
+    return data.data;
   } catch (error) {
+    console.error("Logout failed:", error);
     throw error;
   }
 };
@@ -109,9 +113,9 @@ export const approveUser = async (
   status: string
 ): Promise<ApprovalRequest> => {
   try {
-    const response = await axios.put<{ data: ApprovalRequest }>(
-      `${API_BASE_URL}${API_ENDPOINTS.ADMIN.APPROVE}/${userId}`,
-      { status },
+    const { data } = await axios.post<{ data: ApprovalRequest }>(
+      `${baseURL}/api/admin/approve`,
+      { id: userId, status },
       {
         headers: {
           "Content-Type": "application/json",
@@ -119,8 +123,10 @@ export const approveUser = async (
         withCredentials: true,
       }
     );
-    return response.data.data;
+    console.log("Approve user successful:", data);
+    return data.data;
   } catch (error) {
+    console.error("Approve user failed:", error);
     throw error;
   }
 };

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { API_BASE_URL, API_ENDPOINTS } from "./globalvariable";
+import { baseURL } from "./globalvariable";
 
 interface JobSeekerInfo {
   id: string;
@@ -191,14 +191,15 @@ export const registerJobSeeker = async (
   confirmPassword: string
 ): Promise<{ id: string }> => {
   try {
-    const response = await axios.post<{ data: { id: string } }>(
-      `${API_BASE_URL}${API_ENDPOINTS.JOB_SEEKER.REGISTRATION}`,
-      {
-        name,
-        email,
-        password,
-        confirmPassword,
-      },
+    console.log("Registering job seeker with:", {
+      name,
+      email,
+      password,
+      confirmPassword,
+    });
+    const { data } = await axios.post<{ data: { id: string } }>(
+      `${baseURL}/api/user/job-seeker`,
+      { name, email, password, confirmPassword },
       {
         headers: {
           "Content-Type": "application/json",
@@ -206,8 +207,10 @@ export const registerJobSeeker = async (
         withCredentials: true,
       }
     );
-    return response.data.data;
+    console.log("Registration successful:", data);
+    return data.data;
   } catch (error) {
+    console.error("Registration failed:", error);
     throw error;
   }
 };
@@ -217,12 +220,13 @@ export const loginJobSeeker = async (
   password: string
 ): Promise<JobSeekerAuthResponse> => {
   try {
-    const response = await axios.post<{ data: JobSeekerAuthResponse }>(
-      `${API_BASE_URL}${API_ENDPOINTS.JOB_SEEKER.REGISTRATION}/login`,
-      {
-        nameEmail,
-        password,
-      },
+    console.log("Attempting to login job seeker with:", {
+      nameEmail,
+      password,
+    });
+    const { data } = await axios.post<{ data: JobSeekerAuthResponse }>(
+      `${baseURL}/api/user/job-seeker/auth`,
+      { nameEmail, password },
       {
         headers: {
           "Content-Type": "application/json",
@@ -230,33 +234,36 @@ export const loginJobSeeker = async (
         withCredentials: true,
       }
     );
-    return response.data.data;
+    console.log("Login successful:", data);
+    return data.data;
   } catch (error) {
+    console.error("Login failed:", error);
     throw error;
   }
 };
 
 export const logoutJobSeeker = async (): Promise<void> => {
   try {
-    await axios.post(
-      `${API_BASE_URL}${API_ENDPOINTS.JOB_SEEKER.REGISTRATION}/logout`,
-      {},
+    console.log("Logging out job seeker...");
+    const { data } = await axios.delete<{ data: void }>(
+      `${baseURL}/api/user/job-seeker/auth`,
       {
-        headers: {
-          "Content-Type": "application/json",
-        },
         withCredentials: true,
       }
     );
+    console.log("Logout successful:", data);
+    return data.data;
   } catch (error) {
+    console.error("Logout failed:", error);
     throw error;
   }
 };
 
 export const fetchJobSeekerInfo = async (): Promise<JobSeekerInfo> => {
   try {
-    const response = await axios.get<{ data: JobSeekerInfo }>(
-      `${API_BASE_URL}${API_ENDPOINTS.JOB_SEEKER.REGISTRATION}/info`,
+    console.log("Fetching job seeker info...");
+    const { data } = await axios.get<{ data: JobSeekerInfo }>(
+      `${baseURL}/api/user/job-seeker/auth`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -264,8 +271,10 @@ export const fetchJobSeekerInfo = async (): Promise<JobSeekerInfo> => {
         withCredentials: true,
       }
     );
-    return response.data.data;
+    console.log("Fetch job seeker info successful:", data);
+    return data.data;
   } catch (error) {
+    console.error("Fetch job seeker info failed:", (error as any).message);
     throw error;
   }
 };
@@ -274,8 +283,9 @@ export const createJobFindingPost = async (
   jobFindingPost: JobFindingPost
 ): Promise<JobFindingPostResponse> => {
   try {
-    const response = await axios.post<JobFindingPostResponse>(
-      `${API_BASE_URL}${API_ENDPOINTS.JOB_SEEKER.REGISTRATION}/job-finding`,
+    console.log("Creating job finding post with:", jobFindingPost);
+    const { data } = await axios.post<{ data: JobFindingPostResponse }>(
+      `${baseURL}/api/post/finding-posts`,
       jobFindingPost,
       {
         headers: {
@@ -284,8 +294,10 @@ export const createJobFindingPost = async (
         withCredentials: true,
       }
     );
-    return response.data;
+    console.log("Job finding post creation successful:", data);
+    return data.data;
   } catch (error) {
+    console.error("Job finding post creation failed:", error);
     throw error;
   }
 };
@@ -302,18 +314,18 @@ export const getAllJobFindingPosts = async (
   } = {}
 ): Promise<JobFindingPostPaginationResponse> => {
   try {
-    const response = await axios.get<JobFindingPostPaginationResponse>(
-      `${API_BASE_URL}${API_ENDPOINTS.JOB_SEEKER.REGISTRATION}/job-finding`,
+    console.log("Fetching all job finding posts with filters:", filters);
+    const { data } = await axios.get<JobFindingPostPaginationResponse>(
+      `${baseURL}/api/post/finding-posts`,
       {
         params: filters,
-        headers: {
-          "Content-Type": "application/json",
-        },
         withCredentials: true,
       }
     );
-    return response.data;
+    console.log("Job finding posts fetched successfully:", data);
+    return data;
   } catch (error) {
+    console.error("Failed to fetch job finding posts:", error);
     throw error;
   }
 };
@@ -323,8 +335,14 @@ export const updateJobFindingPost = async (
   jobFindingPost: JobFindingPost
 ): Promise<JobFindingPostResponse> => {
   try {
-    const response = await axios.put<JobFindingPostResponse>(
-      `${API_BASE_URL}${API_ENDPOINTS.JOB_SEEKER.REGISTRATION}/job-finding/${id}`,
+    console.log(
+      "Updating job finding post with ID:",
+      id,
+      "and data:",
+      jobFindingPost
+    );
+    const { data } = await axios.put<{ data: JobFindingPostResponse }>(
+      `${baseURL}/api/post/finding-posts/${id}`,
       jobFindingPost,
       {
         headers: {
@@ -333,69 +351,144 @@ export const updateJobFindingPost = async (
         withCredentials: true,
       }
     );
-    return response.data;
+    console.log("Job finding post update successful:", data);
+    return data.data;
   } catch (error) {
+    console.error("Job finding post update failed:", error);
     throw error;
   }
 };
 
 export const deleteJobFindingPost = async (id: string): Promise<void> => {
   try {
-    await axios.delete(
-      `${API_BASE_URL}${API_ENDPOINTS.JOB_SEEKER.REGISTRATION}/job-finding/${id}`,
+    console.log("Deleting job finding post with ID:", id);
+    const { data } = await axios.delete<{ data: void }>(
+      `${baseURL}/api/post/finding-posts/${id}`,
       {
-        headers: {
-          "Content-Type": "application/json",
-        },
         withCredentials: true,
       }
     );
+    console.log("Job finding post deletion successful:", data);
   } catch (error) {
+    console.error("Job finding post deletion failed:", error);
     throw error;
   }
 };
 
 export const getJobFindingPostById = async (id: string): Promise<any> => {
   try {
-    const response = await axios.get(
-      `${API_BASE_URL}${API_ENDPOINTS.JOB_SEEKER.REGISTRATION}/job-finding/${id}`,
+    console.log("Fetching job finding post with ID:", id);
+    const { data } = await axios.get<{ data: JobPostDetailResponse }>(
+      `${baseURL}/api/post/finding-posts/${id}`,
       {
-        headers: {
-          "Content-Type": "application/json",
-        },
         withCredentials: true,
       }
     );
-    return response.data;
+    console.log("Job finding post fetched successfully:", data);
+    return data;
   } catch (error) {
+    console.error("Failed to fetch job finding post:", error);
     throw error;
   }
 };
 
-export const getUserJobFindingPosts = async (): Promise<UserJobFindingPostResponse> => {
-  try {
-    const response = await axios.get<UserJobFindingPostResponse>(
-      `${API_BASE_URL}${API_ENDPOINTS.JOB_SEEKER.REGISTRATION}/job-finding/user`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      }
-    );
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
+export const getUserJobFindingPosts =
+  async (): Promise<UserJobFindingPostResponse> => {
+    try {
+      console.log("Fetching user's job finding posts...");
+      const { data } = await axios.get<UserJobFindingPostResponse>(
+        `${baseURL}/api/post/user/finding-posts`,
+        {
+          withCredentials: true,
+        }
+      );
+      console.log("User's job finding posts fetched successfully:", data);
+      return data;
+    } catch (error) {
+      console.error("Failed to fetch user's job finding posts:", error);
+      throw error;
+    }
+  };
 
 export const updateUserProfile = async (
   profileData: UpdateUserProfileRequest
 ): Promise<void> => {
   try {
-    await axios.put(
-      `${API_BASE_URL}${API_ENDPOINTS.JOB_SEEKER.REGISTRATION}/profile`,
-      profileData,
+    console.log("Updating user profile with:", profileData);
+
+    console.log("Updating full name...");
+    const fullNameResponse = await axios.put<{ data: void }>(
+      `${baseURL}/api/user/job-seeker/auth/edit/full-name`,
+      { firstName: profileData.firstName, lastName: profileData.lastName },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    console.log("Full name update response:", fullNameResponse);
+
+    console.log("Updating about me...");
+    const aboutResponse = await axios.put<{ data: void }>(
+      `${baseURL}/api/user/job-seeker/auth/edit/about`,
+      { about: profileData.aboutMe },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    console.log("About me update response:", aboutResponse);
+
+    console.log("Updating address...");
+    const addressResponse = await axios.put<{ data: void }>(
+      `${baseURL}/api/user/job-seeker/auth/edit/address`,
+      { address: profileData.address, provinceAddress: "XD" },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    console.log("Address update response:", addressResponse);
+
+    console.log("Updating email...");
+    const emailResponse = await axios.put<{ data: void }>(
+      `${baseURL}/api/user/job-seeker/auth/edit/email`,
+      { email: profileData.email },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    console.log("Email update response:", emailResponse);
+
+    console.log("Updating contact...");
+    const contactResponse = await axios.put<{ data: void }>(
+      `${baseURL}/api/user/job-seeker/auth/edit/contact`,
+      { contact: profileData.contact },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    console.log("Contact update response:", contactResponse);
+
+    console.log("Updating resume image...");
+    console.log("Resume image:", profileData.resumeImage);
+
+    const ResumeResponse = await axios.post<{
+      data: void;
+    }>(
+      `${baseURL}/api/user/job-seeker/auth/resume-image`,
+      profileData.resumeImage,
       {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -403,7 +496,11 @@ export const updateUserProfile = async (
         withCredentials: true,
       }
     );
+    console.log("Resume image upload successful:", ResumeResponse);
+
+    console.log("User profile updated successfully");
   } catch (error) {
+    console.error("Failed to update user profile:", error);
     throw error;
   }
 };
@@ -413,8 +510,11 @@ export const updateJobSeekerUsername = async (
   password: string
 ): Promise<{ userId: string; username: string }> => {
   try {
-    const response = await axios.put<{ data: { userId: string; username: string } }>(
-      `${API_BASE_URL}${API_ENDPOINTS.JOB_SEEKER.REGISTRATION}/username`,
+    console.log("Updating job seeker's username with:", { username, password });
+    const { data } = await axios.put<{
+      data: { userId: string; username: string };
+    }>(
+      `${baseURL}/api/user/job-seeker/auth/edit/username`,
       { username, password },
       {
         headers: {
@@ -423,8 +523,10 @@ export const updateJobSeekerUsername = async (
         withCredentials: true,
       }
     );
-    return response.data.data;
+    console.log("Username update successful:", data);
+    return data.data;
   } catch (error) {
+    console.error("Username update failed:", error);
     throw error;
   }
 };
@@ -434,8 +536,12 @@ export const updateJobSeekerPassword = async (
   oldPassword: string
 ): Promise<{ userId: string }> => {
   try {
-    const response = await axios.put<{ data: { userId: string } }>(
-      `${API_BASE_URL}${API_ENDPOINTS.JOB_SEEKER.REGISTRATION}/password`,
+    console.log("Updating job seeker's password with:", {
+      password,
+      oldPassword,
+    });
+    const { data } = await axios.put<{ data: { userId: string } }>(
+      `${baseURL}/api/user/job-seeker/auth/edit/password`,
       { password, oldPassword },
       {
         headers: {
@@ -444,8 +550,10 @@ export const updateJobSeekerPassword = async (
         withCredentials: true,
       }
     );
-    return response.data.data;
+    console.log("Password update successful:", data);
+    return data.data;
   } catch (error) {
+    console.error("Password update failed:", error);
     throw error;
   }
 };
@@ -454,8 +562,12 @@ export const uploadProfileImage = async (
   formData: FormData
 ): Promise<{ approvalId: string; url: string }> => {
   try {
-    const response = await axios.post<{ data: { approvalId: string; url: string } }>(
-      `${API_BASE_URL}${API_ENDPOINTS.JOB_SEEKER.REGISTRATION_IMAGE}`,
+    console.log("Uploading profile image...");
+
+    const { data } = await axios.post<{
+      data: { approvalId: string; url: string };
+    }>(
+      `${baseURL}/api/user/job-seeker/auth/profile-image`,
       formData,
       {
         headers: {
@@ -464,8 +576,10 @@ export const uploadProfileImage = async (
         withCredentials: true,
       }
     );
-    return response.data.data;
+    console.log("Profile image upload successful:", data);
+    return data.data;
   } catch (error) {
+    console.error("Profile image upload failed:", error);
     throw error;
   }
 };

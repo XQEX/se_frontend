@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { NewNav } from "../../components/NewNav";
 import { Link, useLocation } from "react-router-dom";
-import { API_CONFIG } from '../../config/api';
 
 // Import Toastify
 import { ToastContainer, toast } from "react-toastify";
@@ -12,6 +11,7 @@ import "@mantine/dropzone/styles.css";
 import { Group, Text, Image } from "@mantine/core";
 import { IconUpload, IconPhoto, IconX } from "@tabler/icons-react";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
+import { baseURL } from "../../api/globalvariable";
 
 function SignUpJobSeek() {
   const navigate = useNavigate();
@@ -59,7 +59,7 @@ function SignUpJobSeek() {
 
     try {
       const response = await fetch(
-        `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.JOB_SEEKER.REGISTRATION_IMAGE}/${approvalId}`,
+        `${baseURL}/api/user/job-seeker/registration-image/${approvalId}`,
         {
           method: "POST",
           body: formData,
@@ -108,7 +108,7 @@ function SignUpJobSeek() {
       };
 
       const response = await fetch(
-        `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.JOB_SEEKER.REGISTRATION}`,
+        `${baseURL}/api/user/job-seeker`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -136,7 +136,7 @@ function SignUpJobSeek() {
 
   function handleGoogleOauth() {
     window.open(
-      `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.JOB_SEEKER.GOOGLE_OAUTH}`,
+      `${baseURL}/api/user/job-seeker/oauth/google`,
       "_self"
     );
   }

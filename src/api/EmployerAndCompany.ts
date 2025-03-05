@@ -1,5 +1,5 @@
 import axios from "axios";
-import { API_BASE_URL, API_ENDPOINTS } from "./globalvariable";
+import { baseURL } from "./globalvariable";
 
 interface JobPost {
   title: string;
@@ -107,7 +107,7 @@ export const getAllJobPosts = async (
   try {
     console.log("Fetching all job posts with filters:", filters);
     const { data } = await axios.get<JobPostPaginationResponse>(
-      `${API_BASE_URL}${API_ENDPOINTS.EMPLOYER.JOB_POSTS}`,
+      `${baseURL}/api/post/job-posts`,
       {
         params: filters,
         withCredentials: true,
@@ -125,7 +125,7 @@ export const deleteJobPost = async (id: string): Promise<void> => {
   try {
     console.log("Deleting job post with ID:", id);
     const { data } = await axios.delete<{ data: void }>(
-      `${API_BASE_URL}${API_ENDPOINTS.EMPLOYER.JOB_POSTS}/${id}`,
+      `${baseURL}/api/post/job-posts/${id}`,
       {
         withCredentials: true,
       }
@@ -143,7 +143,7 @@ export const getJobPostById = async (
   try {
     console.log("Fetching job post with ID:", id);
     const { data } = await axios.get<JobPostDetailResponse>(
-      `${API_BASE_URL}${API_ENDPOINTS.EMPLOYER.JOB_POSTS}/${id}`,
+      `${baseURL}/api/post/job-posts/${id}`,
       {
         withCredentials: true,
       }
@@ -163,7 +163,7 @@ export const updateJobPostById = async (
   try {
     console.log("Updating job post with ID:", id);
     const { data } = await axios.put<JobPostUpdateResponse>(
-      `${API_BASE_URL}${API_ENDPOINTS.EMPLOYER.JOB_POSTS}/${id}`,
+      `${baseURL}/api/post/job-posts/${id}`,
       updateData,
       {
         withCredentials: true,
@@ -187,7 +187,7 @@ export const updateUserProfile = async (
   if (userType === "employer") {
     console.log("Updating full name...");
     const fullNameResponse = await axios.put<{ data: void }>(
-      `${API_BASE_URL}${API_ENDPOINTS.EMPLOYER.USERNAME}`,
+      `${baseURL}/api/user/${userType}/auth/edit/full-name`,
       { firstName: profileData.firstName, lastName: profileData.lastName },
       {
         headers: {
@@ -201,7 +201,7 @@ export const updateUserProfile = async (
 
   console.log("Updating about me...");
   const aboutResponse = await axios.put<{ data: void }>(
-    `${API_BASE_URL}${API_ENDPOINTS.EMPLOYER.PROFILE}`,
+    `${baseURL}/api/user/${userType}/auth/edit/about`,
     { about: profileData.aboutMe },
     {
       headers: {
@@ -214,7 +214,7 @@ export const updateUserProfile = async (
 
   console.log("Updating address...");
   const addressResponse = await axios.put<{ data: void }>(
-    `${API_BASE_URL}${API_ENDPOINTS.EMPLOYER.PROFILE}`,
+    `${baseURL}/api/user/${userType}/auth/edit/address`,
     { address: profileData.address, provinceAddress: "XD" },
     {
       headers: {
@@ -227,7 +227,7 @@ export const updateUserProfile = async (
 
   console.log("Updating email...");
   const emailResponse = await axios.put<{ data: void }>(
-    `${API_BASE_URL}${API_ENDPOINTS.EMPLOYER.PROFILE}`,
+    `${baseURL}/api/user/${userType}/auth/edit/email`,
     { email: profileData.email },
     {
       headers: {
@@ -240,7 +240,7 @@ export const updateUserProfile = async (
 
   console.log("Updating contact...");
   const contactResponse = await axios.put<{ data: void }>(
-    `${API_BASE_URL}${API_ENDPOINTS.EMPLOYER.PROFILE}`,
+    `${baseURL}/api/user/${userType}/auth/edit/contact`,
     { contact: profileData.contact },
     {
       headers: {
@@ -252,40 +252,4 @@ export const updateUserProfile = async (
   console.log("Contact update response:", contactResponse);
 
   console.log("User profile updated successfully");
-};
-
-export const getJobPosts = async (
-  page: number = 1,
-  limit: number = 10,
-  search?: string,
-  jobPostType?: string,
-  jobLocation?: string,
-  salary?: number,
-  skills?: string,
-  jobCategories?: string
-): Promise<JobPostPaginationResponse> => {
-  try {
-    const response = await axios.get<JobPostPaginationResponse>(
-      `${API_BASE_URL}${API_ENDPOINTS.EMPLOYER.JOB_POSTS}`,
-      {
-        params: {
-          page,
-          limit,
-          search,
-          jobPostType,
-          jobLocation,
-          salary,
-          skills,
-          jobCategories,
-        },
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      }
-    );
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
 };
