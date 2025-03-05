@@ -11,6 +11,7 @@ import {
   Select,
   Switch,
   Checkbox,
+  MultiSelect,
 } from "@mantine/core";
 import { NewNav } from "../../components/NewNav";
 import { useUser } from "../../context/UserContext";
@@ -21,6 +22,7 @@ import { useNavigate } from "react-router-dom";
 import { Dropzone, MIME_TYPES } from "@mantine/dropzone";
 import { Group, Text, useMantineTheme, Image } from "@mantine/core";
 import { IconCloudUpload, IconDownload, IconX } from "@tabler/icons-react";
+import { fetchAllVulnerabilities } from "../../api/Vulnerability";
 
 // Interface for InputProps
 interface InputProps {
@@ -28,6 +30,14 @@ interface InputProps {
   placeholder: string;
   inputProps: ReturnType<UseFormReturnType<any>["getInputProps"]>;
   size: "short" | "medium" | "long";
+}
+
+interface Vulnerability {
+  id: string;
+  name: string;
+  description: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 // Interface for Select Props
@@ -55,6 +65,7 @@ const JobSeekerProfile = () => {
   } = useUser();
   const [isHaveUser, setIsHaveUser] = useState(false);
   const [resumes, setResumes] = useState<File | null>(null);
+  const [vulnerabilities, setVulnerabilities] = useState<Vulnerability[]>([]);
   const navigate = useNavigate();
   const openRef = useRef<() => void>(null);
   // Helper function for toast messages
@@ -69,21 +80,20 @@ const JobSeekerProfile = () => {
     refetchemployer();
     setIsHaveUser(!!user);
 
-    form.setValues({
-      firstName: user.firstName,
-      lastName: user.lastName,
-      location: user.address,
-      aboutMe: user.aboutMe,
-      email: user.email,
-      contact: user.contact,
-      jobTitle: "",
-      company: "",
-      startMonth: "",
-      // startYear: "",
-      // endMonth: "",
-      // endYear: "",
-      // currentlyWorking: false,
-    });
+    const fetchVulnerabilities = async () => {
+      try {
+        const response = await fetchAllVulnerabilities();
+        if ("data" in response) {
+          setVulnerabilities(response.data);
+        } else {
+          notifyError("Failed to fetch vulnerabilities");
+        }
+        console.log("Fetched vulnerabilities:", vulnerabilities);
+      } catch (error) {
+        notifyError("Failed to fetch vulnerabilities");
+      }
+    };
+    fetchVulnerabilities();
   }, [user, isLoading, isStale]);
 
   // const [hasExperience, setHasExperience] = useState<boolean>(true);
@@ -108,7 +118,7 @@ const JobSeekerProfile = () => {
       aboutMe: "Experienced software developer",
       email: "john.doe@example.com",
       phone: "+66987654321",
-      vulnerabilityType: "",
+      vulnerabilityType: [] as Vulnerability[],
     },
   });
 
@@ -117,6 +127,22 @@ const JobSeekerProfile = () => {
 
     const formData = new FormData();
     formData.append("image", resumes || new File([], ""));
+
+    form.setValues({
+      firstName: user.firstName,
+      lastName: user.lastName,
+      location: user.address,
+      aboutMe: user.aboutMe,
+      email: user.email,
+      contact: user.contact,
+      jobTitle: "",
+      company: "",
+      startMonth: "",
+      // startYear: "",
+      // endMonth: "",
+      // endYear: "",
+      // currentlyWorking: false,
+    });
 
     try {
       const updatedUser = {
@@ -349,17 +375,13 @@ const JobSeekerProfile = () => {
               />
 
               {/* Vulnerability Type */}
-              <Select
+              <MultiSelect
                 label="ประเภทความเปราะบาง/ความพิการ (ถ้ามี)"
                 placeholder="เลือกประเภท (ถ้ามี)"
-                data={[
-                  { value: "none", label: "ไม่มี" },
-                  { value: "physical", label: "พิการทางร่างกาย" },
-                  { value: "visual", label: "พิการทางการมองเห็น" },
-                  { value: "hearing", label: "พิการทางการได้ยิน" },
-                  { value: "mental", label: "พิการทางจิตใจ" },
-                  { value: "other", label: "อื่นๆ" },
-                ]}
+                data={vulnerabilities.map((v) => ({
+                  value: v.id,
+                  label: v.name,
+                }))}
                 className="font-kanit"
                 styles={{
                   input: {

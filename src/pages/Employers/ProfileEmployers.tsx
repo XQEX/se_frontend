@@ -191,7 +191,6 @@ function Profile() {
 
         await updateUserProfile(updatedUser);
         notifySuccess("Profile updated successfully");
-        // Optionally, refetch user data here
         refetchjobseeker();
       } catch (error) {
         notifyError(error as string);

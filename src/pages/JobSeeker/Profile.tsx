@@ -805,7 +805,7 @@ function Profile() {
                   onClick={editProfileToggle}
                 >
                   <IconPencil className="text-xl" />
-                  <span>แก้ไข</span>
+                  <span>เปลี่ยนรหัสผ่าน/ยูสเชอร์เนม</span>
                 </button>
               </div>
 
