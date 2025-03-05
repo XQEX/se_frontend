@@ -192,12 +192,12 @@ function JobDetail() {
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-3">
-              <Link
+              {/* <Link
                 to="/reserved"
                 className="bg-seagreen hover:bg-seagreen-dark text-white px-6 py-2 rounded-md text-sm text-center transition shadow-sm"
               >
                 สมัครงานตอนนี้
-              </Link>
+              </Link> */}
               <button
                 onClick={handleMatch}
                 className="flex items-center justify-center space-x-2 text-gray-600 hover:text-gray-800 
@@ -208,7 +208,7 @@ function JobDetail() {
                     isStarred ? "text-yellow-400 fill-yellow-400" : ""
                   }`}
                 />
-                <span className="kanit-regular">บันทึกงาน</span>
+                <span className="kanit-regular">สนใจ</span>
               </button>
             </div>
 

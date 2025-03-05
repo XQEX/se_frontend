@@ -21,6 +21,82 @@ type Job = {
   postedAt: string;
 };
 
+interface UserMatchingStatusResponse {
+  success: boolean;
+  msg: string;
+  data: {
+    hiringMatches: {
+      id: string;
+      jobHiringPostId: string;
+      toMatchSeekers: {
+        jobSeekerType: string;
+        jobSeekerId: string;
+        oauthJobSeekerId: string;
+        jobHiringPostMatchedId: string;
+        status: string;
+        createdAt: string;
+        approvedAt: string;
+        updatedAt: string;
+      }[];
+    }[];
+    findingMatches: {
+      id: string;
+      jobFindingPostId: string;
+      status: string;
+      jobHirerType: string;
+      employerId: string;
+      oauthEmployerId: string | null;
+      companyId: string | null;
+      createdAt: string;
+      approvedAt: string | null;
+      updatedAt: string;
+      toPost: {
+        id: string;
+        title: string;
+        description: string;
+        jobLocation: string;
+        expectedSalary: number;
+        workDates: string;
+        workHoursRange: string;
+        status: string;
+        jobPostType: string;
+        jobSeekerType: string;
+        jobSeekerId: string;
+        oauthJobSeekerId: string | null;
+        createdAt: string;
+        updatedAt: string;
+      };
+    }[];
+  };
+  status: number;
+}
+interface MatchResponse {
+  success: boolean;
+  msg: string;
+  data?: {
+    id: string;
+    title: string;
+    description: string;
+    jobLocation: string;
+    expectedSalary: number;
+    workDates: string;
+    workHoursRange: string;
+    status: string;
+    jobPostType: string;
+    jobSeekerType: string;
+    jobSeekerId: string;
+    oauthJobSeekerId: string | null;
+    createdAt: string;
+    updatedAt: string;
+  };
+  status: number;
+}
+interface DeleteMatchResponse {
+  success: boolean;
+  msg: string;
+  status: number;
+}
+
 function JobDetailEmp() {
   const {
     user,
@@ -36,16 +112,145 @@ function JobDetailEmp() {
 
   const { id } = useParams();
   const navigate = useNavigate();
-  const [isStarred, setIsStarred] = useState(false);
   const [job, setJob] = useState<Job | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isFav, setIsFav] = useState(false);
+
+  const createFindingPostMatch = async (
+    postId: string
+  ): Promise<MatchResponse> => {
+    try {
+      console.log("Creating match for finding post:", { postId });
+      const { data } = await axios.post<MatchResponse>(
+        `http://localhost:6977/api/matching/finding/${postId}/match`,
+        {},
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+      console.log("Finding post match created successfully:", data);
+      return data;
+    } catch (error) {
+      console.error("Error creating finding post match:", error);
+      throw error;
+    }
+  };
+
+  const getUserMatchingStatus = async (): Promise<
+    UserMatchingStatusResponse["data"]["findingMatches"]
+  > => {
+    try {
+      console.log("Fetching user matching status");
+      const { data } = await axios.get<UserMatchingStatusResponse>(
+        `http://localhost:6977/api/matching/user/tracking`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+      console.log(
+        "User matching status retrieved successfully:",
+        data.data.findingMatches
+      );
+      // Extract and log the toPost data
+      const toPostData = data.data.findingMatches.map((match) => match.toPost);
+      console.log("toPost data:", toPostData);
+      return data.data.findingMatches;
+    } catch (error) {
+      console.error("Failed to fetch user matching status:", error);
+      throw error;
+    }
+  };
 
   useEffect(() => {
     refetchjobseeker();
     refetchemployer();
     refetchCompany();
     setIsHaveUser(!!user);
+
+    const fetchMatches = async () => {
+      try {
+        console.log("Fetching matches for finding post:", { id });
+        const data = await getUserMatchingStatus();
+
+        if (!data) {
+          console.warn("No finding matches found.");
+          setIsFav(false);
+          return;
+        }
+
+        console.log("User matching status retrieved successfully:", data);
+
+        const isCurrentUserFav = data.some(
+          (match) => match.jobFindingPostId === String(id)
+        );
+
+        setIsFav(isCurrentUserFav);
+      } catch (error) {
+        console.error("Error fetching matches:", error);
+      }
+    };
+
+    fetchMatches();
   }, [user, isLoading, isStale]);
+
+  const handleMatch = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      if (isFav) {
+        console.log("Unmatching... Fetching matches first.");
+        const matches = await getUserMatchingStatus();
+        if (!matches?.length) {
+          console.warn("No finding matches found.");
+          return;
+        }
+
+        const matchToDelete = matches.find(
+          (match) => match.jobFindingPostId === String(id)
+        );
+
+        if (!matchToDelete) {
+          console.warn("No matching post found for current user");
+          return;
+        }
+
+        console.log("Match found. Deleting match ID:", matchToDelete.id);
+        await deleteMatchFindingPost(matchToDelete.id);
+        setIsFav(false);
+      } else {
+        console.log("Matching... Creating new match.");
+        const response = await createFindingPostMatch(String(id));
+        if (response.success) setIsFav(true);
+      }
+    } catch (error) {
+      console.error("Error handling match:", error);
+    }
+  };
+
+  const deleteMatchFindingPost: (
+    matchId: string
+  ) => Promise<DeleteMatchResponse> = async (matchId: string) => {
+    try {
+      console.log("Deleting match for finding post:", { matchId });
+      const { data } = await axios.delete<DeleteMatchResponse>(
+        `http://localhost:6977/api/matching/finding/match/${matchId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+      console.log("Match deleted successfully:", data);
+      return data;
+    } catch (error) {
+      console.error("Failed to delete match for finding post:", error);
+      throw error;
+    }
+  };
 
   useEffect(() => {
     console.log("🔎 กำลังโหลดข้อมูลงาน...");
@@ -162,23 +367,27 @@ function JobDetailEmp() {
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-3">
-              <Link
+              {/* <Link
                 to="/reserved"
                 className="bg-seagreen hover:bg-seagreen-dark text-white px-6 py-2 rounded-md text-sm text-center transition shadow-sm"
               >
                 สมัครงานตอนนี้
-              </Link>
+              </Link> */}
+
               <button
-                onClick={() => setIsStarred((prev) => !prev)}
+                onClick={handleMatch}
                 className="flex items-center justify-center space-x-2 text-gray-600 hover:text-gray-800 
                          px-4 py-2 rounded-md border border-gray-200 transition-colors text-sm"
               >
                 <FaStar
-                  className={`h-4 w-4 ${
-                    isStarred ? "text-yellow-400 fill-yellow-400" : ""
+                  size={20}
+                  className={`transition-colors ${
+                    isFav
+                      ? "fill-yellow-400 text-yellow-400"
+                      : "text-gray-300 group-hover:text-gray-400"
                   }`}
                 />
-                <span>บันทึกงาน</span>
+                <span>สนใจ</span>
               </button>
             </div>
 
