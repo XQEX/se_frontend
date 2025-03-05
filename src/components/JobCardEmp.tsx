@@ -190,6 +190,8 @@ JobCardEmpProps) {
 
         console.log("User matching status retrieved successfully:", data);
 
+        console.log("HELPPPPPPPPPPPPP!!!!", data);
+        console.log(id);
         const isCurrentUserFav = data.some(
           (match) => match.jobFindingPostId === String(id)
         );

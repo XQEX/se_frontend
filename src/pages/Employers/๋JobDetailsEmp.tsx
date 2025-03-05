@@ -170,8 +170,14 @@ function JobDetailEmp() {
     refetchemployer();
     refetchCompany();
     setIsHaveUser(!!user);
+    console.log(job);
 
     const fetchMatches = async () => {
+      if (!id) {
+        console.warn("No job ID available");
+        return;
+      }
+
       try {
         console.log("Fetching matches for finding post:", { id });
         const data = await getUserMatchingStatus();
@@ -183,19 +189,27 @@ function JobDetailEmp() {
         }
 
         console.log("User matching status retrieved successfully:", data);
+        console.log("Current job ID:", id);
+        console.log("All matches:", data);
 
-        const isCurrentUserFav = data.some(
-          (match) => match.jobFindingPostId === String(id)
-        );
+        const isCurrentUserFav = data.some((match) => {
+          const matchId = match.jobFindingPostId;
+          console.log("Comparing match ID:", matchId, "with job ID:", id);
+          return matchId === String(id);
+        });
 
+        console.log("Is favorite?", isCurrentUserFav);
         setIsFav(isCurrentUserFav);
       } catch (error) {
         console.error("Error fetching matches:", error);
+        setIsFav(false);
       }
     };
 
-    fetchMatches();
-  }, [user, isLoading, isStale]);
+    if (user && id) {
+      fetchMatches();
+    }
+  }, [user, id, isLoading, isStale]);
 
   const handleMatch = async (e: React.MouseEvent) => {
     e.stopPropagation();
