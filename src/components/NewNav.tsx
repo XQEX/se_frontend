@@ -152,6 +152,7 @@ export const NewNav: React.FC<NavbarProps> = ({
         await logoutCompany();
       }
 
+      setUser(null);
       queryClient.setQueryData(["currentJobSeeker"], null);
       queryClient.setQueryData(["currentEmployer"], null);
       queryClient.setQueryData(["currentCompany"], null);
