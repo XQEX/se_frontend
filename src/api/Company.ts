@@ -35,12 +35,44 @@ interface JobPostPagination {
 
 interface CompanyJobPostsResponse {
   success: boolean;
-  status: number;
-  msg: string;
   data: {
-    jobPosts: JobPost[];
-    pagination: JobPostPagination;
+    jobPosts: Array<{
+      id: string;
+      title: string;
+      description: string;
+      jobLocation: string;
+      salary: number;
+      workDates: string;
+      workHoursRange: string;
+      hiredAmount: number;
+      status: string;
+      jobHirerType: string;
+      jobPostType: string;
+      employerId: string | null;
+      oauthEmployerId: string | null;
+      companyId: string;
+      createdAt: string;
+      updatedAt: string;
+      companyName: string;
+      skills: Array<{
+        id: string;
+        name: string;
+        description: string;
+      }>;
+      jobCategories: Array<{
+        id: string;
+        name: string;
+        description: string;
+      }>;
+    }>;
+    pagination: {
+      currentPage: number;
+      totalPages: number;
+      totalItems: number;
+      itemsPerPage: number;
+    };
   };
+  message: string;
 }
 
 interface JobPostResponse {
@@ -191,7 +223,7 @@ export const getCompanyJobPosts =
         }
       );
       console.log("Fetch company job posts successful:", data);
-      return data;
+      return data.data;
     } catch (error) {
       console.error("Fetch company job posts failed:", error);
       throw error;

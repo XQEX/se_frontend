@@ -31,7 +31,7 @@ import {
 import { useForm, UseFormReturnType } from "@mantine/form";
 import { IconSearch, IconChartLine, IconPencil } from "@tabler/icons-react";
 import { deleteJobFindingPost } from "../../api/JobSeeker";
-import { isAxiosError } from "axios";
+import axios from "axios";
 
 import {
   TextInput,
@@ -454,20 +454,11 @@ function Profile() {
     try {
       const response = await updateJobSeekerUsername(userNameValue, password);
       console.log("response:", response);
-      // if (response.data.error) {
-      //   notifyError(response.data.error);
-      //   return;
-      // }
       notifySuccess("username updated successfully");
-
       refetchjobseeker();
       console.log("refetchjobseeker");
     } catch (error) {
-      if (error instanceof isAxiosError) {
-        notifyError((error as isAxiosError).response.data.msg);
-      } else {
-        notifyError(error as string);
-      }
+      notifyError("fail");
     }
   };
 
@@ -479,15 +470,10 @@ function Profile() {
     try {
       await updateJobSeekerPassword(newPassword, password2);
       notifySuccess("Passwords updated successfully");
-
       refetchjobseeker();
       console.log("refetchjobseeker");
     } catch (error) {
-      if (error instanceof isAxiosError) {
-        notifyError((error as isAxiosError).response.data.msg);
-      } else {
-        notifyError(error as string);
-      }
+      notifyError("fail");
     }
   };
 

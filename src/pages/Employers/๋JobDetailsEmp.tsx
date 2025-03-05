@@ -8,6 +8,13 @@ import { Avatar } from "@mantine/core";
 import { getJobFindingPostById } from "../../api/JobSeeker";
 import { useUser } from "../../context/UserContext";
 import axios from "axios";
+
+interface Skill {
+  id: string;
+  name: string;
+  description: string;
+}
+
 type Job = {
   id: string;
   title: string;
@@ -94,6 +101,39 @@ interface MatchResponse {
 interface DeleteMatchResponse {
   success: boolean;
   msg: string;
+  status: number;
+}
+
+interface JobFindingPostResponse {
+  success: boolean;
+  msg: string;
+  data: {
+    id: string;
+    title: string;
+    description: string;
+    jobLocation: string;
+    expectedSalary: number;
+    workDates: string;
+    workHoursRange: string;
+    status: string;
+    jobPostType: string;
+    jobSeekerType: string;
+    jobSeekerId: string;
+    oauthJobSeekerId: string | null;
+    createdAt: string;
+    updatedAt: string;
+    skills: Skill[];
+    postByNormal?: {
+      id: string;
+      firstName: string;
+      lastName: string;
+    } | null;
+    postByOauth?: {
+      id: string;
+      firstName: string;
+      lastName: string;
+    } | null;
+  };
   status: number;
 }
 
@@ -292,7 +332,9 @@ function JobDetailEmp() {
           workHours: jobData.workHoursRange,
           salary: jobData.expectedSalary.toString(),
           description: jobData.description,
-          requirements: jobData.skills.map((skill) => skill.name).join(", "),
+          requirements: jobData.skills
+            .map((skill: Skill) => skill.name)
+            .join(", "),
           workDays: jobData.workDates,
           postedAt: jobData.createdAt,
         };

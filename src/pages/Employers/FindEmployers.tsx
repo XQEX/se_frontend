@@ -40,22 +40,30 @@ const sortOptions = [
 ];
 
 interface Job {
-  id: number;
+  id: string;
   title: string;
   jobLocation: string;
   expectedSalary: number;
   workDates: string;
   workHoursRange: string;
   jobCategories: {
-    id: number;
+    id: string;
     name: string;
+    description: string;
   }[];
   jobPostType: string;
   skills: {
-    id: number;
+    id: string;
     name: string;
+    description: string;
   }[];
   createdAt: string;
+}
+
+interface JobCategory {
+  id: string;
+  name: string;
+  description: string;
 }
 
 interface Filters {
@@ -199,7 +207,11 @@ function FindEmp() {
         if (filters.selectedWorkDays.length === 0) return true;
 
         const selectedDays = filters.selectedWorkDays;
-        if (selectedDays.includes("ทั้งหมด") || selectedDays.length === workDayOptions.length) return true;
+        if (
+          selectedDays.includes("ทั้งหมด") ||
+          selectedDays.length === workDayOptions.length
+        )
+          return true;
 
         const jobWorkDates = job.workDates.trim();
 
@@ -229,7 +241,7 @@ function FindEmp() {
         matchesSalary &&
         matchesWorkHours() &&
         matchesLocations &&
-        matchesWorkDays() 
+        matchesWorkDays()
       );
     });
   };
@@ -254,7 +266,10 @@ function FindEmp() {
     });
   };
 
-  const filteredJobs = useMemo(() => sortJobs(filterJobs(jobs)), [jobs, filters]);
+  const filteredJobs = useMemo(
+    () => sortJobs(filterJobs(jobs)),
+    [jobs, filters]
+  );
 
   const indexOfLastJob = currentPage * itemsPerPage;
   const indexOfFirstJob = indexOfLastJob - itemsPerPage;
@@ -475,7 +490,8 @@ function FindEmp() {
                     salary={job.expectedSalary}
                     workDays={job.workDates}
                     workHours={job.workHoursRange}
-                    jobCategories={job.jobCategories}
+                    jobCategories={job.jobCategories as JobCategory[]}
+                    currentUserID={user?.id || ""}
                   />
                 </motion.div>
               ))
@@ -707,17 +723,17 @@ function FindEmp() {
                     }));
                   }
                 }}
-              data={sortOptions}
-              rightSection={
-                filters.sortBy && (
-                  <span className="text-sm">
-                    {filters.sortOrder === "asc" ? "↑" : "↓"}
-                  </span>
-                )
-              }
-              className="kanit-regular"
-            />
-          </Group>
+                data={sortOptions}
+                rightSection={
+                  filters.sortBy && (
+                    <span className="text-sm">
+                      {filters.sortOrder === "asc" ? "↑" : "↓"}
+                    </span>
+                  )
+                }
+                className="kanit-regular"
+              />
+            </Group>
           </Stack>
         </Box>
       </Drawer>

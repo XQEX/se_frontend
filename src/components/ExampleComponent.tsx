@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useUser } from "../context/UserContext";
 
 const ExampleComponent: React.FC = () => {
-  const { user, isLoading, isLoggedIn } = useUser();
+  const { user, isLoading } = useUser();
 
   useEffect(() => {
     console.log("User data:", user);
@@ -12,7 +12,7 @@ const ExampleComponent: React.FC = () => {
     return <div>Loading...</div>;
   }
 
-  if (!isLoggedIn) {
+  if (!user) {
     return <div>Please log in.</div>;
   }
 
