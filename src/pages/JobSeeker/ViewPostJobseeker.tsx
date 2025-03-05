@@ -159,7 +159,7 @@ const ViewPostJobseeker: React.FC = () => {
           jobCategories: editedJob.jobCategories.map((cat) => cat.id),
         });
         setIsEditing(false);
-        navigate("/homeemp");
+        navigate("/profile");
       } catch (error) {
         console.error("Failed to update job post:", error);
       }
@@ -196,7 +196,7 @@ const ViewPostJobseeker: React.FC = () => {
         <h1 className="text-2xl font-bold text-red-500">❌ ไม่พบข้อมูลงาน</h1>
         <button
           className="mt-6 px-6 py-2 bg-seagreen text-white rounded-md shadow-sm hover:bg-[#246e4a] transition text-base"
-          onClick={() => navigate("/homeemp")}
+          onClick={() => navigate("/profile")}
         >
           กลับไปหน้าหลัก
         </button>

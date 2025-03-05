@@ -208,6 +208,7 @@ function Profile() {
     refetchjobseeker();
     refetchCompany();
     refetchemployer();
+
     // console.log("current user:", user);
     // console.log("isLoading:", isLoading);
     // console.log("isHaveUser :", isHaveUser);
@@ -1240,9 +1241,10 @@ function Profile() {
               }
               onClick={() => handleTabClick("work")}
             >
-              My Post <span className="text-sm text-gray-500">1</span>
+              My Post{" "}
+              <span className="text-sm text-gray-500">{userPosts.length}</span>
             </button>
-            <button
+            {/* <button
               className={
                 baseTabClasses +
                 " " +
@@ -1251,7 +1253,7 @@ function Profile() {
               onClick={() => handleTabClick("about")}
             >
               About
-            </button>
+            </button> */}
           </div>
         </section>
 
@@ -1338,7 +1340,7 @@ function Profile() {
             </section>
           )}
 
-          {activeTab === "about" && (
+          {/* {activeTab === "about" && (
             <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
               <div className="grid md:grid-cols-3 gap-6">
                 <ArticleCard
@@ -1355,7 +1357,7 @@ function Profile() {
                 />
               </div>
             </section>
-          )}
+          )} */}
         </div>
       </motion.div>
     </div>

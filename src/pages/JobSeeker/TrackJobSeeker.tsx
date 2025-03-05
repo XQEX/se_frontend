@@ -180,7 +180,7 @@ function TrackJobSeeker() {
     <div className="bg-gradient-to-b from-white to-green-50 min-h-screen">
       <NewNav
         user={user}
-        isLoading={isLoading}
+        isLoading={isUserLoading}
         isHaveUser={isHaveUser}
         refetchjobseeker={refetchjobseeker}
         refetchemployer={refetchemployer}
@@ -463,7 +463,9 @@ function TrackJobSeeker() {
                                   </strong>
                                   <img
                                     src={
-                                      user.profilePicture !== "UNDEFINED"
+                                      post.toPostMatched.toPost
+                                        .postByOauthEmployer.profilePicture !==
+                                      "UNDEFINED"
                                         ? post.toPostMatched.toPost
                                             .postByOauthEmployer.profilePicture
                                         : "profile.webp"
@@ -520,7 +522,8 @@ function TrackJobSeeker() {
                                   </strong>
                                   <img
                                     src={
-                                      user.profilePicture !== "UNDEFINED"
+                                      post.toPostMatched.toPost.postByEmployer
+                                        .profilePicture !== "UNDEFINED"
                                         ? post.toPostMatched.toPost
                                             .postByEmployer.profilePicture
                                         : "profile.webp"
