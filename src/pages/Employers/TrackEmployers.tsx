@@ -78,7 +78,7 @@ function TrackEmployers() {
   };
 
   const NoDataMessage = ({ type }: { type: "hiring" | "finding" }) => (
-    <div className="p-6 text-center text-gray-500 bg-white rounded-lg shadow-md">
+    <div className="p-6 text-center text-gray-500 bg-white rounded-lg shadow-md m-16">
       <p className="text-lg font-semibold">
         {type === "hiring"
           ? "โพสรับสมัครงานทของคุณที่มีคนกดสนใจ"
@@ -264,11 +264,40 @@ function TrackEmployers() {
                       {findingMatches.map((match) => (
                         <tr key={match.id} className="hover:bg-green-50">
                           <td className="p-3 border border-green-100">
-                            <div className="text-xl text-gray-500 font-bold">
+                            <div className="text-md text-gray-500 font-bold">
                               พนักงาน :
                             </div>
-                            <div className="text-lg">
-                              {match.toPost.jobSeekerId}
+                            <div className="text-md">
+                              <div>
+                                <strong>ชื่อ:</strong>{" "}
+                                {match.toPost.userData.firstName}
+                              </div>
+                              <div>
+                                <strong>นามสกุล:</strong>{" "}
+                                {match.toPost.userData.lastName}
+                              </div>
+                              <div>
+                                <strong>อีเมล:</strong>{" "}
+                                {match.toPost.userData.email}
+                              </div>
+                              <div>
+                                {/* รูปโปรไฟล์ดึงมายังไงไม่รู้รอเพื่อนทำให้ */}
+                                <strong>รูปโปรไฟล์:</strong>{" "}
+                                {match.toPost.userData.profilePicture}
+                              </div>
+                              <div>
+                                <strong>เกี่ยวกับฉัน:</strong>{" "}
+                                {match.toPost.userData.aboutMe}
+                              </div>
+                              <div>
+                                <strong>ติดต่อ:</strong>{" "}
+                                {match.toPost.userData.contact}
+                              </div>
+                              {/* รูปresumeดึงมายังไงไม่รู้รอเพื่อนทำให้ */}
+                              <div>
+                                <strong>เรซูเม่:</strong>{" "}
+                                {match.toPost.userData.resume}
+                              </div>
                             </div>
                           </td>
                           {/* รายละเอียด */}
@@ -298,15 +327,15 @@ function TrackEmployers() {
                             </div>
                           </td>
 
-                          <td className="p-3 border border-green-100">
-                            ฿{match.toPost.expectedSalary.toLocaleString()}
+                          <td className="p-3 border text-sm border-green-100">
+                            ฿ {match.toPost.expectedSalary.toLocaleString()} บาท
                           </td>
 
-                          <td className="p-3 border border-green-100 text-center">
+                          <td className="p-3 border border-green-100 text-center text-sm">
                             <StatusBadge status={match.status} />
                           </td>
 
-                          <td className="p-3 border border-green-100">
+                          <td className="p-3 border border-green-100 text-sm">
                             {new Date(
                               match.toPost.createdAt
                             ).toLocaleDateString("th-TH")}

@@ -25,6 +25,7 @@ import { MdWorkspacePremium } from "react-icons/md";
 import { getUserJobFindingPosts, updateUserProfile } from "../../api/JobSeeker";
 import { useForm, UseFormReturnType } from "@mantine/form";
 import { IconSearch, IconChartLine, IconPencil } from "@tabler/icons-react";
+import { deleteJobFindingPost } from "../../api/JobSeeker";
 
 import {
   TextInput,

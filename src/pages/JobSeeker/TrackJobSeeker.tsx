@@ -278,18 +278,37 @@ function TrackJobSeeker() {
                                       key={index}
                                       className="flex flex-col items-center justify-center border border-gray-300 p-2 rounded-md mb-2"
                                     >
-                                      <div className="font-bold">
-                                        ID ผู้ว่าจ้าง :
-                                      </div>
-
-                                      {post.employerId ??
-                                        post.oauthEmployerId ??
-                                        post.companyId}
-                                      <div className="font-bold">
-                                        Match Id :
+                                      <div className="text-start">
+                                        <div className="font-bold">
+                                          ข้อมูลผู้ว่าจ้าง:
+                                        </div>
+                                        <div>
+                                          ชื่อผู้ใช้: {post.toEmployer.username}
+                                        </div>
+                                        <div>
+                                          ชื่อ: {post.toEmployer.firstName}
+                                        </div>
+                                        <div>
+                                          นามสกุล: {post.toEmployer.lastName}
+                                        </div>
+                                        <div>
+                                          อีเมล: {post.toEmployer.email}
+                                        </div>
+                                        <div>
+                                          เกี่ยวกับ: {post.toEmployer.aboutMe}
+                                        </div>
+                                        <div>
+                                          ติดต่อ: {post.toEmployer.contact}
+                                        </div>
+                                        <div>
+                                          จังหวัดที่อยู่อาศัย:
+                                          {post.toEmployer.provinceAddress}
+                                        </div>
+                                        <div>
+                                          ที่อยู่: {post.toEmployer.address}
+                                        </div>
                                       </div>
                                       <div>
-                                        {post.id}
                                         <div>
                                           <div className="font-bold">
                                             สถานะ :
@@ -300,7 +319,7 @@ function TrackJobSeeker() {
                                           {post.status === "INPROGRESS" && (
                                             <div className="flex gap-2 mt-2">
                                               {!hasAcceptedMatch && (
-                                                <div>
+                                                <div className="flex gap-2">
                                                   <button
                                                     className="bg-green-500 text-white px-3 py-1 rounded"
                                                     onClick={() =>
@@ -385,6 +404,7 @@ function TrackJobSeeker() {
                         <tr key={post.id} className="hover:bg-emerald-50">
                           <td className="p-3 border border-emerald-100">
                             <div className="font-semibold">
+                              companyId :
                               {post.toPostMatched.toPost.employerId ??
                                 post.toPostMatched.toPost.oauthEmployerId ??
                                 post.toPostMatched.toPost.companyId}
