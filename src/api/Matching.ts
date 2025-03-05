@@ -393,7 +393,8 @@ export const getFindingPostMatch = async (
 };
 export const updateFindingMatchStatus = async (
   matchId: string,
-  status: string
+  status: string,
+  seekerId: string
 ): Promise<UpdateFindingMatchStatusResponse> => {
   try {
     console.log("Updating finding match status:", { matchId, status });
@@ -401,7 +402,7 @@ export const updateFindingMatchStatus = async (
       data: UpdateFindingMatchStatusResponse;
     }>(
       `http://localhost:${backendPort}/api/matching/finding/match/${matchId}/status`,
-      { status },
+      { status, seekerId },
       {
         headers: {
           "Content-Type": "application/json",

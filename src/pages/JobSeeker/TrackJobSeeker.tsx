@@ -134,9 +134,13 @@ function TrackJobSeeker() {
     return () => clearInterval(intervalId); // Cleanup interval on component unmount
   }, [user]);
 
-  const handleStatusChange = async (matchId: string, newStatus: string) => {
+  const handleStatusChange = async (
+    matchId: string,
+    newStatus: string,
+    seekerId: string
+  ) => {
     try {
-      await updateFindingMatchStatus(matchId, newStatus);
+      await updateFindingMatchStatus(matchId, newStatus, seekerId);
       const updatedStatus = await getUserMatchingStatus();
       setHiringMatches(updatedStatus.data.hiringMatches);
       setFindingMatches(updatedStatus.data.findingMatches);
@@ -325,7 +329,10 @@ function TrackJobSeeker() {
                                                     onClick={() =>
                                                       handleStatusChange(
                                                         post.id,
-                                                        "ACCEPTED"
+                                                        "ACCEPTED",
+                                                        post.employerId ??
+                                                          post.oauthEmployerId ??
+                                                          post.companyId
                                                       )
                                                     }
                                                     disabled={hasAcceptedMatch}
@@ -338,7 +345,10 @@ function TrackJobSeeker() {
                                                     onClick={() =>
                                                       handleStatusChange(
                                                         post.id,
-                                                        "DENIED"
+                                                        "DENIED",
+                                                        post.employerId ??
+                                                          post.oauthEmployerId ??
+                                                          post.companyId
                                                       )
                                                     }
                                                     disabled={hasAcceptedMatch}
