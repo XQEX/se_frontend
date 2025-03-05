@@ -136,6 +136,25 @@ interface UserMatchingStatusResponse {
           createdAt: string;
           approvedAt: string | null;
           updatedAt: string;
+          userData: {
+            id: string;
+            username: string;
+            password?: string;
+            firstName: string;
+            lastName: string;
+            email: string;
+            profilePicture: string;
+            aboutMe: string;
+            contact: string;
+            resume: string;
+            provinceAddress: string | null;
+            address: string;
+            approvalStatus: string;
+            createdAt: string;
+            updatedAt: string;
+            providerId?: string;
+            provider?: string;
+          };
         }[];
       }[];
     }[];
@@ -165,6 +184,58 @@ interface UserMatchingStatusResponse {
         oauthJobSeekerId: string | null;
         createdAt: string;
         updatedAt: string;
+        postByNormal: {
+          id: string;
+          username: string;
+          password?: string;
+          firstName: string;
+          lastName: string;
+          email: string;
+          profilePicture: string;
+          aboutMe: string;
+          contact: string;
+          resume: string;
+          provinceAddress: string | null;
+          address: string;
+          approvalStatus: string;
+          createdAt: string;
+          updatedAt: string;
+        } | null;
+        postByOauth: {
+          id: string;
+          providerId: string;
+          username: string;
+          firstName: string;
+          lastName: string;
+          email: string;
+          profilePicture: string;
+          aboutMe: string;
+          contact: string;
+          resume: string;
+          provider: string;
+          provinceAddress: string | null;
+          address: string;
+          approvalStatus: string;
+          createdAt: string;
+          updatedAt: string;
+        } | null;
+        userData: {
+          id: string;
+          username: string;
+          password?: string;
+          firstName: string;
+          lastName: string;
+          email: string;
+          profilePicture: string;
+          aboutMe: string;
+          contact: string;
+          resume: string;
+          provinceAddress: string | null;
+          address: string;
+          approvalStatus: string;
+          createdAt: string;
+          updatedAt: string;
+        };
       };
     }[];
   };
@@ -249,13 +320,14 @@ export const getMatchesForHiringPost = async (
 };
 export const updateMatchStatus = async (
   matchId: string,
-  status: string
+  status: string,
+  seekerId: string
 ): Promise<UpdateMatchStatusResponse> => {
   try {
-    console.log("Updating match status:", { matchId, status });
+    console.log("Updating match status:", { matchId, status, seekerId });
     const { data } = await axios.put<{ data: UpdateMatchStatusResponse }>(
       `http://localhost:${backendPort}/api/matching/hiring/match/${matchId}/status`,
-      { status },
+      { status, seekerId },
       {
         headers: {
           "Content-Type": "application/json",

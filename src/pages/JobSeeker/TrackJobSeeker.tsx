@@ -73,11 +73,30 @@ function TrackJobSeeker() {
     );
   };
 
-  const NoDataMessage = ({ type }: { type: "hiring" | "finding" }) => (
-    <div className="p-4 text-center text-gray-500">
-      {type === "hiring" ? "ยังไม่มีประกาศงานของคุณ" : "ยังไม่มีการสมัครงาน"}
-    </div>
-  );
+  const NoDataMessage = ({ type }: { type: "hiring" | "finding" }) => {
+    return (
+      <div className="flex flex-col mt-10 items-center justify-center p-6 bg-white shadow-md rounded-2xl border border-gray-200 max-w-md mx-auto">
+        <p className="text-lg font-semibold text-gray-700 ">
+          {type === "hiring"
+            ? "ยังไม่มีประกาศงานของคุณ"
+            : "ยังไม่มีการสมัครงาน"}
+        </p>
+        <p className="text-sm text-gray-500 mt-2 text-center">
+          {type === "hiring"
+            ? 'คุณสามารถสร้างประกาศงานใหม่ได้โดยไปที่หน้า "สร้างประกาศงาน"'
+            : 'คุณสามารถค้นหางานที่สนใจและสมัครได้โดยไปที่หน้า "ค้นหางาน"'}
+        </p>
+        <Link
+          to={type === "hiring" ? "/postjob" : "/find"}
+          className="mt-4 px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg shadow-md transition duration-300 hover:bg-blue-600 hover:shadow-lg"
+        >
+          {type === "hiring"
+            ? "คลิกที่นี่เพื่อสร้างประกาศงานใหม่"
+            : "คลิกที่นี่เพื่อค้นหางาน"}
+        </Link>
+      </div>
+    );
+  };
 
   const headingRef = useRef(null);
   const tableRef = useRef(null);
@@ -107,7 +126,7 @@ function TrackJobSeeker() {
         setIsLoading(false);
       }
     };
-
+    fetchMatchingStatus();
     const intervalId = setInterval(() => {
       fetchMatchingStatus();
     }, 10000); // Fetch notifications every 10 seconds
@@ -259,18 +278,37 @@ function TrackJobSeeker() {
                                       key={index}
                                       className="flex flex-col items-center justify-center border border-gray-300 p-2 rounded-md mb-2"
                                     >
-                                      <div className="font-bold">
-                                        ID ผู้ว่าจ้าง :
-                                      </div>
-
-                                      {post.employerId ??
-                                        post.oauthEmployerId ??
-                                        post.companyId}
-                                      <div className="font-bold">
-                                        Match Id :
+                                      <div className="text-start">
+                                        <div className="font-bold">
+                                          ข้อมูลผู้ว่าจ้าง:
+                                        </div>
+                                        <div>
+                                          ชื่อผู้ใช้: {post.toEmployer.username}
+                                        </div>
+                                        <div>
+                                          ชื่อ: {post.toEmployer.firstName}
+                                        </div>
+                                        <div>
+                                          นามสกุล: {post.toEmployer.lastName}
+                                        </div>
+                                        <div>
+                                          อีเมล: {post.toEmployer.email}
+                                        </div>
+                                        <div>
+                                          เกี่ยวกับ: {post.toEmployer.aboutMe}
+                                        </div>
+                                        <div>
+                                          ติดต่อ: {post.toEmployer.contact}
+                                        </div>
+                                        <div>
+                                          จังหวัดที่อยู่อาศัย:
+                                          {post.toEmployer.provinceAddress}
+                                        </div>
+                                        <div>
+                                          ที่อยู่: {post.toEmployer.address}
+                                        </div>
                                       </div>
                                       <div>
-                                        {post.id}
                                         <div>
                                           <div className="font-bold">
                                             สถานะ :
@@ -281,7 +319,7 @@ function TrackJobSeeker() {
                                           {post.status === "INPROGRESS" && (
                                             <div className="flex gap-2 mt-2">
                                               {!hasAcceptedMatch && (
-                                                <div>
+                                                <div className="flex gap-2">
                                                   <button
                                                     className="bg-green-500 text-white px-3 py-1 rounded"
                                                     onClick={() =>
@@ -366,6 +404,7 @@ function TrackJobSeeker() {
                         <tr key={post.id} className="hover:bg-emerald-50">
                           <td className="p-3 border border-emerald-100">
                             <div className="font-semibold">
+                              companyId :
                               {post.toPostMatched.toPost.employerId ??
                                 post.toPostMatched.toPost.oauthEmployerId ??
                                 post.toPostMatched.toPost.companyId}
