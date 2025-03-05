@@ -403,12 +403,10 @@ function TrackJobSeeker() {
                       {hiringMatches.map((post) => (
                         <tr key={post.id} className="hover:bg-emerald-50">
                           <td className="p-3 border border-emerald-100">
-                            <div className="font-semibold">
+                            <div>
                               {post.toPostMatched.toPost.postByCompany && (
                                 <div className="p-4 bg-white shadow-lg rounded-lg">
-                                  <strong className="text-lg font-semibold">
-                                    Company:
-                                  </strong>
+                                  <strong className="text-lg ">Company:</strong>
                                   <img
                                     src={
                                       user.profilePicture !== "UNDEFINED"
@@ -420,7 +418,7 @@ function TrackJobSeeker() {
                                     className="object-cover w-32 h-32 rounded-full mt-2 mb-4"
                                   />
                                   <div className="text-gray-700">
-                                    <div className="font-medium">
+                                    <div>
                                       {
                                         post.toPostMatched.toPost.postByCompany
                                           .officialName
@@ -460,7 +458,7 @@ function TrackJobSeeker() {
                               {post.toPostMatched.toPost
                                 .postByOauthEmployer && (
                                 <div className="p-4 bg-white shadow-lg rounded-lg mt-4">
-                                  <strong className="text-lg font-semibold">
+                                  <strong className="text-lg ">
                                     Oauth Employer:
                                   </strong>
                                   <img
@@ -474,7 +472,7 @@ function TrackJobSeeker() {
                                     className="object-cover w-32 h-32 rounded-full mt-2 mb-4"
                                   />
                                   <div className="text-gray-700">
-                                    <div className="font-medium">
+                                    <div>
                                       {
                                         post.toPostMatched.toPost
                                           .postByOauthEmployer.firstName
@@ -517,7 +515,7 @@ function TrackJobSeeker() {
                               )}
                               {post.toPostMatched.toPost.postByEmployer && (
                                 <div className="p-4 bg-white shadow-lg rounded-lg mt-4">
-                                  <strong className="text-lg font-semibold">
+                                  <strong className="text-lg ">
                                     Employer:
                                   </strong>
                                   <img
@@ -531,7 +529,7 @@ function TrackJobSeeker() {
                                     className="object-cover w-32 h-32 rounded-full mt-2 mb-4"
                                   />
                                   <div className="text-gray-700">
-                                    <div className="font-medium">
+                                    <div>
                                       {
                                         post.toPostMatched.toPost.postByEmployer
                                           .firstName
