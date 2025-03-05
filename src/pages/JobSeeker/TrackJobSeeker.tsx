@@ -152,6 +152,9 @@ function TrackJobSeeker() {
   );
 
   useEffect(() => {
+    refetchjobseeker();
+    refetchCompany();
+    refetchemployer();
     setIsHaveUser(!!user);
   }, [user, isUserLoading, isStale]);
 
@@ -177,8 +180,11 @@ function TrackJobSeeker() {
     <div className="bg-gradient-to-b from-white to-green-50 min-h-screen">
       <NewNav
         user={user}
-        isLoading={isUserLoading}
+        isLoading={isLoading}
         isHaveUser={isHaveUser}
+        refetchjobseeker={refetchjobseeker}
+        refetchemployer={refetchemployer}
+        refetchCompany={refetchCompany}
         isStale={isStale}
         setUser={setUser}
         userType={user?.type}

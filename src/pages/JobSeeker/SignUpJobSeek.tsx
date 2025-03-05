@@ -155,6 +155,9 @@ function SignUpJobSeek() {
         user={user}
         isLoading={isLoading}
         isHaveUser={isHaveUser}
+        refetchjobseeker={refetchjobseeker}
+        refetchemployer={refetchemployer}
+        refetchCompany={refetchCompany}
         isStale={isStale}
         setUser={setUser}
         userType={user?.type}
