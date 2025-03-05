@@ -39,8 +39,6 @@ const sortOptions = [
   { value: "date_desc", label: "วันที่ลงประกาศ(ใหม่ไปเก่า)" },
 ];
 
-const experienceLevels = ["Entry", "Mid", "Senior"];
-
 interface Job {
   id: number;
   title: string;
@@ -58,7 +56,6 @@ interface Job {
     name: string;
   }[];
   createdAt: string;
-  experienceLevel: string;
 }
 
 interface Filters {
@@ -73,7 +70,6 @@ interface Filters {
   selectedWorkDays: string[];
   sortBy: string | null;
   sortOrder: "asc" | "desc";
-  selectedExperienceLevels: string[];
 }
 
 function FindEmp() {
@@ -104,7 +100,6 @@ function FindEmp() {
     selectedWorkDays: [],
     sortBy: null,
     sortOrder: "asc",
-    selectedExperienceLevels: [],
   });
 
   useEffect(() => {
@@ -211,24 +206,20 @@ function FindEmp() {
         return selectedDays.some((day) => jobWorkDates === day);
       };
 
-      const matchesExperienceLevels =
-        filters.selectedExperienceLevels.length === 0 ||
-        filters.selectedExperienceLevels.includes(job.experienceLevel);
-
-      console.log({
-        jobId: job.id,
-        jobPostType: job.jobPostType,
-        normalizedJobType,
-        selectedJobTypes: filters.selectedJobTypes,
-        matchesJobTypes,
-        jobLocation: job.jobLocation,
-        normalizedLocation,
-        selectedLocations: filters.selectedLocations,
-        matchesLocations,
-        jobWorkDates: job.workDates,
-        selectedWorkDays: filters.selectedWorkDays,
-        matchesWorkDays: matchesWorkDays(),
-      });
+      // console.log({
+      //   jobId: job.id,
+      //   jobPostType: job.jobPostType,
+      //   normalizedJobType,
+      //   selectedJobTypes: filters.selectedJobTypes,
+      //   matchesJobTypes,
+      //   jobLocation: job.jobLocation,
+      //   normalizedLocation,
+      //   selectedLocations: filters.selectedLocations,
+      //   matchesLocations,
+      //   jobWorkDates: job.workDates,
+      //   selectedWorkDays: filters.selectedWorkDays,
+      //   matchesWorkDays: matchesWorkDays(),
+      // });
 
       return (
         matchesSearch &&
@@ -238,8 +229,7 @@ function FindEmp() {
         matchesSalary &&
         matchesWorkHours() &&
         matchesLocations &&
-        matchesWorkDays() &&
-        matchesExperienceLevels
+        matchesWorkDays() 
       );
     });
   };
