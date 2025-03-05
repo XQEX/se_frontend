@@ -7,7 +7,7 @@ import Footer from "../../components/Footer";
 import { Avatar } from "@mantine/core";
 import { getJobFindingPostById } from "../../api/JobSeeker";
 import { useUser } from "../../context/UserContext";
-
+import axios from "axios";
 type Job = {
   id: string;
   title: string;
