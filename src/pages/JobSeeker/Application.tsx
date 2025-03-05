@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm, UseFormReturnType } from "@mantine/form";
 import {
   TextInput,
@@ -14,6 +14,13 @@ import {
 } from "@mantine/core";
 import { NewNav } from "../../components/NewNav";
 import { useUser } from "../../context/UserContext";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { updateUserProfile } from "../../api/JobSeeker";
+import { useNavigate } from "react-router-dom";
+import { Dropzone, MIME_TYPES } from "@mantine/dropzone";
+import { Group, Text, useMantineTheme, Image } from "@mantine/core";
+import { IconCloudUpload, IconDownload, IconX } from "@tabler/icons-react";
 
 // Interface for InputProps
 interface InputProps {
@@ -29,92 +36,6 @@ interface SelectProps {
   yearProp: ReturnType<UseFormReturnType<any>["getInputProps"]>;
   disabled?: boolean;
 }
-
-const jobCategories = [
-  { value: "it", label: "เทคโนโลยีสารสนเทศ (IT)" },
-  { value: "finance", label: "การเงินและการธนาคาร" },
-  { value: "marketing", label: "การตลาด" },
-  { value: "engineering", label: "วิศวกรรม" },
-  { value: "healthcare", label: "สุขภาพและการแพทย์" },
-  { value: "education", label: "การศึกษา" },
-  { value: "design", label: "ออกแบบและครีเอทีฟ" },
-  { value: "hr", label: "ทรัพยากรบุคคล (HR)" },
-  { value: "sales", label: "ฝ่ายขาย" },
-  { value: "logistics", label: "โลจิสติกส์และซัพพลายเชน" },
-];
-
-const subCategories = {
-  it: [
-    { value: "software_engineer", label: "วิศวกรซอฟต์แวร์" },
-    { value: "data_scientist", label: "นักวิทยาศาสตร์ข้อมูล" },
-    { value: "network_engineer", label: "วิศวกรเครือข่าย" },
-    { value: "cybersecurity", label: "ความปลอดภัยทางไซเบอร์" },
-    { value: "web_developer", label: "นักพัฒนเว็บ" },
-  ],
-  finance: [
-    { value: "accountant", label: "นักบัญชี" },
-    { value: "financial_analyst", label: "นักวิเคราะห์การเงิน" },
-    { value: "investment_banker", label: "นักการธนาคารการลงทุน" },
-    { value: "auditor", label: "ผู้ตรวจสอบบัญชี" },
-    { value: "tax_consultant", label: "ที่ปรึกษาด้านภาษี" },
-  ],
-  marketing: [
-    { value: "digital_marketing", label: "การตลาดดิจิทัล" },
-    { value: "brand_manager", label: "ผู้จัดการแบรนด์" },
-    { value: "content_marketing", label: "การตลาดเนื้อหา" },
-    { value: "social_media_manager", label: "ผู้จัดการโซเชียลมีเดีย" },
-    { value: "seo_specialist", label: "ผู้เชี่ยวชาญ SEO" },
-  ],
-  engineering: [
-    { value: "civil_engineer", label: "วิศวกรโยธา" },
-    { value: "mechanical_engineer", label: "วิศวกรเครื่องกล" },
-    { value: "electrical_engineer", label: "วิศวกรไฟฟ้า" },
-    { value: "chemical_engineer", label: "วิศวกรเคมี" },
-    { value: "aerospace_engineer", label: "วิศวกรอากาศยาน" },
-  ],
-  healthcare: [
-    { value: "doctor", label: "แพทย์" },
-    { value: "nurse", label: "พยาบาล" },
-    { value: "pharmacist", label: "เภสัชกร" },
-    { value: "physiotherapist", label: "นักกายภาพบำบัด" },
-    { value: "medical_researcher", label: "นักวิจัยทางการแพทย์" },
-  ],
-  education: [
-    { value: "teacher", label: "ครู" },
-    { value: "professor", label: "อาจารย์มหาวิทยาลัย" },
-    { value: "education_consultant", label: "ที่ปรึกษาด้านการศึกษา" },
-    { value: "curriculum_designer", label: "ผู้ออกแบบหลักสูตร" },
-    { value: "tutor", label: "ติวเตอร์" },
-  ],
-  design: [
-    { value: "graphic_designer", label: "นักออกแบบกราฟิก" },
-    { value: "ui_ux_designer", label: "นักออกแบบ UI/UX" },
-    { value: "interior_designer", label: "นักออกแบบภายใน" },
-    { value: "fashion_designer", label: "นักออกแบบแฟชั่น" },
-    { value: "motion_designer", label: "นักออกแบบโมชั่นกราฟิก" },
-  ],
-  hr: [
-    { value: "recruiter", label: "นักสรรหาบุคลากร" },
-    { value: "hr_manager", label: "ผู้จัดการฝ่ายทรัพยากรบุคคล" },
-    { value: "training_specialist", label: "ผู้เชี่ยวชาญฝึกอบรม" },
-    { value: "compensation_analyst", label: "นักวิเคราะห์ค่าตอบแทน" },
-    { value: "hr_consultant", label: "ที่ปรึกษาทรัพยากรบุคคล" },
-  ],
-  sales: [
-    { value: "sales_executive", label: "พนักงานฝ่ายขาย" },
-    { value: "account_manager", label: "ผู้จัดการบัญชี" },
-    { value: "business_development", label: "พัฒนาธุรกิจ" },
-    { value: "sales_engineer", label: "วิศวกรฝ่ายขาย" },
-    { value: "retail_sales", label: "ฝ่ายขายปลีก" },
-  ],
-  logistics: [
-    { value: "supply_chain_manager", label: "ผู้จัดการซัพพลายเชน" },
-    { value: "logistics_coordinator", label: "ผู้ประสานงานโลจิสติกส์" },
-    { value: "warehouse_manager", label: "ผู้จัดการคลังสินค้า" },
-    { value: "transportation_manager", label: "ผู้จัดการการขนส่ง" },
-    { value: "procurement_specialist", label: "ผู้เชี่ยวชาญจัดซื้อ" },
-  ],
-};
 
 const currentYear = new Date().getFullYear();
 const years = Array.from({ length: 20 }, (_, i) =>
@@ -133,18 +54,42 @@ const JobSeekerProfile = () => {
     queryClient,
   } = useUser();
   const [isHaveUser, setIsHaveUser] = useState(false);
-  
+  const [resumes, setResumes] = useState<File | null>(null);
+  const navigate = useNavigate();
+  const openRef = useRef<() => void>(null);
+  // Helper function for toast messages
+  const notifyError = (message: string) =>
+    toast.error(message, { position: "top-center" });
+  const notifySuccess = (message: string) =>
+    toast.success(message, { position: "top-center" });
+
   useEffect(() => {
     refetchjobseeker();
     refetchCompany();
     refetchemployer();
     setIsHaveUser(!!user);
+
+    form.setValues({
+      firstName: user.firstName,
+      lastName: user.lastName,
+      location: user.address,
+      aboutMe: user.aboutMe,
+      email: user.email,
+      contact: user.contact,
+      jobTitle: "",
+      company: "",
+      startMonth: "",
+      // startYear: "",
+      // endMonth: "",
+      // endYear: "",
+      // currentlyWorking: false,
+    });
   }, [user, isLoading, isStale]);
 
-  const [hasExperience, setHasExperience] = useState<boolean>(true);
-  const [hasDesiredJobCategory, setHasDesiredJobCategory] =
-    useState<boolean>(true);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  // const [hasExperience, setHasExperience] = useState<boolean>(true);
+  // const [hasDesiredJobCategory, setHasDesiredJobCategory] =
+  //   useState<boolean>(true);
+  // const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   document.body.style.backgroundColor = "#f7f9fc";
 
   const form = useForm({
@@ -153,6 +98,7 @@ const JobSeekerProfile = () => {
       lastName: "Doe",
       location: "123 Main St, Bangkok",
       jobTitle: "",
+      contact: "XDDD",
       company: "",
       startMonth: "",
       startYear: "",
@@ -163,12 +109,33 @@ const JobSeekerProfile = () => {
       email: "john.doe@example.com",
       phone: "+66987654321",
       vulnerabilityType: "",
-      resume: null,
     },
   });
 
-  const handleSubmit = (values: typeof form.values) => {
+  const handleSubmit = async (values: typeof form.values) => {
     console.log("Submitted values:", values);
+
+    const formData = new FormData();
+    formData.append("image", resumes || new File([], ""));
+
+    try {
+      const updatedUser = {
+        firstName: form.values.firstName,
+        lastName: form.values.lastName,
+        aboutMe: form.values.aboutMe,
+        address: form.values.location,
+        email: form.values.email,
+        contact: form.values.contact,
+        resumeImage: formData, // Ensure resumeImage is always a File
+      };
+      await updateUserProfile(updatedUser);
+      // await updateJobSeekerUsername(form.values.username, confirmPassword2);
+      refetchjobseeker();
+      notifySuccess("Profile updated successfully");
+      navigate("/profile");
+    } catch (error) {
+      notifyError(error as string);
+    }
   };
 
   const renderTextInput = ({
@@ -200,62 +167,63 @@ const JobSeekerProfile = () => {
     />
   );
 
-  const renderDateGroup = ({
-    monthProp,
-    yearProp,
-    disabled = false,
-  }: SelectProps) => (
-    <Grid grow className="w-full">
-      <Grid.Col span={3}>
-        <Select
-          placeholder="เดือน"
-          data={[
-            "มกราคม",
-            "กุมภาพันธ์",
-            "มีนาคม",
-            "เมษายน",
-            "พฤษภาคม",
-            "มิถุนายน",
-            "กรกฎาคม",
-            "สิงหาคม",
-            "กันยายน",
-            "ตุลาคม",
-            "พฤศจิกายน",
-            "ธันวาคม",
-          ]}
-          disabled={disabled}
-          className="w-full"
-          styles={{
-            input: {
-              border: "1.5px solid #e2e8f0",
-              padding: "0.4rem 0.5rem",
-              borderRadius: "6px",
-            },
-          }}
-          {...monthProp}
-        />
-      </Grid.Col>
-      <Grid.Col span={3}>
-        <Select
-          placeholder="ปี"
-          data={years}
-          disabled={disabled}
-          className="w-full"
-          styles={{
-            input: {
-              border: "1.5px solid #e2e8f0",
-              padding: "0.4rem 0.5rem",
-              borderRadius: "6px",
-            },
-          }}
-          {...yearProp}
-        />
-      </Grid.Col>
-    </Grid>
-  );
+  // const renderDateGroup = ({
+  //   monthProp,
+  //   yearProp,
+  //   disabled = false,
+  // }: SelectProps) => (
+  //   <Grid grow className="w-full">
+  //     <Grid.Col span={3}>
+  //       <Select
+  //         placeholder="เดือน"
+  //         data={[
+  //           "มกราคม",
+  //           "กุมภาพันธ์",
+  //           "มีนาคม",
+  //           "เมษายน",
+  //           "พฤษภาคม",
+  //           "มิถุนายน",
+  //           "กรกฎาคม",
+  //           "สิงหาคม",
+  //           "กันยายน",
+  //           "ตุลาคม",
+  //           "พฤศจิกายน",
+  //           "ธันวาคม",
+  //         ]}
+  //         disabled={disabled}
+  //         className="w-full"
+  //         styles={{
+  //           input: {
+  //             border: "1.5px solid #e2e8f0",
+  //             padding: "0.4rem 0.5rem",
+  //             borderRadius: "6px",
+  //           },
+  //         }}
+  //         {...monthProp}
+  //       />
+  //     </Grid.Col>
+  //     <Grid.Col span={3}>
+  //       <Select
+  //         placeholder="ปี"
+  //         data={years}
+  //         disabled={disabled}
+  //         className="w-full"
+  //         styles={{
+  //           input: {
+  //             border: "1.5px solid #e2e8f0",
+  //             padding: "0.4rem 0.5rem",
+  //             borderRadius: "6px",
+  //           },
+  //         }}
+  //         {...yearProp}
+  //       />
+  //     </Grid.Col>
+  //   </Grid>
+  // );
 
   return (
     <>
+      <ToastContainer />
       <NewNav
         user={user}
         isLoading={isLoading}
@@ -409,26 +377,57 @@ const JobSeekerProfile = () => {
                 <label className="text-gray-700 font-kanit font-medium text-md">
                   อัปโหลดเรซูเม่
                 </label>
-                <input
-                  type="file"
-                  accept=".pdf,.doc,.docx"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      form.setFieldValue("resume", file);
-                    }
+                <Dropzone
+                  openRef={openRef}
+                  onDrop={(files) => {
+                    setResumes(files[0]); // Store the File object directly
                   }}
-                  className="w-full p-2 border border-gray-300 rounded-md"
-                />
-                {form.values.resume && (
+                  radius="md"
+                  accept={[
+                    MIME_TYPES.jpeg,
+                    MIME_TYPES.png,
+                    "image/svg+xml", // Correct MIME type for SVG
+                    MIME_TYPES.gif,
+                  ]}
+                  maxSize={1.5 * 1024 ** 2} // 1.5MB
+                  maxFiles={1}
+                >
+                  <div style={{ pointerEvents: "none" }}>
+                    <Group justify="center">
+                      <Dropzone.Accept>
+                        <IconDownload size={50} stroke={1.5} />
+                      </Dropzone.Accept>
+                      <Dropzone.Reject>
+                        <IconX size={50} stroke={1.5} />
+                      </Dropzone.Reject>
+                      <Dropzone.Idle>
+                        <IconCloudUpload size={50} stroke={1.5} />
+                      </Dropzone.Idle>
+                    </Group>
+
+                    <Text ta="center" fw={700} fz="lg" mt="xl">
+                      <Dropzone.Accept>Drop image files here</Dropzone.Accept>
+                      <Dropzone.Reject>
+                        Only images (JPEG, PNG, SVG, GIF) under 1.5MB
+                      </Dropzone.Reject>
+                      <Dropzone.Idle>Upload an image</Dropzone.Idle>
+                    </Text>
+                    <Text ta="center" fz="sm" mt="xs" c="dimmed">
+                      Drag & drop image files here to upload. We accept only{" "}
+                      <i>.jpeg, .png, .svg, .gif</i> files that are less than
+                      1.5MB.
+                    </Text>
+                  </div>
+                </Dropzone>
+                {resumes && (
                   <p className="text-sm text-gray-600">
-                    ไฟล์ที่เลือก: {form.values.resume.name}
+                    ไฟล์ที่เลือก: {resumes.name}
                   </p>
                 )}
               </div>
 
               {/* Experience Section */}
-              <div className="space-y-4 mt-6">
+              {/* <div className="space-y-4 mt-6">
                 <Title
                   order={4}
                   className="text-gray-800 text-lg font-semibold"
@@ -442,9 +441,9 @@ const JobSeekerProfile = () => {
                   color="green"
                   classNames={{ label: "text-gray-700 font-kanit" }}
                 />
-              </div>
+              </div> */}
 
-              {hasExperience && (
+              {/* {hasExperience && (
                 <div className="space-y-4">
                   {renderTextInput({
                     label: "ตำแหน่งงาน",
@@ -499,11 +498,11 @@ const JobSeekerProfile = () => {
                     </Grid.Col>
                   </Grid>
                 </div>
-              )}
+              )} */}
 
               {/* Desired Job Category */}
-              <div className="space-y-4 mt-6">
-                <Title
+              {/* <div className="space-y-4 mt-6"> */}
+              {/* <Title
                   order={4}
                   className="text-gray-800 text-lg font-semibold"
                 >
@@ -517,9 +516,9 @@ const JobSeekerProfile = () => {
                   }
                   color="green"
                   classNames={{ label: "text-gray-700 font-kanit" }}
-                />
+                /> */}
 
-                {hasDesiredJobCategory && (
+              {/* {hasDesiredJobCategory && (
                   <div className="space-y-4">
                     <Select
                       label="เลือกประเภทงานหลัก"
@@ -560,8 +559,8 @@ const JobSeekerProfile = () => {
                       />
                     )}
                   </div>
-                )}
-              </div>
+                )} */}
+              {/* </div> */}
 
               {/* Submit Button */}
               <div className="flex justify-center w-full mt-4">

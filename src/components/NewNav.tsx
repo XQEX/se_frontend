@@ -102,7 +102,7 @@ export const NewNav: React.FC<NavbarProps> = ({
           companyId: item.companyId || "",
         }));
         setNotifications(filteredData);
-        console.log(notifications);
+        // console.log(notifications);
       } else {
         throw new Error("Invalid notifications data");
       }
