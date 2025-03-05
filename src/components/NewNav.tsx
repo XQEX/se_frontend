@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import {
   Avatar,
   Menu,
@@ -71,6 +71,7 @@ export const NewNav: React.FC<NavbarProps> = ({
   userType,
   queryClient,
 }) => {
+  const navigate = useNavigate();
   const [isSignedIn, setIsSignedIn] = useState(isHaveUser);
   const [scrollDirection, setScrollDirection] = useState("up");
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
@@ -157,6 +158,7 @@ export const NewNav: React.FC<NavbarProps> = ({
       }
 
       setUser(null);
+
       queryClient.setQueryData(["currentJobSeeker"], null);
       queryClient.setQueryData(["currentEmployer"], null);
       queryClient.setQueryData(["currentCompany"], null);
@@ -168,6 +170,8 @@ export const NewNav: React.FC<NavbarProps> = ({
       //   queryClient.invalidateQueries(["currentCompany"]);
 
       setIsSignedIn(false);
+
+      navigate("/");
     } catch (error) {
       console.error("Failed to logout:", error);
     }

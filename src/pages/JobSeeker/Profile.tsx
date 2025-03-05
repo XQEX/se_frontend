@@ -161,6 +161,8 @@ function Profile() {
       aboutMe: "",
       email: "",
       contact: "",
+      vulnerability: "",
+      skills: "",
       jobTitle: "",
       company: "",
       startMonth: "",
@@ -295,6 +297,8 @@ function Profile() {
       aboutMe: user.aboutMe,
       email: user.email,
       contact: user.contact,
+      vulnerability: user.Vulnerebilities,
+      skills: user.Skills,
       jobTitle: "",
       company: "",
       startMonth: "",
@@ -411,6 +415,10 @@ function Profile() {
   useEffect(() => {
     setConfirmPassword2("");
   }, [confirmPasswordOpened]);
+
+  // useEffect(() => {
+  //   console.log(user.vulnerabilities);
+  // }, []);
 
   const onUserConfirmByPassword = async () => {
     if (confirmPassword2 === "") {
@@ -674,12 +682,14 @@ function Profile() {
                     userId={user.id}
                     bucketName={"employer"}
                     prefixPath={"profile"}
+                    userType={user.type}
                   />
                 ) : (
                   <ImageDropzoneButton
                     userId={user.id}
                     bucketName={"job-seeker"}
                     prefixPath={"profile"}
+                    userType={user.type}
                   />
                 )
               ) : (
@@ -739,6 +749,20 @@ function Profile() {
                     <FaPhoneAlt color="#4a5568" />
                   </span>
                   : {user.contact}
+                </div>
+
+                <div className="flex items-center text-sm md:text-base mt-2 text-gray-700">
+                  <span className="mr-2">
+                    Vulnerabilities:{" "}
+                    {user.vulnerabilities.map(
+                      (vulnerability: any, index: number) => (
+                        <span key={index}>
+                          {vulnerability.toVulnerabilityType.name}
+                          {index < user.vulnerabilities.length - 1 && ", "}
+                        </span>
+                      )
+                    )}
+                  </span>
                 </div>
               </div>
             </div>
@@ -1308,27 +1332,26 @@ function Profile() {
                         ))}
                       </ul>
                     </div>
-                    
+
                     <div className="flex space-x-4">
-                    <button
-                      className="bg-seagreen text-white rounded-md hover:bg-seagreen/90 transition px-4 py-2 mt-4 text-lg font-semibold"
-                      onClick={() =>
-                        navigate(`/jobseeker/viewpost/${String(post.id)}`, {
-                          state: { post },
-                        })
-                      }
-                    >
-                      <span>ดูรายละเอียด</span>
-                    </button>
+                      <button
+                        className="bg-seagreen text-white rounded-md hover:bg-seagreen/90 transition px-4 py-2 mt-4 text-lg font-semibold"
+                        onClick={() =>
+                          navigate(`/jobseeker/viewpost/${String(post.id)}`, {
+                            state: { post },
+                          })
+                        }
+                      >
+                        <span>ดูรายละเอียด</span>
+                      </button>
 
-                    <button
-                      className="text-base bg-red-500 text-white rounded-md hover:bg-red-400 transition px-3 py-2 mt-4"
-                      onClick={() => handleDeletePost(post.id)}
-                    >
-                      Delete
-                    </button>
-                  </div>
-
+                      <button
+                        className="text-base bg-red-500 text-white rounded-md hover:bg-red-400 transition px-3 py-2 mt-4"
+                        onClick={() => handleDeletePost(post.id)}
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>

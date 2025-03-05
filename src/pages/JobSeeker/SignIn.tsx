@@ -6,6 +6,7 @@ import { loginJobSeeker } from "../../api/JobSeeker";
 import { loginCompany } from "../../api/Company";
 import { loginEmployer } from "../../api/Employer"; // Assuming you have an Employer API
 import { motion, AnimatePresence } from "framer-motion";
+import { AxiosError } from "axios";
 
 function SignIn() {
   const [nameEmail, setNameEmail] = useState("");
@@ -39,6 +40,7 @@ function SignIn() {
 
       if (response) {
         notifySuccess("เข้าสู่ระบบสำเร็จ!"); // Show the notification after navigation
+        console.log(response);
         if (userType === "jobseeker") {
           setTimeout(() => {
             navigate("/");
@@ -50,7 +52,10 @@ function SignIn() {
         }
       }
     } catch (error) {
-      notifyError("เข้าสู่ระบบไม่สำเร็จ กรุณาลองใหม่อีกครั้ง");
+      console.error((error as AxiosError).response.data.msg);
+      if ((error as AxiosError).response.data.msg === "Wrong password") {
+        notifyError("รหัสผ่านไม่ถูกต้อง");
+      }
     } finally {
       setIsSubmitting(false);
     }

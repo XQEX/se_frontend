@@ -38,6 +38,8 @@ const Admin: React.FC = () => {
   const [logoutLoading, setLogoutLoading] = useState<boolean>(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [currentSection, setCurrentSection] =
+    useState<string>("approvalRequests");
 
   const [skills, setSkills] = useState<any[]>([]);
   const [jobCategories, setJobCategories] = useState<any[]>([]);
@@ -146,6 +148,8 @@ const Admin: React.FC = () => {
         queryClient.setQueryData("adminInfo", data);
         localStorage.setItem("isLoggedIn", "true");
         localStorage.setItem("adminInfo", JSON.stringify(data));
+        fetchSkills();
+        fetchCategories();
       },
     }
   );
@@ -283,6 +287,50 @@ const Admin: React.FC = () => {
         </button>
       </div>
       <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
+
+      <div className="mb-6 p-4 bg-white rounded shadow">
+        <button
+          onClick={() => setCurrentSection("approvalRequests")}
+          className={`px-4 py-2 ${
+            currentSection === "approvalRequests"
+              ? "bg-blue-500 text-white"
+              : "bg-gray-200"
+          } rounded`}
+        >
+          Registration Approval Requests
+        </button>
+        <button
+          onClick={() => setCurrentSection("skills")}
+          className={`px-4 py-2 ${
+            currentSection === "skills"
+              ? "bg-blue-500 text-white"
+              : "bg-gray-200"
+          } rounded ml-2`}
+        >
+          Skills
+        </button>
+        <button
+          onClick={() => setCurrentSection("jobCategories")}
+          className={`px-4 py-2 ${
+            currentSection === "jobCategories"
+              ? "bg-blue-500 text-white"
+              : "bg-gray-200"
+          } rounded ml-2`}
+        >
+          Job Categories
+        </button>
+        <button
+          onClick={() => setCurrentSection("allMatchingStatus")}
+          className={`px-4 py-2 ${
+            currentSection === "allMatchingStatus"
+              ? "bg-blue-500 text-white"
+              : "bg-gray-200"
+          } rounded ml-2`}
+        >
+          All Matching Status
+        </button>
+      </div>
+
       {adminInfo && (
         <div className="mb-6 p-4 bg-white rounded shadow">
           <h2 className="text-2xl font-semibold">
@@ -291,144 +339,184 @@ const Admin: React.FC = () => {
           <p className="text-gray-600">ID: {adminInfo.id}</p>
         </div>
       )}
-      <h2 className="text-2xl font-semibold mb-4">
-        Registration Approval Requests
-      </h2>
-      {adminInfo ? (
-        <>
-          {Array.isArray(approvalRequests) ? (
-            <ul className="space-y-4">
-              {approvalRequests.map((request: ApprovalRequest) => (
-                <li key={request.id} className="p-4 bg-white rounded shadow">
-                  <span className="font-medium">{request.userId}</span> -{" "}
-                  <span className="text-gray-600">{request.userType}</span> -{" "}
-                  <span className="text-gray-600">{request.status}</span>
-                  <img
-                    src={request.imageUrl}
-                    alt="User"
-                    className="w-16 h-16 rounded-full cursor-pointer"
-                    onClick={() => setSelectedImage(request.imageUrl || "")}
-                  ></img>
-                  <p>{request.imageUrl}</p>
-                  <button
-                    onClick={() => handleApproveUser(request.id, "APPROVED")}
-                    className="ml-4 px-2 py-1 bg-green-500 text-white rounded"
-                  >
-                    Approve
-                  </button>
-                  <button
-                    onClick={() => handleApproveUser(request.id, "UNAPPROVED")}
-                    className="ml-2 px-2 py-1 bg-red-500 text-white rounded"
-                  >
-                    Unapprove
-                  </button>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-gray-600">No approval requests found.</p>
-          )}
-          <div className="mb-6 p-4 bg-white rounded shadow">
-            <h2 className="text-2xl font-semibold mb-4">Skills</h2>
-            <ul className="space-y-2">
-              {skills.map((skill) => (
-                <li
-                  key={skill.id}
-                  className="flex justify-between items-center p-2 bg-gray-100 rounded"
-                >
-                  <span>
-                    {skill.name} - {skill.description}
-                  </span>
-                  <button
-                    onClick={() => handleDeleteSkill(skill.id)}
-                    className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
-                  >
-                    Delete
-                  </button>
-                </li>
-              ))}
-            </ul>
-            <h3 className="text-xl font-semibold mt-4">Add New Skill</h3>
-            <div className="flex space-x-2 mt-2">
-              <input
-                type="text"
-                placeholder="Name"
-                value={newSkill.name}
-                onChange={(e) =>
-                  setNewSkill({ ...newSkill, name: e.target.value })
-                }
-                className="p-2 border rounded w-full"
-              />
-              <input
-                type="text"
-                placeholder="Description"
-                value={newSkill.description}
-                onChange={(e) =>
-                  setNewSkill({ ...newSkill, description: e.target.value })
-                }
-                className="p-2 border rounded w-full"
-              />
-              <button
-                onClick={handleCreateSkill}
-                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-              >
-                Add Skill
-              </button>
-            </div>
-          </div>
-          <div className="mb-6 p-4 bg-white rounded shadow">
-            <h2 className="text-2xl font-semibold mb-4">Job Categories</h2>
-            <ul className="space-y-2">
-              {jobCategories.map((category) => (
-                <li
-                  key={category.id}
-                  className="flex justify-between items-center p-2 bg-gray-100 rounded"
-                >
-                  <span>
-                    {category.name} - {category.description}
-                  </span>
-                  <button
-                    onClick={() => handleDeleteCategory(category.id)}
-                    className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
-                  >
-                    Delete
-                  </button>
-                </li>
-              ))}
-            </ul>
-            <h3 className="text-xl font-semibold mt-4">Add New Category</h3>
-            <div className="flex space-x-2 mt-2">
-              <input
-                type="text"
-                placeholder="Name"
-                value={newCategory.name}
-                onChange={(e) =>
-                  setNewCategory({ ...newCategory, name: e.target.value })
-                }
-                className="p-2 border rounded w-full"
-              />
-              <input
-                type="text"
-                placeholder="Description"
-                value={newCategory.description}
-                onChange={(e) =>
-                  setNewCategory({
-                    ...newCategory,
-                    description: e.target.value,
-                  })
-                }
-                className="p-2 border rounded w-full"
-              />
-              <button
-                onClick={handleCreateCategory}
-                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-              >
-                Add Category
-              </button>
-            </div>
 
-            <h3 className="text-xl font-semibold mt-4">All Matching Status</h3>
-          </div>
+      {currentSection === "approvalRequests" && (
+        <>
+          <h2 className="text-2xl font-semibold mb-4">
+            Registration Approval Requests
+          </h2>
+          {adminInfo ? (
+            <>
+              {Array.isArray(approvalRequests) ? (
+                <ul className="space-y-4">
+                  {approvalRequests.map((request: ApprovalRequest) => (
+                    <li
+                      key={request.id}
+                      className="p-4 bg-white rounded shadow"
+                    >
+                      <span className="font-medium">{request.userId}</span> -{" "}
+                      <span className="text-gray-600">{request.userType}</span>{" "}
+                      - <span className="text-gray-600">{request.status}</span>
+                      <img
+                        src={request.imageUrl}
+                        alt="User"
+                        className="w-16 h-16 rounded-full cursor-pointer"
+                        onClick={() => setSelectedImage(request.imageUrl || "")}
+                      ></img>
+                      <p>{request.imageUrl}</p>
+                      <button
+                        onClick={() =>
+                          handleApproveUser(request.id, "APPROVED")
+                        }
+                        className="ml-4 px-2 py-1 bg-green-500 text-white rounded"
+                      >
+                        Approve
+                      </button>
+                      <button
+                        onClick={() =>
+                          handleApproveUser(request.id, "UNAPPROVED")
+                        }
+                        className="ml-2 px-2 py-1 bg-red-500 text-white rounded"
+                      >
+                        Unapprove
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-gray-600">No approval requests found.</p>
+              )}
+            </>
+          ) : (
+            <p className="text-gray-600">
+              Please log in to view approval requests.
+            </p>
+          )}
+        </>
+      )}
+
+      {currentSection === "skills" && (
+        <div className="mb-6 p-4 bg-white rounded shadow">
+          <h2 className="text-2xl font-semibold mb-4">Skills</h2>
+          {adminInfo ? (
+            <>
+              <ul className="space-y-2">
+                {skills.map((skill) => (
+                  <li
+                    key={skill.id}
+                    className="flex justify-between items-center p-2 bg-gray-100 rounded"
+                  >
+                    <span>
+                      {skill.name} - {skill.description}
+                    </span>
+                    <button
+                      onClick={() => handleDeleteSkill(skill.id)}
+                      className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                    >
+                      Delete
+                    </button>
+                  </li>
+                ))}
+              </ul>
+              <h3 className="text-xl font-semibold mt-4">Add New Skill</h3>
+              <div className="flex space-x-2 mt-2">
+                <input
+                  type="text"
+                  placeholder="Name"
+                  value={newSkill.name}
+                  onChange={(e) =>
+                    setNewSkill({ ...newSkill, name: e.target.value })
+                  }
+                  className="p-2 border rounded w-full"
+                />
+                <input
+                  type="text"
+                  placeholder="Description"
+                  value={newSkill.description}
+                  onChange={(e) =>
+                    setNewSkill({ ...newSkill, description: e.target.value })
+                  }
+                  className="p-2 border rounded w-full"
+                />
+                <button
+                  onClick={handleCreateSkill}
+                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                >
+                  Add Skill
+                </button>
+              </div>
+            </>
+          ) : (
+            <p className="text-gray-600">Please log in to view skills.</p>
+          )}
+        </div>
+      )}
+
+      {currentSection === "jobCategories" && (
+        <div className="mb-6 p-4 bg-white rounded shadow">
+          <h2 className="text-2xl font-semibold mb-4">Job Categories</h2>
+          {adminInfo ? (
+            <>
+              <ul className="space-y-2">
+                {jobCategories.map((category) => (
+                  <li
+                    key={category.id}
+                    className="flex justify-between items-center p-2 bg-gray-100 rounded"
+                  >
+                    <span>
+                      {category.name} - {category.description}
+                    </span>
+                    <button
+                      onClick={() => handleDeleteCategory(category.id)}
+                      className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                    >
+                      Delete
+                    </button>
+                  </li>
+                ))}
+              </ul>
+              <h3 className="text-xl font-semibold mt-4">Add New Category</h3>
+              <div className="flex space-x-2 mt-2">
+                <input
+                  type="text"
+                  placeholder="Name"
+                  value={newCategory.name}
+                  onChange={(e) =>
+                    setNewCategory({ ...newCategory, name: e.target.value })
+                  }
+                  className="p-2 border rounded w-full"
+                />
+                <input
+                  type="text"
+                  placeholder="Description"
+                  value={newCategory.description}
+                  onChange={(e) =>
+                    setNewCategory({
+                      ...newCategory,
+                      description: e.target.value,
+                    })
+                  }
+                  className="p-2 border rounded w-full"
+                />
+                <button
+                  onClick={handleCreateCategory}
+                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                >
+                  Add Category
+                </button>
+              </div>
+            </>
+          ) : (
+            <p className="text-gray-600">
+              Please log in to view job Categories.
+            </p>
+          )}
+        </div>
+      )}
+
+      {currentSection === "allMatchingStatus" && (
+        <div className="mb-6 p-4 bg-white rounded shadow">
+          <h2 className="text-2xl font-semibold mb-4">All Matching Status</h2>
           {AllmatchingLoading ? (
             <ClipLoader color="#ffffff" size={50} />
           ) : (
@@ -477,11 +565,7 @@ const Admin: React.FC = () => {
               ))}
             </ul>
           )}
-        </>
-      ) : (
-        <p className="text-gray-600">
-          Please log in to view approval requests current skill and jobCategory.
-        </p>
+        </div>
       )}
     </div>
   );

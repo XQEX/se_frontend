@@ -565,3 +565,55 @@ export const uploadProfileImage = async (
     throw error;
   }
 };
+
+export const updateJobSeekerSkills = async (
+  skillsId: string[]
+): Promise<{ userId: string; skillsId: string[] }> => {
+  try {
+    console.log("Updating job seeker's skills with:", { skillsId });
+    const { data } = await axios.put<{
+      data: { userId: string; skillsId: string[] };
+    }>(
+      `http://localhost:${backendPort}/api/user/job-seeker/auth/edit/skill`,
+      { skillsId },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    console.log("Skills update successful:", data);
+    return data.data;
+  } catch (error) {
+    console.error("Skills update failed:", error);
+    throw error;
+  }
+};
+
+export const updateJobSeekerVulnerabilities = async (
+  vulnerabilitiesId: string[]
+): Promise<{ userId: string; vulnerabilitiesId: string[] }> => {
+  try {
+    console.log("Updating job seeker's vulnerabilities with:", {
+      vulnerabilitiesId,
+    });
+    const { data } = await axios.put<{
+      data: { userId: string; vulnerabilitiesId: string[] };
+    }>(
+      `http://localhost:${backendPort}/api/user/job-seeker/auth/edit/vulnerability`,
+      { vulnerabilitiesId },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    console.log("Vulnerabilities update successful:", data);
+    return data.data;
+  } catch (error) {
+    console.error("Vulnerabilities update failed:", error);
+    throw error;
+  }
+};
