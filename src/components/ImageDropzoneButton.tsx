@@ -6,6 +6,8 @@ import classes from "./ImageDropzoneButton.module.css";
 import { uploadProfileImage } from "../api/JobSeeker";
 import { uploadCompanyProfileImage } from "../api/Company";
 import { uploadEmployerProfileImage } from "../api/Employer";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 type UUID = string; // Define UUID as a string or use a library
 
@@ -22,6 +24,11 @@ export function ImageDropzoneButton({
   prefixPath,
   userType,
 }: ImageDropzoneButtonType) {
+  // Helper function for toast messages
+  const notifyError = (message: string) =>
+    toast.error(message, { position: "top-center" });
+  const notifySuccess = (message: string) =>
+    toast.success(message, { position: "top-center" });
   const theme = useMantineTheme();
   const openRef = useRef<() => void>(null);
   const [currentfile, setCurrentFile] = useState<File | null>(null);
@@ -41,6 +48,8 @@ export function ImageDropzoneButton({
         if (userType === "EMPLOYER") await uploadEmployerProfileImage(formData);
 
         console.log("File uploaded successfully");
+        notifySuccess("File uploaded successfully");
+
         console.log("userId: ", userId);
         console.log("bucketName: ", bucketName);
         console.log("prefixPath: ", prefixPath);
@@ -65,6 +74,7 @@ export function ImageDropzoneButton({
 
   return (
     <div className={classes.wrapper}>
+      <ToastContainer />
       {/* Dropzone for file upload */}
       <Dropzone
         openRef={openRef}

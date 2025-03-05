@@ -26,6 +26,7 @@ import { getUserJobFindingPosts, updateUserProfile } from "../../api/JobSeeker";
 import { useForm, UseFormReturnType } from "@mantine/form";
 import { IconSearch, IconChartLine, IconPencil } from "@tabler/icons-react";
 import { deleteJobFindingPost } from "../../api/JobSeeker";
+import { updateJobSeekerUsername } from "../../api/JobSeeker";
 
 import {
   TextInput,
@@ -297,7 +298,7 @@ function Profile() {
       aboutMe: user.aboutMe,
       email: user.email,
       contact: user.contact,
-      vulnerability: user.Vulnerebilities,
+      vulnerability: "",
       skills: user.Skills,
       jobTitle: "",
       company: "",
@@ -436,8 +437,9 @@ function Profile() {
         email: form.values.email,
         contact: form.values.contact,
       };
-      // await updateUserProfile(updatedUser);
-      // await updateJobSeekerUsername(form.values.username, confirmPassword2);
+
+      await updateUserProfile(updatedUser);
+      await updateJobSeekerUsername(form.values.username, confirmPassword2);
       notifySuccess("Profile updated successfully");
       // Optionally, refetch user data here
       // refetchjobseeker();
@@ -993,6 +995,18 @@ function Profile() {
                           label: "เบอร์โทร",
                           placeholder: "กรอกเบอร์โทร",
                           inputProps: form.getInputProps("contact"),
+                          size: "long",
+                          required: true,
+                        })}
+                      </Grid.Col>
+                    </Grid>
+
+                    <Grid grow>
+                      <Grid.Col span={8}>
+                        {renderTextInput({
+                          label: "ความพิการ",
+                          placeholder: "กรอกความพิการของคุณ",
+                          inputProps: form.getInputProps("vulnerability"),
                           size: "long",
                           required: true,
                         })}

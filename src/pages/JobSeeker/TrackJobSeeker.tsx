@@ -127,6 +127,7 @@ function TrackJobSeeker() {
       }
     };
     fetchMatchingStatus();
+
     const intervalId = setInterval(() => {
       fetchMatchingStatus();
     }, 10000); // Fetch notifications every 10 seconds
