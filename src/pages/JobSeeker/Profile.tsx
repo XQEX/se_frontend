@@ -1236,7 +1236,7 @@ function Profile() {
               }
               onClick={() => handleTabClick("work")}
             >
-              My Post <span className="text-sm text-gray-500">54</span>
+              My Post <span className="text-sm text-gray-500">1</span>
             </button>
             <button
               className={
@@ -1308,22 +1308,27 @@ function Profile() {
                         ))}
                       </ul>
                     </div>
+                    
+                    <div className="flex space-x-4">
                     <button
-                      className="flex-1 bg-seagreen/80 hover:bg-seagreen text-white px-4 py-2 text-sm rounded-lg shadow-md transition"
+                      className="bg-seagreen text-white rounded-md hover:bg-seagreen/90 transition px-4 py-2 mt-4 text-lg font-semibold"
                       onClick={() =>
                         navigate(`/jobseeker/viewpost/${String(post.id)}`, {
                           state: { post },
                         })
                       }
                     >
-                      view detail
+                      <span>ดูรายละเอียด</span>
                     </button>
+
                     <button
-                      className="text-base bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-500 transition mt-4"
+                      className="text-base bg-red-500 text-white rounded-md hover:bg-red-400 transition px-3 py-2 mt-4"
                       onClick={() => handleDeletePost(post.id)}
                     >
                       Delete
                     </button>
+                  </div>
+
                   </div>
                 ))}
               </div>
