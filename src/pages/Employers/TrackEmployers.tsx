@@ -283,7 +283,15 @@ function TrackEmployers() {
                               <div>
                                 {/* รูปโปรไฟล์ดึงมายังไงไม่รู้รอเพื่อนทำให้ */}
                                 <strong>รูปโปรไฟล์:</strong>{" "}
-                                {match.toPost.userData.profilePicture}
+                                <img
+                                  src={
+                                    user.profilePicture !== "UNDEFINED"
+                                      ? match.toPost.userData.profilePicture
+                                      : "profile.webp"
+                                  }
+                                  alt="Profile photo"
+                                  className="object-cover w-32 h-32"
+                                />
                               </div>
                               <div>
                                 <strong>เกี่ยวกับฉัน:</strong>{" "}
@@ -296,7 +304,15 @@ function TrackEmployers() {
                               {/* รูปresumeดึงมายังไงไม่รู้รอเพื่อนทำให้ */}
                               <div>
                                 <strong>เรซูเม่:</strong>{" "}
-                                {match.toPost.userData.resume}
+                                <img
+                                  src={
+                                    user.profilePicture !== "UNDEFINED"
+                                      ? match.toPost.userData.resume
+                                      : "resume.webp"
+                                  }
+                                  alt="Resume"
+                                  className="object-cover w-32 h-32"
+                                />
                               </div>
                             </div>
                           </td>
