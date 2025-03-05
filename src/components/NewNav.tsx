@@ -118,14 +118,6 @@ export const NewNav: React.FC<NavbarProps> = ({
     loadNotifications();
   }, [user]); // Add `user` as dependency
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      loadNotifications();
-    }, 3000); // Fetch notifications every 3 seconds
-
-    return () => clearInterval(intervalId); // Cleanup interval on component unmount
-  }, [user]); // Add `user` as dependency
-
   // Helper function for toast messages
   const notifyError = (message: string) =>
     toast.error(message, { position: "top-center" });
@@ -160,7 +152,6 @@ export const NewNav: React.FC<NavbarProps> = ({
         await logoutCompany();
       }
 
-      setUser(null);
       queryClient.setQueryData(["currentJobSeeker"], null);
       queryClient.setQueryData(["currentEmployer"], null);
       queryClient.setQueryData(["currentCompany"], null);
@@ -170,7 +161,8 @@ export const NewNav: React.FC<NavbarProps> = ({
       //   queryClient.invalidateQueries(["currentJobSeeker"]);
       //   queryClient.invalidateQueries(["currentEmployer"]);
       //   queryClient.invalidateQueries(["currentCompany"]);
-      notifySuccess("ออกจากระบบเรียบร้อยแล้ว!");
+
+      notifyError("คุณออกจากระบบ!"); // Show the notification after navigation
       setIsSignedIn(false);
       navigate("/");
     } catch (error) {
@@ -216,11 +208,7 @@ export const NewNav: React.FC<NavbarProps> = ({
     <div>
       {isSignedIn ? (
         <>
-          <Menu.Item
-            component={Link}
-            to={userType == "JOBSEEKER" ? "/profile" : "/profileemp"}
-            className="kanit-regular"
-          >
+          <Menu.Item component={Link} to="/profile" className="kanit-regular">
             โปรไฟล์
           </Menu.Item>
           <Menu.Item onClick={handleLogout} className="kanit-regular">
