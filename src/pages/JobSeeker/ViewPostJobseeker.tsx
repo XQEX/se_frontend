@@ -185,11 +185,10 @@ const ViewPostJobseeker: React.FC = () => {
           user={user}
           isLoading={isLoading}
           isHaveUser={isHaveUser}
-          refetchjobseeker={refetchjobseeker}
-          refetchemployer={refetchemployer}
-          refetchCompany={refetchCompany}
           isStale={isStale}
           setUser={setUser}
+          userType={user?.type}
+          queryClient={queryClient}
         />
         <h1 className="text-2xl font-bold text-red-500">❌ ไม่พบข้อมูลงาน</h1>
         <button
@@ -209,9 +208,6 @@ const ViewPostJobseeker: React.FC = () => {
         user={user}
         isLoading={isLoading}
         isHaveUser={isHaveUser}
-        refetchjobseeker={refetchjobseeker}
-        refetchemployer={refetchemployer}
-        refetchCompany={refetchCompany}
         isStale={isStale}
         setUser={setUser}
         userType={user?.type}

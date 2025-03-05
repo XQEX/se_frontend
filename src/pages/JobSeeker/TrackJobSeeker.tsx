@@ -152,9 +152,6 @@ function TrackJobSeeker() {
   );
 
   useEffect(() => {
-    refetchjobseeker();
-    refetchCompany();
-    refetchemployer();
     setIsHaveUser(!!user);
   }, [user, isUserLoading, isStale]);
 
@@ -182,9 +179,6 @@ function TrackJobSeeker() {
         user={user}
         isLoading={isUserLoading}
         isHaveUser={isHaveUser}
-        refetchjobseeker={refetchjobseeker}
-        refetchemployer={refetchemployer}
-        refetchCompany={refetchCompany}
         isStale={isStale}
         setUser={setUser}
         userType={user?.type}
