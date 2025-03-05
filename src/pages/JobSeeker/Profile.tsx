@@ -674,12 +674,16 @@ function Profile() {
                     userId={user.id}
                     bucketName={"employer"}
                     prefixPath={"profile"}
+                    userType={user.type}
+                    profileDropzoneClose={profileDropzoneClose}
                   />
                 ) : (
                   <ImageDropzoneButton
                     userId={user.id}
                     bucketName={"job-seeker"}
                     prefixPath={"profile"}
+                    userType={user.type}
+                    profileDropzoneClose={profileDropzoneClose}
                   />
                 )
               ) : (
@@ -1308,27 +1312,26 @@ function Profile() {
                         ))}
                       </ul>
                     </div>
-                    
+
                     <div className="flex space-x-4">
-                    <button
-                      className="bg-seagreen text-white rounded-md hover:bg-seagreen/90 transition px-4 py-2 mt-4 text-lg font-semibold"
-                      onClick={() =>
-                        navigate(`/jobseeker/viewpost/${String(post.id)}`, {
-                          state: { post },
-                        })
-                      }
-                    >
-                      <span>ดูรายละเอียด</span>
-                    </button>
+                      <button
+                        className="bg-seagreen text-white rounded-md hover:bg-seagreen/90 transition px-4 py-2 mt-4 text-lg font-semibold"
+                        onClick={() =>
+                          navigate(`/jobseeker/viewpost/${String(post.id)}`, {
+                            state: { post },
+                          })
+                        }
+                      >
+                        <span>ดูรายละเอียด</span>
+                      </button>
 
-                    <button
-                      className="text-base bg-red-500 text-white rounded-md hover:bg-red-400 transition px-3 py-2 mt-4"
-                      onClick={() => handleDeletePost(post.id)}
-                    >
-                      Delete
-                    </button>
-                  </div>
-
+                      <button
+                        className="text-base bg-red-500 text-white rounded-md hover:bg-red-400 transition px-3 py-2 mt-4"
+                        onClick={() => handleDeletePost(post.id)}
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>

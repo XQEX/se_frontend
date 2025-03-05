@@ -180,7 +180,7 @@ function TrackJobSeeker() {
     <div className="bg-gradient-to-b from-white to-green-50 min-h-screen">
       <NewNav
         user={user}
-        isLoading={isUserLoading}
+        isLoading={isLoading}
         isHaveUser={isHaveUser}
         refetchjobseeker={refetchjobseeker}
         refetchemployer={refetchemployer}
@@ -378,14 +378,14 @@ function TrackJobSeeker() {
             ) : (
               <div>
                 <h2 className="text-2xl font-bold mb-4 mt-8">
-                  โพสรับสมัครงานที่คุณกดสนใจ
+                  โพสต์รับสมัครงานที่คุณกดสนใจ
                 </h2>
                 <div className="overflow-x-auto max-h-[400px] mt-8">
                   <table className="w-full text-left border-collapse">
                     <thead className="bg-emerald-200">
                       <tr>
                         <th className="p-3 border border-emerald-100">
-                          โพสของ
+                          โพสต์ของ
                         </th>
                         <th className="p-3 border border-emerald-100">
                           ความสามารถที่นายจ้างต้องการ
@@ -403,11 +403,173 @@ function TrackJobSeeker() {
                       {hiringMatches.map((post) => (
                         <tr key={post.id} className="hover:bg-emerald-50">
                           <td className="p-3 border border-emerald-100">
-                            <div className="font-semibold">
-                              companyId :
-                              {post.toPostMatched.toPost.employerId ??
-                                post.toPostMatched.toPost.oauthEmployerId ??
-                                post.toPostMatched.toPost.companyId}
+                            <div>
+                              {post.toPostMatched.toPost.postByCompany && (
+                                <div className="p-4 bg-white shadow-lg rounded-lg">
+                                  <strong className="text-lg ">Company:</strong>
+                                  <img
+                                    src={
+                                      user.profilePicture !== "UNDEFINED"
+                                        ? post.toPostMatched.toPost
+                                            .postByCompany.profilePicture
+                                        : "profile.webp"
+                                    }
+                                    alt="Profile photo"
+                                    className="object-cover w-32 h-32 rounded-full mt-2 mb-4"
+                                  />
+                                  <div className="text-gray-700">
+                                    <div>
+                                      {
+                                        post.toPostMatched.toPost.postByCompany
+                                          .officialName
+                                      }
+                                    </div>
+                                    <div>
+                                      Email:{" "}
+                                      {
+                                        post.toPostMatched.toPost.postByCompany
+                                          .email
+                                      }
+                                    </div>
+                                    <div>
+                                      Contact:{" "}
+                                      {
+                                        post.toPostMatched.toPost.postByCompany
+                                          .contact
+                                      }
+                                    </div>
+                                    <div>
+                                      Address:{" "}
+                                      {
+                                        post.toPostMatched.toPost.postByCompany
+                                          .address
+                                      }
+                                    </div>
+                                    <div>
+                                      About Us:{" "}
+                                      {
+                                        post.toPostMatched.toPost.postByCompany
+                                          .aboutUs
+                                      }
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
+                              {post.toPostMatched.toPost
+                                .postByOauthEmployer && (
+                                <div className="p-4 bg-white shadow-lg rounded-lg mt-4">
+                                  <strong className="text-lg ">
+                                    Oauth Employer:
+                                  </strong>
+                                  <img
+                                    src={
+                                      user.profilePicture !== "UNDEFINED"
+                                        ? post.toPostMatched.toPost
+                                            .postByOauthEmployer.profilePicture
+                                        : "profile.webp"
+                                    }
+                                    alt="Profile photo"
+                                    className="object-cover w-32 h-32 rounded-full mt-2 mb-4"
+                                  />
+                                  <div className="text-gray-700">
+                                    <div>
+                                      {
+                                        post.toPostMatched.toPost
+                                          .postByOauthEmployer.firstName
+                                      }{" "}
+                                      {
+                                        post.toPostMatched.toPost
+                                          .postByOauthEmployer.lastName
+                                      }
+                                    </div>
+                                    <div>
+                                      Email:{" "}
+                                      {
+                                        post.toPostMatched.toPost
+                                          .postByOauthEmployer.email
+                                      }
+                                    </div>
+                                    <div>
+                                      Contact:{" "}
+                                      {
+                                        post.toPostMatched.toPost
+                                          .postByOauthEmployer.contact
+                                      }
+                                    </div>
+                                    <div>
+                                      Address:{" "}
+                                      {
+                                        post.toPostMatched.toPost
+                                          .postByOauthEmployer.address
+                                      }
+                                    </div>
+                                    <div>
+                                      About Me:{" "}
+                                      {
+                                        post.toPostMatched.toPost
+                                          .postByOauthEmployer.aboutMe
+                                      }
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
+                              {post.toPostMatched.toPost.postByEmployer && (
+                                <div className="p-4 bg-white shadow-lg rounded-lg mt-4">
+                                  <strong className="text-lg ">
+                                    Employer:
+                                  </strong>
+                                  <img
+                                    src={
+                                      user.profilePicture !== "UNDEFINED"
+                                        ? post.toPostMatched.toPost
+                                            .postByEmployer.profilePicture
+                                        : "profile.webp"
+                                    }
+                                    alt="Profile photo"
+                                    className="object-cover w-32 h-32 rounded-full mt-2 mb-4"
+                                  />
+                                  <div className="text-gray-700">
+                                    <div>
+                                      {
+                                        post.toPostMatched.toPost.postByEmployer
+                                          .firstName
+                                      }{" "}
+                                      {
+                                        post.toPostMatched.toPost.postByEmployer
+                                          .lastName
+                                      }
+                                    </div>
+                                    <div>
+                                      Email:{" "}
+                                      {
+                                        post.toPostMatched.toPost.postByEmployer
+                                          .email
+                                      }
+                                    </div>
+                                    <div>
+                                      Contact:{" "}
+                                      {
+                                        post.toPostMatched.toPost.postByEmployer
+                                          .contact
+                                      }
+                                    </div>
+                                    <div>
+                                      Address:{" "}
+                                      {
+                                        post.toPostMatched.toPost.postByEmployer
+                                          .address
+                                      }
+                                    </div>
+                                    <div>
+                                      About Me:{" "}
+                                      {
+                                        post.toPostMatched.toPost.postByEmployer
+                                          .aboutMe
+                                      }
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
                             </div>
                           </td>
                           <td>

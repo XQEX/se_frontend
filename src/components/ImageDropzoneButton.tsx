@@ -6,6 +6,9 @@ import classes from "./ImageDropzoneButton.module.css";
 import { uploadProfileImage } from "../api/JobSeeker";
 import { uploadCompanyProfileImage } from "../api/Company";
 import { uploadEmployerProfileImage } from "../api/Employer";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 
 type UUID = string; // Define UUID as a string or use a library
 
@@ -14,6 +17,7 @@ type ImageDropzoneButtonType = {
   bucketName: string;
   prefixPath: string;
   userType: "JOBSEEKER" | "COMPANY" | "EMPLOYER";
+  profileDropzoneClose: () => void;
 };
 
 export function ImageDropzoneButton({
@@ -21,12 +25,18 @@ export function ImageDropzoneButton({
   bucketName,
   prefixPath,
   userType,
+  profileDropzoneClose,
 }: ImageDropzoneButtonType) {
+  const navigate = useNavigate();
   const theme = useMantineTheme();
   const openRef = useRef<() => void>(null);
   const [currentfile, setCurrentFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
+  const notifyError = (message: string) =>
+    toast.error(message, { position: "top-center" });
+  const notifySuccess = (message: string) =>
+    toast.success(message, { position: "top-center" });
   // Handle file upload
   const handleFileUpload = async () => {
     if (currentfile) {
@@ -40,10 +50,11 @@ export function ImageDropzoneButton({
         if (userType === "COMPANY") await uploadCompanyProfileImage(formData);
         if (userType === "EMPLOYER") await uploadEmployerProfileImage(formData);
 
-        console.log("File uploaded successfully");
+        notifySuccess("File uploaded successfully");
         console.log("userId: ", userId);
         console.log("bucketName: ", bucketName);
         console.log("prefixPath: ", prefixPath);
+        profileDropzoneClose();
       } catch (err) {
         console.error("Error uploading file:", err);
       }
@@ -66,6 +77,7 @@ export function ImageDropzoneButton({
   return (
     <div className={classes.wrapper}>
       {/* Dropzone for file upload */}
+      <ToastContainer />
       <Dropzone
         openRef={openRef}
         onDrop={(files) => {

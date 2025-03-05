@@ -190,6 +190,8 @@ const ViewPostJobseeker: React.FC = () => {
           refetchCompany={refetchCompany}
           isStale={isStale}
           setUser={setUser}
+          userType={user?.type}
+          queryClient={queryClient}
         />
         <h1 className="text-2xl font-bold text-red-500">❌ ไม่พบข้อมูลงาน</h1>
         <button

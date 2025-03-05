@@ -14,6 +14,7 @@ import {
 } from "@mantine/core";
 import { NewNav } from "../../components/NewNav";
 import { useUser } from "../../context/UserContext";
+import { motion } from "framer-motion";
 
 // Interface for InputProps
 interface InputProps {
@@ -270,7 +271,7 @@ const JobSeekerProfile = () => {
       />
       <Container
         size="md"
-        className="mt-11 mb-14"
+        className="mt-11 mb-14 kanit-regular"
         styles={{
           root: {
             maxWidth: "800px",
@@ -298,12 +299,9 @@ const JobSeekerProfile = () => {
             },
           }}
         >
-          <Title
-            order={1}
-            className="text-gray-800 mb-4 text-left text-2xl font-bold"
-          >
+          <div className="text-gray-800 mb-4 text-left text-2xl font-bold kanit-regular ">
             แก้ไขประวัติ
-          </Title>
+          </div>
           <p className="text-left text-gray-600 mb-6 text-md leading-relaxed mt-1">
             ผู้ประกอบการจะได้รับข้อมูลของคุณเพื่อให้คุณได้รับข้อเสนองานที่เหมาะสม
           </p>
@@ -429,12 +427,9 @@ const JobSeekerProfile = () => {
 
               {/* Experience Section */}
               <div className="space-y-4 mt-6">
-                <Title
-                  order={4}
-                  className="text-gray-800 text-lg font-semibold"
-                >
+                <div className="text-gray-800 text-lg font-semibold kanit-regular">
                   ประสบการณ์ล่าสุด
-                </Title>
+                </div>
                 <Switch
                   label="ฉันมีประสบการณ์"
                   checked={hasExperience}
@@ -487,12 +482,13 @@ const JobSeekerProfile = () => {
                         </Grid.Col>
                         <Grid.Col span={5} className="flex items-center">
                           <Checkbox
+                            className=""
                             label="ยังอยู่ในตำแหน่งงานนี้"
                             {...form.getInputProps("currentlyWorking", {
                               type: "checkbox",
                             })}
-                            color="green"
-                            classNames={{ label: "text-gray-700 font-kanit" }}
+                           
+                            classNames={{ label: "text-gray-700 font-kanit " }}
                           />
                         </Grid.Col>
                       </Grid>
@@ -503,12 +499,10 @@ const JobSeekerProfile = () => {
 
               {/* Desired Job Category */}
               <div className="space-y-4 mt-6">
-                <Title
-                  order={4}
-                  className="text-gray-800 text-lg font-semibold"
-                >
+                <div className="text-gray-800 text-lg font-semibold kanit-regular">
                   ประเภทงานที่ต้องการ
-                </Title>
+                </div>
+
                 <Switch
                   label="มีประเภทงานที่ต้องการ"
                   checked={hasDesiredJobCategory}
@@ -565,28 +559,14 @@ const JobSeekerProfile = () => {
 
               {/* Submit Button */}
               <div className="flex justify-center w-full mt-4">
-                <Button
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                   type="submit"
-                  size="md"
-                  fullWidth
-                  variant="filled"
-                  color="green"
-                  className="h-12 text-md font-medium tracking-wide max-w-sm"
-                  styles={{
-                    root: {
-                      transition: "transform 0.2s ease, box-shadow 0.2s ease",
-                      "&:hover": {
-                        transform: "translateY(-3px)",
-                        boxShadow: "0px 6px 15px rgba(0, 0, 0, 0.2)",
-                      },
-                      "&:active": {
-                        transform: "translateY(1px)",
-                      },
-                    },
-                  }}
+                  className="bg-seagreen p-3 text-md font-medium tracking-wide rounded-lg text-white kanit-regular"
                 >
                   บันทึก
-                </Button>
+                </motion.button>
               </div>
             </Stack>
           </form>

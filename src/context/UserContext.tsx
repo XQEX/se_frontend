@@ -46,6 +46,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
       setUser((prev: any) => prev ?? data);
     },
     onError: handleError,
+    enabled: !user,
   });
 
   const {
@@ -57,6 +58,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
       setUser((prev: any) => prev ?? data);
     },
     onError: handleError,
+    enabled: !user,
   });
 
   const {
@@ -68,6 +70,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
       setUser((prev: any) => prev ?? data);
     },
     onError: handleError,
+    enabled: !user,
   });
 
   const isLoading = isLoadingJobSeeker || isLoadingEmployer || isLoadingCompany;
