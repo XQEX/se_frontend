@@ -187,6 +187,7 @@ function TrackEmployers() {
     refetchCompany();
     refetchemployer();
     setIsHaveUser(!!user);
+    // console.log(findingMatches);
   }, [user, isUserLoading, isStale]);
 
   useEffect(() => {
@@ -285,7 +286,8 @@ function TrackEmployers() {
                                 <strong>รูปโปรไฟล์:</strong>{" "}
                                 <img
                                   src={
-                                    user.profilePicture !== "UNDEFINED"
+                                    match.toPost.userData.profilePicture !==
+                                    "UNDEFINED"
                                       ? match.toPost.userData.profilePicture
                                       : "profile.webp"
                                   }
@@ -306,7 +308,7 @@ function TrackEmployers() {
                                 <strong>เรซูเม่:</strong>{" "}
                                 <img
                                   src={
-                                    user.profilePicture !== "UNDEFINED"
+                                    match.toPost.userData.resume !== "UNDEFINED"
                                       ? match.toPost.userData.resume
                                       : "resume.webp"
                                   }

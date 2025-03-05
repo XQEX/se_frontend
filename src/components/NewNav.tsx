@@ -30,6 +30,7 @@ import { logoutEmployer } from "../api/Employer";
 import { logoutCompany } from "../api/Company";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 
 interface Notification {
   id: string;
@@ -71,6 +72,7 @@ export const NewNav: React.FC<NavbarProps> = ({
   userType,
   queryClient,
 }) => {
+  const navigate = useNavigate();
   const [isSignedIn, setIsSignedIn] = useState(isHaveUser);
   const [scrollDirection, setScrollDirection] = useState("up");
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
@@ -100,7 +102,7 @@ export const NewNav: React.FC<NavbarProps> = ({
           companyId: item.companyId || "",
         }));
         setNotifications(filteredData);
-        console.log(notifications);
+        // console.log(notifications);
       } else {
         throw new Error("Invalid notifications data");
       }
@@ -119,6 +121,8 @@ export const NewNav: React.FC<NavbarProps> = ({
   // Helper function for toast messages
   const notifyError = (message: string) =>
     toast.error(message, { position: "top-center" });
+  const notifySuccess = (message: string) =>
+    toast.success(message, { position: "top-center" });
 
   useEffect(() => {
     setIsSignedIn(isHaveUser);
@@ -160,6 +164,7 @@ export const NewNav: React.FC<NavbarProps> = ({
 
       notifyError("คุณออกจากระบบ!"); // Show the notification after navigation
       setIsSignedIn(false);
+      navigate("/");
     } catch (error) {
       console.error("Failed to logout:", error);
     }

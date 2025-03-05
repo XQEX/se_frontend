@@ -32,6 +32,7 @@ import {
   updateEmployerUsername,
 } from "../../api/Employer";
 import { AxiosError } from "axios";
+import { IconPencil } from "@tabler/icons-react";
 
 function Profile() {
   const navigate = useNavigate();
@@ -434,10 +435,11 @@ function Profile() {
 
               <div className="mt-28 w-full flex justify-end">
                 <button
-                  className="text-base bg-gray-600 text-white px-3 py-1 rounded-md hover:bg-gray-500 transition"
+                  className="bg-seagreen text-white px-4 py-2 rounded-md hover:bg-green-700 transition flex items-center space-x-2 order-last"
                   onClick={editProfileToggle}
                 >
-                  Edit
+                  <IconPencil className="text-xl" />
+                  <span>แก้ไข</span>
                 </button>
               </div>
 
@@ -629,7 +631,7 @@ function Profile() {
 
           {/* Add Quick Action Buttons */}
           <div className="bg-white rounded-lg shadow-md p-4 mt-6 flex justify-center space-x-4">
-            <Link
+            {/* <Link
               to="/my-posts"
               className="flex-1 bg-seagreen/80 text-white px-4 py-3 rounded-lg hover:bg-seagreen transition text-center font-medium"
             >
@@ -639,7 +641,7 @@ function Profile() {
                 </span>{" "}
                 โพสต์งานของฉัน
               </div>
-            </Link>
+            </Link> */}
             <Link
               to="/find"
               className="flex-1 bg-seagreen/80 text-white px-4 py-3 rounded-lg hover:bg-seagreen transition text-center font-medium"
@@ -664,7 +666,7 @@ function Profile() {
             </Link>
           </div>
 
-          <div className="mt-8 flex items-center space-x-4 border-b border-gray-200 pb-2">
+          {/* <div className="mt-8 flex items-center space-x-4 border-b border-gray-200 pb-2">
             <button
               className={
                 baseTabClasses +
@@ -685,10 +687,10 @@ function Profile() {
             >
               About
             </button>
-          </div>
+          </div> */}
         </section>
 
-        <div className="mb-8">
+        {/* <div className="mb-8">
           {activeTab === "work" && (
             // <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
             //   <div className="grid md:grid-cols-3 gap-6">
@@ -819,7 +821,7 @@ function Profile() {
               </div>
             </section>
           )}
-        </div>
+        </div> */}
       </motion.div>
     </div>
   );

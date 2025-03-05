@@ -473,7 +473,9 @@ function TrackJobSeeker() {
                                   </strong>
                                   <img
                                     src={
-                                      user.profilePicture !== "UNDEFINED"
+                                      post.toPostMatched.toPost
+                                        .postByOauthEmployer.profilePicture !==
+                                      "UNDEFINED"
                                         ? post.toPostMatched.toPost
                                             .postByOauthEmployer.profilePicture
                                         : "profile.webp"
@@ -530,7 +532,8 @@ function TrackJobSeeker() {
                                   </strong>
                                   <img
                                     src={
-                                      user.profilePicture !== "UNDEFINED"
+                                      post.toPostMatched.toPost.postByEmployer
+                                        .profilePicture !== "UNDEFINED"
                                         ? post.toPostMatched.toPost
                                             .postByEmployer.profilePicture
                                         : "profile.webp"

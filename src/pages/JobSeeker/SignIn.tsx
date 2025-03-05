@@ -40,13 +40,9 @@ function SignIn() {
       if (response) {
         notifySuccess("เข้าสู่ระบบสำเร็จ!"); // Show the notification after navigation
         if (userType === "jobseeker") {
-          setTimeout(() => {
-            navigate("/");
-          }, 2000);
+          navigate("/");
         } else {
-          setTimeout(() => {
-            navigate("/homeemp");
-          }, 2000);
+          navigate("/homeemp");
         }
       }
     } catch (error) {

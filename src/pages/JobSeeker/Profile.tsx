@@ -22,10 +22,16 @@ import { AiOutlineFileSearch } from "react-icons/ai";
 import { MdAutoGraph } from "react-icons/md";
 import { ArticleCard } from "../../components/ArticleCard";
 import { MdWorkspacePremium } from "react-icons/md";
-import { getUserJobFindingPosts, updateUserProfile } from "../../api/JobSeeker";
+import {
+  getUserJobFindingPosts,
+  updateJobSeekerPassword,
+  updateJobSeekerUsername,
+  updateUserProfile,
+} from "../../api/JobSeeker";
 import { useForm, UseFormReturnType } from "@mantine/form";
 import { IconSearch, IconChartLine, IconPencil } from "@tabler/icons-react";
 import { deleteJobFindingPost } from "../../api/JobSeeker";
+import { isAxiosError } from "axios";
 
 import {
   TextInput,
@@ -208,6 +214,7 @@ function Profile() {
     refetchjobseeker();
     refetchCompany();
     refetchemployer();
+
     // console.log("current user:", user);
     // console.log("isLoading:", isLoading);
     // console.log("isHaveUser :", isHaveUser);
@@ -255,22 +262,17 @@ function Profile() {
     confirmPasswordOpened,
     { toggle: confirmPasswordToggle, close: confirmPasswordClose },
   ] = useDisclosure(false);
-  // const [firstNameValue, setFirstNameValue] = useState<string>("");
-  // const [lastNameValue, setLastNameValue] = useState<string>("");
-  // const [aboutMeValue, setAboutMeValue] = useState<string>("");
-  // const [addressValue, setAddressValue] = useState<string>("");
-  // const [emailValue, setEmailValue] = useState<string>("");
-  // const [phoneNumberValue, setPhoneNumberValue] = useState<string>("");
+
   const [userPosts, setUserPosts] = useState<any[]>([]);
-  // const [userNameValue, setuserNameValue] = useState<string>("");
-  // const [password, setPassword] = useState<string>("");
-  // const [confirmpassword, setConfirmPassword] = useState<string>("");
   const [hasExperience, setHasExperience] = useState<boolean>(true);
   const [hasDesiredJobCategory, setHasDesiredJobCategory] =
     useState<boolean>(true);
 
-  // const [newPassword, setNewPassword] = useState<string>("");
-  // const [password2, setPassword2] = useState<string>("");
+  const [userNameValue, setuserNameValue] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [confirmpassword, setConfirmPassword] = useState<string>("");
+  const [newPassword, setNewPassword] = useState<string>("");
+  const [password2, setPassword2] = useState<string>("");
   const [confirmPassword2, setConfirmPassword2] = useState<string>("");
   const [confirmPassword2Error, setConfirmPassword2Error] =
     useState<string>("");
@@ -444,50 +446,50 @@ function Profile() {
     console.log("Submitted values:", values);
   };
 
-  // const onUserConfirmEditUsername = async () => {
-  //   if (password !== confirmpassword) {
-  //     notifyError("Passwords do not match");
-  //     return;
-  //   }
-  //   try {
-  //     const response = await updateJobSeekerUsername(userNameValue, password);
-  //     console.log("response:", response);
-  //     // if (response.data.error) {
-  //     //   notifyError(response.data.error);
-  //     //   return;
-  //     // }
-  //     notifySuccess("username updated successfully");
+  const onUserConfirmEditUsername = async () => {
+    if (password !== confirmpassword) {
+      notifyError("Passwords do not match");
+      return;
+    }
+    try {
+      const response = await updateJobSeekerUsername(userNameValue, password);
+      console.log("response:", response);
+      // if (response.data.error) {
+      //   notifyError(response.data.error);
+      //   return;
+      // }
+      notifySuccess("username updated successfully");
 
-  //     refetchjobseeker();
-  //     console.log("refetchjobseeker");
-  //   } catch (error) {
-  //     if (error instanceof AxiosError) {
-  //       notifyError((error as AxiosError).response.data.msg);
-  //     } else {
-  //       notifyError(error as string);
-  //     }
-  //   }
-  // };
+      refetchjobseeker();
+      console.log("refetchjobseeker");
+    } catch (error) {
+      if (error instanceof isAxiosError) {
+        notifyError((error as isAxiosError).response.data.msg);
+      } else {
+        notifyError(error as string);
+      }
+    }
+  };
 
-  // const onUserConfirmEditPassword = async () => {
-  //   if (password2 !== confirmpassword2) {
-  //     notifyError("Passwords do not match");
-  //     return;
-  //   }
-  //   try {
-  //     await updateJobSeekerPassword(newPassword, password2);
-  //     notifySuccess("Passwords updated successfully");
+  const onUserConfirmEditPassword = async () => {
+    if (password2 !== confirmPassword2) {
+      notifyError("Passwords do not match");
+      return;
+    }
+    try {
+      await updateJobSeekerPassword(newPassword, password2);
+      notifySuccess("Passwords updated successfully");
 
-  //     refetchjobseeker();
-  //     console.log("refetchjobseeker");
-  //   } catch (error) {
-  //     if (error instanceof AxiosError) {
-  //       notifyError((error as AxiosError).response.data.msg);
-  //     } else {
-  //       notifyError(error as string);
-  //     }
-  //   }
-  // };
+      refetchjobseeker();
+      console.log("refetchjobseeker");
+    } catch (error) {
+      if (error instanceof isAxiosError) {
+        notifyError((error as isAxiosError).response.data.msg);
+      } else {
+        notifyError(error as string);
+      }
+    }
+  };
 
   const handleDeletePost = async (postId: string) => {
     try {
@@ -674,12 +676,16 @@ function Profile() {
                     userId={user.id}
                     bucketName={"employer"}
                     prefixPath={"profile"}
+                    userType={user.type}
+                    profileDropzoneClose={profileDropzoneClose}
                   />
                 ) : (
                   <ImageDropzoneButton
                     userId={user.id}
                     bucketName={"job-seeker"}
                     prefixPath={"profile"}
+                    userType={user.type}
+                    profileDropzoneClose={profileDropzoneClose}
                   />
                 )
               ) : (
@@ -814,7 +820,7 @@ function Profile() {
                   },
                 }}
               >
-                {/* <TextInput
+                <TextInput
                   mt="md"
                   label="username"
                   placeholder="your username"
@@ -848,9 +854,9 @@ function Profile() {
                   onClick={onUserConfirmEditUsername}
                 >
                   update username
-                </button> */}
+                </button>
 
-                {/* <TextInput
+                <TextInput
                   mt="md"
                   label="new password"
                   placeholder="your new password"
@@ -876,7 +882,7 @@ function Profile() {
                   placeholder="confirm your old password"
                   required
                   inputWrapperOrder={["label", "input", "error"]}
-                  value={confirmpassword2}
+                  value={confirmPassword2}
                   onChange={(event) => setConfirmPassword2(event.target.value)}
                 />
                 <button
@@ -884,11 +890,9 @@ function Profile() {
                   onClick={onUserConfirmEditPassword}
                 >
                   update password
-                </button> */}
-
+                </button>
                 <form onSubmit={form.onSubmit(handleSubmit)}>
-                  <Stack gap="lg" mt="md">
-                    {/* username (ยาวมากขึ้น) */}
+                  {/* <Stack gap="lg" mt="md">
                     <Grid grow>
                       <Grid.Col span={8}>
                         {renderTextInput({
@@ -900,8 +904,6 @@ function Profile() {
                         })}
                       </Grid.Col>
                     </Grid>
-
-                    {/* ชื่อและนามสกุล (ขนาดกลาง) */}
                     <Grid grow>
                       <Grid.Col span={4}>
                         {renderTextInput({
@@ -922,8 +924,6 @@ function Profile() {
                         })}
                       </Grid.Col>
                     </Grid>
-
-                    {/* ที่อยู่ปัจจุบัน (ยาวมากขึ้น) */}
                     <Grid grow>
                       <Grid.Col span={8}>
                         {renderTextInput({
@@ -935,8 +935,6 @@ function Profile() {
                         })}
                       </Grid.Col>
                     </Grid>
-
-                    {/* เกี่ยวกับฉัน (ยาวมากขึ้น) */}
                     <Grid grow>
                       <Grid.Col span={8}>
                         {renderTextInput({
@@ -948,8 +946,6 @@ function Profile() {
                         })}
                       </Grid.Col>
                     </Grid>
-
-                    {/* อีเมล (ยาวมากขึ้น) */}
                     <Grid grow>
                       <Grid.Col span={8}>
                         {renderTextInput({
@@ -961,8 +957,6 @@ function Profile() {
                         })}
                       </Grid.Col>
                     </Grid>
-
-                    {/* เบอร์โทร (ยาวมากขึ้น) */}
                     <Grid grow>
                       <Grid.Col span={8}>
                         {renderTextInput({
@@ -974,7 +968,6 @@ function Profile() {
                         })}
                       </Grid.Col>
                     </Grid>
-
                     <div className="space-y-4 mt-6">
                       <Title
                         order={4}
@@ -992,10 +985,8 @@ function Profile() {
                         classNames={{ label: "text-gray-700 font-kanit" }}
                       />
                     </div>
-
                     {hasExperience && (
                       <div className="space-y-4">
-                        {/* ตำแหน่งงาน และ บริษัท (ยาวมากขึ้น) */}
                         {renderTextInput({
                           label: "ตำแหน่งงาน",
                           placeholder: "ระบุตำแหน่งงานของคุณ",
@@ -1010,7 +1001,6 @@ function Profile() {
                           size: "long",
                           required: true,
                         })}
-
                         <Grid grow>
                           <Grid.Col span={4}>
                             <label className="text-gray-700 font-kanit font-medium text-md">
@@ -1033,7 +1023,6 @@ function Profile() {
                             className="flex items-center"
                           ></Grid.Col>
                         </Grid>
-
                         <Grid grow>
                           <Grid.Col>
                             <label className="text-gray-700 font-kanit font-medium text-md">
@@ -1054,7 +1043,6 @@ function Profile() {
                                   disabled: form.values.currentlyWorking,
                                 })}
                               </Grid.Col>
-
                               <Grid.Col span={5} className="flex items-center">
                                 <Checkbox
                                   label="ยังอยู่ในตำแหน่งงานนี้"
@@ -1072,7 +1060,6 @@ function Profile() {
                         </Grid>
                       </div>
                     )}
-
                     <div className="space-y-4 mt-6">
                       <Title
                         order={4}
@@ -1089,7 +1076,6 @@ function Profile() {
                         color="green"
                         classNames={{ label: "text-gray-700 font-kanit" }}
                       />
-
                       {hasDesiredJobCategory && (
                         <div className="space-y-4">
                           <Select
@@ -1109,7 +1095,6 @@ function Profile() {
                               },
                             }}
                           />
-
                           {form.values.categorieWork && (
                             <Select
                               label="เลือกสายงานย่อย"
@@ -1137,7 +1122,6 @@ function Profile() {
                         </div>
                       )}
                     </div>
-
                     <div className="mt-6 w-full flex justify-end">
                       <button
                         type="submit"
@@ -1146,7 +1130,6 @@ function Profile() {
                       >
                         Confirm
                       </button>
-
                       <button
                         className="text-base bg-gray-500 text-white px-3 py-1 ml-2 rounded-sm hover:bg-gray-400 transition"
                         onClick={editProfileToggle}
@@ -1154,7 +1137,7 @@ function Profile() {
                         Cancel
                       </button>
                     </div>
-                  </Stack>
+                  </Stack> */}
                 </form>
               </Modal>
 
@@ -1236,17 +1219,18 @@ function Profile() {
               }
               onClick={() => handleTabClick("work")}
             >
-              My Post <span className="text-sm text-gray-500">1</span>
+              My Post{" "}
+              <span className="text-sm text-gray-500">{userPosts.length}</span>
             </button>
             <button
               className={
                 baseTabClasses +
                 " " +
-                (activeTab === "about" ? activeClasses : inactiveClasses)
+                (activeTab === "resume" ? activeClasses : inactiveClasses)
               }
-              onClick={() => handleTabClick("about")}
+              onClick={() => handleTabClick("resume")}
             >
-              About
+              เอกสารสมัครงานของฉัน
             </button>
           </div>
         </section>
@@ -1308,49 +1292,35 @@ function Profile() {
                         ))}
                       </ul>
                     </div>
-                    
+
                     <div className="flex space-x-4">
-                    <button
-                      className="bg-seagreen text-white rounded-md hover:bg-seagreen/90 transition px-4 py-2 mt-4 text-lg font-semibold"
-                      onClick={() =>
-                        navigate(`/jobseeker/viewpost/${String(post.id)}`, {
-                          state: { post },
-                        })
-                      }
-                    >
-                      <span>ดูรายละเอียด</span>
-                    </button>
+                      <button
+                        className="bg-seagreen text-white rounded-md hover:bg-seagreen/90 transition px-4 py-2 mt-4 text-lg font-semibold"
+                        onClick={() =>
+                          navigate(`/jobseeker/viewpost/${String(post.id)}`, {
+                            state: { post },
+                          })
+                        }
+                      >
+                        <span>ดูรายละเอียด</span>
+                      </button>
 
-                    <button
-                      className="text-base bg-red-500 text-white rounded-md hover:bg-red-400 transition px-3 py-2 mt-4"
-                      onClick={() => handleDeletePost(post.id)}
-                    >
-                      Delete
-                    </button>
-                  </div>
-
+                      <button
+                        className="text-base bg-red-500 text-white rounded-md hover:bg-red-400 transition px-3 py-2 mt-4"
+                        onClick={() => handleDeletePost(post.id)}
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
             </section>
           )}
 
-          {activeTab === "about" && (
+          {activeTab === "resume" && (
             <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
-              <div className="grid md:grid-cols-3 gap-6">
-                <ArticleCard
-                  url={""}
-                  badgeList={["TODO", "Somthing", "Here"]}
-                  title={"About"}
-                  description={
-                    " Lorem ipsum dolor sit, amet consectetur adipisicing elit. Asperiores assumenda omnis sequi eveniet debitis autem at, a iure non beatae molestiae nobis in unde delectus quis reiciendis. Dicta, quidem deleniti!"
-                  }
-                  profileImage={"พิการ.jpg"}
-                  postOwner={"John"}
-                  postedTime={"3 minutes ago"}
-                  liked={14}
-                />
-              </div>
+              <img src={user.resume}></img>
             </section>
           )}
         </div>

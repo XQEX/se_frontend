@@ -181,6 +181,7 @@ interface UpdateUserProfileRequest {
   address: string;
   email: string;
   contact: string;
+  resumeImage: FormData;
 }
 
 export const registerJobSeeker = async (
@@ -479,6 +480,23 @@ export const updateUserProfile = async (
       }
     );
     console.log("Contact update response:", contactResponse);
+
+    console.log("Updating resume image...");
+    console.log("Resume image:", profileData.resumeImage);
+
+    const ResumeResponse = await axios.post<{
+      data: void;
+    }>(
+      `http://localhost:${backendPort}/api/user/job-seeker/auth/resume-image`,
+      profileData.resumeImage,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
+      }
+    );
+    console.log("Resume image upload successful:", ResumeResponse);
 
     console.log("User profile updated successfully");
   } catch (error) {
