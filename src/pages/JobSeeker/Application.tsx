@@ -15,7 +15,7 @@ import {
 import { NewNav } from "../../components/NewNav";
 import { useUser } from "../../context/UserContext";
 
-// Interface สำหรับ InputProps
+// Interface for InputProps
 interface InputProps {
   label: string;
   placeholder: string;
@@ -23,7 +23,7 @@ interface InputProps {
   size: "short" | "medium" | "long";
 }
 
-// Interface สำหรับ Select Props
+// Interface for Select Props
 interface SelectProps {
   monthProp: ReturnType<UseFormReturnType<any>["getInputProps"]>;
   yearProp: ReturnType<UseFormReturnType<any>["getInputProps"]>;
@@ -43,7 +43,6 @@ const jobCategories = [
   { value: "logistics", label: "โลจิสติกส์และซัพพลายเชน" },
 ];
 
-// ข้อมูลสายงานย่อย (ขึ้นอยู่กับประเภทงานที่เลือก)
 const subCategories = {
   it: [
     { value: "software_engineer", label: "วิศวกรซอฟต์แวร์" },
@@ -134,6 +133,7 @@ const JobSeekerProfile = () => {
     queryClient,
   } = useUser();
   const [isHaveUser, setIsHaveUser] = useState(false);
+  
   useEffect(() => {
     refetchjobseeker();
     refetchCompany();
@@ -149,9 +149,9 @@ const JobSeekerProfile = () => {
 
   const form = useForm({
     initialValues: {
-      firstName: "",
-      lastName: "",
-      location: "",
+      firstName: "John",
+      lastName: "Doe",
+      location: "123 Main St, Bangkok",
       jobTitle: "",
       company: "",
       startMonth: "",
@@ -159,6 +159,11 @@ const JobSeekerProfile = () => {
       endMonth: "",
       endYear: "",
       currentlyWorking: false,
+      aboutMe: "Experienced software developer",
+      email: "john.doe@example.com",
+      phone: "+66987654321",
+      vulnerabilityType: "",
+      resume: null,
     },
   });
 
@@ -166,7 +171,6 @@ const JobSeekerProfile = () => {
     console.log("Submitted values:", values);
   };
 
-  // ฟังก์ชันสร้าง TextInput (รองรับขนาด short, medium, long)
   const renderTextInput = ({
     label,
     placeholder,
@@ -196,7 +200,6 @@ const JobSeekerProfile = () => {
     />
   );
 
-  // ฟังก์ชันสร้าง Select (เดือนและปี) → ขนาดเท่ากันสำหรับ "ตั้งแต่" และ "ถึง"
   const renderDateGroup = ({
     monthProp,
     yearProp,
@@ -307,7 +310,7 @@ const JobSeekerProfile = () => {
 
           <form onSubmit={form.onSubmit(handleSubmit)}>
             <Stack gap="lg">
-              {/* ชื่อและนามสกุล (ขนาดกลาง) */}
+              {/* ชื่อและนามสกุล */}
               <Grid grow>
                 <Grid.Col span={4}>
                   {renderTextInput({
@@ -327,7 +330,7 @@ const JobSeekerProfile = () => {
                 </Grid.Col>
               </Grid>
 
-              {/* ที่อยู่ปัจจุบัน (ยาวมากขึ้น) */}
+              {/* ที่อยู่ปัจจุบัน */}
               <Grid grow>
                 <Grid.Col span={8}>
                   {renderTextInput({
@@ -339,6 +342,92 @@ const JobSeekerProfile = () => {
                 </Grid.Col>
               </Grid>
 
+              {/* Email and Phone */}
+              <Grid grow>
+                <Grid.Col span={6}>
+                  {renderTextInput({
+                    label: "อีเมล",
+                    placeholder: "กรอกอีเมล",
+                    inputProps: form.getInputProps("email"),
+                    size: "long",
+                  })}
+                </Grid.Col>
+                <Grid.Col span={6}>
+                  {renderTextInput({
+                    label: "เบอร์โทร",
+                    placeholder: "กรอกเบอร์โทรศัพท์",
+                    inputProps: form.getInputProps("phone"),
+                    size: "medium",
+                  })}
+                </Grid.Col>
+              </Grid>
+
+              {/* About Me */}
+              <TextInput
+                label="เกี่ยวกับฉัน"
+                placeholder="บอกเล่าเกี่ยวกับตัวคุณ"
+                className="font-kanit"
+                styles={{
+                  root: { width: "100%" },
+                  label: { color: "#2d3748", fontWeight: 500 },
+                  input: {
+                    border: "1.5px solid #e2e8f0",
+                    padding: "0.4rem 0.6rem",
+                    borderRadius: "6px",
+                    "&:focus": { borderColor: "#2E8B57" },
+                  },
+                }}
+                {...form.getInputProps("aboutMe")}
+              />
+
+              {/* Vulnerability Type */}
+              <Select
+                label="ประเภทความเปราะบาง/ความพิการ (ถ้ามี)"
+                placeholder="เลือกประเภท (ถ้ามี)"
+                data={[
+                  { value: "none", label: "ไม่มี" },
+                  { value: "physical", label: "พิการทางร่างกาย" },
+                  { value: "visual", label: "พิการทางการมองเห็น" },
+                  { value: "hearing", label: "พิการทางการได้ยิน" },
+                  { value: "mental", label: "พิการทางจิตใจ" },
+                  { value: "other", label: "อื่นๆ" },
+                ]}
+                className="font-kanit"
+                styles={{
+                  input: {
+                    border: "1.5px solid #e2e8f0",
+                    padding: "0.4rem 0.6rem",
+                    borderRadius: "6px",
+                    "&:focus": { borderColor: "#2E8B57" },
+                  },
+                }}
+                {...form.getInputProps("vulnerabilityType")}
+              />
+
+              {/* Resume Upload */}
+              <div className="space-y-2">
+                <label className="text-gray-700 font-kanit font-medium text-md">
+                  อัปโหลดเรซูเม่
+                </label>
+                <input
+                  type="file"
+                  accept=".pdf,.doc,.docx"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      form.setFieldValue("resume", file);
+                    }
+                  }}
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                />
+                {form.values.resume && (
+                  <p className="text-sm text-gray-600">
+                    ไฟล์ที่เลือก: {form.values.resume.name}
+                  </p>
+                )}
+              </div>
+
+              {/* Experience Section */}
               <div className="space-y-4 mt-6">
                 <Title
                   order={4}
@@ -357,7 +446,6 @@ const JobSeekerProfile = () => {
 
               {hasExperience && (
                 <div className="space-y-4">
-                  {/* ตำแหน่งงาน และ บริษัท (ยาวมากขึ้น) */}
                   {renderTextInput({
                     label: "ตำแหน่งงาน",
                     placeholder: "ระบุตำแหน่งงานของคุณ",
@@ -397,7 +485,6 @@ const JobSeekerProfile = () => {
                             disabled: form.values.currentlyWorking,
                           })}
                         </Grid.Col>
-
                         <Grid.Col span={5} className="flex items-center">
                           <Checkbox
                             label="ยังอยู่ในตำแหน่งงานนี้"
@@ -413,6 +500,8 @@ const JobSeekerProfile = () => {
                   </Grid>
                 </div>
               )}
+
+              {/* Desired Job Category */}
               <div className="space-y-4 mt-6">
                 <Title
                   order={4}
@@ -474,6 +563,7 @@ const JobSeekerProfile = () => {
                 )}
               </div>
 
+              {/* Submit Button */}
               <div className="flex justify-center w-full mt-4">
                 <Button
                   type="submit"
