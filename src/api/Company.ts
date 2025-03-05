@@ -1,5 +1,5 @@
 import axios from "axios";
-import { backendPort } from "./globalvariable";
+import { API_BASE_URL, API_ENDPOINTS } from "./globalvariable";
 
 interface CompanyInfo {
   id: string;
@@ -107,15 +107,14 @@ export const registerCompany = async (
   confirmPassword: string
 ): Promise<{ id: string }> => {
   try {
-    console.log("Registering company with:", {
-      officialName,
-      email,
-      password,
-      confirmPassword,
-    });
-    const { data } = await axios.post<{ data: { id: string } }>(
-      `http://localhost:${backendPort}/api/user/company`,
-      { officialName, email, password, confirmPassword },
+    const response = await axios.post<{ data: { id: string } }>(
+      `${API_BASE_URL}${API_ENDPOINTS.EMPLOYER.COMPANY}`,
+      {
+        officialName,
+        email,
+        password,
+        confirmPassword,
+      },
       {
         headers: {
           "Content-Type": "application/json",
@@ -123,10 +122,8 @@ export const registerCompany = async (
         withCredentials: true,
       }
     );
-    console.log("Registration successful:", data);
-    return data.data;
+    return response.data.data;
   } catch (error) {
-    console.error("Registration failed:", error);
     throw error;
   }
 };
@@ -136,10 +133,12 @@ export const loginCompany = async (
   password: string
 ): Promise<CompanyAuthResponse> => {
   try {
-    console.log("Attempting to login company with:", { nameEmail, password });
-    const { data } = await axios.post<{ data: CompanyAuthResponse }>(
-      `http://localhost:${backendPort}/api/user/company/auth`,
-      { nameEmail, password },
+    const response = await axios.post<{ data: CompanyAuthResponse }>(
+      `${API_BASE_URL}${API_ENDPOINTS.EMPLOYER.COMPANY}/login`,
+      {
+        nameEmail,
+        password,
+      },
       {
         headers: {
           "Content-Type": "application/json",
@@ -147,44 +146,42 @@ export const loginCompany = async (
         withCredentials: true,
       }
     );
-    console.log("Login successful:", data);
-    return data.data;
+    return response.data.data;
   } catch (error) {
-    console.error("Login failed:", error);
     throw error;
   }
 };
 
 export const fetchCompanyInfo = async (): Promise<CompanyInfo> => {
   try {
-    console.log("Fetching company info...");
-    const { data } = await axios.get<{ data: CompanyInfo }>(
-      `http://localhost:${backendPort}/api/user/company/auth`,
+    const response = await axios.get<{ data: CompanyInfo }>(
+      `${API_BASE_URL}${API_ENDPOINTS.EMPLOYER.COMPANY}/info`,
       {
+        headers: {
+          "Content-Type": "application/json",
+        },
         withCredentials: true,
       }
     );
-    console.log("Fetch company info successful:", data);
-    return data.data;
+    return response.data.data;
   } catch (error) {
-    console.error("Fetch company info failed:", (error as any).message);
     throw error;
   }
 };
 
 export const logoutCompany = async (): Promise<void> => {
   try {
-    console.log("Logging out company...");
-    const { data } = await axios.delete<{ data: void }>(
-      `http://localhost:${backendPort}/api/user/company/auth`,
+    await axios.post(
+      `${API_BASE_URL}${API_ENDPOINTS.EMPLOYER.COMPANY}/logout`,
+      {},
       {
+        headers: {
+          "Content-Type": "application/json",
+        },
         withCredentials: true,
       }
     );
-    console.log("Logout successful:", data);
-    return data.data;
   } catch (error) {
-    console.error("Logout failed:", error);
     throw error;
   }
 };
@@ -193,9 +190,8 @@ export const createJobPostCom = async (
   jobPost: JobPost
 ): Promise<JobPostResponse> => {
   try {
-    console.log("Creating job post with:", jobPost);
-    const { data } = await axios.post<{ data: JobPostResponse }>(
-      `http://localhost:${backendPort}/api/post/job-posts/company`,
+    const response = await axios.post<JobPostResponse>(
+      `${API_BASE_URL}${API_ENDPOINTS.EMPLOYER.COMPANY}/job-posts`,
       jobPost,
       {
         headers: {
@@ -204,43 +200,16 @@ export const createJobPostCom = async (
         withCredentials: true,
       }
     );
-    console.log("Job post creation successful:", data);
-    return data.data;
+    return response.data;
   } catch (error) {
-    console.error("Job post creation failed:", error);
     throw error;
   }
 };
 
-export const getCompanyJobPosts =
-  async (): Promise<CompanyJobPostsResponse> => {
-    try {
-      console.log("Fetching company job posts...");
-      const { data } = await axios.get<CompanyJobPostsResponse>(
-        `http://localhost:${backendPort}/api/post/company/job-posts`,
-        {
-          withCredentials: true,
-        }
-      );
-      console.log("Fetch company job posts successful:", data);
-      return data;
-    } catch (error) {
-      console.error("Fetch company job posts failed:", error);
-      throw error;
-    }
-  };
-
-export const updateCompanyUsername = async (
-  username: string,
-  password: string
-): Promise<{ userId: string; username: string }> => {
+export const getCompanyJobPosts = async (): Promise<CompanyJobPostsResponse> => {
   try {
-    console.log("Updating employer username with:", { username, password });
-    const { data } = await axios.put<{
-      data: { userId: string; username: string };
-    }>(
-      `http://localhost:${backendPort}/api/user/company/auth/edit/official-name`,
-      { officialName: username, password },
+    const response = await axios.get<CompanyJobPostsResponse>(
+      `${API_BASE_URL}${API_ENDPOINTS.EMPLOYER.COMPANY}/job-posts`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -248,10 +217,103 @@ export const updateCompanyUsername = async (
         withCredentials: true,
       }
     );
-    console.log("Username update successful:", data);
-    return data.data;
+    return response.data;
   } catch (error) {
-    console.error("Username update failed:", error);
+    throw error;
+  }
+};
+
+export const updateJobPostCom = async (
+  jobPostId: string,
+  jobPost: JobPost
+): Promise<JobPostResponse> => {
+  try {
+    const response = await axios.put<JobPostResponse>(
+      `${API_BASE_URL}${API_ENDPOINTS.EMPLOYER.COMPANY}/job-posts/${jobPostId}`,
+      jobPost,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteJobPostCom = async (jobPostId: string): Promise<void> => {
+  try {
+    await axios.delete(
+      `${API_BASE_URL}${API_ENDPOINTS.EMPLOYER.COMPANY}/job-posts/${jobPostId}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getJobPostComById = async (jobPostId: string): Promise<JobPostResponse> => {
+  try {
+    const response = await axios.get<JobPostResponse>(
+      `${API_BASE_URL}${API_ENDPOINTS.EMPLOYER.COMPANY}/job-posts/${jobPostId}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updateCompanyProfile = async (
+  companyInfo: CompanyInfo
+): Promise<CompanyInfo> => {
+  try {
+    const response = await axios.put<{ data: CompanyInfo }>(
+      `${API_BASE_URL}${API_ENDPOINTS.EMPLOYER.COMPANY}/profile`,
+      companyInfo,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    return response.data.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updateCompanyUsername = async (
+  username: string,
+  password: string
+): Promise<{ userId: string; username: string }> => {
+  try {
+    const response = await axios.put<{ data: { userId: string; username: string } }>(
+      `${API_BASE_URL}${API_ENDPOINTS.EMPLOYER.COMPANY}/username`,
+      { username, password },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    return response.data.data;
+  } catch (error) {
     throw error;
   }
 };
@@ -261,12 +323,8 @@ export const updateCompanyPassword = async (
   oldPassword: string
 ): Promise<{ userId: string }> => {
   try {
-    console.log("Updating employer password with:", {
-      password,
-      oldPassword,
-    });
-    const { data } = await axios.put<{ data: { userId: string } }>(
-      `http://localhost:${backendPort}/api/user/company/auth/edit/password`,
+    const response = await axios.put<{ data: { userId: string } }>(
+      `${API_BASE_URL}${API_ENDPOINTS.EMPLOYER.COMPANY}/password`,
       { password, oldPassword },
       {
         headers: {
@@ -275,10 +333,8 @@ export const updateCompanyPassword = async (
         withCredentials: true,
       }
     );
-    console.log("Password update successful:", data);
-    return data.data;
+    return response.data.data;
   } catch (error) {
-    console.error("Password update failed:", error);
     throw error;
   }
 };
@@ -287,12 +343,8 @@ export const uploadCompanyProfileImage = async (
   formData: FormData
 ): Promise<{ approvalId: string; url: string }> => {
   try {
-    console.log("Uploading profile image...");
-
-    const { data } = await axios.post<{
-      data: { approvalId: string; url: string };
-    }>(
-      `http://localhost:${backendPort}/api/user/company/auth/profile-image`,
+    const response = await axios.post<{ data: { approvalId: string; url: string } }>(
+      `${API_BASE_URL}${API_ENDPOINTS.EMPLOYER.COMPANY}/profile-image`,
       formData,
       {
         headers: {
@@ -301,10 +353,8 @@ export const uploadCompanyProfileImage = async (
         withCredentials: true,
       }
     );
-    console.log("Profile image upload successful:", data);
-    return data.data;
+    return response.data.data;
   } catch (error) {
-    console.error("Profile image upload failed:", error);
     throw error;
   }
 };

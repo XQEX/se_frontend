@@ -6,7 +6,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { NewNav } from "../../components/NewNav";
 import Footer from "../../components/Footer";
 import { useUser } from "../../context/UserContext";
-import { createJobPostEmp } from "../../api/Employer";
+import { createJobPost } from "../../api/Employer";
 import { createJobPostCom } from "../../api/Company";
 import { MultiSelect } from "@mantine/core";
 import { provinces } from "../../data/provinces";
@@ -156,7 +156,7 @@ const PostJobEmp: React.FC = () => {
     try {
       console.log("User type:", user?.type);
       if (user?.type === "EMPLOYER") {
-        const response = await createJobPostEmp(newEmpJob as any);
+        const response = await createJobPost(newEmpJob as any);
         console.log("Job post response:", response.message);
         setSuccessMessage("🎉 ประกาศงานสำเร็จแล้ว!");
         notifySuccess("🎉 ประกาศงานสำเร็จแล้ว!"); // Show the notification after navigation

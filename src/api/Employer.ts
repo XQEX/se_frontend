@@ -1,5 +1,5 @@
 import axios from "axios";
-import { backendPort } from "./globalvariable";
+import { API_BASE_URL, API_ENDPOINTS } from "./globalvariable";
 
 interface EmployerInfo {
   id: string;
@@ -91,21 +91,20 @@ interface EmployerJobPostsResponse {
 }
 
 export const registerEmployer = async (
-  name: string,
+  username: string,
   email: string,
   password: string,
   confirmPassword: string
 ): Promise<{ id: string }> => {
   try {
-    console.log("Registering employer with:", {
-      name,
-      email,
-      password,
-      confirmPassword,
-    });
-    const { data } = await axios.post<{ data: { id: string } }>(
-      `http://localhost:${backendPort}/api/user/employer`,
-      { name, email, password, confirmPassword },
+    const response = await axios.post<{ data: { id: string } }>(
+      `${API_BASE_URL}${API_ENDPOINTS.EMPLOYER.REGISTRATION}`,
+      {
+        username,
+        email,
+        password,
+        confirmPassword,
+      },
       {
         headers: {
           "Content-Type": "application/json",
@@ -113,23 +112,23 @@ export const registerEmployer = async (
         withCredentials: true,
       }
     );
-    console.log("Registration successful:", data);
-    return data.data;
+    return response.data.data;
   } catch (error) {
-    console.error("Registration failed:", error);
     throw error;
   }
 };
 
 export const loginEmployer = async (
-  nameEmail: string,
+  usernameEmail: string,
   password: string
 ): Promise<EmployerAuthResponse> => {
   try {
-    console.log("Attempting to login employer with:", { nameEmail, password });
-    const { data } = await axios.post<{ data: EmployerAuthResponse }>(
-      `http://localhost:${backendPort}/api/user/employer/auth`,
-      { nameEmail, password },
+    const response = await axios.post<{ data: EmployerAuthResponse }>(
+      `${API_BASE_URL}${API_ENDPOINTS.EMPLOYER.LOGIN}`,
+      {
+        usernameEmail,
+        password,
+      },
       {
         headers: {
           "Content-Type": "application/json",
@@ -137,55 +136,52 @@ export const loginEmployer = async (
         withCredentials: true,
       }
     );
-    console.log("Login successful:", data);
-    return data.data;
+    return response.data.data;
   } catch (error) {
-    console.error("Login failed:", error);
     throw error;
   }
 };
 
 export const fetchEmployerInfo = async (): Promise<EmployerInfo> => {
   try {
-    console.log("Fetching employer info...");
-    const { data } = await axios.get<{ data: EmployerInfo }>(
-      `http://localhost:${backendPort}/api/user/employer/auth`,
+    const response = await axios.get<{ data: EmployerInfo }>(
+      `${API_BASE_URL}${API_ENDPOINTS.EMPLOYER.INFO}`,
       {
+        headers: {
+          "Content-Type": "application/json",
+        },
         withCredentials: true,
       }
     );
-    console.log("Fetch employer info successful:", data);
-    return data.data;
+    return response.data.data;
   } catch (error) {
-    console.error("Fetch employer info failed:", (error as any).message);
     throw error;
   }
 };
 
 export const logoutEmployer = async (): Promise<void> => {
   try {
-    console.log("Logging out employer...");
-    const { data } = await axios.delete<{ data: void }>(
-      `http://localhost:${backendPort}/api/user/employer/auth`,
+    await axios.post(
+      `${API_BASE_URL}${API_ENDPOINTS.EMPLOYER.LOGOUT}`,
+      {},
       {
+        headers: {
+          "Content-Type": "application/json",
+        },
         withCredentials: true,
       }
     );
-    console.log("Logout successful:", data);
-    return data.data;
   } catch (error) {
-    console.error("Logout failed:", error);
     throw error;
   }
 };
 
-export const createJobPostEmp = async (
+export const createJobPost = async (
   jobPost: JobPost
 ): Promise<JobPostResponse> => {
   try {
-    console.log("Creating job post with:", jobPost);
-    const { data } = await axios.post<{ data: JobPostResponse }>(
-      `http://localhost:${backendPort}/api/post/job-posts/employer`,
+    const response = await axios.post<JobPostResponse>(
+      `${API_BASE_URL}${API_ENDPOINTS.EMPLOYER.JOB_POSTS}`,
       jobPost,
       {
         headers: {
@@ -194,44 +190,110 @@ export const createJobPostEmp = async (
         withCredentials: true,
       }
     );
-    console.log("Job post creation successful:", data);
-    return data.data;
+    return response.data;
   } catch (error) {
-    console.error("Job post creation failed:", error);
     throw error;
   }
 };
 
-export const getEmployerJobPosts =
-  async (): Promise<EmployerJobPostsResponse> => {
-    try {
-      console.log(
-        "Fetching job posts created by the authenticated employer..."
-      );
-      const { data } = await axios.get<EmployerJobPostsResponse>(
-        `http://localhost:${backendPort}/api/post/user/job-posts`,
-        {
-          withCredentials: true,
-        }
-      );
-      console.log("Job posts fetched successfully:", data);
-      return data;
-    } catch (error) {
-      console.error("Failed to fetch job posts:", error);
-      throw error;
-    }
-  };
+export const getEmployerJobPosts = async (): Promise<EmployerJobPostsResponse> => {
+  try {
+    const response = await axios.get<EmployerJobPostsResponse>(
+      `${API_BASE_URL}${API_ENDPOINTS.EMPLOYER.JOB_POSTS}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updateJobPost = async (
+  jobPostId: string,
+  jobPost: JobPost
+): Promise<JobPostResponse> => {
+  try {
+    const response = await axios.put<JobPostResponse>(
+      `${API_BASE_URL}${API_ENDPOINTS.EMPLOYER.JOB_POSTS}/${jobPostId}`,
+      jobPost,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteJobPost = async (jobPostId: string): Promise<void> => {
+  try {
+    await axios.delete(
+      `${API_BASE_URL}${API_ENDPOINTS.EMPLOYER.JOB_POSTS}/${jobPostId}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getJobPostById = async (jobPostId: string): Promise<JobPostResponse> => {
+  try {
+    const response = await axios.get<JobPostResponse>(
+      `${API_BASE_URL}${API_ENDPOINTS.EMPLOYER.JOB_POSTS}/${jobPostId}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updateEmployerProfile = async (
+  employerInfo: EmployerInfo
+): Promise<EmployerInfo> => {
+  try {
+    const response = await axios.put<{ data: EmployerInfo }>(
+      `${API_BASE_URL}${API_ENDPOINTS.EMPLOYER.PROFILE}`,
+      employerInfo,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    return response.data.data;
+  } catch (error) {
+    throw error;
+  }
+};
 
 export const updateEmployerUsername = async (
   username: string,
   password: string
 ): Promise<{ userId: string; username: string }> => {
   try {
-    console.log("Updating employer username with:", { username, password });
-    const { data } = await axios.put<{
-      data: { userId: string; username: string };
-    }>(
-      `http://localhost:${backendPort}/api/user/employer/auth/edit/username`,
+    const response = await axios.put<{ data: { userId: string; username: string } }>(
+      `${API_BASE_URL}${API_ENDPOINTS.EMPLOYER.USERNAME}`,
       { username, password },
       {
         headers: {
@@ -240,10 +302,8 @@ export const updateEmployerUsername = async (
         withCredentials: true,
       }
     );
-    console.log("Username update successful:", data);
-    return data.data;
+    return response.data.data;
   } catch (error) {
-    console.error("Username update failed:", error);
     throw error;
   }
 };
@@ -253,12 +313,8 @@ export const updateEmployerPassword = async (
   oldPassword: string
 ): Promise<{ userId: string }> => {
   try {
-    console.log("Updating employer password with:", {
-      password,
-      oldPassword,
-    });
-    const { data } = await axios.put<{ data: { userId: string } }>(
-      `http://localhost:${backendPort}/api/user/employer/auth/edit/password`,
+    const response = await axios.put<{ data: { userId: string } }>(
+      `${API_BASE_URL}${API_ENDPOINTS.EMPLOYER.PASSWORD}`,
       { password, oldPassword },
       {
         headers: {
@@ -267,10 +323,8 @@ export const updateEmployerPassword = async (
         withCredentials: true,
       }
     );
-    console.log("Password update successful:", data);
-    return data.data;
+    return response.data.data;
   } catch (error) {
-    console.error("Password update failed:", error);
     throw error;
   }
 };
@@ -279,12 +333,8 @@ export const uploadEmployerProfileImage = async (
   formData: FormData
 ): Promise<{ approvalId: string; url: string }> => {
   try {
-    console.log("Uploading profile image...");
-
-    const { data } = await axios.post<{
-      data: { approvalId: string; url: string };
-    }>(
-      `http://localhost:${backendPort}/api/user/employer/auth/profile-image`,
+    const response = await axios.post<{ data: { approvalId: string; url: string } }>(
+      `${API_BASE_URL}${API_ENDPOINTS.EMPLOYER.PROFILE_IMAGE}`,
       formData,
       {
         headers: {
@@ -293,10 +343,8 @@ export const uploadEmployerProfileImage = async (
         withCredentials: true,
       }
     );
-    console.log("Profile image upload successful:", data);
-    return data.data;
+    return response.data.data;
   } catch (error) {
-    console.error("Profile image upload failed:", error);
     throw error;
   }
 };

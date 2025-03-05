@@ -1,5 +1,5 @@
 import axios from "axios";
-import { backendPort } from "./globalvariable";
+import { API_BASE_URL, API_ENDPOINTS } from "./globalvariable";
 
 interface MatchResponse {
   success: boolean;
@@ -278,9 +278,8 @@ export const matchWithHiringPost = async (
   postId: string
 ): Promise<MatchResponse> => {
   try {
-    console.log("Attempting to match with hiring post:", { postId });
-    const { data } = await axios.post<{ data: MatchResponse }>(
-      `http://localhost:${backendPort}/api/matching/hiring/${postId}/match`,
+    const response = await axios.post<MatchResponse>(
+      `${API_BASE_URL}${API_ENDPOINTS.MATCHING.HIRING.MATCH}/${postId}/match`,
       {},
       {
         headers: {
@@ -289,10 +288,8 @@ export const matchWithHiringPost = async (
         withCredentials: true,
       }
     );
-    console.log("Match successful:", data);
-    return data.data;
+    return response.data;
   } catch (error) {
-    console.error("Failed to match with hiring post:", error);
     throw error;
   }
 };
@@ -301,9 +298,8 @@ export const getMatchesForHiringPost = async (
   postId: string
 ): Promise<GetMatchesResponse> => {
   try {
-    console.log("Fetching matches for hiring post:", { postId });
-    const { data } = await axios.get<GetMatchesResponse>(
-      `http://localhost:${backendPort}/api/matching/hiring/${postId}/match`,
+    const response = await axios.get<GetMatchesResponse>(
+      `${API_BASE_URL}${API_ENDPOINTS.MATCHING.HIRING.MATCH}/${postId}/match`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -311,22 +307,20 @@ export const getMatchesForHiringPost = async (
         withCredentials: true,
       }
     );
-    console.log("Matches retrieved successfully:", data);
-    return data;
+    return response.data;
   } catch (error) {
-    console.error("Failed to fetch matches for hiring post:", error);
     throw error;
   }
 };
+
 export const updateMatchStatus = async (
   matchId: string,
   status: string,
   seekerId: string
 ): Promise<UpdateMatchStatusResponse> => {
   try {
-    console.log("Updating match status:", { matchId, status, seekerId });
-    const { data } = await axios.put<{ data: UpdateMatchStatusResponse }>(
-      `http://localhost:${backendPort}/api/matching/hiring/match/${matchId}/status`,
+    const response = await axios.put<UpdateMatchStatusResponse>(
+      `${API_BASE_URL}${API_ENDPOINTS.MATCHING.HIRING.MATCH}/match/${matchId}`,
       { status, seekerId },
       {
         headers: {
@@ -335,13 +329,12 @@ export const updateMatchStatus = async (
         withCredentials: true,
       }
     );
-    console.log("Match status updated successfully:", data);
-    return data.data;
+    return response.data;
   } catch (error) {
-    console.error("Failed to update match status:", error);
     throw error;
   }
 };
+
 export const createFindingPostMatch = async (
   postId: string,
   matchData: {
@@ -352,9 +345,8 @@ export const createFindingPostMatch = async (
   }
 ): Promise<CreateFindingPostMatchResponse> => {
   try {
-    console.log("Creating match for finding post:", { postId, matchData });
-    const { data } = await axios.post<{ data: CreateFindingPostMatchResponse }>(
-      `http://localhost:${backendPort}/api/matching/finding/${postId}/match`,
+    const response = await axios.post<CreateFindingPostMatchResponse>(
+      `${API_BASE_URL}${API_ENDPOINTS.MATCHING.FINDING.MATCH}/${postId}/match`,
       matchData,
       {
         headers: {
@@ -363,20 +355,18 @@ export const createFindingPostMatch = async (
         withCredentials: true,
       }
     );
-    console.log("Finding post match created successfully:", data);
-    return data.data;
+    return response.data;
   } catch (error) {
-    console.error("Failed to create match for finding post:", error);
     throw error;
   }
 };
+
 export const getFindingPostMatch = async (
   postId: string
 ): Promise<GetFindingPostMatchResponse> => {
   try {
-    console.log("Fetching match for finding post:", { postId });
-    const { data } = await axios.get<GetFindingPostMatchResponse>(
-      `http://localhost:${backendPort}/api/matching/finding/${postId}/match`,
+    const response = await axios.get<GetFindingPostMatchResponse>(
+      `${API_BASE_URL}${API_ENDPOINTS.MATCHING.FINDING.MATCH}/${postId}/match`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -384,24 +374,20 @@ export const getFindingPostMatch = async (
         withCredentials: true,
       }
     );
-    console.log("Match retrieved successfully:", data);
-    return data;
+    return response.data;
   } catch (error) {
-    console.error("Failed to fetch match for finding post:", error);
     throw error;
   }
 };
+
 export const updateFindingMatchStatus = async (
   matchId: string,
   status: string,
   seekerId: string
 ): Promise<UpdateFindingMatchStatusResponse> => {
   try {
-    console.log("Updating finding match status:", { matchId, status });
-    const { data } = await axios.put<{
-      data: UpdateFindingMatchStatusResponse;
-    }>(
-      `http://localhost:${backendPort}/api/matching/finding/match/${matchId}/status`,
+    const response = await axios.put<UpdateFindingMatchStatusResponse>(
+      `${API_BASE_URL}${API_ENDPOINTS.MATCHING.FINDING.MATCH}/match/${matchId}`,
       { status, seekerId },
       {
         headers: {
@@ -410,50 +396,42 @@ export const updateFindingMatchStatus = async (
         withCredentials: true,
       }
     );
-    console.log("Finding match status updated successfully:", data);
-    return data.data;
+    return response.data;
   } catch (error) {
-    console.error("Failed to update finding match status:", error);
     throw error;
   }
 };
-export const getUserMatchingStatus =
-  async (): Promise<UserMatchingStatusResponse> => {
-    try {
-      console.log("Fetching user matching status");
-      const { data } = await axios.get<UserMatchingStatusResponse>(
-        `http://localhost:${backendPort}/api/matching/user/tracking`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
-      );
-      console.log("User matching status retrieved successfully:", data);
-      return data;
-    } catch (error) {
-      console.error("Failed to fetch user matching status:", error);
-      throw error;
-    }
-  };
-export const getAdminMatchingStatus =
-  async (): Promise<AdminMatchingStatusResponse> => {
-    try {
-      console.log("Fetching all matching statuses for admin");
-      const { data } = await axios.get<AdminMatchingStatusResponse>(
-        `http://localhost:${backendPort}/api/matching/admin/tracking`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
-      );
-      console.log("All matching statuses retrieved successfully:", data);
-      return data;
-    } catch (error) {
-      console.error("Failed to fetch all matching statuses for admin:", error);
-      throw error;
-    }
-  };
+
+export const getUserMatchingStatus = async (): Promise<UserMatchingStatusResponse> => {
+  try {
+    const response = await axios.get<UserMatchingStatusResponse>(
+      `${API_BASE_URL}${API_ENDPOINTS.MATCHING.FINDING.TRACKING}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getAdminMatchingStatus = async (): Promise<AdminMatchingStatusResponse> => {
+  try {
+    const response = await axios.get<AdminMatchingStatusResponse>(
+      `${API_BASE_URL}${API_ENDPOINTS.MATCHING.FINDING.TRACKING}/admin`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { NewNav } from "../../components/NewNav";
 import { Link, useLocation } from "react-router-dom";
+import { API_CONFIG } from '../../config/api';
 
 // Import Toastify
 import { ToastContainer, toast } from "react-toastify";
@@ -58,7 +59,7 @@ function SignUpJobSeek() {
 
     try {
       const response = await fetch(
-        `http://localhost:6977/api/user/job-seeker/registration-image/${approvalId}`,
+        `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.JOB_SEEKER.REGISTRATION_IMAGE}/${approvalId}`,
         {
           method: "POST",
           body: formData,
@@ -107,7 +108,7 @@ function SignUpJobSeek() {
       };
 
       const response = await fetch(
-        "http://localhost:6977/api/user/job-seeker",
+        `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.JOB_SEEKER.REGISTRATION}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -135,7 +136,7 @@ function SignUpJobSeek() {
 
   function handleGoogleOauth() {
     window.open(
-      "http://localhost:6977/api/user/job-seeker/oauth/google",
+      `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.JOB_SEEKER.GOOGLE_OAUTH}`,
       "_self"
     );
   }

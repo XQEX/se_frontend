@@ -3,6 +3,7 @@ import { FaStar, FaArrowRight, FaMapPin, FaClock } from "react-icons/fa";
 import { TbCurrencyBaht } from "react-icons/tb";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { API_CONFIG } from '../config/api';
 
 type JobCardEmpProps = {
   id: string | number;
@@ -99,7 +100,7 @@ const getUserMatchingStatus = async (): Promise<
   try {
     console.log("Fetching user matching status");
     const { data } = await axios.get<UserMatchingStatusResponse>(
-      `http://localhost:6977/api/matching/user/tracking`,
+      `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.MATCHING.FINDING.TRACKING}`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -127,7 +128,7 @@ const createFindingPostMatch = async (
   try {
     console.log("Creating match for finding post:", { postId });
     const { data } = await axios.post<MatchResponse>(
-      `http://localhost:6977/api/matching/finding/${postId}/match`,
+      `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.MATCHING.FINDING.MATCH}/${postId}/match`,
       {},
       {
         headers: { "Content-Type": "application/json" },
@@ -148,7 +149,7 @@ const deleteMatchFindingPost: (
   try {
     console.log("Deleting match for finding post:", { matchId });
     const { data } = await axios.delete<DeleteMatchResponse>(
-      `http://localhost:6977/api/matching/finding/match/${matchId}`,
+      `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.MATCHING.FINDING.MATCH}/match/${matchId}`,
       {
         headers: {
           "Content-Type": "application/json",

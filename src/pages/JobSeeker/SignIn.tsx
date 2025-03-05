@@ -4,8 +4,9 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { loginJobSeeker } from "../../api/JobSeeker";
 import { loginCompany } from "../../api/Company";
-import { loginEmployer } from "../../api/Employer"; // Assuming you have an Employer API
+import { loginEmployer } from "../../api/Employer";
 import { motion, AnimatePresence } from "framer-motion";
+import { API_CONFIG } from '../../config/api';
 
 function SignIn() {
   const [nameEmail, setNameEmail] = useState("");
@@ -54,7 +55,7 @@ function SignIn() {
 
   function handleGoogleOauth() {
     window.open(
-      "http://localhost:6977/api/user/job-seeker/oauth/google",
+      `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.JOB_SEEKER.GOOGLE_OAUTH}`,
       "_self"
     );
   }
