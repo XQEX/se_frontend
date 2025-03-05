@@ -14,7 +14,6 @@ import {
 } from "@mantine/core";
 import { NewNav } from "../../components/NewNav";
 import { useUser } from "../../context/UserContext";
-import { motion } from "framer-motion";
 
 // Interface for InputProps
 interface InputProps {
@@ -271,7 +270,7 @@ const JobSeekerProfile = () => {
       />
       <Container
         size="md"
-        className="mt-11 mb-14 kanit-regular"
+        className="mt-11 mb-14"
         styles={{
           root: {
             maxWidth: "800px",
@@ -299,9 +298,12 @@ const JobSeekerProfile = () => {
             },
           }}
         >
-          <div className="text-gray-800 mb-4 text-left text-2xl font-bold kanit-regular ">
+          <Title
+            order={1}
+            className="text-gray-800 mb-4 text-left text-2xl font-bold"
+          >
             แก้ไขประวัติ
-          </div>
+          </Title>
           <p className="text-left text-gray-600 mb-6 text-md leading-relaxed mt-1">
             ผู้ประกอบการจะได้รับข้อมูลของคุณเพื่อให้คุณได้รับข้อเสนองานที่เหมาะสม
           </p>
@@ -427,9 +429,12 @@ const JobSeekerProfile = () => {
 
               {/* Experience Section */}
               <div className="space-y-4 mt-6">
-                <div className="text-gray-800 text-lg font-semibold kanit-regular">
+                <Title
+                  order={4}
+                  className="text-gray-800 text-lg font-semibold"
+                >
                   ประสบการณ์ล่าสุด
-                </div>
+                </Title>
                 <Switch
                   label="ฉันมีประสบการณ์"
                   checked={hasExperience}
@@ -482,13 +487,12 @@ const JobSeekerProfile = () => {
                         </Grid.Col>
                         <Grid.Col span={5} className="flex items-center">
                           <Checkbox
-                            className=""
                             label="ยังอยู่ในตำแหน่งงานนี้"
                             {...form.getInputProps("currentlyWorking", {
                               type: "checkbox",
                             })}
-                           
-                            classNames={{ label: "text-gray-700 font-kanit " }}
+                            color="green"
+                            classNames={{ label: "text-gray-700 font-kanit" }}
                           />
                         </Grid.Col>
                       </Grid>
@@ -499,10 +503,12 @@ const JobSeekerProfile = () => {
 
               {/* Desired Job Category */}
               <div className="space-y-4 mt-6">
-                <div className="text-gray-800 text-lg font-semibold kanit-regular">
+                <Title
+                  order={4}
+                  className="text-gray-800 text-lg font-semibold"
+                >
                   ประเภทงานที่ต้องการ
-                </div>
-
+                </Title>
                 <Switch
                   label="มีประเภทงานที่ต้องการ"
                   checked={hasDesiredJobCategory}
@@ -559,14 +565,28 @@ const JobSeekerProfile = () => {
 
               {/* Submit Button */}
               <div className="flex justify-center w-full mt-4">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                <Button
                   type="submit"
-                  className="bg-seagreen p-3 text-md font-medium tracking-wide rounded-lg text-white kanit-regular"
+                  size="md"
+                  fullWidth
+                  variant="filled"
+                  color="green"
+                  className="h-12 text-md font-medium tracking-wide max-w-sm"
+                  styles={{
+                    root: {
+                      transition: "transform 0.2s ease, box-shadow 0.2s ease",
+                      "&:hover": {
+                        transform: "translateY(-3px)",
+                        boxShadow: "0px 6px 15px rgba(0, 0, 0, 0.2)",
+                      },
+                      "&:active": {
+                        transform: "translateY(1px)",
+                      },
+                    },
+                  }}
                 >
                   บันทึก
-                </motion.button>
+                </Button>
               </div>
             </Stack>
           </form>
