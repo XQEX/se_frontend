@@ -517,53 +517,65 @@ const Admin: React.FC = () => {
       {currentSection === "allMatchingStatus" && (
         <div className="mb-6 p-4 bg-white rounded shadow">
           <h2 className="text-2xl font-semibold mb-4">All Matching Status</h2>
-          {AllmatchingLoading ? (
-            <ClipLoader color="#ffffff" size={50} />
+          {adminInfo ? (
+            <>
+              {AllmatchingLoading ? (
+                <ClipLoader color="#ffffff" size={50} />
+              ) : (
+                <ul className="space-y-4">
+                  {Allmatching?.data?.findingMatches.map((status: any) => (
+                    <li key={status.id} className="p-4 bg-gray-100 rounded">
+                      <span className="font-medium">{status.id}</span> -{" "}
+                      <span className="text-gray-600">{status.status}</span> -{" "}
+                      <span className="text-gray-600">{status.createdAt}</span>
+                      <div className="mt-2">
+                        <h4 className="font-semibold">Job Finding Post</h4>
+                        <p>Title: {status.toPost.title}</p>
+                        <p>Description: {status.toPost.description}</p>
+                        <p>Location: {status.toPost.jobLocation}</p>
+                        <p>Expected Salary: {status.toPost.expectedSalary}</p>
+                      </div>
+                    </li>
+                  ))}
+                  {Allmatching?.data?.hiringMatches.map((status: any) => (
+                    <li key={status.id} className="p-4 bg-gray-100 rounded">
+                      <span className="font-medium">{status.id}</span> -{" "}
+                      <span className="text-gray-600">{status.status}</span> -{" "}
+                      <span className="text-gray-600">{status.createdAt}</span>
+                      <div className="mt-2">
+                        <h4 className="font-semibold">Job Hiring Post</h4>
+                        <p>Title: {status.toPost.title}</p>
+                        <p>Description: {status.toPost.description}</p>
+                        <p>Location: {status.toPost.jobLocation}</p>
+                        <p>Salary: {status.toPost.salary}</p>
+                      </div>
+                      <div className="mt-2">
+                        <h4 className="font-semibold">Matched Seekers</h4>
+                        <ul className="space-y-2">
+                          {status.toMatchSeekers.map((seeker: any) => (
+                            <li
+                              key={
+                                seeker.jobSeekerId || seeker.oauthJobSeekerId
+                              }
+                            >
+                              <p>
+                                Seeker ID:{" "}
+                                {seeker.jobSeekerId || seeker.oauthJobSeekerId}
+                              </p>
+                              <p>Status: {seeker.status}</p>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </>
           ) : (
-            <ul className="space-y-4">
-              {Allmatching?.data?.findingMatches.map((status: any) => (
-                <li key={status.id} className="p-4 bg-gray-100 rounded">
-                  <span className="font-medium">{status.id}</span> -{" "}
-                  <span className="text-gray-600">{status.status}</span> -{" "}
-                  <span className="text-gray-600">{status.createdAt}</span>
-                  <div className="mt-2">
-                    <h4 className="font-semibold">Job Finding Post</h4>
-                    <p>Title: {status.toPost.title}</p>
-                    <p>Description: {status.toPost.description}</p>
-                    <p>Location: {status.toPost.jobLocation}</p>
-                    <p>Expected Salary: {status.toPost.expectedSalary}</p>
-                  </div>
-                </li>
-              ))}
-              {Allmatching?.data?.hiringMatches.map((status: any) => (
-                <li key={status.id} className="p-4 bg-gray-100 rounded">
-                  <span className="font-medium">{status.id}</span> -{" "}
-                  <span className="text-gray-600">{status.status}</span> -{" "}
-                  <span className="text-gray-600">{status.createdAt}</span>
-                  <div className="mt-2">
-                    <h4 className="font-semibold">Job Hiring Post</h4>
-                    <p>Title: {status.toPost.title}</p>
-                    <p>Description: {status.toPost.description}</p>
-                    <p>Location: {status.toPost.jobLocation}</p>
-                    <p>Salary: {status.toPost.salary}</p>
-                  </div>
-                  <div className="mt-2">
-                    <h4 className="font-semibold">Matched Seekers</h4>
-                    <ul className="space-y-2">
-                      {status.toMatchSeekers.map((seeker: any) => (
-                        <li key={seeker.jobSeekerId || seeker.oauthJobSeekerId}>
-                          <p>
-                            Seeker ID:{" "}
-                            {seeker.jobSeekerId || seeker.oauthJobSeekerId}
-                          </p>
-                          <p>Status: {seeker.status}</p>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </li>
-              ))}
-            </ul>
+            <p className="text-gray-600">
+              Please log in to view all matching status.
+            </p>
           )}
         </div>
       )}

@@ -7,6 +7,9 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { motion, AnimatePresence } from "framer-motion";
 import { useUser } from "../../context/UserContext";
+import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
+import { IconUpload, IconPhoto, IconX } from "@tabler/icons-react";
+import { Group, Text, Image } from "@mantine/core";
 
 function SignUpEmp() {
   const {
@@ -32,7 +35,12 @@ function SignUpEmp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
+  const queryParams = new URLSearchParams(location.search);
+  const initialApprovalId = queryParams.get("approvalId");
+  const [approvalId, setApprovalId] = useState<string | null>(
+    initialApprovalId
+  );
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
   // Replace 'isChecked' with your actual checkbox/terms logic
   const [isChecked, setIsChecked] = useState(false);
 
@@ -162,6 +170,33 @@ function SignUpEmp() {
     }
   }
 
+  async function uploadImage(file: File, approvalId: string) {
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+      const response = await fetch(
+        `http://localhost:6977/api/user/employer/registration-image/${approvalId}`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+      console.log("upload sucessful", response);
+
+      const result = await response.json();
+      if (!response.ok) {
+        notifyError(result.msg || "มีข้อผิดพลาด กรุณาลองอีกครั้ง");
+      } else {
+        notifySuccess(result.msg || "อัปโหลดรูปภาพสำเร็จ!");
+        navigate("/awaiting-approval");
+      }
+    } catch (error) {
+      notifyError("ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้ กรุณาลองใหม่");
+      console.error(error);
+    }
+  }
+
   return (
     <div className="h-screen flex flex-col relative">
       {/* Toast Container for notifications */}
@@ -193,117 +228,125 @@ function SignUpEmp() {
             ? "สมัครสมาชิก (นายจ้าง)"
             : "สมัครสมาชิก (บริษัท)"}
         </h1>
-
-        {/* Toggle Buttons */}
-        <div className="flex space-x-4 mb-8">
-          <motion.button
-            onClick={() => setUserType("employer")}
-            className={`w-32 px-4 py-2 rounded-lg transition-colors duration-300 kanit-semibold ${
-              userType === "employer"
-                ? "bg-seagreen text-white"
-                : "bg-gray-200 text-black"
-            }`}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            นายจ้าง
-          </motion.button>
-          <motion.button
-            onClick={() => setUserType("company")}
-            className={`w-32 px-4 py-2 rounded-lg transition-colors duration-300 kanit-semibold ${
-              userType === "company"
-                ? "bg-seagreen text-white"
-                : "bg-gray-200 text-black"
-            }`}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            บริษัท
-          </motion.button>
-        </div>
-
-        {/* Form Section */}
-        <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-2">
-          {/* Name Input */}
-          <div className="flex flex-col">
-            <label className="text-black text-sm mb-2 kanit-light">
-              {userType === "employer" ? "ชื่อ-นามสกุล" : "ชื่อบริษัท"}
-            </label>
-            <input
-              type="text"
-              value={name}
-              placeholder={
-                userType === "employer" ? "กรอกชื่อ-นามสกุล" : "กรอกชื่อบริษัท"
-              }
-              className="text-black placeholder-kanit rounded-lg border border-gray-300 p-3"
-              onChange={(e) => setName(e.target.value)}
-            />
-          </div>
-
-          {/* Email Input */}
-          <div className="flex flex-col">
-            <label className="text-black text-sm mb-2 kanit-light">อีเมล</label>
-            <input
-              type="email"
-              value={email}
-              placeholder="กรอกอีเมล"
-              className="text-black placeholder-kanit rounded-lg border border-gray-300 p-3"
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-
-          {/* Password Input */}
-          <div className="flex flex-col">
-            <label className="text-black text-sm mb-2 kanit-light">
-              รหัสผ่าน
-            </label>
-            <input
-              type="password"
-              value={password}
-              placeholder="รหัสผ่าน"
-              className="text-black placeholder-kanit rounded-lg border border-gray-300 p-3"
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          <div className="flex flex-col">
-            <label className="text-black text-sm mb-2 kanit-light">
-              ยืนยันรหัสผ่าน
-            </label>
-            <input
-              type="password"
-              value={confirmPassword}
-              placeholder="ยืนยันรหัสผ่าน"
-              className="text-black placeholder-kanit rounded-lg border border-gray-300 p-3"
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
-          </div>
-
-          {/* Example Checkbox */}
-          <div className="flex flex-row items-center gap-2 text-left">
-            <input
-              type="checkbox"
-              id="agree"
-              checked={isChecked}
-              onChange={(e) => setIsChecked(e.target.checked)}
-            />
-            <label htmlFor="agree" className="text-black kanit-light text-sm">
-              ฉันยอมรับ
-              <Link
-                to="/terms"
-                className="text-blue-500 hover:text-blue-400 text-bold"
+        {!approvalId ? (
+          <>
+            {/* Toggle Buttons */}
+            <div className="flex space-x-4 mb-8">
+              <motion.button
+                onClick={() => setUserType("employer")}
+                className={`w-32 px-4 py-2 rounded-lg transition-colors duration-300 kanit-semibold ${
+                  userType === "employer"
+                    ? "bg-seagreen text-white"
+                    : "bg-gray-200 text-black"
+                }`}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                {" "}
-                เงื่อนไขในการใช้บริการ
-              </Link>
-            </label>
-          </div>
+                นายจ้าง
+              </motion.button>
+              <motion.button
+                onClick={() => setUserType("company")}
+                className={`w-32 px-4 py-2 rounded-lg transition-colors duration-300 kanit-semibold ${
+                  userType === "company"
+                    ? "bg-seagreen text-white"
+                    : "bg-gray-200 text-black"
+                }`}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                บริษัท
+              </motion.button>
+            </div>
 
-          {/* Sign Up Button */}
-          <div className="flex justify-center">
-            <button
-              type="submit"
-              disabled={!isChecked || isSubmitting}
-              className={`
+            {/* Form Section */}
+            <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-2">
+              {/* Name Input */}
+              <div className="flex flex-col">
+                <label className="text-black text-sm mb-2 kanit-light">
+                  {userType === "employer" ? "ชื่อ-นามสกุล" : "ชื่อบริษัท"}
+                </label>
+                <input
+                  type="text"
+                  value={name}
+                  placeholder={
+                    userType === "employer"
+                      ? "กรอกชื่อ-นามสกุล"
+                      : "กรอกชื่อบริษัท"
+                  }
+                  className="text-black placeholder-kanit rounded-lg border border-gray-300 p-3"
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </div>
+
+              {/* Email Input */}
+              <div className="flex flex-col">
+                <label className="text-black text-sm mb-2 kanit-light">
+                  อีเมล
+                </label>
+                <input
+                  type="email"
+                  value={email}
+                  placeholder="กรอกอีเมล"
+                  className="text-black placeholder-kanit rounded-lg border border-gray-300 p-3"
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+
+              {/* Password Input */}
+              <div className="flex flex-col">
+                <label className="text-black text-sm mb-2 kanit-light">
+                  รหัสผ่าน
+                </label>
+                <input
+                  type="password"
+                  value={password}
+                  placeholder="รหัสผ่าน"
+                  className="text-black placeholder-kanit rounded-lg border border-gray-300 p-3"
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+              <div className="flex flex-col">
+                <label className="text-black text-sm mb-2 kanit-light">
+                  ยืนยันรหัสผ่าน
+                </label>
+                <input
+                  type="password"
+                  value={confirmPassword}
+                  placeholder="ยืนยันรหัสผ่าน"
+                  className="text-black placeholder-kanit rounded-lg border border-gray-300 p-3"
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                />
+              </div>
+
+              {/* Example Checkbox */}
+              <div className="flex flex-row items-center gap-2 text-left">
+                <input
+                  type="checkbox"
+                  id="agree"
+                  checked={isChecked}
+                  onChange={(e) => setIsChecked(e.target.checked)}
+                />
+                <label
+                  htmlFor="agree"
+                  className="text-black kanit-light text-sm"
+                >
+                  ฉันยอมรับ
+                  <Link
+                    to="/terms"
+                    className="text-blue-500 hover:text-blue-400 text-bold"
+                  >
+                    {" "}
+                    เงื่อนไขในการใช้บริการ
+                  </Link>
+                </label>
+              </div>
+
+              {/* Sign Up Button */}
+              <div className="flex justify-center">
+                <button
+                  type="submit"
+                  disabled={!isChecked || isSubmitting}
+                  className={`
     w-full py-3 rounded-lg kanit-semibold text-white
     ${
       !isChecked || isSubmitting
@@ -311,15 +354,82 @@ function SignUpEmp() {
         : "bg-seagreen cursor-pointer" // enabled style
     }
   `}
+                >
+                  {isSubmitting
+                    ? "กำลังดำเนินการ..."
+                    : userType === "employer"
+                    ? "สมัครสมาชิก (นายจ้าง)"
+                    : "สมัครสมาชิก (บริษัท)"}
+                </button>
+              </div>
+            </form>
+          </>
+        ) : (
+          <div className="w-full max-w-sm space-y-2">
+            <Dropzone
+              onDrop={(files) => setSelectedImage(files[0])}
+              onReject={(files) => console.log("rejected files", files)}
+              maxSize={5 * 1024 ** 2}
+              accept={IMAGE_MIME_TYPE}
             >
-              {isSubmitting
-                ? "กำลังดำเนินการ..."
-                : userType === "employer"
-                ? "สมัครสมาชิก (นายจ้าง)"
-                : "สมัครสมาชิก (บริษัท)"}
-            </button>
+              <Group
+                justify="center"
+                gap="xl"
+                mih={220}
+                style={{ pointerEvents: "none" }}
+              >
+                <Dropzone.Accept>
+                  <IconUpload
+                    size={52}
+                    color="var(--mantine-color-blue-6)"
+                    stroke={1.5}
+                  />
+                </Dropzone.Accept>
+                <Dropzone.Reject>
+                  <IconX
+                    size={52}
+                    color="var(--mantine-color-red-6)"
+                    stroke={1.5}
+                  />
+                </Dropzone.Reject>
+                <Dropzone.Idle>
+                  <IconPhoto
+                    size={52}
+                    color="var(--mantine-color-dimmed)"
+                    stroke={1.5}
+                  />
+                </Dropzone.Idle>
+                <div>
+                  <Text size="xl" inline>
+                    Drag images here or click to select files
+                  </Text>
+                  <Text size="sm" c="dimmed" inline mt={7}>
+                    Attach as many files as you like, each file should not
+                    exceed 5mb
+                  </Text>
+                </div>
+              </Group>
+            </Dropzone>
+            {selectedImage && (
+              <div className="mt-4">
+                <Text size="sm" c="dimmed" inline>
+                  Preview:
+                </Text>
+                <Image
+                  src={URL.createObjectURL(selectedImage)}
+                  alt="Selected Image"
+                  mt={4}
+                />
+                <button
+                  className="w-full py-3 mt-4 rounded-lg kanit-semibold text-white bg-seagreen cursor-pointer"
+                  onClick={() => uploadImage(selectedImage, approvalId)}
+                >
+                  อัปโหลดรูปภาพ
+                </button>
+              </div>
+            )}
           </div>
-        </form>
+        )}
 
         {/* Footer */}
         <div className="mt-4 text-center">
