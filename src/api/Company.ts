@@ -216,14 +216,14 @@ export const getCompanyJobPosts =
   async (): Promise<CompanyJobPostsResponse> => {
     try {
       console.log("Fetching company job posts...");
-      const { data } = await axios.get<{ data: CompanyJobPostsResponse }>(
+      const { data } = await axios.get<CompanyJobPostsResponse>(
         `http://localhost:${backendPort}/api/post/company/job-posts`,
         {
           withCredentials: true,
         }
       );
       console.log("Fetch company job posts successful:", data);
-      return data.data;
+      return data;
     } catch (error) {
       console.error("Fetch company job posts failed:", error);
       throw error;
