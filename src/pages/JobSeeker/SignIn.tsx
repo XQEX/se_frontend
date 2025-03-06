@@ -6,6 +6,7 @@ import { loginJobSeeker } from "../../api/JobSeeker";
 import { loginCompany } from "../../api/Company";
 import { loginEmployer } from "../../api/Employer"; // Assuming you have an Employer API
 import { motion, AnimatePresence } from "framer-motion";
+import { baseURL } from "../../api/globalvariable";
 
 function SignIn() {
   const [nameEmail, setNameEmail] = useState("");
@@ -54,7 +55,7 @@ function SignIn() {
 
   function handleGoogleOauth() {
     window.open(
-      "http://localhost:6977/api/user/job-seeker/oauth/google",
+      `${baseURL}/api/user/job-seeker/oauth/google`,
       "_self"
     );
   }

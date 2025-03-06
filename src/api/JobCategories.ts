@@ -1,5 +1,5 @@
 import axios from "axios";
-import { backendPort } from "./globalvariable";
+import { baseURL } from "./globalvariable";
 
 interface JobCategory {
   id: string;
@@ -17,7 +17,7 @@ interface JobCategoryResponse {
 }
 
 const api = axios.create({
-  baseURL: `http://localhost:${backendPort}/api/category`,
+  baseURL: `${baseURL}/api/category`,
   headers: {
     Accept: "application/json",
   },

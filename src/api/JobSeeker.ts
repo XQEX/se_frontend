@@ -1,5 +1,5 @@
 import axios from "axios";
-import { backendPort } from "./globalvariable";
+import { baseURL } from "./globalvariable";
 
 interface JobSeekerInfo {
   id: string;
@@ -198,7 +198,7 @@ export const registerJobSeeker = async (
       confirmPassword,
     });
     const { data } = await axios.post<{ data: { id: string } }>(
-      `http://localhost:${backendPort}/api/user/job-seeker`,
+      `${baseURL}/api/user/job-seeker`,
       { name, email, password, confirmPassword },
       {
         headers: {
@@ -225,7 +225,7 @@ export const loginJobSeeker = async (
       password,
     });
     const { data } = await axios.post<{ data: JobSeekerAuthResponse }>(
-      `http://localhost:${backendPort}/api/user/job-seeker/auth`,
+      `${baseURL}/api/user/job-seeker/auth`,
       { nameEmail, password },
       {
         headers: {
@@ -246,7 +246,7 @@ export const logoutJobSeeker = async (): Promise<void> => {
   try {
     console.log("Logging out job seeker...");
     const { data } = await axios.delete<{ data: void }>(
-      `http://localhost:${backendPort}/api/user/job-seeker/auth`,
+      `${baseURL}/api/user/job-seeker/auth`,
       {
         withCredentials: true,
       }
@@ -263,7 +263,7 @@ export const fetchJobSeekerInfo = async (): Promise<JobSeekerInfo> => {
   try {
     console.log("Fetching job seeker info...");
     const { data } = await axios.get<{ data: JobSeekerInfo }>(
-      `http://localhost:${backendPort}/api/user/job-seeker/auth`,
+      `${baseURL}/api/user/job-seeker/auth`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -285,7 +285,7 @@ export const createJobFindingPost = async (
   try {
     console.log("Creating job finding post with:", jobFindingPost);
     const { data } = await axios.post<{ data: JobFindingPostResponse }>(
-      `http://localhost:${backendPort}/api/post/finding-posts`,
+      `${baseURL}/api/post/finding-posts`,
       jobFindingPost,
       {
         headers: {
@@ -316,7 +316,7 @@ export const getAllJobFindingPosts = async (
   try {
     console.log("Fetching all job finding posts with filters:", filters);
     const { data } = await axios.get<JobFindingPostPaginationResponse>(
-      `http://localhost:${backendPort}/api/post/finding-posts`,
+      `${baseURL}/api/post/finding-posts`,
       {
         params: filters,
         withCredentials: true,
@@ -342,7 +342,7 @@ export const updateJobFindingPost = async (
       jobFindingPost
     );
     const { data } = await axios.put<{ data: JobFindingPostResponse }>(
-      `http://localhost:${backendPort}/api/post/finding-posts/${id}`,
+      `${baseURL}/api/post/finding-posts/${id}`,
       jobFindingPost,
       {
         headers: {
@@ -363,7 +363,7 @@ export const deleteJobFindingPost = async (id: string): Promise<void> => {
   try {
     console.log("Deleting job finding post with ID:", id);
     const { data } = await axios.delete<{ data: void }>(
-      `http://localhost:${backendPort}/api/post/finding-posts/${id}`,
+      `${baseURL}/api/post/finding-posts/${id}`,
       {
         withCredentials: true,
       }
@@ -379,7 +379,7 @@ export const getJobFindingPostById = async (id: string): Promise<any> => {
   try {
     console.log("Fetching job finding post with ID:", id);
     const { data } = await axios.get<{ data: JobPostDetailResponse }>(
-      `http://localhost:${backendPort}/api/post/finding-posts/${id}`,
+      `${baseURL}/api/post/finding-posts/${id}`,
       {
         withCredentials: true,
       }
@@ -397,7 +397,7 @@ export const getUserJobFindingPosts =
     try {
       console.log("Fetching user's job finding posts...");
       const { data } = await axios.get<UserJobFindingPostResponse>(
-        `http://localhost:${backendPort}/api/post/user/finding-posts`,
+        `${baseURL}/api/post/user/finding-posts`,
         {
           withCredentials: true,
         }
@@ -418,7 +418,7 @@ export const updateUserProfile = async (
 
     console.log("Updating full name...");
     const fullNameResponse = await axios.put<{ data: void }>(
-      `http://localhost:${backendPort}/api/user/job-seeker/auth/edit/full-name`,
+      `${baseURL}/api/user/job-seeker/auth/edit/full-name`,
       { firstName: profileData.firstName, lastName: profileData.lastName },
       {
         headers: {
@@ -431,7 +431,7 @@ export const updateUserProfile = async (
 
     console.log("Updating about me...");
     const aboutResponse = await axios.put<{ data: void }>(
-      `http://localhost:${backendPort}/api/user/job-seeker/auth/edit/about`,
+      `${baseURL}/api/user/job-seeker/auth/edit/about`,
       { about: profileData.aboutMe },
       {
         headers: {
@@ -444,7 +444,7 @@ export const updateUserProfile = async (
 
     console.log("Updating address...");
     const addressResponse = await axios.put<{ data: void }>(
-      `http://localhost:${backendPort}/api/user/job-seeker/auth/edit/address`,
+      `${baseURL}/api/user/job-seeker/auth/edit/address`,
       { address: profileData.address, provinceAddress: "XD" },
       {
         headers: {
@@ -457,7 +457,7 @@ export const updateUserProfile = async (
 
     console.log("Updating email...");
     const emailResponse = await axios.put<{ data: void }>(
-      `http://localhost:${backendPort}/api/user/job-seeker/auth/edit/email`,
+      `${baseURL}/api/user/job-seeker/auth/edit/email`,
       { email: profileData.email },
       {
         headers: {
@@ -470,7 +470,7 @@ export const updateUserProfile = async (
 
     console.log("Updating contact...");
     const contactResponse = await axios.put<{ data: void }>(
-      `http://localhost:${backendPort}/api/user/job-seeker/auth/edit/contact`,
+      `${baseURL}/api/user/job-seeker/auth/edit/contact`,
       { contact: profileData.contact },
       {
         headers: {
@@ -487,7 +487,7 @@ export const updateUserProfile = async (
     const ResumeResponse = await axios.post<{
       data: void;
     }>(
-      `http://localhost:${backendPort}/api/user/job-seeker/auth/resume-image`,
+      `${baseURL}/api/user/job-seeker/auth/resume-image`,
       profileData.resumeImage,
       {
         headers: {
@@ -514,7 +514,7 @@ export const updateJobSeekerUsername = async (
     const { data } = await axios.put<{
       data: { userId: string; username: string };
     }>(
-      `http://localhost:${backendPort}/api/user/job-seeker/auth/edit/username`,
+      `${baseURL}/api/user/job-seeker/auth/edit/username`,
       { username, password },
       {
         headers: {
@@ -541,7 +541,7 @@ export const updateJobSeekerPassword = async (
       oldPassword,
     });
     const { data } = await axios.put<{ data: { userId: string } }>(
-      `http://localhost:${backendPort}/api/user/job-seeker/auth/edit/password`,
+      `${baseURL}/api/user/job-seeker/auth/edit/password`,
       { password, oldPassword },
       {
         headers: {
@@ -567,7 +567,7 @@ export const uploadProfileImage = async (
     const { data } = await axios.post<{
       data: { approvalId: string; url: string };
     }>(
-      `http://localhost:${backendPort}/api/user/job-seeker/auth/profile-image`,
+      `${baseURL}/api/user/job-seeker/auth/profile-image`,
       formData,
       {
         headers: {

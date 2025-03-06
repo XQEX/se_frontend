@@ -31,7 +31,7 @@ import {
   updateEmployerPassword,
   updateEmployerUsername,
 } from "../../api/Employer";
-import { AxiosError } from "axios";
+import axios from "axios";
 import { IconPencil } from "@tabler/icons-react";
 
 function Profile() {
@@ -214,11 +214,7 @@ function Profile() {
 
       refetchemployer();
     } catch (error) {
-      if (error instanceof AxiosError) {
-        notifyError((error as AxiosError).response.data.msg);
-      } else {
-        notifyError(error as string);
-      }
+      notifyError("fail");
     }
   };
 
@@ -233,11 +229,7 @@ function Profile() {
 
       refetchemployer();
     } catch (error) {
-      if (error instanceof AxiosError) {
-        notifyError((error as AxiosError).response.data.msg);
-      } else {
-        notifyError(error as string);
-      }
+      notifyError("fail");
     }
   };
 
@@ -257,11 +249,7 @@ function Profile() {
 
       refetchCompany();
     } catch (error) {
-      if (error instanceof AxiosError) {
-        notifyError((error as AxiosError).response.data.msg);
-      } else {
-        notifyError(error as string);
-      }
+      notifyError("fail");
     }
   };
 
@@ -276,11 +264,7 @@ function Profile() {
 
       refetchCompany();
     } catch (error) {
-      if (error instanceof AxiosError) {
-        notifyError((error as AxiosError).response.data.msg);
-      } else {
-        notifyError(error as string);
-      }
+      notifyError("fail");
     }
   };
 
@@ -347,6 +331,7 @@ function Profile() {
                   bucketName={"employer"}
                   prefixPath={"profile"}
                   userType={user.type}
+                  profileDropzoneClose={profileDropzoneClose}
                 />
               ) : (
                 <p>Loading...</p>

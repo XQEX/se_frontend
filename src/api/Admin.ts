@@ -1,5 +1,5 @@
 import axios from "axios";
-import { backendPort } from "./globalvariable";
+import { backendPort, baseURL } from "./globalvariable";
 interface AdminInfo {
   id: string;
   username: string;
@@ -16,7 +16,7 @@ interface ApprovalRequest {
 export const fetchAdminInfo = async (): Promise<AdminInfo> => {
   try {
     const { data } = await axios.get<{ data: AdminInfo }>(
-      `http://localhost:${backendPort}/api/admin/auth`,
+      `${baseURL}/api/admin/auth`,
       {
         withCredentials: true,
       }
@@ -32,7 +32,7 @@ export const fetchAdminInfo = async (): Promise<AdminInfo> => {
 export const fetchApprovalRequests = async (): Promise<ApprovalRequest[]> => {
   try {
     const { data } = await axios.get<{ data: ApprovalRequest[] }>(
-      `http://localhost:${backendPort}/api/admin/approve`,
+      `${baseURL}/api/admin/approve`,
       {
         withCredentials: true,
       }
@@ -48,7 +48,7 @@ export const fetchApprovalRequests = async (): Promise<ApprovalRequest[]> => {
 export const generateAdmin = async (): Promise<AdminInfo> => {
   try {
     const { data } = await axios.post<{ data: AdminInfo }>(
-      `http://localhost:${backendPort}/api/admin`,
+      `${baseURL}/api/admin`,
       {},
       {
         headers: {
@@ -72,7 +72,7 @@ export const loginAdmin = async (
 ): Promise<AdminInfo> => {
   try {
     const { data } = await axios.post<{ data: AdminInfo }>(
-      `http://localhost:${backendPort}/api/admin/auth`,
+      `${baseURL}/api/admin/auth`,
       {
         nameEmail: name,
         password,
@@ -95,7 +95,7 @@ export const loginAdmin = async (
 export const logoutAdmin = async (): Promise<void> => {
   try {
     const { data } = await axios.delete<{ data: void }>(
-      `http://localhost:${backendPort}/api/admin/auth`,
+      `${baseURL}/api/admin/auth`,
       {
         withCredentials: true,
       }
@@ -114,7 +114,7 @@ export const approveUser = async (
 ): Promise<ApprovalRequest> => {
   try {
     const { data } = await axios.post<{ data: ApprovalRequest }>(
-      `http://localhost:${backendPort}/api/admin/approve`,
+      `${baseURL}/api/admin/approve`,
       { id: userId, status },
       {
         headers: {

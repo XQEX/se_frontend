@@ -1,5 +1,5 @@
 import axios from "axios";
-import { backendPort } from "./globalvariable";
+import { baseURL } from "./globalvariable";
 
 interface MatchResponse {
   success: boolean;
@@ -280,7 +280,7 @@ export const matchWithHiringPost = async (
   try {
     console.log("Attempting to match with hiring post:", { postId });
     const { data } = await axios.post<{ data: MatchResponse }>(
-      `http://localhost:${backendPort}/api/matching/hiring/${postId}/match`,
+      `${baseURL}/api/matching/hiring/${postId}/match`,
       {},
       {
         headers: {
@@ -303,7 +303,7 @@ export const getMatchesForHiringPost = async (
   try {
     console.log("Fetching matches for hiring post:", { postId });
     const { data } = await axios.get<GetMatchesResponse>(
-      `http://localhost:${backendPort}/api/matching/hiring/${postId}/match`,
+      `${baseURL}/api/matching/hiring/${postId}/match`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -326,7 +326,7 @@ export const updateMatchStatus = async (
   try {
     console.log("Updating match status:", { matchId, status, seekerId });
     const { data } = await axios.put<{ data: UpdateMatchStatusResponse }>(
-      `http://localhost:${backendPort}/api/matching/hiring/match/${matchId}/status`,
+      `${baseURL}/api/matching/hiring/match/${matchId}/status`,
       { status, seekerId },
       {
         headers: {
@@ -354,7 +354,7 @@ export const createFindingPostMatch = async (
   try {
     console.log("Creating match for finding post:", { postId, matchData });
     const { data } = await axios.post<{ data: CreateFindingPostMatchResponse }>(
-      `http://localhost:${backendPort}/api/matching/finding/${postId}/match`,
+      `${baseURL}/api/matching/finding/${postId}/match`,
       matchData,
       {
         headers: {
@@ -376,7 +376,7 @@ export const getFindingPostMatch = async (
   try {
     console.log("Fetching match for finding post:", { postId });
     const { data } = await axios.get<GetFindingPostMatchResponse>(
-      `http://localhost:${backendPort}/api/matching/finding/${postId}/match`,
+      `${baseURL}/api/matching/finding/${postId}/match`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -401,7 +401,7 @@ export const updateFindingMatchStatus = async (
     const { data } = await axios.put<{
       data: UpdateFindingMatchStatusResponse;
     }>(
-      `http://localhost:${backendPort}/api/matching/finding/match/${matchId}/status`,
+      `${baseURL}/api/matching/finding/match/${matchId}/status`,
       { status, seekerId },
       {
         headers: {
@@ -422,7 +422,7 @@ export const getUserMatchingStatus =
     try {
       console.log("Fetching user matching status");
       const { data } = await axios.get<UserMatchingStatusResponse>(
-        `http://localhost:${backendPort}/api/matching/user/tracking`,
+        `${baseURL}/api/matching/user/tracking`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -442,7 +442,7 @@ export const getAdminMatchingStatus =
     try {
       console.log("Fetching all matching statuses for admin");
       const { data } = await axios.get<AdminMatchingStatusResponse>(
-        `http://localhost:${backendPort}/api/matching/admin/tracking`,
+        `${baseURL}/api/matching/admin/tracking`,
         {
           headers: {
             "Content-Type": "application/json",

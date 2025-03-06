@@ -11,6 +11,7 @@ import "@mantine/dropzone/styles.css";
 import { Group, Text, Image } from "@mantine/core";
 import { IconUpload, IconPhoto, IconX } from "@tabler/icons-react";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
+import { baseURL } from "../../api/globalvariable";
 
 function SignUpJobSeek() {
   const navigate = useNavigate();
@@ -58,7 +59,7 @@ function SignUpJobSeek() {
 
     try {
       const response = await fetch(
-        `http://localhost:6977/api/user/job-seeker/registration-image/${approvalId}`,
+        `${baseURL}/api/user/job-seeker/registration-image/${approvalId}`,
         {
           method: "POST",
           body: formData,
@@ -107,7 +108,7 @@ function SignUpJobSeek() {
       };
 
       const response = await fetch(
-        "http://localhost:6977/api/user/job-seeker",
+        `${baseURL}/api/user/job-seeker`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -135,7 +136,7 @@ function SignUpJobSeek() {
 
   function handleGoogleOauth() {
     window.open(
-      "http://localhost:6977/api/user/job-seeker/oauth/google",
+      `${baseURL}/api/user/job-seeker/oauth/google`,
       "_self"
     );
   }

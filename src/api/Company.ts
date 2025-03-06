@@ -1,5 +1,5 @@
 import axios from "axios";
-import { backendPort } from "./globalvariable";
+import { baseURL } from "./globalvariable";
 
 interface CompanyInfo {
   id: string;
@@ -35,12 +35,44 @@ interface JobPostPagination {
 
 interface CompanyJobPostsResponse {
   success: boolean;
-  status: number;
-  msg: string;
   data: {
-    jobPosts: JobPost[];
-    pagination: JobPostPagination;
+    jobPosts: Array<{
+      id: string;
+      title: string;
+      description: string;
+      jobLocation: string;
+      salary: number;
+      workDates: string;
+      workHoursRange: string;
+      hiredAmount: number;
+      status: string;
+      jobHirerType: string;
+      jobPostType: string;
+      employerId: string | null;
+      oauthEmployerId: string | null;
+      companyId: string;
+      createdAt: string;
+      updatedAt: string;
+      companyName: string;
+      skills: Array<{
+        id: string;
+        name: string;
+        description: string;
+      }>;
+      jobCategories: Array<{
+        id: string;
+        name: string;
+        description: string;
+      }>;
+    }>;
+    pagination: {
+      currentPage: number;
+      totalPages: number;
+      totalItems: number;
+      itemsPerPage: number;
+    };
   };
+  message: string;
 }
 
 interface JobPostResponse {
@@ -82,7 +114,7 @@ export const registerCompany = async (
       confirmPassword,
     });
     const { data } = await axios.post<{ data: { id: string } }>(
-      `http://localhost:${backendPort}/api/user/company`,
+      `${baseURL}/api/user/company`,
       { officialName, email, password, confirmPassword },
       {
         headers: {
@@ -106,7 +138,7 @@ export const loginCompany = async (
   try {
     console.log("Attempting to login company with:", { nameEmail, password });
     const { data } = await axios.post<{ data: CompanyAuthResponse }>(
-      `http://localhost:${backendPort}/api/user/company/auth`,
+      `${baseURL}/api/user/company/auth`,
       { nameEmail, password },
       {
         headers: {
@@ -127,7 +159,7 @@ export const fetchCompanyInfo = async (): Promise<CompanyInfo> => {
   try {
     console.log("Fetching company info...");
     const { data } = await axios.get<{ data: CompanyInfo }>(
-      `http://localhost:${backendPort}/api/user/company/auth`,
+      `${baseURL}/api/user/company/auth`,
       {
         withCredentials: true,
       }
@@ -144,7 +176,7 @@ export const logoutCompany = async (): Promise<void> => {
   try {
     console.log("Logging out company...");
     const { data } = await axios.delete<{ data: void }>(
-      `http://localhost:${backendPort}/api/user/company/auth`,
+      `${baseURL}/api/user/company/auth`,
       {
         withCredentials: true,
       }
@@ -163,7 +195,7 @@ export const createJobPostCom = async (
   try {
     console.log("Creating job post with:", jobPost);
     const { data } = await axios.post<{ data: JobPostResponse }>(
-      `http://localhost:${backendPort}/api/post/job-posts/company`,
+      `${baseURL}/api/post/job-posts/company`,
       jobPost,
       {
         headers: {
@@ -184,8 +216,8 @@ export const getCompanyJobPosts =
   async (): Promise<CompanyJobPostsResponse> => {
     try {
       console.log("Fetching company job posts...");
-      const { data } = await axios.get<{ data: CompanyJobPostsResponse }>(
-        `http://localhost:${backendPort}/api/post/company/job-posts`,
+      const { data } = await axios.get<CompanyJobPostsResponse>(
+        `${baseURL}/api/post/company/job-posts`,
         {
           withCredentials: true,
         }
@@ -207,7 +239,7 @@ export const updateCompanyUsername = async (
     const { data } = await axios.put<{
       data: { userId: string; username: string };
     }>(
-      `http://localhost:${backendPort}/api/user/company/auth/edit/official-name`,
+      `${baseURL}/api/user/company/auth/edit/official-name`,
       { officialName: username, password },
       {
         headers: {
@@ -234,7 +266,7 @@ export const updateCompanyPassword = async (
       oldPassword,
     });
     const { data } = await axios.put<{ data: { userId: string } }>(
-      `http://localhost:${backendPort}/api/user/company/auth/edit/password`,
+      `${baseURL}/api/user/company/auth/edit/password`,
       { password, oldPassword },
       {
         headers: {
@@ -260,7 +292,7 @@ export const uploadCompanyProfileImage = async (
     const { data } = await axios.post<{
       data: { approvalId: string; url: string };
     }>(
-      `http://localhost:${backendPort}/api/user/company/auth/profile-image`,
+      `${baseURL}/api/user/company/auth/profile-image`,
       formData,
       {
         headers: {

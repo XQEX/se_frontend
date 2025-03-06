@@ -8,6 +8,14 @@ import { Avatar } from "@mantine/core";
 import { getJobFindingPostById } from "../../api/JobSeeker";
 import { useUser } from "../../context/UserContext";
 import axios from "axios";
+import { baseURL } from "../../api/globalvariable";
+
+interface Skill {
+  id: string;
+  name: string;
+  description: string;
+}
+
 type Job = {
   id: string;
   title: string;
@@ -97,6 +105,39 @@ interface DeleteMatchResponse {
   status: number;
 }
 
+interface JobFindingPostResponse {
+  success: boolean;
+  msg: string;
+  data: {
+    id: string;
+    title: string;
+    description: string;
+    jobLocation: string;
+    expectedSalary: number;
+    workDates: string;
+    workHoursRange: string;
+    status: string;
+    jobPostType: string;
+    jobSeekerType: string;
+    jobSeekerId: string;
+    oauthJobSeekerId: string | null;
+    createdAt: string;
+    updatedAt: string;
+    skills: Skill[];
+    postByNormal?: {
+      id: string;
+      firstName: string;
+      lastName: string;
+    } | null;
+    postByOauth?: {
+      id: string;
+      firstName: string;
+      lastName: string;
+    } | null;
+  };
+  status: number;
+}
+
 function JobDetailEmp() {
   const {
     user,
@@ -122,7 +163,7 @@ function JobDetailEmp() {
     try {
       console.log("Creating match for finding post:", { postId });
       const { data } = await axios.post<MatchResponse>(
-        `http://localhost:6977/api/matching/finding/${postId}/match`,
+        `${baseURL}/api/matching/finding/${postId}/match`,
         {},
         {
           headers: { "Content-Type": "application/json" },
@@ -143,7 +184,7 @@ function JobDetailEmp() {
     try {
       console.log("Fetching user matching status");
       const { data } = await axios.get<UserMatchingStatusResponse>(
-        `http://localhost:6977/api/matching/user/tracking`,
+        `${baseURL}/api/matching/user/tracking`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -250,7 +291,7 @@ function JobDetailEmp() {
     try {
       console.log("Deleting match for finding post:", { matchId });
       const { data } = await axios.delete<DeleteMatchResponse>(
-        `http://localhost:6977/api/matching/finding/match/${matchId}`,
+        `${baseURL}/api/matching/finding/match/${matchId}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -292,7 +333,9 @@ function JobDetailEmp() {
           workHours: jobData.workHoursRange,
           salary: jobData.expectedSalary.toString(),
           description: jobData.description,
-          requirements: jobData.skills.map((skill) => skill.name).join(", "),
+          requirements: jobData.skills
+            .map((skill: Skill) => skill.name)
+            .join(", "),
           workDays: jobData.workDates,
           postedAt: jobData.createdAt,
         };

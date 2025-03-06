@@ -1,5 +1,5 @@
 import axios from "axios";
-import { backendPort } from "./globalvariable";
+import { baseURL } from "./globalvariable";
 
 interface EmployerInfo {
   id: string;
@@ -104,7 +104,7 @@ export const registerEmployer = async (
       confirmPassword,
     });
     const { data } = await axios.post<{ data: { id: string } }>(
-      `http://localhost:${backendPort}/api/user/employer`,
+      `${baseURL}/api/user/employer`,
       { name, email, password, confirmPassword },
       {
         headers: {
@@ -128,7 +128,7 @@ export const loginEmployer = async (
   try {
     console.log("Attempting to login employer with:", { nameEmail, password });
     const { data } = await axios.post<{ data: EmployerAuthResponse }>(
-      `http://localhost:${backendPort}/api/user/employer/auth`,
+      `${baseURL}/api/user/employer/auth`,
       { nameEmail, password },
       {
         headers: {
@@ -149,7 +149,7 @@ export const fetchEmployerInfo = async (): Promise<EmployerInfo> => {
   try {
     console.log("Fetching employer info...");
     const { data } = await axios.get<{ data: EmployerInfo }>(
-      `http://localhost:${backendPort}/api/user/employer/auth`,
+      `${baseURL}/api/user/employer/auth`,
       {
         withCredentials: true,
       }
@@ -166,7 +166,7 @@ export const logoutEmployer = async (): Promise<void> => {
   try {
     console.log("Logging out employer...");
     const { data } = await axios.delete<{ data: void }>(
-      `http://localhost:${backendPort}/api/user/employer/auth`,
+      `${baseURL}/api/user/employer/auth`,
       {
         withCredentials: true,
       }
@@ -185,7 +185,7 @@ export const createJobPostEmp = async (
   try {
     console.log("Creating job post with:", jobPost);
     const { data } = await axios.post<{ data: JobPostResponse }>(
-      `http://localhost:${backendPort}/api/post/job-posts/employer`,
+      `${baseURL}/api/post/job-posts/employer`,
       jobPost,
       {
         headers: {
@@ -209,7 +209,7 @@ export const getEmployerJobPosts =
         "Fetching job posts created by the authenticated employer..."
       );
       const { data } = await axios.get<EmployerJobPostsResponse>(
-        `http://localhost:${backendPort}/api/post/user/job-posts`,
+        `${baseURL}/api/post/user/job-posts`,
         {
           withCredentials: true,
         }
@@ -231,7 +231,7 @@ export const updateEmployerUsername = async (
     const { data } = await axios.put<{
       data: { userId: string; username: string };
     }>(
-      `http://localhost:${backendPort}/api/user/employer/auth/edit/username`,
+      `${baseURL}/api/user/employer/auth/edit/username`,
       { username, password },
       {
         headers: {
@@ -258,7 +258,7 @@ export const updateEmployerPassword = async (
       oldPassword,
     });
     const { data } = await axios.put<{ data: { userId: string } }>(
-      `http://localhost:${backendPort}/api/user/employer/auth/edit/password`,
+      `${baseURL}/api/user/employer/auth/edit/password`,
       { password, oldPassword },
       {
         headers: {
@@ -284,7 +284,7 @@ export const uploadEmployerProfileImage = async (
     const { data } = await axios.post<{
       data: { approvalId: string; url: string };
     }>(
-      `http://localhost:${backendPort}/api/user/employer/auth/profile-image`,
+      `${baseURL}/api/user/employer/auth/profile-image`,
       formData,
       {
         headers: {

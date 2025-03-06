@@ -1,5 +1,5 @@
 import axios from "axios";
-import { backendPort } from "./globalvariable";
+import { baseURL } from "./globalvariable";
 
 interface JobPost {
   title: string;
@@ -107,7 +107,7 @@ export const getAllJobPosts = async (
   try {
     console.log("Fetching all job posts with filters:", filters);
     const { data } = await axios.get<JobPostPaginationResponse>(
-      `http://localhost:${backendPort}/api/post/job-posts`,
+      `${baseURL}/api/post/job-posts`,
       {
         params: filters,
         withCredentials: true,
@@ -125,7 +125,7 @@ export const deleteJobPost = async (id: string): Promise<void> => {
   try {
     console.log("Deleting job post with ID:", id);
     const { data } = await axios.delete<{ data: void }>(
-      `http://localhost:${backendPort}/api/post/job-posts/${id}`,
+      `${baseURL}/api/post/job-posts/${id}`,
       {
         withCredentials: true,
       }
@@ -143,7 +143,7 @@ export const getJobPostById = async (
   try {
     console.log("Fetching job post with ID:", id);
     const { data } = await axios.get<JobPostDetailResponse>(
-      `http://localhost:${backendPort}/api/post/job-posts/${id}`,
+      `${baseURL}/api/post/job-posts/${id}`,
       {
         withCredentials: true,
       }
@@ -163,7 +163,7 @@ export const updateJobPostById = async (
   try {
     console.log("Updating job post with ID:", id);
     const { data } = await axios.put<JobPostUpdateResponse>(
-      `http://localhost:${backendPort}/api/post/job-posts/${id}`,
+      `${baseURL}/api/post/job-posts/${id}`,
       updateData,
       {
         withCredentials: true,
@@ -187,7 +187,7 @@ export const updateUserProfile = async (
   if (userType === "employer") {
     console.log("Updating full name...");
     const fullNameResponse = await axios.put<{ data: void }>(
-      `http://localhost:${backendPort}/api/user/${userType}/auth/edit/full-name`,
+      `${baseURL}/api/user/${userType}/auth/edit/full-name`,
       { firstName: profileData.firstName, lastName: profileData.lastName },
       {
         headers: {
@@ -201,7 +201,7 @@ export const updateUserProfile = async (
 
   console.log("Updating about me...");
   const aboutResponse = await axios.put<{ data: void }>(
-    `http://localhost:${backendPort}/api/user/${userType}/auth/edit/about`,
+    `${baseURL}/api/user/${userType}/auth/edit/about`,
     { about: profileData.aboutMe },
     {
       headers: {
@@ -214,7 +214,7 @@ export const updateUserProfile = async (
 
   console.log("Updating address...");
   const addressResponse = await axios.put<{ data: void }>(
-    `http://localhost:${backendPort}/api/user/${userType}/auth/edit/address`,
+    `${baseURL}/api/user/${userType}/auth/edit/address`,
     { address: profileData.address, provinceAddress: "XD" },
     {
       headers: {
@@ -227,7 +227,7 @@ export const updateUserProfile = async (
 
   console.log("Updating email...");
   const emailResponse = await axios.put<{ data: void }>(
-    `http://localhost:${backendPort}/api/user/${userType}/auth/edit/email`,
+    `${baseURL}/api/user/${userType}/auth/edit/email`,
     { email: profileData.email },
     {
       headers: {
@@ -240,7 +240,7 @@ export const updateUserProfile = async (
 
   console.log("Updating contact...");
   const contactResponse = await axios.put<{ data: void }>(
-    `http://localhost:${backendPort}/api/user/${userType}/auth/edit/contact`,
+    `${baseURL}/api/user/${userType}/auth/edit/contact`,
     { contact: profileData.contact },
     {
       headers: {

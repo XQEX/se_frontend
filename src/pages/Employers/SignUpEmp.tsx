@@ -7,6 +7,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { motion, AnimatePresence } from "framer-motion";
 import { useUser } from "../../context/UserContext";
+import { baseURL } from "../../api/globalvariable";
 
 function SignUpEmp() {
   const {
@@ -72,7 +73,7 @@ function SignUpEmp() {
         confirmPassword: password,
       };
 
-      const response = await fetch("http://localhost:6977/api/user/employer", {
+      const response = await fetch(`${baseURL}/api/user/employer`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
@@ -125,7 +126,7 @@ function SignUpEmp() {
         confirmPassword: password,
       };
 
-      const response = await fetch("http://localhost:6977/api/user/company", {
+      const response = await fetch(`${baseURL}/api/user/company`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
