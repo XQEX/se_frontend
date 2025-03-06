@@ -21,6 +21,7 @@ import {
 import { getAllJobPosts } from "../../api/EmployerAndCompany";
 import { useUser } from "../../context/UserContext";
 import { provinces } from "../../data/provinces";
+import debounce from "lodash/debounce";
 
 const jobTypes = ["FULLTIME", "PARTTIME", "FREELANCE"];
 const workDayOptions = [
@@ -37,7 +38,6 @@ const sortOptions = [
   { value: "date_asc", label: "วันที่ลงประกาศ(เก่าไปใหม่)" },
   { value: "date_desc", label: "วันที่ลงประกาศ(ใหม่ไปเก่า)" },
 ];
-
 
 // Interface Definitions
 interface JobCategory {
@@ -212,22 +212,6 @@ function Find() {
         return selectedDays.some((day) => jobWorkDates === day);
       };
 
-
-      console.log({
-        jobId: job.id,
-        jobPostType: job.jobPostType,
-        normalizedJobType,
-        selectedJobTypes: filters.selectedJobTypes,
-        matchesJobTypes,
-        jobLocation: job.jobLocation,
-        normalizedLocation,
-        selectedLocations: filters.selectedLocations,
-        matchesLocations,
-        jobWorkDates: job.workDates,
-        selectedWorkDays: filters.selectedWorkDays,
-        matchesWorkDays: matchesWorkDays(),
-      });
-
       return (
         matchesSearch &&
         matchesCategories &&
@@ -236,7 +220,7 @@ function Find() {
         matchesSalary &&
         matchesWorkHours() &&
         matchesLocations &&
-        matchesWorkDays() 
+        matchesWorkDays()
       );
     });
   };
@@ -296,14 +280,35 @@ function Find() {
     value: [number, number];
     onChange: (value: [number, number]) => void;
   }) => {
+    const [tempValue, setTempValue] = useState(value);
+
+    // Debounce การอัปเดตค่าไปยัง filters.salaryRange เฉพาะเมื่อหยุดลาก
+    const debouncedOnChange = useCallback(
+      debounce((val: [number, number]) => {
+        onChange(val);
+      }, 500),
+      [onChange]
+    );
+
+    // อัปเดต tempValue ทันทีขณะลาก และเรียก debounce สำหรับ onChange
+    const handleChange = (val: number[]) => {
+      const newValue = val as [number, number];
+      setTempValue(newValue); // อัปเดต UI ทันที
+      debouncedOnChange(newValue); // อัปเดต filters ด้วย debounce
+    };
+
+    // Sync tempValue กับ value เมื่อ value เปลี่ยนจากภายนอก
+    useEffect(() => {
+      setTempValue(value);
+    }, [value]);
+
     return (
       <RangeSlider
         min={0}
         max={200000}
-        step={1000}
-        value={value}
-        onChange={(val) => onChange(val as [number, number])}
-        onChangeEnd={(val) => onChange(val as [number, number])}
+        step={500} // คงค่า step เดิมตามโค้ดล่าสุดของคุณ
+        value={tempValue}
+        onChange={handleChange}
         marks={[
           { value: 0, label: "0" },
           { value: 50000, label: "50k" },
@@ -313,23 +318,24 @@ function Find() {
         ]}
         styles={{
           track: {
-            background: "linear-gradient(to right, #A7F3D0,seagreen)",
+            background: "linear-gradient(to right, #A7F3D0, seagreen)",
             height: "8px",
             borderRadius: "4px",
           },
           bar: {
-            background: "linear-gradient(to right,#A7F3D0,seagreen",
+            background: "linear-gradient(to right, #A7F3D0, seagreen)",
           },
           thumb: {
             backgroundColor: "#10B981",
             border: "3px solid white",
-            width: "18px",
-            height: "18px",
-            boxShadow: "0px 0px 5px rgba(0, 0, 0, 0.5)",
+            width: "20px",
+            height: "20px",
+            boxShadow: "0px 0px 4px rgba(0, 0, 0, 0.3)",
+            transition: "all 0.2s ease",
           },
           markLabel: {
             color: "black",
-            fontSize: "m",
+            fontSize: "12px",
           },
         }}
       />
@@ -427,8 +433,6 @@ function Find() {
                 className="kanit-regular"
               />
             </Group>
-
-
 
             <Divider label="สถานที่ทำงาน" labelPosition="center" my={4} />
 
@@ -626,8 +630,6 @@ function Find() {
               searchable
               className="kanit-regular"
             />
-
-
 
             <Group grow>
               <Select

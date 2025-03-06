@@ -18,10 +18,10 @@ import {
   RangeSlider,
 } from "@mantine/core";
 import { getAllJobFindingPosts } from "../../api/JobSeeker";
-import { createFindingPostMatch } from "../../api/Matching";
 import { useUser } from "../../context/UserContext";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { provinces } from "../../data/provinces";
+import debounce from "lodash/debounce";
 
 const jobTypes = ["FULLTIME", "PARTTIME", "FREELANCE"];
 const workDayOptions = [
@@ -46,15 +46,9 @@ interface Job {
   expectedSalary: number;
   workDates: string;
   workHoursRange: string;
-  jobCategories: {
-    id: number;
-    name: string;
-  }[];
+  jobCategories: { id: number; name: string }[];
   jobPostType: string;
-  skills: {
-    id: number;
-    name: string;
-  }[];
+  skills: { id: number; name: string }[];
   createdAt: string;
 }
 
@@ -206,21 +200,6 @@ function FindEmp() {
         return selectedDays.some((day) => jobWorkDates === day);
       };
 
-      // console.log({
-      //   jobId: job.id,
-      //   jobPostType: job.jobPostType,
-      //   normalizedJobType,
-      //   selectedJobTypes: filters.selectedJobTypes,
-      //   matchesJobTypes,
-      //   jobLocation: job.jobLocation,
-      //   normalizedLocation,
-      //   selectedLocations: filters.selectedLocations,
-      //   matchesLocations,
-      //   jobWorkDates: job.workDates,
-      //   selectedWorkDays: filters.selectedWorkDays,
-      //   matchesWorkDays: matchesWorkDays(),
-      // });
-
       return (
         matchesSearch &&
         matchesCategories &&
@@ -229,7 +208,7 @@ function FindEmp() {
         matchesSalary &&
         matchesWorkHours() &&
         matchesLocations &&
-        matchesWorkDays() 
+        matchesWorkDays()
       );
     });
   };
@@ -259,6 +238,7 @@ function FindEmp() {
   const indexOfLastJob = currentPage * itemsPerPage;
   const indexOfFirstJob = indexOfLastJob - itemsPerPage;
   const currentJobs = filteredJobs.slice(indexOfFirstJob, indexOfLastJob);
+
   const GreenSlider = ({
     value,
     onChange,
@@ -266,14 +246,35 @@ function FindEmp() {
     value: [number, number];
     onChange: (value: [number, number]) => void;
   }) => {
+    const [tempValue, setTempValue] = useState(value);
+
+    // Debounce การอัปเดตค่าไปยัง filters.salaryRange เฉพาะเมื่อหยุดลาก 500ms
+    const debouncedOnChange = useCallback(
+      debounce((val: [number, number]) => {
+        onChange(val);
+      }, 500),
+      [onChange]
+    );
+
+    // อัปเดต tempValue ทันทีขณะลาก และเรียก debounce สำหรับ onChange
+    const handleChange = (val: number[]) => {
+      const newValue = val as [number, number];
+      setTempValue(newValue); // อัปเดต UI ทันที
+      debouncedOnChange(newValue); // อัปเดต filters ด้วย debounce 500ms
+    };
+
+    // Sync tempValue กับ value เมื่อ value เปลี่ยนจากภายนอก
+    useEffect(() => {
+      setTempValue(value);
+    }, [value]);
+
     return (
       <RangeSlider
         min={0}
         max={200000}
-        step={1000}
-        value={value}
-        onChange={(val) => onChange(val as [number, number])}
-        onChangeEnd={(val) => onChange(val as [number, number])}
+        step={500} // คงค่า step เดิม
+        value={tempValue}
+        onChange={handleChange}
         marks={[
           { value: 0, label: "0" },
           { value: 50000, label: "50k" },
@@ -283,23 +284,24 @@ function FindEmp() {
         ]}
         styles={{
           track: {
-            background: "linear-gradient(to right, #A7F3D0,seagreen)",
+            background: "linear-gradient(to right, #A7F3D0, seagreen)",
             height: "8px",
             borderRadius: "4px",
           },
           bar: {
-            background: "linear-gradient(to right,#A7F3D0,seagreen",
+            background: "linear-gradient(to right, #A7F3D0, seagreen)",
           },
           thumb: {
             backgroundColor: "#10B981",
             border: "3px solid white",
-            width: "18px",
-            height: "18px",
-            boxShadow: "0px 0px 5px rgba(0, 0, 0, 0.5)",
+            width: "20px",
+            height: "20px",
+            boxShadow: "0px 0px 4px rgba(0, 0, 0, 0.3)",
+            transition: "all 0.2s ease",
           },
           markLabel: {
             color: "black",
-            fontSize: "m",
+            fontSize: "12px",
           },
         }}
       />
@@ -625,99 +627,6 @@ function FindEmp() {
                 className="kanit-regular"
               />
             </Group>
-
-            <Box>
-              <Text size="sm" className="kanit-regular">
-                เงินเดือน: ฿{filters.salaryRange[0].toLocaleString()} - ฿
-                {filters.salaryRange[1].toLocaleString()}
-              </Text>
-              <GreenSlider
-                value={filters.salaryRange}
-                onChange={(value) =>
-                  setFilters((prev) => ({ ...prev, salaryRange: value }))
-                }
-              />
-            </Box>
-
-            <Divider label="เวลาทำงาน" labelPosition="center" my={4} />
-
-            <MultiSelect
-              label="วันทำงาน"
-              placeholder="เลือกวันทำงาน"
-              data={workDayOptions}
-              value={filters.selectedWorkDays}
-              onChange={handleMultiSelectChange("selectedWorkDays")}
-              clearable
-              searchable
-              className="kanit-regular"
-            />
-
-            <Group grow>
-              <Select
-                label="เวลาเริ่มงาน"
-                placeholder="เลือกเวลา"
-                data={workHours}
-                value={filters.startTime}
-                onChange={(value) =>
-                  setFilters((prev) => ({ ...prev, startTime: value }))
-                }
-                clearable
-                className="kanit-regular"
-              />
-              <Select
-                label="เวลาเลิกงาน"
-                placeholder="เลือกเวลา"
-                data={workHours}
-                value={filters.endTime}
-                onChange={(value) =>
-                  setFilters((prev) => ({ ...prev, endTime: value }))
-                }
-                clearable
-                className="kanit-regular"
-              />
-            </Group>
-
-            <Divider label="สถานที่ทำงาน" labelPosition="center" my={4} />
-            <MultiSelect
-              data={provinces}
-              label="สถานที่ทำงาน"
-              placeholder="เลือกสถานที่"
-              value={filters.selectedLocations}
-              onChange={handleMultiSelectChange("selectedLocations")}
-              clearable
-              searchable
-              className="kanit-regular"
-            />
-
-            <Group grow>
-              <Select
-                label="เรียงตาม"
-                placeholder="เลือกการเรียงลำดับ"
-                value={`${filters.sortBy}_${filters.sortOrder}`}
-                onChange={(value) => {
-                  if (value) {
-                    const [sortBy, sortOrder] = value.split("_") as [
-                      string,
-                      "asc" | "desc"
-                    ];
-                    setFilters((prev) => ({
-                      ...prev,
-                      sortBy,
-                      sortOrder,
-                    }));
-                  }
-                }}
-              data={sortOptions}
-              rightSection={
-                filters.sortBy && (
-                  <span className="text-sm">
-                    {filters.sortOrder === "asc" ? "↑" : "↓"}
-                  </span>
-                )
-              }
-              className="kanit-regular"
-            />
-          </Group>
           </Stack>
         </Box>
       </Drawer>
