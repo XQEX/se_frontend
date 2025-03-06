@@ -204,10 +204,16 @@ function Find() {
       const matchesWorkDays = () => {
         if (filters.selectedWorkDays.length === 0) return true;
 
-        const selectedDays = filters.selectedWorkDays;
-        if (selectedDays.includes("ทั้งหมด") || selectedDays.length === workDayOptions.length) return true;
+        const selectedDays = filters.selectedWorkDays.map((day) =>
+          day.replace(/\s+/g, "")
+        ); // Remove all spaces from selected options
+        if (
+          selectedDays.includes("ทั้งหมด") ||
+          selectedDays.length === workDayOptions.length
+        )
+          return true;
 
-        const jobWorkDates = job.workDates.trim();
+        const jobWorkDates = job.workDates.replace(/\s+/g, ""); // Remove all spaces from job workDates
 
         return selectedDays.some((day) => jobWorkDates === day);
       };
@@ -282,7 +288,6 @@ function Find() {
   }) => {
     const [tempValue, setTempValue] = useState(value);
 
-    // Debounce การอัปเดตค่าไปยัง filters.salaryRange เฉพาะเมื่อหยุดลาก
     const debouncedOnChange = useCallback(
       debounce((val: [number, number]) => {
         onChange(val);
@@ -290,14 +295,12 @@ function Find() {
       [onChange]
     );
 
-    // อัปเดต tempValue ทันทีขณะลาก และเรียก debounce สำหรับ onChange
     const handleChange = (val: number[]) => {
       const newValue = val as [number, number];
-      setTempValue(newValue); // อัปเดต UI ทันที
-      debouncedOnChange(newValue); // อัปเดต filters ด้วย debounce
+      setTempValue(newValue);
+      debouncedOnChange(newValue);
     };
 
-    // Sync tempValue กับ value เมื่อ value เปลี่ยนจากภายนอก
     useEffect(() => {
       setTempValue(value);
     }, [value]);
@@ -306,7 +309,7 @@ function Find() {
       <RangeSlider
         min={0}
         max={200000}
-        step={500} // คงค่า step เดิมตามโค้ดล่าสุดของคุณ
+        step={500}
         value={tempValue}
         onChange={handleChange}
         marks={[
