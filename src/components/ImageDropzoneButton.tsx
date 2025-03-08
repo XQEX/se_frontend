@@ -9,6 +9,7 @@ import { uploadEmployerProfileImage } from "../api/Employer";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../context/UserContext";
 
 type UUID = string; // Define UUID as a string or use a library
 
@@ -27,6 +28,17 @@ export function ImageDropzoneButton({
   userType,
   profileDropzoneClose,
 }: ImageDropzoneButtonType) {
+  const {
+    user,
+    isLoading,
+    refetchjobseeker,
+    refetchemployer,
+    refetchCompany,
+    isStale,
+    setUser,
+    queryClient,
+  } = useUser();
+
   const navigate = useNavigate();
   const theme = useMantineTheme();
   const openRef = useRef<() => void>(null);
@@ -46,14 +58,29 @@ export function ImageDropzoneButton({
 
         console.log("Uploading file:", currentfile);
 
-        if (userType === "JOBSEEKER") await uploadProfileImage(formData);
-        if (userType === "COMPANY") await uploadCompanyProfileImage(formData);
-        if (userType === "EMPLOYER") await uploadEmployerProfileImage(formData);
+        let profileImage;
+        if (userType === "JOBSEEKER") {
+          profileImage = await uploadProfileImage(formData);
+          notifySuccess("JOBSEEKER Profile uploaded successfully");
+          // setcurrentuserProfilePic(profileImage.url);
+          // refetchjobseeker();
+          // queryClient.setQueryData(["currentJobSeeker"], user);
+          // setUser(user);
+          // setcurrentuserProfilePic(user.profilePicture);
+        } else if (userType === "COMPANY") {
+          profileImage = await uploadCompanyProfileImage(formData);
+          notifySuccess("COMPANYProfile uploaded successfully");
+          // setcurrentuserProfilePic(profileImage.url);
+        } else if (userType === "EMPLOYER") {
+          profileImage = await uploadEmployerProfileImage(formData);
+          notifySuccess("EMPLOYER Profile uploaded successfully");
+          // setcurrentuserProfilePic(profileImage.url);
+        }
 
-        notifySuccess("File uploaded successfully");
         console.log("userId: ", userId);
         console.log("bucketName: ", bucketName);
         console.log("prefixPath: ", prefixPath);
+
         profileDropzoneClose();
       } catch (err) {
         console.error("Error uploading file:", err);

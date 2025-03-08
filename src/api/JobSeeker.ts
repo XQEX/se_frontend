@@ -182,6 +182,7 @@ interface UpdateUserProfileRequest {
   email: string;
   contact: string;
   resumeImage: FormData;
+  vulnerabilityType: string[];
 }
 
 export const registerJobSeeker = async (
@@ -481,6 +482,20 @@ export const updateUserProfile = async (
     );
     console.log("Contact update response:", contactResponse);
 
+    console.log("updating vulnerability type...");
+    const vulnerabilityResponse = await axios.put<{ data: void }>(
+      `${baseURL}/api/user/job-seeker/auth/edit/vulnerability`,
+      { vulnerabilitiesId: profileData.vulnerabilityType },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+
+    console.log("Vulnerability type update response:", vulnerabilityResponse);
+
     console.log("Updating resume image...");
     console.log("Resume image:", profileData.resumeImage);
 
@@ -566,16 +581,12 @@ export const uploadProfileImage = async (
 
     const { data } = await axios.post<{
       data: { approvalId: string; url: string };
-    }>(
-      `${baseURL}/api/user/job-seeker/auth/profile-image`,
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        withCredentials: true,
-      }
-    );
+    }>(`${baseURL}/api/user/job-seeker/auth/profile-image`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      withCredentials: true,
+    });
     console.log("Profile image upload successful:", data);
     return data.data;
   } catch (error) {

@@ -12,6 +12,7 @@ import {
   Switch,
   Checkbox,
   MultiSelect,
+  Image,
 } from "@mantine/core";
 import { NewNav } from "../../components/NewNav";
 import { useUser } from "../../context/UserContext";
@@ -20,7 +21,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { updateUserProfile } from "../../api/JobSeeker";
 import { useNavigate } from "react-router-dom";
 import { Dropzone, MIME_TYPES } from "@mantine/dropzone";
-import { Group, Text, useMantineTheme, Image } from "@mantine/core";
+import { Group, Text, useMantineTheme } from "@mantine/core";
 import { IconCloudUpload, IconDownload, IconX } from "@tabler/icons-react";
 import { fetchAllVulnerabilities } from "../../api/Vulnerability";
 
@@ -38,6 +39,15 @@ interface Vulnerability {
   description: string;
   createdAt: string;
   updatedAt: string;
+}
+
+interface UserVulnerability {
+  severity: string;
+  publicStatus: string;
+  toVulnerabilityType: {
+    name: string;
+    description: string;
+  };
 }
 
 // Interface for Select Props
@@ -93,13 +103,30 @@ const JobSeekerProfile = () => {
         notifyError("Failed to fetch vulnerabilities");
       }
     };
+
     fetchVulnerabilities();
   }, [user, isLoading, isStale]);
 
-  // const [hasExperience, setHasExperience] = useState<boolean>(true);
-  // const [hasDesiredJobCategory, setHasDesiredJobCategory] =
-  //   useState<boolean>(true);
-  // const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  useEffect(() => {
+    form.setValues({
+      firstName: user.firstName,
+      lastName: user.lastName,
+      location: user.address,
+      aboutMe: user.aboutMe,
+      email: user.email,
+      contact: user.contact,
+      vulnerabilityType:
+        user.vulnerabilities?.map(
+          (v: UserVulnerability) => v.toVulnerabilityType.name
+        ) || [],
+      jobTitle: "",
+      company: "",
+      startMonth: "",
+    });
+    console.log("user vulnerabilityties : ", user.vulnerabilities);
+    console.log("vulnerabilityType : ", form.values.vulnerabilityType);
+  }, [user]);
+
   document.body.style.backgroundColor = "#f7f9fc";
 
   const form = useForm({
@@ -107,18 +134,18 @@ const JobSeekerProfile = () => {
       firstName: "John",
       lastName: "Doe",
       location: "123 Main St, Bangkok",
-      jobTitle: "",
-      contact: "XDDD",
-      company: "",
-      startMonth: "",
-      startYear: "",
-      endMonth: "",
-      endYear: "",
+      jobTitle: "jobTitle",
+      contact: "",
+      company: "company",
+      startMonth: "startMonth",
+      startYear: "startYear",
+      endMonth: "endMonth",
+      endYear: "endYear",
       currentlyWorking: false,
       aboutMe: "Experienced software developer",
       email: "john.doe@example.com",
       phone: "+66987654321",
-      vulnerabilityType: [] as Vulnerability[],
+      vulnerabilityType: [] as string[],
     },
   });
 
@@ -128,22 +155,6 @@ const JobSeekerProfile = () => {
     const formData = new FormData();
     formData.append("image", resumes || new File([], ""));
 
-    form.setValues({
-      firstName: user.firstName,
-      lastName: user.lastName,
-      location: user.address,
-      aboutMe: user.aboutMe,
-      email: user.email,
-      contact: user.contact,
-      jobTitle: "",
-      company: "",
-      startMonth: "",
-      // startYear: "",
-      // endMonth: "",
-      // endYear: "",
-      // currentlyWorking: false,
-    });
-
     try {
       const updatedUser = {
         firstName: form.values.firstName,
@@ -152,15 +163,21 @@ const JobSeekerProfile = () => {
         address: form.values.location,
         email: form.values.email,
         contact: form.values.contact,
-        resumeImage: formData, // Ensure resumeImage is always a File
+        vulnerabilityType: vulnerabilities
+          .filter((v) => form.values.vulnerabilityType.includes(v.name))
+          .map((v) => v.id),
+        resumeImage: formData,
       };
       await updateUserProfile(updatedUser);
-      // await updateJobSeekerUsername(form.values.username, confirmPassword2);
       refetchjobseeker();
       notifySuccess("Profile updated successfully");
+
+      queryClient.invalidateQueries({ queryKey: ["currentJobSeeker"] });
+      setUser(null);
       navigate("/profile");
     } catch (error) {
       notifyError(error as string);
+      navigate("/profile");
     }
   };
 
@@ -348,9 +365,9 @@ const JobSeekerProfile = () => {
                 </Grid.Col>
                 <Grid.Col span={6}>
                   {renderTextInput({
-                    label: "เบอร์โทร",
-                    placeholder: "กรอกเบอร์โทรศัพท์",
-                    inputProps: form.getInputProps("phone"),
+                    label: "ติดต่อ",
+                    placeholder: "กรอกข้อมูลติดต่อ",
+                    inputProps: form.getInputProps("contact"),
                     size: "medium",
                   })}
                 </Grid.Col>
@@ -379,10 +396,12 @@ const JobSeekerProfile = () => {
                 label="ประเภทความเปราะบาง/ความพิการ (ถ้ามี)"
                 placeholder="เลือกประเภท (ถ้ามี)"
                 data={vulnerabilities.map((v) => ({
-                  value: v.id,
+                  value: v.name,
                   label: v.name,
+                  description: v.description,
                 }))}
                 className="font-kanit"
+                value={form.values.vulnerabilityType}
                 styles={{
                   input: {
                     border: "1.5px solid #e2e8f0",
@@ -442,9 +461,21 @@ const JobSeekerProfile = () => {
                   </div>
                 </Dropzone>
                 {resumes && (
-                  <p className="text-sm text-gray-600">
-                    ไฟล์ที่เลือก: {resumes.name}
-                  </p>
+                  <div className="mt-2">
+                    <p className="text-sm text-gray-600 mb-2">
+                      ไฟล์ที่เลือก: {resumes.name}
+                    </p>
+                    <Image
+                      src={URL.createObjectURL(resumes)}
+                      alt="Resume preview"
+                      fit="contain"
+                      height={200}
+                      className="rounded-md border border-gray-200"
+                      onLoad={() =>
+                        URL.revokeObjectURL(URL.createObjectURL(resumes))
+                      }
+                    />
+                  </div>
                 )}
               </div>
 

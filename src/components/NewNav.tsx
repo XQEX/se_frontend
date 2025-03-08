@@ -432,7 +432,7 @@ export const NewNav: React.FC<NavbarProps> = ({
                     <div className="relative">
                       {user?.profilePicture ? (
                         <Avatar
-                          src={user.profilePicture}
+                          src={user.profilePicture + `?v=${Date.now()}`}
                           alt={user.username}
                           radius="xl"
                           size={30}

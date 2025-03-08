@@ -210,10 +210,16 @@ function Profile() {
     queryClient,
   } = useUser();
   const [isHaveUser, setIsHaveUser] = useState(false);
+  const [currentuserProfilePic, setcurrentuserProfilePic] = useState<string>(
+    user.profilePicture
+  );
+
   useEffect(() => {
     refetchjobseeker();
     refetchCompany();
     refetchemployer();
+
+    // setcurrentuserProfilePic(user.profilePicture);
 
     // console.log("current user:", user);
     // console.log("isLoading:", isLoading);
@@ -628,8 +634,8 @@ function Profile() {
             <div className="w-48 h-48 rounded-3xl overflow-hidden border-4 border-white shadow-md">
               <img
                 src={
-                  user.profilePicture !== "UNDEFINED"
-                    ? user.profilePicture
+                  currentuserProfilePic !== "UNDEFINED"
+                    ? currentuserProfilePic + `?v=${Date.now()}`
                     : "พิการ.jpg"
                 }
                 alt="Profile photo"
@@ -731,6 +737,38 @@ function Profile() {
                     <FaPhoneAlt color="#4a5568" />
                   </span>
                   : {user.contact}
+                </div>
+                <div className="flex items-start text-sm md:text-base mt-4 text-gray-700">
+                  <span className="mr-3 mt-1">
+                    <MdWork color="#4a5568" />
+                  </span>
+                  <div className="flex flex-col">
+                    <span className="font-medium mb-2">ความพิการ</span>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {user.vulnerabilities.map(
+                        (vul: {
+                          severity: string;
+                          publicStatus: string;
+                          toVulnerabilityType: {
+                            name: string;
+                            description: string;
+                          };
+                        }) => (
+                          <div
+                            key={vul.toVulnerabilityType.name}
+                            className="bg-gray-50 rounded-lg p-3 border border-gray-200"
+                          >
+                            <span className="font-medium text-gray-800 block mb-1">
+                              {vul.toVulnerabilityType.name}
+                            </span>
+                            <span className="text-xs inline-block px-2 py-1 bg-gray-200 text-gray-700 rounded-full">
+                              ระดับ: {vul.severity}
+                            </span>
+                          </div>
+                        )
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1306,7 +1344,7 @@ function Profile() {
 
           {activeTab === "resume" && (
             <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
-              <img src={user.resume}></img>
+              <img src={user.resume + `?v=${Date.now()}`}></img>
             </section>
           )}
         </div>
