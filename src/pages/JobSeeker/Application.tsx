@@ -177,6 +177,7 @@ const JobSeekerProfile = () => {
       navigate("/profile");
     } catch (error) {
       notifyError(error as string);
+      setUser(null);
       navigate("/profile");
     }
   };
